@@ -1,0 +1,85 @@
+.footerWrapper {
+    width: 100%;
+    height: auto;
+    background-color: #A7D7C5;
+}
+
+.registerSection {
+    background-color: #3B746A;
+    margin: 0.25rem 0rem;
+
+}
+
+.subscribe-heading {
+    width: fit-content;
+}
+
+.subscribeButton {
+    width: fit-content;
+}
+
+.subscribeInputContainer {
+    width: max-content;
+    margin-right: 2rem;
+    background-color: #f0eeee;
+}
+
+.emailInput {
+    width: 25rem;
+    border-width: 0.05rem;
+}
+
+.subscribeButton {
+    background-color: #3B746A;
+}
+
+.subscribeButton:hover {
+    background-color: #74b49b;
+    border-color: #74b49b;
+}
+
+.footerContents {
+    width: fit-content;
+}
+
+.footerContents .col {
+    width: fit-content;
+}
+
+.footerContents ul {
+    list-style-type: none;
+    padding: 0;
+    width: fit-content;
+    font-size: smaller;
+}
+
+.downloadLinksWrapper {}
+
+.qrWrapper {}
+
+
+.storeContainer {
+    max-width: 7rem;
+}
+
+.qrWrapper img {
+    max-width: 7rem;
+}
+
+.storeContainer img {
+    max-width: 7rem;
+}
+
+.footerBrandSection {}
+
+.rightsReserved {
+    width: fit-content;
+}
+
+.footerBrandName {
+    width: fit-content;
+}
+
+.footerTermsOfService {
+    width: fit-content;
+}

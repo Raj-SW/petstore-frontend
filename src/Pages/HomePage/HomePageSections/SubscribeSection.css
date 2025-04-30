@@ -1,0 +1,71 @@
+.subscribe-section-wrapper {
+    /* background-color: var(--secondary-color); */
+    /* Dark blue background */
+    border-radius: 1rem;
+}
+
+.subscribe-heading {
+    color: var(--secondary-color);
+    /* White text */
+}
+
+.form-input {
+    border-radius: 0.5rem;
+    /* Rounded corners */
+    padding: 0.75rem;
+    /* Padding for input */
+}
+
+.subscribe-btn {
+    background-color: white;
+    /* Match button background color */
+    color: var(--secondary-color);
+    /* White text */
+    border: 2px solid var(--secondary-color);
+    /* Remove default border */
+    padding: 0.75rem 1.5rem;
+    /* Padding for button */
+    border-radius: 1.5rem;
+    /* margin-top: 1.5rem; */
+    /* Rounded corners */
+    margin-left: 0.5rem;
+    /* Add spacing between input and button */
+}
+
+.subscribe-btn:hover {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+    color: white;
+}
+
+.form-input {
+    border: 2px solid var(--secondary-color);
+    /* Green border */
+    border-radius: 1.5rem;
+    /* Rounded corners */
+    padding: 0.75rem;
+    /* Padding inside the input */
+    outline: none;
+    /* Remove default outline */
+    box-shadow: none;
+    /* Remove box shadow */
+    transition: border-color 0.3s ease;
+    /* Smooth transition for hover/focus */
+}
+
+
+.form-input:focus {
+    border-color: var(--primary-color);
+    /* Darker green on focus */
+
+}
+
+@media (max-width: 768px) {
+    .subscribe-btn {
+        margin-left: 0;
+    }
+
+    .form-input {
+        margin-bottom: 1rem;
+    }
+}

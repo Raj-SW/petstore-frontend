@@ -1,0 +1,60 @@
+.communitySectionWrapper {
+    background-image: url('../../../assets/CommunityAssets/CommunityBackground.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 1rem;
+    width: 100%;
+    height: auto;
+}
+
+.CommunityImageWrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 1rem;
+
+}
+
+.CommunityImageWrapper img {
+    object-fit: cover;
+    max-width: 75%;
+    height: auto;
+    border-radius: 1rem;
+}
+
+.CommunitySectionStoreLinksWrapper {
+    display: flex;
+    justify-content: space-around;
+}
+
+.CommunitySectionStoreLinksWrapper img {
+    width: 40%;
+}
+
+.CommunitySectionStoreLinksWrapper img:hover {
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    .communitySectionWrapper {
+        flex-direction: column;
+        padding: 1rem;
+    }
+
+    .CommunityImageWrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .CommunitySectionStoreLinksWrapper {
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .CommunitySectionStoreLinksWrapper img {
+        width: 35%;
+    }
+}

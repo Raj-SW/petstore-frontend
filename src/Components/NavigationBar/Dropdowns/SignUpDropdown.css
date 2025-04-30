@@ -1,0 +1,53 @@
+.avatar-padding {
+    padding-right: 0;
+    /* Ensures no padding on smaller screens */
+}
+
+.authModal {
+    border-radius: 2rem;
+}
+
+.authModal-body {
+    margin: 0;
+    padding: 0;
+}
+
+.loginDecoWrapper {
+    background-image: url("../../../assets/Decoratives/loginBackground.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: auto;
+    border-radius: 0 1rem 1rem 0;
+}
+
+.signUpDecoWrapper {
+    background-image: url("../../../assets/Decoratives/loginBackground.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: auto;
+    border-radius: 1rem 0 0 1rem;
+}
+
+.border-bottom {
+    border-color: #ccc;
+    /* Customize the color */
+    border-width: 1px;
+    /* Customize the thickness */
+}
+
+.custom-text-color {
+    color: #74B49B;
+    /* Customize the color */
+}
+
+
+@media (min-width: 992px) {
+    .avatar-padding {
+        padding: 0.25rem;
+        /* Applies padding on large screens (992px and above) */
+    }
+}

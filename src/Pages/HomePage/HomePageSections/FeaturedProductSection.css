@@ -1,0 +1,60 @@
+.featured-products-heading {
+    color: var(--secondary-color);
+}
+
+.featuredProductsNavTabWrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.featuredProductsNavTab {
+    background-color: var(--tertiary-color-opacque);
+    width: fit-content;
+    border-radius: 0.5rem;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0rem 1rem;
+    gap: 0.5rem;
+}
+
+.featuredProductsNavTab .nav-link {
+    color: var(--secondary-color);
+    font-size: medium;
+    font-weight: 700;
+    transition: background-color 0.3s, color 0.3s;
+    padding: 0;
+    margin: 0.5rem 0;
+    padding: 0.1rem 0.75rem;
+    border-radius: 0.5rem;
+}
+
+.featuredProductsNavTab .nav-link.active {
+    color: #fff;
+    background-color: var(--secondary-color);
+}
+
+.anchor-button {
+    padding: 0.5rem;
+    /* Padding around the link */
+    color: var(--secondary-color) !important;
+    /* Bootstrap secondary text color */
+    /* text-decoration: none; */
+    /* Remove underline */
+    display: inline-flex;
+    align-items: center;
+    /* Align the text and icon vertically */
+    transition: background-color 0.3s ease, color 0.3s ease;
+    /* Smooth transition */
+    border-radius: 1.5rem;
+    /* Optional: rounded corners */
+    border: 0.1rem solid var(--secondary-color);
+}
+
+.anchor-button:hover {
+    background-color: var(--secondary-color);
+    /* Background changes to secondary on hover */
+    color: white !important;
+    /* Text color changes to white */
+}

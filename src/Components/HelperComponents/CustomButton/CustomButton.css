@@ -1,0 +1,18 @@
+.customButton {
+  background-color: white;
+  color: #488b80; /* Greenish text color */
+  border: 0.05rem solid var(--primary-color); /* Remove default border */
+  border-radius: 2.5rem; /* Rounded corners */
+  padding: 0.4rem 1rem; /* Adjust padding for better sizing */
+  font-family: "Poppins", sans-serif; /* Match the font style */
+  font-size: 1rem; /* Set font size */
+  font-weight: 500; /* Slightly bold text */
+  cursor: pointer; /* Pointer cursor on hover */
+  transition: background-color 0.3s, color 0.3s; /* Smooth hover transition */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+.customButton:hover {
+  background-color: var(--primary-color); /* Darker green on hover */
+  color: #ffffff; /* White text on hover */
+}

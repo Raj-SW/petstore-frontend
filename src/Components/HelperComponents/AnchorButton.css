@@ -1,0 +1,25 @@
+.anchor-button {
+    padding: 0.5rem;
+    /* Padding around the link */
+    color: var(--secondary-color) !important;
+    /* Bootstrap secondary text color */
+    /* text-decoration: none; */
+    /* Remove underline */
+    display: inline-flex;
+    align-items: center;
+    /* Align the text and icon vertically */
+    transition: background-color 0.3s ease, color 0.3s ease;
+    /* Smooth transition */
+    border-radius: 1.5rem;
+    /* Optional: rounded corners */
+    border: 0.1rem solid var(--secondary-color);
+    gap: 0.6rem;
+}
+
+.anchor-button:hover {
+    background-color: var(--secondary-color);
+    /* Background changes to secondary on hover */
+    color: white !important;
+    /* Text color changes to white */
+    cursor: pointer;
+}

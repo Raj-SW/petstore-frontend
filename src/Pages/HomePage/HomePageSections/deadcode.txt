@@ -1,0 +1,61 @@
+ {/* <CarouselComponent /> */}
+      {/* <div
+        className="HeroSectionWrapper  "
+        style={{
+          backgroundImage: `url(${HeroSectionBackgroundDesktop})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          minHeight: "45rem",
+          width: "100vw",
+        }}
+      >
+        <Row className="">
+          <Col className="heroHeaderWrapper p-5 ">
+            <div className="heroSloganHeader ">
+              <h1>This is A Slogan about the Company</h1>
+            </div>
+            <div className="heroMiniSloganHeader ">
+              <h3>This a mini slogan</h3>
+            </div>
+            <div className="heroDescription p-30">
+              <p>
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Harum
+                illo itaque voluptates recusandae id, alias unde. Quam
+                laboriosam tempore consequuntur obcaecati dolorum, soluta
+                repellat similique at, fuga modi repellendus vero.
+              </p>
+            </div>
+          </Col>
+          <Col xs={12} md={8} lg={6}>
+            <div className="position-relative" style={{ height: "45rem" }}>
+              <img
+                src={ellipse}
+                alt="Ellipse Background"
+                style={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-55%, -90%)",
+                  zIndex: 0,
+                  height: "20rem",
+                }}
+              />
+              <img
+                src={CatImage}
+                alt="Cat"
+                className=""
+                style={{
+                  position: "absolute",
+                  top: "0",
+                  left: "50%",
+                  transform: "translateX(-50%)",
+                  zIndex: 1,
+                  height: "40rem",
+                  overflow: "hidden",
+                }}
+              />
+            </div>
+          </Col>
+        </Row>
+      </div> */}

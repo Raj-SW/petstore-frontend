@@ -1,0 +1,35 @@
+.productCardReviewWrapper {
+    max-width: 18rem;
+    width: auto;
+    margin-top: 5rem;
+
+}
+
+.productCardReviewContainer {
+    background-color: #f0eeee;
+    position: relative;
+    padding-top: 3rem;
+}
+
+.profilePicImg {
+    max-width: 7rem;
+    width: auto;
+    border-radius: 50%;
+    /* Make the image circular */
+    border: 0.75rem solid white;
+    /* Add a border to match the snippet */
+    position: absolute;
+    top: -4.5rem;
+    /* Position the image overlapping the top */
+    left: 50%;
+    transform: translateX(-50%);
+    /* Center the image horizontally */
+}
+
+.starsContainer {
+    margin-top: 2.5rem;
+}
+
+.reviewDescription {
+    font-size: small;
+}

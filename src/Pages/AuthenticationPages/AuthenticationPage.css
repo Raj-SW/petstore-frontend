@@ -1,0 +1,37 @@
+.AuthPageContainer {
+    background-color: rgb(142, 140, 140);
+    border-radius: 1.5rem;
+}
+
+.authRoundedCol {
+    border-radius: 1.5rem;
+}
+
+.authRowContainer {
+    min-height: 40rem;
+}
+
+.authNav {
+    background-color: var(--tertiary-color-opacque);
+    /* border-radius: 1rem; */
+}
+
+/* Custom styles for the navigation links */
+.authNav .nav-link {
+    color: var(--secondary-color);
+    font-size: medium;
+    font-weight: 700;
+    transition: background-color 0.3s, color 0.3s;
+    padding: 0;
+    margin: 0.5rem 0;
+    padding: 0.1rem 2rem;
+    border-radius: 0.5rem;
+}
+
+/* Styles for active navigation link */
+.authNav .nav-link.active {
+    color: #fff;
+    /* White text for active state */
+    background-color: var(--secondary-color);
+    /* Bootstrap primary color for background, or choose your own */
+}

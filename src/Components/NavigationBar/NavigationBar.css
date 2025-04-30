@@ -1,0 +1,33 @@
+.brand-Name>div>p {
+    line-height: 0rem;
+    font-weight: 1000;
+    color: white;
+}
+
+.brand-Name {
+    padding: 0.5rem;
+}
+
+.toggle-custom {
+    display: none;
+}
+
+@media (max-width: 991px) {
+    .d-card-dropdown {
+        display: none !important;
+    }
+
+    .toggle-custom {
+        display: block;
+    }
+
+    .vitalPawsLogo {
+        display: none;
+    }
+
+    .pawsImg {
+        display: none;
+    }
+}
+
+.mobile-header {}
