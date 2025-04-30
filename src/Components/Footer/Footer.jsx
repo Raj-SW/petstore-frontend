@@ -2,14 +2,13 @@ import React from "react";
 import { Container, Row, Col, Button } from "react-bootstrap";
 import { FaFacebook, FaInstagram, FaYoutube } from "react-icons/fa";
 import { IoLogoWhatsapp } from "react-icons/io";
-import Accordion from "react-bootstrap/Accordion";
 import { IconContext } from "react-icons";
 
 import "./Footer.css";
 import "./Footer2.css";
 import qrCode from "../../assets/Decoratives/QRCode.png";
-// import googlePlayStoreImg from "../../assets/Decoratives/googlePlay1.png";
-// import appStoreImg from "../../assets/Decoratives/app-store.png";
+import googlePlayStoreImg from "../../assets/Decoratives/googlePlay1.png";
+import appStoreImg from "../../assets/Decoratives/app-store.png";
 
 const Footer = () => {
   return (
@@ -85,8 +84,8 @@ const Footer = () => {
                   <img src={qrCode} alt="QR Code" />
                 </Col>
                 <Col className="storeContainer d-flex flex-column gap-2 align-items-center align-items-lg-end">
-                  {/* <img src={appStoreImg} alt="App Store" /> */}
-                  {/* <img src={googlePlayStoreImg} alt="Google Play Store" /> */}
+                  <img src={appStoreImg} alt="App Store" />
+                  <img src={googlePlayStoreImg} alt="Google Play Store" />
                 </Col>
               </Row>
             </Col>
