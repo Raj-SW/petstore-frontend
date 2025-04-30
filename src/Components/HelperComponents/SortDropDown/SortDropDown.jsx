@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Dropdown, ButtonGroup } from "react-bootstrap";
-import "./SortDropdown.css"; // Import your CSS for hover styles
+import "./SortDropDown.css"; // Import your CSS for hover styles
 
 const SortDropDown = ({ onSort }) => {
   const [selectedSort, setSelectedSort] = useState("Sort By");
