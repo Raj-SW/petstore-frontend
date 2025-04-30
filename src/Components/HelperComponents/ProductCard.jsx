@@ -3,7 +3,7 @@ import { Card } from "react-bootstrap";
 import { FaStar, FaShoppingBasket } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import heartImg from "../../assets/Decoratives/ProductHeart.svg";
-import "./Productcard.css";
+import "./ProductCard.css";
 
 const ProductCard = ({ id, imageUrl, title, price, rating, onAddToCart }) => {
   const navigate = useNavigate();
