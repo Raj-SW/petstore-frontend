@@ -7,7 +7,7 @@ import { IconContext } from "react-icons";
 import "./Footer.css";
 import "./Footer2.css";
 import qrCode from "../../assets/Decoratives/QRCode.png";
-import googlePlayStoreImg from "../../assets/Decoratives/googlePlay1.png";
+import googlePlayStoreImg from "../../assets/Decoratives/googleplay1.png";
 import appStoreImg from "../../assets/Decoratives/app-store.png";
 
 const Footer = () => {
