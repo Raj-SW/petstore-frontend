@@ -1,6 +1,6 @@
 import React from "react";
 import { Container, Row, Col, Image } from "react-bootstrap";
-import BannerCarousel from "./Bannercarousel";
+import BannerCarousel from "./BannerCarousel";
 
 const CarouselComponent = () => {
   return (
