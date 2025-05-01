@@ -91,7 +91,7 @@ const NavigationBar = () => {
                   className="bg-transparent text-white"
                 >
                   <Accordion.Header className="bg-transparent text-white border-0 poppins-medium">
-                    Insurance
+                    Pet Boutique
                   </Accordion.Header>
                   <Accordion.Body className="bg-transparent text-white d-flex flex-column poppins-light">
                     <a>Dogs</a>
@@ -105,35 +105,7 @@ const NavigationBar = () => {
                   className="bg-transparent text-white"
                 >
                   <Accordion.Header className="bg-transparent text-white border-0 poppins-medium">
-                    Pet Boutique
-                  </Accordion.Header>
-                  <Accordion.Body className="bg-transparent text-white d-flex flex-column poppins-light">
-                    <a>Dogs</a>
-                    <a>Cats</a>
-                    <a>Fish</a>
-                  </Accordion.Body>
-                  <hr className="bg-white my-2" />
-                </Accordion.Item>
-                <Accordion.Item
-                  eventKey="3"
-                  className="bg-transparent text-white"
-                >
-                  <Accordion.Header className="bg-transparent text-white border-0 poppins-medium">
                     Community
-                  </Accordion.Header>
-                  <Accordion.Body className="bg-transparent text-white d-flex flex-column poppins-light">
-                    <a>Dogs</a>
-                    <a>Cats</a>
-                    <a>Fish</a>
-                  </Accordion.Body>
-                  <hr className="bg-white my-2" />
-                </Accordion.Item>
-                <Accordion.Item
-                  eventKey="4"
-                  className="bg-transparent text-white"
-                >
-                  <Accordion.Header className="bg-transparent text-white border-0 poppins-medium">
-                    Membership
                   </Accordion.Header>
                   <Accordion.Body className="bg-transparent text-white d-flex flex-column poppins-light">
                     <a>Dogs</a>
