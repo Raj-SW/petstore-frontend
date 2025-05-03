@@ -17,15 +17,12 @@ p {
     width: 100%;
     width: auto;
     z-index: 1;
-    /* left: 30vw; */
     color: var(--secondary-color);
-    /* Apply the primary color to all text */
 }
 
 .NavigationMenuList {
     display: flex;
     justify-content: center;
-    /* background-color: white; */
     padding: 4px;
     border-radius: 6px;
     list-style: none;

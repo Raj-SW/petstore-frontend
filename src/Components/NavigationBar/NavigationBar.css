@@ -28,6 +28,13 @@
     .pawsImg {
         display: none;
     }
+
 }
 
 .mobile-header {}
+
+.navbar-light .navbar-toggler-icon {
+    color: white !important;
+}
+
+.paws-mobile-img-container {}

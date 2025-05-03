@@ -77,8 +77,13 @@ const CardDropDown = () => {
     <NavigationMenu.Root className="NavigationMenuRoot">
       <NavigationMenu.List className="NavigationMenuList">
         <NavigationMenu.Item>
-          <NavigationMenu.Trigger className="NavigationMenuTrigger">
-            Services <CaretDownIcon className="CaretDown" aria-hidden />
+          <NavigationMenu.Trigger className="NavigationMenuTrigger fs-5">
+            Services{" "}
+            <CaretDownIcon
+              className="CaretDown"
+              aria-hidden
+              style={{ width: "1.5rem", height: "1.5rem" }}
+            />
           </NavigationMenu.Trigger>
           <NavigationMenu.Content className="NavigationMenuContent">
             <ul className="List one">
@@ -137,8 +142,13 @@ const CardDropDown = () => {
         </NavigationMenu.Item>
 
         <NavigationMenu.Item>
-          <NavigationMenu.Trigger className="NavigationMenuTrigger">
-            Pet Boutique <CaretDownIcon className="CaretDown" aria-hidden />
+          <NavigationMenu.Trigger className="NavigationMenuTrigger fs-5">
+            Pet Boutique{" "}
+            <CaretDownIcon
+              className="CaretDown"
+              aria-hidden
+              style={{ width: "1.5rem", height: "1.5rem" }}
+            />
           </NavigationMenu.Trigger>
           <NavigationMenu.Content className="NavigationMenuContent">
             <ul className="List one">
@@ -194,8 +204,13 @@ const CardDropDown = () => {
           </NavigationMenu.Content>
         </NavigationMenu.Item>
         <NavigationMenu.Item>
-          <NavigationMenu.Trigger className="NavigationMenuTrigger">
-            Community <CaretDownIcon className="CaretDown" aria-hidden />
+          <NavigationMenu.Trigger className="NavigationMenuTrigger fs-5">
+            Community{" "}
+            <CaretDownIcon
+              className="CaretDown"
+              aria-hidden
+              style={{ width: "1.5rem", height: "1.5rem" }}
+            />
           </NavigationMenu.Trigger>
           <NavigationMenu.Content className="NavigationMenuContent">
             <ul className="List one">

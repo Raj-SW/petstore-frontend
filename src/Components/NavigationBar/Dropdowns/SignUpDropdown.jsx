@@ -25,26 +25,22 @@ const SignUpDropdown = () => {
   return (
     <>
       <button
-        className="nav-login-btn"
+        className="nav-link d-flex align-items-center"
         onClick={handleOpenLogin}
         style={{
-          display: "flex",
-          alignItems: "center",
           background: "transparent",
           border: "none",
           color: "white",
-          fontWeight: 700,
+          fontWeight: 500,
           fontFamily: "Poppins, sans-serif",
-          fontSize: "1.15rem",
+          fontSize: "1rem",
           cursor: "pointer",
-          gap: "0.5rem",
-          padding: "0 12px",
         }}
       >
-        <IconContext.Provider value={{ color: "white", size: "1.5rem" }}>
-          <RxAvatar style={{ marginRight: 4 }} />
+        <IconContext.Provider value={{ color: "inherit", size: "2.5rem" }}>
+          <RxAvatar style={{ marginRight: 6, verticalAlign: "middle" }} />
         </IconContext.Provider>
-        <span>Login</span>
+        <span className="d-none d-lg-inline fs-5">Login</span>
       </button>
       <LoginModal
         show={showLogin}

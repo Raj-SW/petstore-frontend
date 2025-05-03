@@ -9,9 +9,9 @@ import Modal from "react-bootstrap/Modal";
 const AddToCart = ({ itemCount }) => {
   return (
     <>
-      <IconContext.Provider value={{ size: "2.2rem" }}>
+      <IconContext.Provider value={{ size: "2rem" }}>
         {/* Set icon size here */}
-        <div className="cartWrapper p-2 ">
+        <div className="cartWrapper ">
           <FaCartShopping className="cartIcon" />
           {itemCount > 0 && <div className="cartBadge">{itemCount}</div>}
         </div>
