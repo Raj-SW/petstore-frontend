@@ -1,38 +1,79 @@
-import React from "react";
-// Component Import
+import { useState } from "react";
 import "./ProductReviewCard.css";
-// Asset Import
-import roundedProfilePic from "@/assets/Decoratives/roundedProfilePic.png";
-import { FaStar } from "react-icons/fa";
 
-const ProductReviewCard = ({
-  name = "Angela Shamblin",
-  rating = 5,
-  reviewDescription = "I adopted my 3-month-old chihuahua mix from them (and they were transported to CT). I was very skeptical at first because I couldn't find too much detail about them when I googled the group and I wasn't sure about the validity of Adopt-a-Pet.",
-}) => {
+export function ProductReviewCard({ review, onLike }) {
+  const [isLiked, setIsLiked] = useState(false);
+
+  const handleLike = () => {
+    if (!isLiked) {
+      setIsLiked(true);
+      onLike(review.id);
+    }
+  };
+
+  const formatDate = (dateString) => {
+    const options = { year: "numeric", month: "long", day: "numeric" };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
   return (
-    <div className="productCardReviewWrapper text-center p-2">
-      <div className="productCardReviewContainer text-center d-flex flex-column align-items-center gap-2 p-3 rounded-5">
-        <img src={roundedProfilePic} alt="" className="profilePicImg" />
-        <div className="starsContainer">
-          <div className="mb-2 p-0">
-            {[...Array(5)].map((_, index) => (
-              <FaStar
-                key={index}
-                style={{
-                  color: index < rating ? "#FFA500" : "#E0E0E0",
-                  marginRight: "2px",
-                  width: "0.8rem",
-                }}
-              />
-            ))}
+    <div className="review-card">
+      <div className="review-header">
+        <div className="user-info">
+          <img
+            src={review.userAvatar || "/placeholder.svg"}
+            alt={`${review.userName}'s avatar`}
+            className="user-avatar"
+          />
+          <div>
+            <h4 className="user-name">{review.userName}</h4>
+            <div className="review-meta">
+              <span className="review-date">{formatDate(review.date)}</span>
+              {review.verifiedPurchase && (
+                <span className="verified-badge">
+                  <i className="bi bi-check-circle-fill verified-icon"></i>
+                  Verified Purchase
+                </span>
+              )}
+            </div>
           </div>
         </div>
-        <p className="poppins-bold pale-green-color-font">{name}</p>
-        <p className="poppins-regular reviewDescription">{reviewDescription}</p>
+        <div className="rating">
+          {[...Array(5)].map((_, index) => (
+            <span
+              key={index}
+              className={`star ${index < review.rating ? "filled" : ""}`}
+            >
+              ★
+            </span>
+          ))}
+        </div>
+      </div>
+
+      <div className="review-content">
+        <h3 className="review-title">{review.title}</h3>
+        <p className="review-comment">{review.comment}</p>
+      </div>
+
+      <div className="review-actions">
+        <button
+          className={`like-button ${isLiked ? "liked" : ""}`}
+          onClick={handleLike}
+          disabled={isLiked}
+          aria-label="Like this review"
+        >
+          <i
+            className={`bi bi-hand-thumbs-up${
+              isLiked ? "-fill" : ""
+            } like-icon`}
+          ></i>
+          <span>
+            {review.likes} {review.likes === 1 ? "like" : "likes"}
+          </span>
+        </button>
       </div>
     </div>
   );
-};
+}
 
 export default ProductReviewCard;

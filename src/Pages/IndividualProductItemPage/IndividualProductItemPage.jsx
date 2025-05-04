@@ -246,10 +246,9 @@ const IndividualProductItemPage = () => {
         <Container className="productReviewsContainer d-flex flex-column text-center mt-5 mb-5">
           <h3 className="pale-green-color-font">Product Reviews</h3>
           <Row className="productReviewCardsContainer d-flex flex-wrap justify-content-center">
-            <ProductReviewCard />
-            <ProductReviewCard />
-            <ProductReviewCard />
-            <ProductReviewCard />
+            {reviews.map((review) => (
+              <ProductReviewCard key={review.id} review={review} />
+            ))}
           </Row>
           <div className="text-center mt-5">
             <Button
