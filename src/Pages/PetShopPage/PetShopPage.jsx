@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./PetShopPage.css";
+import { useParams, useSearchParams } from "react-router-dom";
 
 // Component Import
 import {
@@ -12,14 +13,15 @@ import {
 } from "react-bootstrap";
 import ProductCard from "../../Components/HelperComponents/ProductCard";
 import SortDropdown from "@/Components/HelperComponents/SortDropDown/SortDropDown";
-import { FaSearch } from "react-icons/fa";
-import { CaretDownIcon } from "@radix-ui/react-icons";
+import Breadcrumb from "@/Components/HelperComponents/Breadcrumb/Breadcrumb";
+import SearchBar from "@/Components/HelperComponents/SearchBar/SearchBar";
 
 // Local service import
 import ProductService from "@/Services/localServices/ProductService";
 import FilterComponent from "./FilterComponent";
 
 const PetShopPage = () => {
+  const [searchParams] = useSearchParams();
   const [products, setProducts] = useState([]); // Original product list
   const [displayedProducts, setDisplayedProducts] = useState([]); // Products shown after sorting, searching, and filtering
   const [searchQuery, setSearchQuery] = useState("");
@@ -38,13 +40,20 @@ const PetShopPage = () => {
         setDisplayedProducts(data); // Initialize displayedProducts
         setTotalPages(Math.ceil(data.length / productsPerPage));
         setIsLoading(false);
+
+        // Check for search params after products are loaded
+        const query = searchParams.get("search");
+        if (query) {
+          setSearchQuery(query);
+          handleSearch(query);
+        }
       })
       .catch((err) => {
         console.error("Error fetching products:", err);
         setError(err.message);
         setIsLoading(false);
       });
-  }, [productsPerPage]);
+  }, [productsPerPage, searchParams]);
 
   // Get current products for pagination
   const indexOfLastProduct = currentPage * productsPerPage;
@@ -59,18 +68,29 @@ const PetShopPage = () => {
     setCurrentPage(pageNumber);
   };
 
-  // Search products
-  const handleSearch = () => {
+  // Update handleSearch to search across multiple product fields
+  const handleSearch = (query = searchQuery) => {
     let filtered = products;
 
-    if (searchQuery.trim()) {
-      filtered = products.filter((product) =>
-        product.title.toLowerCase().includes(searchQuery.toLowerCase())
-      );
+    if (query.trim()) {
+      const searchTerms = query.toLowerCase().split(" ");
+
+      filtered = products.filter((product) => {
+        const searchableText = [
+          product.title,
+          product.description,
+          product.category,
+          product.brand,
+        ]
+          .map((text) => text?.toLowerCase() || "")
+          .join(" ");
+
+        return searchTerms.every((term) => searchableText.includes(term));
+      });
     }
 
     setDisplayedProducts(filtered);
-    setCurrentPage(1); // Reset to first page after search
+    setCurrentPage(1);
     setTotalPages(Math.ceil(filtered.length / productsPerPage));
   };
 
@@ -161,51 +181,13 @@ const PetShopPage = () => {
     <>
       <Container>
         <div className="searchbarcontainer">
-          <div className="breadcrumb">
-            <span>
-              <p className="breadcrumb-text poppins-medium light-gray fs-6">
-                Home
-              </p>
-            </span>
-            <CaretDownIcon
-              className="CaretDownBreadCrumb"
-              aria-hidden
-              style={{
-                width: "1.5rem",
-                height: "1.5rem",
-                color: "#667479",
-                transform: "rotate(-90deg)",
-              }}
-            />
-            <span>
-              <p className="breadcrumb-text poppins-medium light-gray fs-6">
-                Pet Shop
-              </p>
-            </span>
-          </div>
-          <div className="search-wrapper">
-            <input
-              type="text"
-              placeholder="Search Pet Store"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              style={{
-                borderRadius: "25px",
-                border: "0.2rem solid var(--tertiary-color)",
-                padding: "8px 40px 8px 15px",
-                width: "100%",
-                outline: "none",
-              }}
-            />
-            <button onClick={handleSearch}>
-              <FaSearch
-                style={{
-                  color: "var(--primary-color)",
-                  fontSize: "1.2rem",
-                }}
-              />
-            </button>
-          </div>
+          <Breadcrumb
+            items={[
+              { label: "Home", path: "/" },
+              { label: "Pet Shop", path: "/PetShop" },
+            ]}
+          />
+          <SearchBar />
         </div>
       </Container>
 

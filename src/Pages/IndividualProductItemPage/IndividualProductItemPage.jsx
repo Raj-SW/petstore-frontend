@@ -3,20 +3,18 @@ import { useParams } from "react-router-dom";
 
 //Component import
 import { Container, Row, Col, Button, Image } from "react-bootstrap";
-import {
-  FaShoppingCart,
-  FaFacebook,
-  FaTwitter,
-  FaInstagram,
-} from "react-icons/fa";
+import { FaFacebook, FaTwitter, FaInstagram } from "react-icons/fa";
 import { FiShare2 } from "react-icons/fi";
 import { LuArrowLeftCircle } from "react-icons/lu";
 import { IconContext } from "react-icons";
+import { FaSearch } from "react-icons/fa";
+import { CaretDownIcon } from "@radix-ui/react-icons";
 import "./IndividaulItemPage.css";
 import CustomButton from "@/Components/HelperComponents/CustomButton/CustomButton";
+import Breadcrumb from "@/Components/HelperComponents/Breadcrumb/Breadcrumb";
+import SearchBar from "@/Components/HelperComponents/SearchBar/SearchBar";
 
 //Asset Import
-import productImage from "@/assets/IndividualPageAssets/BigProductImage.png";
 import productImg1 from "@/assets/FeaturedProductsAssets/Product.svg";
 import ProductCard from "@/Components/HelperComponents/ProductCard";
 import ProductReviewCard from "@/Components/HelperComponents/ProductReviewCard";
@@ -29,6 +27,7 @@ const IndividualProductItemPage = () => {
   const [product, setProduct] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     ProductService.fetchProductById(parseInt(id))
@@ -58,12 +57,37 @@ const IndividualProductItemPage = () => {
   const handleIncrement = () => {
     setQuantity(quantity + 1);
   };
+
+  // Search products
+  const handleSearch = () => {
+    let filtered = products;
+
+    if (searchQuery.trim()) {
+      filtered = products.filter((product) =>
+        product.title.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    setDisplayedProducts(filtered);
+    setCurrentPage(1); // Reset to first page after search
+    setTotalPages(Math.ceil(filtered.length / productsPerPage));
+  };
   return (
     <>
       <Container className="d-flex flex-column">
+        <div className="searchbarcontainer">
+          <Breadcrumb
+            items={[
+              { label: "Home", path: "/" },
+              { label: "Pet Shop", path: "/PetShop" },
+              { label: product.title, path: null },
+            ]}
+          />
+          <SearchBar />
+        </div>
         <Container
           fluid
-          className="p-4 Product-Item-Container border mt-5 rounded-4"
+          className="p-4 Product-Item-Container border mt-2 rounded-4"
         >
           <Row className="g-4">
             <Col lg={6} className="d-flex flex-column align-items-center">
@@ -190,7 +214,7 @@ const IndividualProductItemPage = () => {
                 We have had Magie since she was able to leave her mum as a puppy
                 at 8 weeks old. Magie currently lives with two children aged 7
                 and 13 and has many visitors to the house, which she is great
-                with. There’s lots of cats and birds in the garden, and she’s
+                with. There's lots of cats and birds in the garden, and she's
                 not fussed by them.
               </p>
             </Col>
