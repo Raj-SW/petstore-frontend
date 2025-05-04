@@ -2,17 +2,16 @@
   background-color: white;
   color: #5aa891;
   border-radius: 20px;
-  border: 2px solid #5aa891; /* Add a green border */
-  padding: 5px 15px;
+  border: 2px solid #5aa891;
   font-size: 16px;
   font-weight: 500;
-  transition: all 0.3s ease; /* Smooth transition for hover effect */
+  transition: all 0.3s ease;
 }
 
 .sort-button:hover {
   background-color: #5aa891;
   color: white;
-  border-color: #5aa891; /* Ensure border color matches background on hover */
+  border-color: #5aa891;
 }
 
 .dropdown-item {

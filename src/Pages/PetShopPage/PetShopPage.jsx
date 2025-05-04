@@ -13,6 +13,7 @@ import {
 import ProductCard from "../../Components/HelperComponents/ProductCard";
 import SortDropdown from "@/Components/HelperComponents/SortDropDown/SortDropDown";
 import { FaSearch } from "react-icons/fa";
+import { CaretDownIcon } from "@radix-ui/react-icons";
 
 // Local service import
 import ProductService from "@/Services/localServices/ProductService";
@@ -25,11 +26,17 @@ const PetShopPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const [productsPerPage] = useState(12);
+  const [totalPages, setTotalPages] = useState(0);
+
   useEffect(() => {
     ProductService.fetchAllProducts()
       .then((data) => {
         setProducts(data);
         setDisplayedProducts(data); // Initialize displayedProducts
+        setTotalPages(Math.ceil(data.length / productsPerPage));
         setIsLoading(false);
       })
       .catch((err) => {
@@ -37,7 +44,20 @@ const PetShopPage = () => {
         setError(err.message);
         setIsLoading(false);
       });
-  }, []);
+  }, [productsPerPage]);
+
+  // Get current products for pagination
+  const indexOfLastProduct = currentPage * productsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+  const currentProducts = displayedProducts.slice(
+    indexOfFirstProduct,
+    indexOfLastProduct
+  );
+
+  // Change page
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
 
   // Search products
   const handleSearch = () => {
@@ -49,7 +69,9 @@ const PetShopPage = () => {
       );
     }
 
-    setDisplayedProducts(filtered); // Update displayed products based on search
+    setDisplayedProducts(filtered);
+    setCurrentPage(1); // Reset to first page after search
+    setTotalPages(Math.ceil(filtered.length / productsPerPage));
   };
 
   // Apply filters
@@ -73,6 +95,8 @@ const PetShopPage = () => {
     });
 
     setDisplayedProducts(filtered);
+    setCurrentPage(1); // Reset to first page after filtering
+    setTotalPages(Math.ceil(filtered.length / productsPerPage));
   };
 
   // Sort products
@@ -109,22 +133,81 @@ const PetShopPage = () => {
     return <p>Error: {error}</p>;
   }
 
+  // Generate pagination items
+  const paginationItems = [];
+  for (let number = 1; number <= totalPages; number++) {
+    if (
+      number === 1 ||
+      number === totalPages ||
+      (number >= currentPage - 1 && number <= currentPage + 1)
+    ) {
+      paginationItems.push(
+        <Pagination.Item
+          key={number}
+          active={number === currentPage}
+          onClick={() => handlePageChange(number)}
+        >
+          {number}
+        </Pagination.Item>
+      );
+    } else if (number === currentPage - 2 || number === currentPage + 2) {
+      paginationItems.push(
+        <Pagination.Ellipsis key={`ellipsis-${number}`} disabled />
+      );
+    }
+  }
+
   return (
     <>
-      {/* Search Bar */}
-      <div className="searchbarcontainer">
-        <div className="search-wrapper">
-          <input
-            type="text"
-            placeholder="Search for products..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-          <button onClick={handleSearch}>
-            <FaSearch />
-          </button>
+      <Container>
+        <div className="searchbarcontainer">
+          <div className="breadcrumb">
+            <span>
+              <p className="breadcrumb-text poppins-medium light-gray fs-6">
+                Home
+              </p>
+            </span>
+            <CaretDownIcon
+              className="CaretDownBreadCrumb"
+              aria-hidden
+              style={{
+                width: "1.5rem",
+                height: "1.5rem",
+                color: "#667479",
+                transform: "rotate(-90deg)",
+              }}
+            />
+            <span>
+              <p className="breadcrumb-text poppins-medium light-gray fs-6">
+                Pet Shop
+              </p>
+            </span>
+          </div>
+          <div className="search-wrapper">
+            <input
+              type="text"
+              placeholder="Search Pet Store"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              style={{
+                borderRadius: "25px",
+                border: "0.2rem solid var(--tertiary-color)",
+                padding: "8px 40px 8px 15px",
+                width: "100%",
+                outline: "none",
+              }}
+            />
+            <button onClick={handleSearch}>
+              <FaSearch
+                style={{
+                  color: "var(--primary-color)",
+                  fontSize: "1.2rem",
+                }}
+              />
+            </button>
+          </div>
         </div>
-      </div>
+      </Container>
 
       <div className="petshopContainer pt-3">
         <Container className="petShopBanner">
@@ -145,7 +228,7 @@ const PetShopPage = () => {
                 <SortDropdown onSort={handleSort} />
                 <Button
                   variant="primary"
-                  className="d-md-none mb-3 m-1"
+                  className="d-md-none filter-button-mobile"
                   onClick={handleShow}
                 >
                   Filter
@@ -155,7 +238,7 @@ const PetShopPage = () => {
 
             <div className="ProductItemBody">
               <Row className="ProductItemContainer">
-                {displayedProducts.map((product) => (
+                {currentProducts.map((product) => (
                   <Col
                     key={product.id}
                     xs={6}
@@ -175,17 +258,26 @@ const PetShopPage = () => {
                 ))}
               </Row>
 
-              {/* Centered Pagination */}
               <div className="paginationWrapper">
                 <Pagination className="d-flex">
-                  <Pagination.First />
-                  <Pagination.Prev />
-                  <Pagination.Item active>{1}</Pagination.Item>
-                  <Pagination.Item>{2}</Pagination.Item>
-                  <Pagination.Item>{3}</Pagination.Item>
-                  <Pagination.Ellipsis />
-                  <Pagination.Next />
-                  <Pagination.Last />
+                  <Pagination.First
+                    onClick={() => handlePageChange(1)}
+                    disabled={currentPage === 1}
+                    style={{ fontSize: "1.5rem" }}
+                  />
+                  <Pagination.Prev
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                  />
+                  {paginationItems}
+                  <Pagination.Next
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                  />
+                  <Pagination.Last
+                    onClick={() => handlePageChange(totalPages)}
+                    disabled={currentPage === totalPages}
+                  />
                 </Pagination>
               </div>
             </div>

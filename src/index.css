@@ -150,6 +150,10 @@ a:active {
   color: var(--pale-green-color);
 }
 
+.light-gray {
+  color: #667479;
+}
+
 .on-hover-pointer {
   cursor: pointer;
 }

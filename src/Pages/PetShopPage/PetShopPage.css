@@ -21,6 +21,30 @@
     gap: 1rem;
 }
 
+.ProductItemQuickSort {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.filter-button-mobile {
+    background-color: white;
+    color: #5aa891;
+    border-radius: 20px;
+    border: 2px solid #5aa891;
+    /* Add a green border */
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    /* Smooth transition for hover effect */
+}
+
+.filter-button-mobile:hover {
+    background-color: #5aa891;
+    color: white;
+    border-color: #5aa891;
+}
+
 @media (max-width: 768px) {
 
     /* Adjust the breakpoint as necessary */
@@ -45,23 +69,52 @@
     display: flex;
     width: 100%;
     justify-content: center;
+    border: none;
 }
+
+.pagination {
+    border: none;
+}
+
+.page-link {
+    background-color: white;
+    color: #5aa891;
+}
+
+.page-link:focus {
+    z-index: 3;
+    outline: 0;
+    box-shadow: none;
+}
+
+.pagination>.active>a,
+.pagination>.active>span,
+.pagination>.active>a:hover,
+.pagination>.active>span:hover,
+.pagination>.active>a:focus,
+.pagination>.active>span:focus {
+    color: white;
+    background-color: #5aa891;
+}
+
+.active {}
 
 .searchbarcontainer {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    /* Full screen height */
     width: 100%;
     padding: 1rem;
+    margin: 2rem 0rem;
 }
+
+.searchbarcontainer>p {}
 
 .search-wrapper {
     position: relative;
     width: 100%;
     max-width: 400px;
 
-    /* Adjust as needed */
 }
 
 .search-wrapper input[type="text"] {
@@ -100,5 +153,11 @@
     .pagination {
         flex-wrap: wrap;
         /* Allow wrapping for smaller pagination */
+    }
+}
+
+@media (max-width: 760px) {
+    .searchbarcontainer {
+        flex-direction: column;
     }
 }
