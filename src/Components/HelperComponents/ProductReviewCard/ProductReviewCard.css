@@ -7,6 +7,8 @@
     display: flex;
     flex-direction: column;
     max-width: 20rem;
+    min-width: 10rem;
+    width: 100%;
     height: 17rem;
 }
 
@@ -136,4 +138,19 @@
 
 .like-icon {
     font-size: 0.8rem;
+}
+
+.productCardReviewWrapper {
+    min-width: 320px;
+    max-width: 380px;
+    width: 100%;
+    margin: 2rem 1.5rem;
+    /* vertical and horizontal margin for spacing */
+}
+
+.productCardReviewContainer {
+    background-color: #f0eeee;
+    position: relative;
+    padding: 2.5rem 2rem 2rem 2rem;
+    /* more padding for vertical and horizontal */
 }

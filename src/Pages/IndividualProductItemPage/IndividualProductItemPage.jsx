@@ -7,8 +7,7 @@ import { FaFacebook, FaTwitter, FaInstagram } from "react-icons/fa";
 import { FiShare2 } from "react-icons/fi";
 import { LuArrowLeftCircle } from "react-icons/lu";
 import { IconContext } from "react-icons";
-import { FaSearch } from "react-icons/fa";
-import { CaretDownIcon } from "@radix-ui/react-icons";
+
 import "./IndividaulItemPage.css";
 import CustomButton from "@/Components/HelperComponents/CustomButton/CustomButton";
 import Breadcrumb from "@/Components/HelperComponents/Breadcrumb/Breadcrumb";
@@ -18,7 +17,7 @@ import ReviewService from "../../Services/localServices/ReviewService";
 import productImg1 from "@/assets/FeaturedProductsAssets/Product.svg";
 import ProductCard from "@/Components/HelperComponents/ProductCard/ProductCard";
 import ProductReviewCard from "@/Components/HelperComponents/ProductReviewCard/ProductReviewCard";
-
+import ReviewCarousel from "@/Components/HelperComponents/Carousel/ReviewCarousel";
 //service import
 import ProductService from "@/Services/localServices/ProductService";
 
@@ -246,9 +245,13 @@ const IndividualProductItemPage = () => {
         <Container className="productReviewsContainer d-flex flex-column text-center mt-5 mb-5">
           <h3 className="pale-green-color-font">Product Reviews</h3>
           <Row className="productReviewCardsContainer d-flex flex-wrap justify-content-center">
-            {reviews.map((review) => (
-              <ProductReviewCard key={review.id} review={review} />
-            ))}
+            {reviews && reviews.length > 0 ? (
+              <ReviewCarousel reviews={reviews} />
+            ) : (
+              <p className="text-muted mt-3">
+                No product reviews yet. Be the first to add one!
+              </p>
+            )}
           </Row>
           <div className="text-center mt-5">
             <Button
