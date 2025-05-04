@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Row, Col, Container, Tab, Nav } from "react-bootstrap";
-import AnchorButton from "../../../Components/HelperComponents/AnchorButton";
-import ProductCard from "../../../Components/HelperComponents/ProductCard";
+import AnchorButton from "../../../Components/HelperComponents/AnchorButton/AnchorButton";
+import ProductCard from "../../../Components/HelperComponents/ProductCard/ProductCard";
 import ProductService from "@/Services/localServices/ProductService";
 
 //Assets Import

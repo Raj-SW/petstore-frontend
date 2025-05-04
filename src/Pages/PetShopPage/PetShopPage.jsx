@@ -11,7 +11,7 @@ import {
   Button,
   Offcanvas,
 } from "react-bootstrap";
-import ProductCard from "../../Components/HelperComponents/ProductCard";
+import ProductCard from "../../Components/HelperComponents/ProductCard/ProductCard";
 import SortDropdown from "@/Components/HelperComponents/SortDropDown/SortDropDown";
 import Breadcrumb from "@/Components/HelperComponents/Breadcrumb/Breadcrumb";
 import SearchBar from "@/Components/HelperComponents/SearchBar/SearchBar";

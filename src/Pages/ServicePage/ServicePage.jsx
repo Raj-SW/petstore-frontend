@@ -7,7 +7,7 @@ import "./ServicePage.css";
 //Component import
 import { Container, Row, Col, Button } from "react-bootstrap";
 import { SlBadge } from "react-icons/sl";
-import ProductReviewCard from "@/Components/HelperComponents/ProductReviewCard";
+import ProductReviewCard from "@/Components/HelperComponents/ProductReviewCard/ProductReviewCard";
 const ServicePage = () => {
   return (
     <>

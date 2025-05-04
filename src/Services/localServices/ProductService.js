@@ -6,7 +6,7 @@ class ProductService {
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve(Products);
-      }, 500); // Simulates a delay for fetching data
+      }, 50); // Simulates a delay for fetching data
     });
   }
 
@@ -20,7 +20,7 @@ class ProductService {
         } else {
           reject(new Error(`Product with id ${id} not found`));
         }
-      }, 500); // Simulates a delay for fetching data
+      }, 50); // Simulates a delay for fetching data
     });
   }
 
@@ -32,7 +32,7 @@ class ProductService {
           (item) => item.category === category
         );
         resolve(filteredProducts);
-      }, 500); // Simulates a delay for fetching data
+      }, 50); // Simulates a delay for fetching data
     });
   }
 
@@ -44,7 +44,7 @@ class ProductService {
           (item) => item.isApparel === true
         );
         resolve(filteredProducts);
-      }, 500); // Simulates a delay for fetching data
+      }, 50); // Simulates a delay for fetching data
     });
   }
   // Fetch products by name
@@ -55,7 +55,7 @@ class ProductService {
           item.title.toLowerCase().includes(name.toLowerCase())
         );
         resolve(filteredProducts);
-      }, 500); // Simulates a delay for fetching data
+      }, 50); // Simulates a delay for fetching data
     });
   }
 }

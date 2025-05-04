@@ -13,11 +13,11 @@ import "./IndividaulItemPage.css";
 import CustomButton from "@/Components/HelperComponents/CustomButton/CustomButton";
 import Breadcrumb from "@/Components/HelperComponents/Breadcrumb/Breadcrumb";
 import SearchBar from "@/Components/HelperComponents/SearchBar/SearchBar";
-
+import ReviewService from "../../Services/localServices/ReviewService";
 //Asset Import
 import productImg1 from "@/assets/FeaturedProductsAssets/Product.svg";
-import ProductCard from "@/Components/HelperComponents/ProductCard";
-import ProductReviewCard from "@/Components/HelperComponents/ProductReviewCard";
+import ProductCard from "@/Components/HelperComponents/ProductCard/ProductCard";
+import ProductReviewCard from "@/Components/HelperComponents/ProductReviewCard/ProductReviewCard";
 
 //service import
 import ProductService from "@/Services/localServices/ProductService";
@@ -27,7 +27,7 @@ const IndividualProductItemPage = () => {
   const [product, setProduct] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [reviews, setReviews] = useState([]);
 
   useEffect(() => {
     ProductService.fetchProductById(parseInt(id))
@@ -40,6 +40,14 @@ const IndividualProductItemPage = () => {
         console.error("Error fetching product:", err);
         setError("Product not found.");
         setIsLoading(false);
+      });
+    ReviewService.fetchProductReviews(parseInt(id))
+      .then((reviews) => {
+        console.log(reviews);
+        setReviews(reviews);
+      })
+      .catch((err) => {
+        console.error("Error fetching reviews:", err);
       });
   }, [id]);
 
@@ -58,20 +66,6 @@ const IndividualProductItemPage = () => {
     setQuantity(quantity + 1);
   };
 
-  // Search products
-  const handleSearch = () => {
-    let filtered = products;
-
-    if (searchQuery.trim()) {
-      filtered = products.filter((product) =>
-        product.title.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    }
-
-    setDisplayedProducts(filtered);
-    setCurrentPage(1); // Reset to first page after search
-    setTotalPages(Math.ceil(filtered.length / productsPerPage));
-  };
   return (
     <>
       <Container className="d-flex flex-column">

@@ -2,7 +2,7 @@ import React from "react";
 // Component Import
 import "./ProductReviewCard.css";
 // Asset Import
-import roundedProfilePic from "../../assets/Decoratives/roundedProfilePic.png";
+import roundedProfilePic from "@/assets/Decoratives/roundedProfilePic.png";
 import { FaStar } from "react-icons/fa";
 
 const ProductReviewCard = ({
