@@ -24,21 +24,34 @@ export function ProductReviewCard({ review, onLike }) {
             src={review.userAvatar || "/placeholder.svg"}
             alt={`${review.userName}'s avatar`}
             className="user-avatar"
+            style={{ width: "80px", height: "80px" }}
           />
-          <div>
+          <div className="user-details">
             <h4 className="user-name">{review.userName}</h4>
-            <div className="review-meta">
-              <span className="review-date">{formatDate(review.date)}</span>
-              {review.verifiedPurchase && (
-                <span className="verified-badge">
-                  <i className="bi bi-check-circle-fill verified-icon"></i>
-                  Verified Purchase
-                </span>
-              )}
-            </div>
+            <span className="review-date">{formatDate(review.date)}</span>
+            {review.verifiedPurchase && (
+              <div className="verified-badge">
+                <i className="bi bi-check-circle-fill verified-icon"></i>
+                Verified Purchase
+              </div>
+            )}
           </div>
         </div>
-        <div className="rating">
+      </div>
+
+      <div className="review-content">
+        <h3 className="review-title" style={{ fontSize: "1.5rem" }}>
+          {review.title}
+        </h3>
+        <div
+          className="rating"
+          style={{
+            fontSize: "2rem",
+            marginTop: "0.5rem",
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
           {[...Array(5)].map((_, index) => (
             <span
               key={index}
@@ -48,10 +61,6 @@ export function ProductReviewCard({ review, onLike }) {
             </span>
           ))}
         </div>
-      </div>
-
-      <div className="review-content">
-        <h3 className="review-title">{review.title}</h3>
         <p className="review-comment">{review.comment}</p>
       </div>
 

@@ -253,7 +253,7 @@ const IndividualProductItemPage = () => {
               </p>
             )}
           </Row>
-          <div className="text-center mt-5">
+          <div className="text-center">
             <Button
               variant="success"
               type="submit"

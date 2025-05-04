@@ -30,21 +30,19 @@ const ReviewCarousel = ({ reviews }) => {
   ];
 
   const reviewTemplate = (review) => (
-    <div className="d-flex justify-content-center">
+    <div className="d-flex justify-content-center p-2">
       <ProductReviewCard review={review} />
     </div>
   );
 
   return (
-    <div style={{ padding: "0 0" }}>
+    <div style={{ margin: "1rem 0" }}>
       <Carousel
         value={reviews}
         itemTemplate={reviewTemplate}
         numVisible={3}
         numScroll={1}
         circular
-        showIndicators
-        showNavigators
         style={{ maxWidth: "100vw", margin: "0 auto" }}
         responsiveOptions={responsiveOptions}
       />

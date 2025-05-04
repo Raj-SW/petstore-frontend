@@ -6,10 +6,10 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-    max-width: 20rem;
+    max-width: 90%;
     min-width: 10rem;
     width: 100%;
-    height: 17rem;
+    height: auto;
 }
 
 .review-header {
@@ -82,9 +82,8 @@
 }
 
 .review-content {
-    margin-bottom: 12px;
     flex-grow: 1;
-    overflow: hidden;
+    height: auto;
 }
 
 .review-title {
@@ -102,7 +101,8 @@
     display: -webkit-box;
     -webkit-line-clamp: 4;
     -webkit-box-orient: vertical;
-    overflow: hidden;
+    height: fit-content;
+    padding-bottom: 2rem;
 }
 
 .review-actions {
