@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 import { Container, Row, Col, Button, Image } from "react-bootstrap";
 import { FaFacebook, FaTwitter, FaInstagram } from "react-icons/fa";
 import { FiShare2 } from "react-icons/fi";
-import { LuArrowLeftCircle } from "react-icons/lu";
+import { LuArrowLeft } from "react-icons/lu";
 import { IconContext } from "react-icons";
 
 import "./IndividaulItemPage.css";
@@ -179,14 +179,14 @@ const IndividualProductItemPage = () => {
                     value={{ size: "2rem", color: "black" }}
                   >
                     {/* Decrement Button */}
-                    <LuArrowLeftCircle
+                    <LuArrowLeft
                       onClick={handleDecrement}
                       style={{ cursor: "pointer" }}
                     />
                     {/* Quantity Display */}
                     <span className="mx-3">{quantity}</span>
                     {/* Increment Button */}
-                    <LuArrowLeftCircle
+                    <LuArrowLeft
                       style={{ transform: "rotate(180deg)", cursor: "pointer" }}
                       onClick={handleIncrement}
                     />

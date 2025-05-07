@@ -1,11 +1,22 @@
 /* src/custom.css */
 :root {
-  --primary-color: #5C8D89;
-  --primary1-color: #112d21;
-  --pale-green-color: #6DA28E;
+  --primary-color: #4a7dbd;
+  --primary1-color: #4a7dbd;
+  --pale-green-color: #4a7dbd;
   --secondary-color: #74B49B;
   --tertiary-color: #a7d7c5;
   --tertiary-color-opacque: rgba(179, 230, 211, 0.433);
+  --primary-blue-40: #4a7dbd;
+  --primary-blue-20: #4c82c4;
+  --primary-green-80: #2C6C53;
+  --primary-green-60: #2C6C53;
+  --primary-green-40-color: #5C8D89;
+  --primary-green-40-color: #5C8D89;
+  --primary-green-20-color: #6DA28E;
+  --primary1-color: #112d21;
+  --neutral-color-60: #99A2A5;
+  --neutral-color-40: #e9e5e5;
+  --neutral-color-20: #F9F8EB;
   --light-color: #F9F8EB;
   --white-color: #FFFFFF;
   --dark-color: #333333;

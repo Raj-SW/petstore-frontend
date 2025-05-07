@@ -1,0 +1,11 @@
+.cart-checkout-wrapper {
+    background-color: var(--neutral-color-40);
+}
+
+.cart-body {
+    background-color: var(--white-color);
+}
+
+.card-details-wrapper {
+    background-color: var(--primary-green-20-color);
+}
