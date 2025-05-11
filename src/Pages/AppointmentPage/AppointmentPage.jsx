@@ -4,7 +4,8 @@ import AppointmentCard from "@/Components/HelperComponents/AppointmentCard/Appoi
 //Component Imports
 import { Container, Col, Row, Card, Tab, Nav } from "react-bootstrap";
 import Breadcrumb from "@/Components/HelperComponents/Breadcrumb/Breadcrumb";
-
+import AppointmentCalendar from "./AppointmentCalendar/AppointmentCalendar";
+import AppointmentList from "./AppointmentList/AppointmentList.jsx";
 const AppointmentPage = () => {
   const [key, setKey] = useState("dashboard");
 
@@ -16,38 +17,40 @@ const AppointmentPage = () => {
   return (
     <>
       <Container fluid>
-        <Container className="pt-5 ">
-          <Row>
+        <Container className="pt-5 breadcrumb-container">
+          <Row className="breadcrumb-row">
             <Breadcrumb items={breadcrumbItems} />
           </Row>
         </Container>
-        <Container className="p-0 ">
+        <Container className="dashboard-container pt-5 ">
           <Tab.Container activeKey={key} onSelect={(k) => setKey(k)}>
-            <Row>
+            <Row className="dashboard-row g-0">
               <Col
                 xs={12}
                 lg={3}
                 className="appointment-page-left-col poppins-regular"
               >
-                <div className="w-100 rounded-3 dashboard-navigation-desktop p-3">
+                <div className="dashboard-navigation-desktop w-100 rounded-3  p-3">
                   <div className="">
                     <div className="d-flex flex-row align-items-center justify-evenly mb-3">
-                      <div
-                        style={{
-                          width: "3rem",
-                          height: "3rem",
-                          backgroundColor: "#ffffff",
-                          borderRadius: "50%",
-                        }}
-                      ></div>
-                      <div>
-                        <span className="" style={{ fontSize: "1rem" }}>
-                          Appointment Manager
-                        </span>
-                        <br />{" "}
-                        <span className="" style={{ fontSize: "0.8rem" }}>
-                          Manage your pet care schedule
-                        </span>
+                      <div className="user-info">
+                        <div
+                          style={{
+                            width: "3rem",
+                            height: "3rem",
+                            backgroundColor: "#ffffff",
+                            borderRadius: "50%",
+                          }}
+                        ></div>
+                        <div>
+                          <span className="" style={{ fontSize: "1rem" }}>
+                            Appointment Manager
+                          </span>
+                          <br />{" "}
+                          <span className="" style={{ fontSize: "0.8rem" }}>
+                            Manage your petcare schedule
+                          </span>
+                        </div>
                       </div>
                     </div>
                     <Nav variant="pills" className="flex-column">
@@ -82,6 +85,26 @@ const AppointmentPage = () => {
                       </Nav.Item>
                     </Nav>
                   </div>
+                  <hr />
+                  <div className="user-info">
+                    <div
+                      style={{
+                        width: "3rem",
+                        height: "3rem",
+                        backgroundColor: "#ffffff",
+                        borderRadius: "50%",
+                      }}
+                    ></div>
+                    <div>
+                      <span className="" style={{ fontSize: "1rem" }}>
+                        John Doe
+                      </span>
+                      <br />{" "}
+                      <span className="" style={{ fontSize: "0.8rem" }}>
+                        123 Main Street, Anytown USA
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </Col>
               <Col
@@ -97,7 +120,7 @@ const AppointmentPage = () => {
               >
                 <Tab.Content>
                   <Tab.Pane eventKey="dashboard">
-                    <h5>Dashboard</h5>
+                    <AppointmentCalendar />
                   </Tab.Pane>
                   <Tab.Pane eventKey="vet">
                     <h5>Vet Appointments</h5>

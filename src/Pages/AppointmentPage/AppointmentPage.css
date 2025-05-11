@@ -4,3 +4,9 @@
     color: white;
     background-color: var(--primary-green-20-color);
 }
+
+.appointment-page-left-col .nav-pills .nav-link.active {
+    background-color: var(--primary-blue-40) !important;
+    color: #fff !important;
+    border-radius: 0.25rem;
+}
