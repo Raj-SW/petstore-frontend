@@ -1,0 +1,46 @@
+.dashboard-header-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.dashboardNavTabs {
+    background-color: var(--tertiary-color-opacque);
+    width: fit-content;
+    border-radius: 0.5rem;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0rem 1rem;
+    gap: 0.5rem;
+}
+
+.dashboardNavTabs .nav-link {
+    color: var(--secondary-color);
+    transition: background-color 0.3s, color 0.3s;
+    padding: 0;
+    margin: 0.5rem 0;
+    padding: 0.1rem 0.75rem;
+    border-radius: 0.5rem;
+}
+
+.dashboardNavTabs .nav-link.active {
+    color: #fff;
+    background-color: var(--secondary-color);
+}
+
+/* 1) Change dropdown‐item hover */
+#appointment-filter-dd+.dropdown-menu .dropdown-item:hover {
+    background-color: var(--secondary-color);
+    /* your brand color */
+    color: #ffffff;
+}
+
+/* 2) (Optional) Change the toggle button hover */
+#appointment-filter-dd.btn-outline-secondary:hover,
+#appointment-filter-dd.btn-outline-secondary:focus {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+    ;
+    color: #ffffff;
+}

@@ -53,7 +53,7 @@ const SearchBar = ({ showInPages = ["/PetShop", "/product"] }) => {
     <div className="search-wrapper" role="search" aria-label="Search products">
       <input
         type="text"
-        placeholder="Search Pet Store"
+        placeholder="Search..."
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
         onKeyDown={handleKeyDown}
