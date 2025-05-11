@@ -29,18 +29,20 @@
     background-color: var(--secondary-color);
 }
 
-/* 1) Change dropdown‐item hover */
-#appointment-filter-dd+.dropdown-menu .dropdown-item:hover {
+#appointment-filter-dd {
+    border-color: var(--secondary-color);
+    outline: 0.05rem solid var(--secondary-color);
+}
+
+#appointment-filter-dd.dropdown-menu .dropdown-item:hover {
     background-color: var(--secondary-color);
-    /* your brand color */
+    border-color: var(--secondary-color);
     color: #ffffff;
 }
 
-/* 2) (Optional) Change the toggle button hover */
 #appointment-filter-dd.btn-outline-secondary:hover,
 #appointment-filter-dd.btn-outline-secondary:focus {
     background-color: var(--secondary-color);
     border-color: var(--secondary-color);
-    ;
     color: #ffffff;
 }
