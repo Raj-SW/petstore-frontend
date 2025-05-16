@@ -1,0 +1,239 @@
+.veterinarian-card {
+    font-family: "Poppins", sans-serif;
+    transition: box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    min-width: 360px;
+    max-width: 420px;
+    margin: 0 auto 1rem auto;
+}
+
+.veterinarian-card .card {
+    border-radius: 0.75rem;
+    border: 1px solid var(--tertiary-color-opacque);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: box-shadow 0.3s, border-color 0.3s, transform 0.3s;
+    background: var(--white-color);
+    height: 100%;
+    overflow: hidden;
+}
+
+.veterinarian-card .card:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.13);
+    border-color: var(--secondary-color);
+    transform: translateY(-3px);
+}
+
+.veterinarian-card-header {
+    background: transparent;
+    border-bottom: none;
+    padding: 1rem 1rem 0.5rem 1rem;
+    font-family: "Poppins", sans-serif;
+}
+
+.veterinarian-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid var(--tertiary-color-opacque);
+    transition: border-color 0.3s, transform 0.3s;
+    flex-shrink: 0;
+}
+
+.veterinarian-card .card:hover .veterinarian-avatar {
+    border-color: var(--secondary-color);
+    transform: scale(1.05);
+}
+
+.avatar-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s;
+}
+
+.veterinarian-card .card:hover .avatar-image {
+    transform: scale(1.08);
+}
+
+.veterinarian-name {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--primary1-color);
+    margin-bottom: 0.2rem;
+    transition: color 0.3s;
+    word-break: break-word;
+}
+
+.veterinarian-card .card:hover .veterinarian-name {
+    color: var(--secondary-color);
+}
+
+.specialization-badge {
+    background-color: var(--secondary-color) !important;
+    color: #fff !important;
+    border-radius: 0.8rem !important;
+    font-size: 0.72rem !important;
+    font-weight: 500;
+    padding: 0.4rem 0.6rem !important;
+    display: inline-flex;
+    align-items: center;
+    width: min-content;
+}
+
+.specialization-icon {
+    font-size: 0.85rem;
+    color: #fff !important;
+}
+
+.veterinarian-content {
+    padding: 0.5rem 1rem 0.5rem 1rem;
+    font-family: "Poppins", sans-serif;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
+
+.veterinarian-qualifications h4 {
+    font-size: 0.95rem;
+    color: var(--primary1-color);
+    margin-bottom: 0.3rem;
+    font-weight: 600;
+}
+
+.veterinarian-qualifications ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.veterinarian-qualifications li {
+    color: var(--neutral-color-60);
+    font-size: 0.8rem;
+    margin-bottom: 0.15rem;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    word-break: break-word;
+}
+
+.veterinarian-qualifications li::before {
+    content: "•";
+    color: var(--secondary-color);
+    font-weight: bold;
+}
+
+.veterinarian-experience {
+    margin-top: 0.2rem;
+}
+
+.experience-years {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--neutral-color-60);
+}
+
+.veterinarian-rating {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.2rem;
+}
+
+.stars {
+    display: flex;
+    gap: 0.1rem;
+    font-size: 0.95rem;
+}
+
+.star-filled {
+    color: #ffc107;
+}
+
+.star-empty {
+    color: #e4e5e9;
+}
+
+.rating-text {
+    font-size: 0.8rem;
+    color: var(--neutral-color-60);
+}
+
+.veterinarian-contact {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    margin-top: 0.2rem;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--neutral-color-60);
+    font-size: 0.8rem;
+    word-break: break-word;
+}
+
+.contact-icon {
+    color: var(--secondary-color);
+    font-size: 0.9rem;
+}
+
+.veterinarian-card-footer {
+    background: var(--white-color) !important;
+    border-top: none !important;
+    padding: 0.75rem 1rem 1rem 1rem;
+}
+
+.book-appointment-btn {
+    min-width: 0;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+    padding: 0.35rem 1.1rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: background 0.3s, border-color 0.3s, transform 0.2s;
+}
+
+.book-appointment-btn:hover {
+    background-color: var(--primary1-color);
+    border-color: var(--primary1-color);
+    transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+    .veterinarian-card {
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    .veterinarian-card .card {
+        border-radius: 0.5rem;
+    }
+
+    .veterinarian-card-header,
+    .veterinarian-content,
+    .veterinarian-card-footer {
+        padding-left: 0.7rem;
+        padding-right: 0.7rem;
+    }
+
+    .veterinarian-avatar {
+        width: 48px;
+        height: 48px;
+    }
+
+    .specialization-badge {
+        max-width: 100%;
+        margin: 0 auto;
+    }
+
+    .book-appointment-btn {
+        width: 100%;
+    }
+}
