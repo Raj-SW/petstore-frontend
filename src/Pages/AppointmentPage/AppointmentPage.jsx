@@ -5,6 +5,7 @@ import { Container, Col, Row, Card, Tab, Nav } from "react-bootstrap";
 import Breadcrumb from "@/Components/HelperComponents/Breadcrumb/Breadcrumb";
 import AppointmentCalendar from "./AppointmentCalendar/appointmentCalendar";
 import VeterinarianList from "./VeterinarianList/VeterinarianList";
+import GroomerList from "./GroomerList/GroomerList";
 
 const AppointmentPage = () => {
   const [key, setKey] = useState("dashboard");
@@ -129,7 +130,7 @@ const AppointmentPage = () => {
                     <VeterinarianList />
                   </Tab.Pane>
                   <Tab.Pane eventKey="grooming">
-                    <h5>Grooming Appointments</h5>
+                    <GroomerList />
                   </Tab.Pane>
                   <Tab.Pane eventKey="settings">
                     <h5>Settings</h5>

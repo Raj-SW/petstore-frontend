@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col, InputGroup, Form } from "react-bootstrap";
-import { FaSearch } from "react-icons/fa";
+import { FaSearch, FaUserMd } from "react-icons/fa";
 import { motion } from "framer-motion";
-import VeterinarianCard from "@/Components/HelperComponents/VeterinarianCard/VeterinarianCard";
+import VeterinarianCard from "@/Components/HelperComponents/ProfessionalCard/ProfessionalCard";
 import { veterinarianService } from "@/Services/localServices/veterinarianService";
 import "./VeterinarianList.css";
 
@@ -80,12 +80,12 @@ const VeterinarianList = () => {
           </InputGroup>
         </div>
 
-        <Row className="veterinarian-list">
+        <Container className="veterinarian-list d-flex flex-wrap justify-content-center gap-4">
           {filteredVeterinarians.map((vet) => (
-            <Col key={vet.id} xs={12} md={6} lg={4} className="mb-4">
+            <div key={vet.id} className="">
               <VeterinarianCard
                 name={vet.name}
-                specialization={vet.specialization}
+                specialty={vet.specialization}
                 qualifications={vet.qualifications}
                 experience={vet.experience}
                 rating={vet.rating}
@@ -94,14 +94,16 @@ const VeterinarianList = () => {
                 phone={vet.phone}
                 email={vet.email}
                 location={vet.location}
-                onBookAppointment={() => {
+                badgeIcon={<FaUserMd className="specialization-icon me-1" />}
+                badgeLabel="Veterinarian"
+                onBook={() => {
                   // Handle booking appointment
                   console.log("Book appointment for:", vet.name);
                 }}
               />
-            </Col>
+            </div>
           ))}
-        </Row>
+        </Container>
       </Container>
     </motion.div>
   );

@@ -1,35 +1,37 @@
-.veterinarian-card {
+.professional-card {
     font-family: "Poppins", sans-serif;
     transition: box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    min-width: 360px;
-    max-width: 420px;
+    width: fit-content;
     margin: 0 auto 1rem auto;
+    height: 100%;
 }
 
-.veterinarian-card .card {
+.professional-card .card {
     border-radius: 0.75rem;
     border: 1px solid var(--tertiary-color-opacque);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     transition: box-shadow 0.3s, border-color 0.3s, transform 0.3s;
     background: var(--white-color);
     height: 100%;
-    overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
-.veterinarian-card .card:hover {
+.professional-card .card:hover {
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.13);
     border-color: var(--secondary-color);
     transform: translateY(-3px);
 }
 
-.veterinarian-card-header {
+.professional-card-header {
     background: transparent;
     border-bottom: none;
     padding: 1rem 1rem 0.5rem 1rem;
     font-family: "Poppins", sans-serif;
+    flex-shrink: 0;
 }
 
-.veterinarian-avatar {
+.professional-avatar {
     width: 64px;
     height: 64px;
     border-radius: 50%;
@@ -39,7 +41,7 @@
     flex-shrink: 0;
 }
 
-.veterinarian-card .card:hover .veterinarian-avatar {
+.professional-card .card:hover .professional-avatar {
     border-color: var(--secondary-color);
     transform: scale(1.05);
 }
@@ -51,11 +53,11 @@
     transition: transform 0.3s;
 }
 
-.veterinarian-card .card:hover .avatar-image {
+.professional-card .card:hover .avatar-image {
     transform: scale(1.08);
 }
 
-.veterinarian-name {
+.professional-name {
     font-size: 1.15rem;
     font-weight: 600;
     color: var(--primary1-color);
@@ -64,7 +66,7 @@
     word-break: break-word;
 }
 
-.veterinarian-card .card:hover .veterinarian-name {
+.professional-card .card:hover .professional-name {
     color: var(--secondary-color);
 }
 
@@ -85,30 +87,30 @@
     color: #fff !important;
 }
 
-.veterinarian-content {
-    padding: 0.5rem 1rem 0.5rem 1rem;
+.professional-content {
+    padding: 0.5rem 1rem;
     font-family: "Poppins", sans-serif;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    word-break: break-word;
-    overflow-wrap: anywhere;
+    flex-grow: 1;
+    overflow-y: auto;
 }
 
-.veterinarian-qualifications h4 {
+.professional-qualifications h4 {
     font-size: 0.95rem;
     color: var(--primary1-color);
     margin-bottom: 0.3rem;
     font-weight: 600;
 }
 
-.veterinarian-qualifications ul {
+.professional-qualifications ul {
     list-style: none;
     padding: 0;
     margin: 0;
 }
 
-.veterinarian-qualifications li {
+.professional-qualifications li {
     color: var(--neutral-color-60);
     font-size: 0.8rem;
     margin-bottom: 0.15rem;
@@ -118,13 +120,13 @@
     word-break: break-word;
 }
 
-.veterinarian-qualifications li::before {
+.professional-qualifications li::before {
     content: "•";
     color: var(--secondary-color);
     font-weight: bold;
 }
 
-.veterinarian-experience {
+.professional-experience {
     margin-top: 0.2rem;
 }
 
@@ -134,7 +136,7 @@
     color: var(--neutral-color-60);
 }
 
-.veterinarian-rating {
+.professional-rating {
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -160,7 +162,7 @@
     color: var(--neutral-color-60);
 }
 
-.veterinarian-contact {
+.professional-contact {
     display: flex;
     flex-direction: column;
     gap: 0.3rem;
@@ -181,14 +183,14 @@
     font-size: 0.9rem;
 }
 
-.veterinarian-card-footer {
+.professional-card-footer {
     background: var(--white-color) !important;
     border-top: none !important;
     padding: 0.75rem 1rem 1rem 1rem;
+    flex-shrink: 0;
 }
 
 .book-appointment-btn {
-    min-width: 0;
     white-space: normal;
     word-break: break-word;
     overflow-wrap: anywhere;
@@ -207,23 +209,23 @@
 }
 
 @media (max-width: 768px) {
-    .veterinarian-card {
-        min-width: 0;
-        max-width: 100%;
+    .professional-card {
+        width: max-content;
+        height: auto;
     }
 
-    .veterinarian-card .card {
-        border-radius: 0.5rem;
+    .professional-card .card {
+        height: auto;
     }
 
-    .veterinarian-card-header,
-    .veterinarian-content,
-    .veterinarian-card-footer {
+    .professional-card-header,
+    .professional-content,
+    .professional-card-footer {
         padding-left: 0.7rem;
         padding-right: 0.7rem;
     }
 
-    .veterinarian-avatar {
+    .professional-avatar {
         width: 48px;
         height: 48px;
     }
@@ -233,7 +235,5 @@
         margin: 0 auto;
     }
 
-    .book-appointment-btn {
-        width: 100%;
-    }
+    .book-appointment-btn {}
 }

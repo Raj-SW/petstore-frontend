@@ -1,4 +1,3 @@
-import React from "react";
 import { Card, Button, Badge } from "react-bootstrap";
 import {
   FaStar,
@@ -8,12 +7,12 @@ import {
   FaUserMd,
 } from "react-icons/fa";
 import { motion } from "framer-motion";
-import "./VeterinarianCard.css";
+import "./ProfessionalCard.css";
 
-const VeterinarianCard = ({
+const ProfessionalCard = ({
   name,
-  specialization,
-  qualifications,
+  specialty,
+  qualifications = [],
   experience,
   rating,
   reviews,
@@ -21,7 +20,9 @@ const VeterinarianCard = ({
   phone,
   email,
   location,
-  onBookAppointment,
+  badgeIcon,
+  badgeLabel,
+  onBook,
 }) => {
   // Generate UI Avatar URL as fallback
   const getAvatarUrl = () => {
@@ -33,7 +34,7 @@ const VeterinarianCard = ({
 
   return (
     <motion.div
-      className="veterinarian-card"
+      className="professional-card"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
@@ -41,9 +42,9 @@ const VeterinarianCard = ({
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
     >
-      <Card className="h-100">
-        <Card.Header className="d-flex align-items-center veterinarian-card-header">
-          <div className="veterinarian-avatar">
+      <Card>
+        <Card.Header className="d-flex align-items-center professional-card-header">
+          <div className="professional-avatar">
             {image ? (
               <img
                 src={image}
@@ -59,15 +60,19 @@ const VeterinarianCard = ({
             )}
           </div>
           <div className="ms-3">
-            <div className="veterinarian-name mb-1">{name}</div>
+            <div className="professional-name mb-1">{name}</div>
           </div>
         </Card.Header>
-        <Card.Body className="veterinarian-content">
+        <Card.Body className="professional-content">
           <Badge className="specialization-badge mb-2" bg="light">
-            <FaUserMd className="specialization-icon me-1" />
-            {specialization}
+            {badgeIcon ? (
+              badgeIcon
+            ) : (
+              <FaUserMd className="specialization-icon me-1" />
+            )}{" "}
+            {badgeLabel || specialty}
           </Badge>
-          <div className="veterinarian-qualifications">
+          <div className="professional-qualifications">
             <h4>Qualifications</h4>
             <ul>
               {qualifications.map((qual, index) => (
@@ -75,12 +80,12 @@ const VeterinarianCard = ({
               ))}
             </ul>
           </div>
-          <div className="veterinarian-experience">
+          <div className="professional-experience">
             <span className="experience-years">
               {experience} years experience
             </span>
           </div>
-          <div className="veterinarian-rating">
+          <div className="professional-rating">
             <div className="stars">
               {[...Array(5)].map((_, index) => (
                 <FaStar
@@ -92,10 +97,11 @@ const VeterinarianCard = ({
               ))}
             </div>
             <span className="rating-text">
-              {rating.toFixed(1)} ({reviews} reviews)
+              {rating?.toFixed(1)}
+              {reviews !== undefined ? ` (${reviews} reviews)` : ""}
             </span>
           </div>
-          <div className="veterinarian-contact">
+          <div className="professional-contact">
             {phone && (
               <div className="contact-item">
                 <FaPhone className="contact-icon" />
@@ -116,20 +122,18 @@ const VeterinarianCard = ({
             )}
           </div>
         </Card.Body>
-        <Card.Footer className="bg-white border-0 veterinarian-card-footer">
-          <div style={{ width: "100%" }}>
-            <Button
-              variant="success"
-              onClick={onBookAppointment}
-              className="book-appointment-btn "
-            >
-              Book Appointment
-            </Button>
-          </div>
+        <Card.Footer className="bg-white border-0 professional-card-footer">
+          <Button
+            variant="success"
+            onClick={onBook}
+            className="book-appointment-btn"
+          >
+            Book Appointment
+          </Button>
         </Card.Footer>
       </Card>
     </motion.div>
   );
 };
 
-export default VeterinarianCard;
+export default ProfessionalCard;

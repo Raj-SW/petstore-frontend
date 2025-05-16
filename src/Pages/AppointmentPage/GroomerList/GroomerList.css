@@ -1,4 +1,4 @@
-.veterinarian-list-header {
+.groomer-list-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -6,7 +6,7 @@
     gap: 1rem;
 }
 
-.veterinarian-list-header h4 {
+.groomer-list-header h4 {
     margin: 0;
     color: var(--primary1-color);
     font-weight: 600;
@@ -56,6 +56,21 @@
     color: var(--neutral-color-60);
 }
 
+.groomer-list {
+    margin-top: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+}
+
+.groomer-list .col {
+    display: flex;
+    flex-direction: column;
+}
+
+.groomer-list .col>* {
+    height: 100%;
+}
 
 /* Loading and Error States */
 .loading-container,
@@ -96,7 +111,7 @@
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-    .veterinarian-list-header {
+    .groomer-list-header {
         flex-direction: column;
         align-items: stretch;
     }
@@ -105,7 +120,7 @@
         width: 100%;
     }
 
-    .veterinarian-list {
+    .groomer-list {
         gap: 1rem;
     }
 }
