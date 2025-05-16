@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import "./AppointmentPage.css";
-import AppointmentCard from "@/Components/HelperComponents/AppointmentCard/AppointmentCard";
 //Component Imports
 import { Container, Col, Row, Card, Tab, Nav } from "react-bootstrap";
 import Breadcrumb from "@/Components/HelperComponents/Breadcrumb/Breadcrumb";
-import AppointmentCalendar from "./AppointmentCalendar/AppointmentCalendar";
-import AppointmentList from "./AppointmentList/AppointmentList.jsx";
+import AppointmentCalendar from "./AppointmentCalendar/appointmentCalendar";
+
 const AppointmentPage = () => {
   const [key, setKey] = useState("dashboard");
 
@@ -53,32 +52,35 @@ const AppointmentPage = () => {
                         </div>
                       </div>
                     </div>
-                    <Nav variant="pills" className="flex-column">
+                    <Nav className="flex-column appointmentNavTabs">
                       <Nav.Item>
                         <Nav.Link
                           eventKey="dashboard"
-                          style={{ color: "#ffffff" }}
+                          className={key === "dashboard" ? "active" : ""}
                         >
                           Dashboard
                         </Nav.Link>
                       </Nav.Item>
                       <Nav.Item>
-                        <Nav.Link eventKey="vet" style={{ color: "#ffffff" }}>
-                          Vet Appointments
+                        <Nav.Link
+                          eventKey="vet"
+                          className={key === "vet" ? "active" : ""}
+                        >
+                          Veterinaries
                         </Nav.Link>
                       </Nav.Item>
                       <Nav.Item>
                         <Nav.Link
                           eventKey="grooming"
-                          style={{ color: "#ffffff" }}
+                          className={key === "grooming" ? "active" : ""}
                         >
-                          Grooming Appointments
+                          Groomers
                         </Nav.Link>
                       </Nav.Item>
                       <Nav.Item>
                         <Nav.Link
                           eventKey="settings"
-                          style={{ color: "#ffffff" }}
+                          className={key === "settings" ? "active" : ""}
                         >
                           Settings
                         </Nav.Link>

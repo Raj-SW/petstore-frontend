@@ -1,5 +1,8 @@
 import React from "react";
 import { format, parseISO } from "date-fns";
+import { Button, ButtonGroup } from "react-bootstrap";
+import { FaEdit, FaTrash, FaClock, FaMapMarkerAlt } from "react-icons/fa";
+import { motion } from "framer-motion";
 import "./AppointmentCard.css";
 
 const AppointmentCard = ({
@@ -10,63 +13,148 @@ const AppointmentCard = ({
   role,
   location,
   icon,
+  onEdit,
+  onDelete,
 }) => {
   // parse + format date/time
   const dt = parseISO(datetimeISO);
   const formatted = format(dt, "eee, MMM d, h:mm a");
 
+  // Generate UI Avatar URL as fallback
+  const getAvatarUrl = () => {
+    const name =
+      role === "Veterinarian"
+        ? "Dr. " + title.split(" ")[0]
+        : title.split(" ")[0];
+    const bgColor = role === "Veterinarian" ? "74B49B" : "5C8D89";
+    return `https://ui-avatars.com/api/?name=${encodeURIComponent(
+      name
+    )}&background=${bgColor}&color=fff&size=128`;
+  };
+
   return (
-    <div className="appointment-card">
+    <motion.div
+      className="appointment-card"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      transition={{ duration: 0.3 }}
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+    >
       {/* Avatar/Icon */}
-      <div className="appointment-avatar">
+      <motion.div
+        className="appointment-avatar"
+        whileHover={{ scale: 1.1 }}
+        transition={{ type: "spring", stiffness: 400, damping: 10 }}
+      >
         {icon ? (
-          <img src={icon} alt={`${title} avatar`} />
+          <img src={icon} alt={`${title} avatar`} className="avatar-image" />
         ) : (
-          <div className="avatar-placeholder" />
+          <img
+            src={getAvatarUrl()}
+            alt={`${title} avatar`}
+            className="avatar-image"
+          />
         )}
-      </div>
+      </motion.div>
 
       {/* Content */}
       <div className="appointment-content">
         {/* Header: title + badges */}
-        <div className="appointment-header">
+        <motion.div
+          className="appointment-header"
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.1 }}
+        >
           <h3 className="appointment-title">{title}</h3>
           <div className="badge-group">
             {role && (
-              <span className={`badge role-badge role-${role.toLowerCase()}`}>
+              <motion.span
+                className={`badge role-badge role-${role.toLowerCase()}`}
+                whileHover={{ scale: 1.05 }}
+              >
                 {role}
-              </span>
+              </motion.span>
             )}
             {status && (
-              <span
+              <motion.span
                 className={`badge status-badge status-${status.toLowerCase()}`}
+                whileHover={{ scale: 1.05 }}
               >
                 {status}
-              </span>
+              </motion.span>
             )}
           </div>
-        </div>
+        </motion.div>
 
         {/* Date/Time */}
-        <div className="appointment-schedule">
-          <i className="icon-clock" aria-hidden="true" />
+        <motion.div
+          className="appointment-schedule"
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.2 }}
+        >
+          <FaClock className="schedule-icon" />
           {formatted}
-        </div>
+        </motion.div>
 
         {/* Location */}
         {location && (
-          <div className="appointment-location">
-            <i className="icon-map-pin" aria-hidden="true" />
+          <motion.div
+            className="appointment-location"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.3 }}
+          >
+            <FaMapMarkerAlt className="location-icon" />
             {location}
-          </div>
+          </motion.div>
         )}
 
         {/* Description */}
         {description && (
-          <p className="appointment-description">{description}</p>
+          <motion.p
+            className="appointment-description"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.4 }}
+          >
+            {description}
+          </motion.p>
         )}
+
+        {/* Action Buttons */}
+        <motion.div
+          className="appointment-actions"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+        >
+          <ButtonGroup size="sm">
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Button
+                variant="outline-primary"
+                onClick={onEdit}
+                className="action-button"
+              >
+                <FaEdit /> Edit
+              </Button>
+            </motion.div>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Button
+                variant="outline-danger"
+                onClick={onDelete}
+                className="action-button"
+              >
+                <FaTrash /> Delete
+              </Button>
+            </motion.div>
+          </ButtonGroup>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

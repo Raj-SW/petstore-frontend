@@ -1,73 +1,127 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 // CSS
-import "react-calendar/dist/Calendar.css";
 import "./appointmentCalendar.css";
 // Components
-import { Container, Row, Col, Tab, Nav, Dropdown } from "react-bootstrap";
-import Calendar from "react-calendar";
+import {
+  Container,
+  Row,
+  Col,
+  Tab,
+  Nav,
+  Dropdown,
+  Button,
+  Form,
+  InputGroup,
+} from "react-bootstrap";
+import { FaSearch } from "react-icons/fa";
+import FullCalendar from "@fullcalendar/react";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import timeGridPlugin from "@fullcalendar/timegrid";
+import interactionPlugin from "@fullcalendar/interaction";
+import { motion } from "framer-motion";
 import AppointmentCard from "@/Components/HelperComponents/AppointmentCard/AppointmentCard";
+import AppointmentForm from "@/Components/HelperComponents/AppointmentForm/AppointmentForm";
+import { appointmentService } from "@/Services/localServices/appointmentService";
 
 const AppointmentCalendar = () => {
   const [activeKey, setActiveKey] = useState("calendar-view");
-  const [selectedDate, setSelectedDate] = useState(new Date());
   const [filter, setFilter] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showAppointmentForm, setShowAppointmentForm] = useState(false);
+  const [editingAppointment, setEditingAppointment] = useState(null);
+  const [appointments, setAppointments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // 1) Mock appointments using a single ISO datetime
-  const appointments = [
-    {
-      id: 1,
-      title: "Vet Checkup",
-      datetimeISO: "2025-05-16T09:00:00",
-      description: "Annual wellness exam for Bella",
-      status: "Confirmed",
-      type: "vet",
-      role: "Veterinarian",
-      location: "Trou Aux Biches",
-      icon: "/images/vet-avatar-1.jpg",
-    },
-    {
-      id: 2,
-      title: "Grooming Session",
-      datetimeISO: "2025-05-16T11:00:00",
-      description: "Full groom and nail trim",
-      status: "Pending",
-      type: "grooming",
-      role: "Groomer",
-      location: "Grand Baie",
-      icon: "/images/groomer-avatar-1.jpg",
-    },
-    {
-      id: 3,
-      title: "Vaccination",
-      datetimeISO: "2025-05-17T14:00:00",
-      description: "Rabies booster for Max",
-      status: "Confirmed",
-      type: "vet",
-      role: "Veterinarian",
-      location: "Pamplemousses",
-      icon: "/images/vet-avatar-2.jpg",
-    },
-    {
-      id: 4,
-      title: "Bath & Blow-Dry",
-      datetimeISO: "2025-05-18T10:00:00",
-      description: "Deluxe bath with conditioning treatment",
-      status: "Cancelled",
-      type: "grooming",
-      role: "Groomer",
-      location: "Trou Aux Biches",
-      icon: "/images/groomer-avatar-2.jpg",
-    },
-  ];
+  // Fetch appointments on component mount
+  useEffect(() => {
+    fetchAppointments();
+  }, []);
 
-  // 2) Filter logic
-  const filtered =
-    filter === "all"
-      ? appointments
-      : appointments.filter((a) => a.type === filter);
+  const fetchAppointments = async () => {
+    try {
+      setLoading(true);
+      const data = await appointmentService.getAll();
+      setAppointments(data);
+      setError(null);
+    } catch (err) {
+      setError("Failed to fetch appointments");
+      console.error("Error fetching appointments:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Filter logic
+  const filtered = appointments
+    .filter((a) => filter === "all" || a.type === filter)
+    .filter((a) => {
+      if (!searchQuery) return true;
+      const query = searchQuery.toLowerCase();
+      return (
+        a.title.toLowerCase().includes(query) ||
+        a.description.toLowerCase().includes(query) ||
+        a.location.toLowerCase().includes(query)
+      );
+    });
 
   const handleSelect = (eventKey) => {
     setFilter(eventKey);
+  };
+
+  const handleAppointmentSubmit = async (appointmentData) => {
+    try {
+      if (editingAppointment) {
+        // Update existing appointment
+        const updated = await appointmentService.update(
+          editingAppointment.id,
+          appointmentData
+        );
+        setAppointments((prev) =>
+          prev.map((appt) => (appt.id === updated.id ? updated : appt))
+        );
+      } else {
+        // Create new appointment
+        const newAppointment = await appointmentService.create(appointmentData);
+        setAppointments((prev) => [...prev, newAppointment]);
+      }
+      setEditingAppointment(null);
+      setShowAppointmentForm(false);
+    } catch (err) {
+      console.error("Error saving appointment:", err);
+      // You might want to show an error message to the user here
+    }
+  };
+
+  const handleEditAppointment = (appointment) => {
+    setEditingAppointment(appointment);
+    setShowAppointmentForm(true);
+  };
+
+  const handleDeleteAppointment = async (appointmentId) => {
+    try {
+      await appointmentService.delete(appointmentId);
+      setAppointments((prev) =>
+        prev.filter((appt) => appt.id !== appointmentId)
+      );
+    } catch (err) {
+      console.error("Error deleting appointment:", err);
+      // You might want to show an error message to the user here
+    }
+  };
+
+  const handleDateSelect = (selectInfo) => {
+    setEditingAppointment(null);
+    setShowAppointmentForm(true);
+  };
+
+  const handleEventClick = (clickInfo) => {
+    const appointment = appointments.find(
+      (appt) => appt.id === parseInt(clickInfo.event.id)
+    );
+    if (appointment) {
+      handleEditAppointment(appointment);
+    }
   };
 
   const filterLabel = {
@@ -76,104 +130,181 @@ const AppointmentCalendar = () => {
     grooming: "Grooming Appointments",
   }[filter];
 
+  // Convert appointments to FullCalendar events
+  const calendarEvents = filtered.map((appt) => ({
+    id: appt.id.toString(),
+    title: appt.title,
+    start: appt.datetimeISO,
+    end: new Date(new Date(appt.datetimeISO).getTime() + appt.duration * 60000),
+    backgroundColor: appt.type === "vet" ? "#28a745" : "#007bff",
+    borderColor: appt.type === "vet" ? "#28a745" : "#007bff",
+    textColor: "#ffffff",
+    extendedProps: {
+      description: appt.description,
+      status: appt.status,
+      location: appt.location,
+      role: appt.role,
+    },
+  }));
+
+  if (loading) {
+    return <div>Loading appointments...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
   return (
-    <Container fluid>
-      <Tab.Container activeKey={activeKey} onSelect={(k) => setActiveKey(k)}>
-        {/* HEADER: pills + dropdown */}
-        <Row className="align-items-center mb-4 dashboard-header-row">
-          <Col xs="auto">
-            <Nav variant="pills" className="dashboardNavTabs poppins-medium">
-              <Nav.Item>
-                <Nav.Link eventKey="calendar-view">Calendar View</Nav.Link>
-              </Nav.Item>
-              <Nav.Item>
-                <Nav.Link eventKey="list-view">List View</Nav.Link>
-              </Nav.Item>
-              <Nav.Item>
-                <Nav.Link eventKey="history-view">History</Nav.Link>
-              </Nav.Item>
-            </Nav>
-          </Col>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.3 }}
+    >
+      <Container fluid>
+        <Tab.Container activeKey={activeKey} onSelect={(k) => setActiveKey(k)}>
+          <Row className="align-items-center mb-4 dashboard-header-row">
+            <Col>
+              <Nav variant="pills" className="dashboardNavTabs poppins-medium">
+                <Nav.Item>
+                  <Nav.Link eventKey="calendar-view">Calendar View</Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                  <Nav.Link eventKey="list-view">List View</Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                  <Nav.Link eventKey="history-view">History</Nav.Link>
+                </Nav.Item>
+              </Nav>
+            </Col>
+          </Row>
 
-          <Col xs="auto">
-            <Dropdown onSelect={handleSelect}>
-              <Dropdown.Toggle
-                variant="outline-secondary"
-                id="appointment-filter-dd"
-              >
-                {filterLabel}
-              </Dropdown.Toggle>
-              <Dropdown.Menu>
-                <Dropdown.Item eventKey="all">All Appointments</Dropdown.Item>
-                <Dropdown.Item eventKey="vet">Vet Appointments</Dropdown.Item>
-                <Dropdown.Item eventKey="grooming">
-                  Grooming Appointments
-                </Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
-          </Col>
-        </Row>
+          <Row>
+            <Col>
+              <Tab.Content>
+                {/* 1) Calendar View */}
+                <Tab.Pane eventKey="calendar-view">
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.3 }}
+                    className="calendar-container"
+                  >
+                    <FullCalendar
+                      plugins={[
+                        dayGridPlugin,
+                        timeGridPlugin,
+                        interactionPlugin,
+                      ]}
+                      initialView="timeGridWeek"
+                      headerToolbar={{
+                        left: "prev,next today",
+                        center: "title",
+                        right: "dayGridMonth,timeGridWeek,timeGridDay",
+                      }}
+                      selectable={true}
+                      selectMirror={true}
+                      dayMaxEvents={true}
+                      weekends={true}
+                      events={calendarEvents}
+                      select={handleDateSelect}
+                      eventClick={handleEventClick}
+                      height="auto"
+                      slotMinTime="08:00:00"
+                      slotMaxTime="18:00:00"
+                      allDaySlot={false}
+                      slotDuration="00:30:00"
+                      eventTimeFormat={{
+                        hour: "numeric",
+                        minute: "2-digit",
+                        meridiem: "short",
+                      }}
+                    />
+                  </motion.div>
+                </Tab.Pane>
 
-        {/* CONTENT */}
-        <Row>
-          <Col>
-            <Tab.Content>
-              {/* 1) Calendar View */}
-              <Tab.Pane eventKey="calendar-view">
-                <div className="d-flex ">
-                  <div className="flex-grow-1 gap-3 d-flex flex-wrap mb-3">
-                    {filtered.length === 0 ? (
-                      <p>No appointments found.</p>
-                    ) : (
-                      filtered.map((appt) => (
+                {/* 2) List View */}
+                <Tab.Pane eventKey="list-view">
+                  <motion.div
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <div className="appointment-list-header">
+                      <h4>Upcoming Appointments</h4>
+                      <InputGroup className="search-bar">
+                        <InputGroup.Text>
+                          <FaSearch />
+                        </InputGroup.Text>
+                        <Form.Control
+                          type="text"
+                          placeholder="Search appointments..."
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                      </InputGroup>
+                    </div>
+                    {filtered.map((appt) => (
+                      <AppointmentCard
+                        key={appt.id}
+                        {...appt}
+                        onEdit={() => handleEditAppointment(appt)}
+                        onDelete={() => handleDeleteAppointment(appt.id)}
+                      />
+                    ))}
+                  </motion.div>
+                </Tab.Pane>
+
+                {/* 3) History View */}
+                <Tab.Pane eventKey="history-view">
+                  <motion.div
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <div className="appointment-list-header">
+                      <h4>Past Appointments</h4>
+                      <InputGroup className="search-bar">
+                        <InputGroup.Text>
+                          <FaSearch />
+                        </InputGroup.Text>
+                        <Form.Control
+                          type="text"
+                          placeholder="Search appointments..."
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                      </InputGroup>
+                    </div>
+                    {filtered
+                      .filter((appt) => new Date(appt.datetimeISO) < new Date())
+                      .map((appt) => (
                         <AppointmentCard
                           key={appt.id}
-                          title={appt.title}
-                          datetimeISO={appt.datetimeISO}
-                          description={appt.description}
-                          status={appt.status}
-                          role={appt.role}
-                          location={appt.location}
-                          icon={appt.icon}
+                          {...appt}
+                          onEdit={() => handleEditAppointment(appt)}
+                          onDelete={() => handleDeleteAppointment(appt.id)}
                         />
-                      ))
-                    )}
-                  </div>
+                      ))}
+                  </motion.div>
+                </Tab.Pane>
+              </Tab.Content>
+            </Col>
+          </Row>
+        </Tab.Container>
 
-                  {/* Mini calendar */}
-                  <div style={{ width: 250, marginLeft: 20 }}>
-                    <Calendar onChange={setSelectedDate} value={selectedDate} />
-                  </div>
-                </div>
-              </Tab.Pane>
-
-              {/* 2) List View */}
-              <Tab.Pane eventKey="list-view">
-                <h4>Upcoming Appointments</h4>
-                {filtered.map((appt) => (
-                  <AppointmentCard
-                    key={appt.id}
-                    title={appt.title}
-                    datetimeISO={appt.datetimeISO}
-                    description={appt.description}
-                    status={appt.status}
-                    role={appt.role}
-                    location={appt.location}
-                    icon={appt.icon}
-                  />
-                ))}
-              </Tab.Pane>
-
-              {/* 3) History View */}
-              <Tab.Pane eventKey="history-view">
-                <h4>Past Appointments</h4>
-                <p>(Display past/archived appointments here.)</p>
-              </Tab.Pane>
-            </Tab.Content>
-          </Col>
-        </Row>
-      </Tab.Container>
-    </Container>
+        {/* Appointment Form Modal */}
+        <AppointmentForm
+          show={showAppointmentForm}
+          handleClose={() => {
+            setShowAppointmentForm(false);
+            setEditingAppointment(null);
+          }}
+          onSubmit={handleAppointmentSubmit}
+          initialData={editingAppointment}
+        />
+      </Container>
+    </motion.div>
   );
 };
 

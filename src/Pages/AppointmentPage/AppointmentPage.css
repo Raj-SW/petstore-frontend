@@ -2,11 +2,110 @@
 
 .dashboard-navigation-desktop {
     color: white;
-    background-color: var(--primary-green-20-color);
+    background-color: var(--secondary-color);
 }
 
 .appointment-page-left-col .nav-pills .nav-link.active {
-    background-color: var(--primary-blue-40) !important;
-    color: #fff !important;
     border-radius: 0.25rem;
+}
+
+.appointment-page-left-col .nav-pills .nav-link {
+    color: #fff;
+    margin-bottom: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.appointment-page-left-col .nav-pills .nav-link:hover {
+    background-color: var(--tertiary-color-opacque);
+}
+
+.dashboard-container {
+    min-height: calc(100vh - 100px);
+
+}
+
+.dashboard-row {
+    min-height: 100%;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    color: white;
+
+}
+
+.appointmentNavTabWrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.appointmentProductsNavTab .nav-link.active {
+    color: #fff;
+    background-color: var(--secondary-color);
+}
+
+.breadcrumb-container {
+    background-color: white;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.breadcrumb-row {
+    margin-bottom: 0;
+    padding: 1rem 0;
+}
+
+/* Calendar container styling */
+.calendar-container {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+    margin-top: 1rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .appointment-page-left-col {
+        min-height: auto;
+        margin-bottom: 1rem;
+    }
+
+    .dashboard-navigation-desktop {
+        margin-bottom: 1rem;
+    }
+}
+
+.appointmentNavTabs {
+    background-color: var(--tertiary-color-opacque);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    gap: 0.5rem;
+}
+
+.appointmentNavTabs .nav-link {
+    color: var(--white-color);
+    font-size: medium;
+    font-weight: 400;
+    transition: all 0.3s ease;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 0.5rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.appointmentNavTabs .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.appointmentNavTabs .nav-link.active {
+    background-color: var(--secondary-color);
+    color: var(--white-color);
+    font-weight: 600;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }

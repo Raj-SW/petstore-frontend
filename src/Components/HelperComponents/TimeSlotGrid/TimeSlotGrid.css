@@ -1,0 +1,81 @@
+.time-slot-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+    padding: 1rem;
+}
+
+.time-slot {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #ffffff;
+}
+
+.time-slot:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.time-slot.has-appointment {
+    border-left: 4px solid #007bff;
+}
+
+.time-slot-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.time {
+    font-weight: 600;
+    color: #333;
+}
+
+.badge {
+    padding: 0.5em 0.75em;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.status-confirmed {
+    background-color: #28a745;
+    color: white;
+}
+
+.status-pending {
+    background-color: #ffc107;
+    color: #000;
+}
+
+.status-cancelled {
+    background-color: #dc3545;
+    color: white;
+}
+
+.appointment-details {
+    padding-top: 0.5rem;
+    border-top: 1px solid #e0e0e0;
+}
+
+.appointment-details h6 {
+    margin-bottom: 0.25rem;
+    color: #333;
+}
+
+.appointment-details p {
+    font-size: 0.875rem;
+    color: #666;
+}
+
+.appointment-details small {
+    font-size: 0.75rem;
+}
+
+@media (max-width: 768px) {
+    .time-slot-grid {
+        grid-template-columns: 1fr;
+    }
+}
