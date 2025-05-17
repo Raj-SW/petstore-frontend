@@ -4,6 +4,7 @@ import { FaSearch, FaUserMd } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import ProfessionalCard from "@/Components/HelperComponents/ProfessionalCard/ProfessionalCard";
+import ProfessionalCalendar from "@/Pages/AppointmentPage/ProfessionalCalendar/ProfessionalCalendar";
 import PaginationBar from "@/Components/HelperComponents/PaginationBar/PaginationBar";
 import { veterinarianService } from "@/Services/localServices/veterinarianService";
 import "./VeterinarianList.css";
@@ -16,6 +17,8 @@ const VeterinarianList = () => {
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [showCalendar, setShowCalendar] = useState(false);
+  const [selectedVet, setSelectedVet] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -56,8 +59,18 @@ const VeterinarianList = () => {
   );
 
   const handleBook = (vet) => {
-    navigate(`/calendar/vet/${vet.id}`);
+    setSelectedVet(vet);
+    setShowCalendar(true);
   };
+
+  if (showCalendar) {
+    return (
+      <ProfessionalCalendar
+        professional={selectedVet}
+        onBack={() => setShowCalendar(false)}
+      />
+    );
+  }
 
   if (loading)
     return (

@@ -8,7 +8,6 @@ import PetShopPage from "./Pages/PetShopPage/PetShopPage.jsx";
 import ServicePage from "./Pages/ServicePage/ServicePage.jsx";
 import AppointmentPage from "./Pages/AppointmentPage/AppointmentPage.jsx";
 import CartCheckOutPage from "./Pages/CartCheckoutPage/CartCheckOutPage.jsx";
-import ProfessionalCalendar from "./Pages/AppointmentPage/ProfessionalCalendar.jsx";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 
 const router = createBrowserRouter([
@@ -47,10 +46,6 @@ const router = createBrowserRouter([
       {
         path: "Checkout",
         element: <CartCheckOutPage />,
-      },
-      {
-        path: "calendar/:type/:id",
-        element: <ProfessionalCalendar />,
       },
     ],
   },

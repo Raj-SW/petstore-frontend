@@ -56,13 +56,6 @@
     color: var(--neutral-color-60);
 }
 
-.groomer-list {
-    margin-top: 1rem;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.5rem;
-}
-
 .groomer-list .col {
     display: flex;
     flex-direction: column;
