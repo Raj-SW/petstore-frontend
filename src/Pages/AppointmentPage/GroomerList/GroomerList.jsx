@@ -3,14 +3,18 @@ import { Container, Row, Col, InputGroup, Form } from "react-bootstrap";
 import { FaSearch, FaCut } from "react-icons/fa";
 import { motion } from "framer-motion";
 import ProfessionalCard from "@/Components/HelperComponents/ProfessionalCard/ProfessionalCard";
+import PaginationBar from "@/Components/HelperComponents/PaginationBar/PaginationBar";
 import { groomerService } from "@/Services/localServices/groomerService";
 import "./GroomerList.css";
+
+const PAGE_SIZE = 10;
 
 const GroomerList = () => {
   const [groomers, setGroomers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     fetchGroomers();
@@ -42,6 +46,13 @@ const GroomerList = () => {
         groomer.qualifications.join(" ").toLowerCase().includes(query))
     );
   });
+
+  // Pagination logic
+  const totalPages = Math.ceil(filteredGroomers.length / PAGE_SIZE);
+  const paginatedGroomers = filteredGroomers.slice(
+    (currentPage - 1) * PAGE_SIZE,
+    currentPage * PAGE_SIZE
+  );
 
   if (loading) {
     return (
@@ -84,9 +95,12 @@ const GroomerList = () => {
           </InputGroup>
         </div>
 
-        <Container className="groomer-list  d-flex flex-wrap justify-content-center gap-4">
-          {filteredGroomers.map((groomer) => (
-            <div key={groomer.id}>
+        <Container className="groomer-list d-flex flex-wrap justify-content-center gap-4">
+          {paginatedGroomers.map((groomer) => (
+            <div
+              key={groomer.id}
+              className="mb-4 d-flex justify-content-center"
+            >
               <ProfessionalCard
                 name={groomer.name}
                 specialty={groomer.specialties?.join(", ")}
@@ -108,6 +122,12 @@ const GroomerList = () => {
             </div>
           ))}
         </Container>
+        {/* Pagination Controls */}
+        <PaginationBar
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
       </Container>
     </motion.div>
   );
