@@ -79,14 +79,6 @@ const AppointmentPage = () => {
                           Groomers
                         </Nav.Link>
                       </Nav.Item>
-                      <Nav.Item>
-                        <Nav.Link
-                          eventKey="settings"
-                          className={key === "settings" ? "active" : ""}
-                        >
-                          Settings
-                        </Nav.Link>
-                      </Nav.Item>
                     </Nav>
                   </div>
                   <hr />
@@ -131,9 +123,6 @@ const AppointmentPage = () => {
                   </Tab.Pane>
                   <Tab.Pane eventKey="grooming">
                     <GroomerList />
-                  </Tab.Pane>
-                  <Tab.Pane eventKey="settings">
-                    <h5>Settings</h5>
                   </Tab.Pane>
                 </Tab.Content>
               </Col>

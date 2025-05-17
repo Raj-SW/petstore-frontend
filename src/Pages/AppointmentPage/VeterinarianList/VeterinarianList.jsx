@@ -1,62 +1,78 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col, InputGroup, Form } from "react-bootstrap";
 import { FaSearch, FaUserMd } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import VeterinarianCard from "@/Components/HelperComponents/ProfessionalCard/ProfessionalCard";
+import ProfessionalCard from "@/Components/HelperComponents/ProfessionalCard/ProfessionalCard";
+import PaginationBar from "@/Components/HelperComponents/PaginationBar/PaginationBar";
 import { veterinarianService } from "@/Services/localServices/veterinarianService";
 import "./VeterinarianList.css";
 
+const PAGE_SIZE = 10;
+
 const VeterinarianList = () => {
-  const [veterinarians, setVeterinarians] = useState([]);
+  const [vets, setVets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    fetchVeterinarians();
+    fetchVets();
   }, []);
 
-  const fetchVeterinarians = async () => {
+  const fetchVets = async () => {
     try {
       setLoading(true);
       const data = await veterinarianService.getAll();
-      setVeterinarians(data);
+      setVets(data);
       setError(null);
     } catch (err) {
       setError("Failed to fetch veterinarians");
-      console.error("Error fetching veterinarians:", err);
     } finally {
       setLoading(false);
     }
   };
 
-  // Filter veterinarians based on search query
-  const filteredVeterinarians = veterinarians.filter((vet) => {
+  // Filter vets based on search query
+  const filteredVets = vets.filter((vet) => {
     if (!searchQuery) return true;
     const query = searchQuery.toLowerCase();
     return (
       vet.name.toLowerCase().includes(query) ||
-      vet.specialization.toLowerCase().includes(query) ||
-      vet.qualifications.some((qual) => qual.toLowerCase().includes(query))
+      (vet.specialization &&
+        vet.specialization.toLowerCase().includes(query)) ||
+      (vet.qualifications &&
+        vet.qualifications.join(" ").toLowerCase().includes(query))
     );
   });
 
-  if (loading) {
+  // Pagination logic
+  const totalPages = Math.ceil(filteredVets.length / PAGE_SIZE);
+  const paginatedVets = filteredVets.slice(
+    (currentPage - 1) * PAGE_SIZE,
+    currentPage * PAGE_SIZE
+  );
+
+  const handleBook = (vet) => {
+    navigate(`/calendar/vet/${vet.id}`);
+  };
+
+  if (loading)
     return (
       <div className="loading-container">
         <div className="loading-spinner"></div>
         <p>Loading veterinarians...</p>
       </div>
     );
-  }
 
-  if (error) {
+  if (error)
     return (
       <div className="error-container">
         <p className="error-message">{error}</p>
       </div>
     );
-  }
 
   return (
     <motion.div
@@ -79,11 +95,10 @@ const VeterinarianList = () => {
             />
           </InputGroup>
         </div>
-
         <Container className="veterinarian-list d-flex flex-wrap justify-content-center gap-4">
-          {filteredVeterinarians.map((vet) => (
-            <div key={vet.id} className="">
-              <VeterinarianCard
+          {paginatedVets.map((vet) => (
+            <div key={vet.id} className="mb-4 d-flex justify-content-center">
+              <ProfessionalCard
                 name={vet.name}
                 specialty={vet.specialization}
                 qualifications={vet.qualifications}
@@ -96,14 +111,17 @@ const VeterinarianList = () => {
                 location={vet.location}
                 badgeIcon={<FaUserMd className="specialization-icon me-1" />}
                 badgeLabel="Veterinarian"
-                onBook={() => {
-                  // Handle booking appointment
-                  console.log("Book appointment for:", vet.name);
-                }}
+                onBook={() => handleBook(vet)}
               />
             </div>
           ))}
         </Container>
+        {/* Pagination Controls */}
+        <PaginationBar
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
       </Container>
     </motion.div>
   );
