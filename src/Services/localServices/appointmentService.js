@@ -17,6 +17,8 @@ const appointments = [
     ownerName: "John Smith",
     duration: 60, // minutes
     notes: "Regular checkup and vaccinations",
+    professionalId: 1,
+    professionalName: "Dr. Sarah Wilson",
   },
   {
     id: 2,
@@ -35,6 +37,8 @@ const appointments = [
     ownerName: "Sarah Johnson",
     duration: 90, // minutes
     notes: "Include flea treatment",
+    professionalId: 2,
+    professionalName: "Emma Thompson",
   },
 ];
 
@@ -123,6 +127,38 @@ export const appointmentService = {
   getByOwnerId: async (ownerId) => {
     await delay(400);
     return appointments.filter((a) => a.ownerId === ownerId);
+  },
+
+  // Get appointments by professional ID
+  getByProfessional: async (professionalId) => {
+    await delay(400);
+    const professionalAppointments = appointments.filter(
+      (a) => a.professionalId === professionalId
+    );
+
+    // Convert appointments to FullCalendar events format
+    return professionalAppointments.map((appointment) => ({
+      id: appointment.id.toString(),
+      title: appointment.title,
+      start: appointment.datetimeISO,
+      end: new Date(
+        new Date(appointment.datetimeISO).getTime() +
+          appointment.duration * 60000
+      ),
+      backgroundColor: appointment.type === "vet" ? "#28a745" : "#007bff",
+      borderColor: appointment.type === "vet" ? "#28a745" : "#007bff",
+      textColor: "#ffffff",
+      extendedProps: {
+        description: appointment.description,
+        status: appointment.status,
+        location: appointment.location,
+        role: appointment.role,
+        petName: appointment.petName,
+        ownerName: appointment.ownerName,
+        duration: appointment.duration,
+        notes: appointment.notes,
+      },
+    }));
   },
 
   // Update appointment status

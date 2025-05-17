@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Container, Button, Row, Col } from "react-bootstrap";
 import { motion } from "framer-motion";
 import {
@@ -7,43 +7,115 @@ import {
   FaPhone,
   FaNotesMedical,
 } from "react-icons/fa";
-import "./ProfessionalCalendar.css";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
+import AppointmentForm from "@/Components/HelperComponents/AppointmentForm/AppointmentForm";
+import { appointmentService } from "@/Services/localServices/appointmentService";
+import "./ProfessionalCalendar.css";
 
 const ProfessionalCalendar = ({ onBack, professional }) => {
   const [calendarEvents, setCalendarEvents] = useState([]);
+  const [showAppointmentForm, setShowAppointmentForm] = useState(false);
+  const [editingAppointment, setEditingAppointment] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Fetch appointments for this professional
+  useEffect(() => {
+    fetchAppointments();
+  }, [professional.id]);
+
+  const fetchAppointments = async () => {
+    try {
+      setLoading(true);
+      const data = await appointmentService.getByProfessional(professional.id);
+      setCalendarEvents(data);
+      setError(null);
+    } catch (err) {
+      setError("Failed to fetch appointments");
+      console.error("Error fetching appointments:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Handle slot selection to book an appointment
   const handleDateSelect = (selectInfo) => {
-    let title = `Appointment with ${professional.name}`;
-    let calendarApi = selectInfo.view.calendar;
-    calendarApi.unselect(); // clear date selection
-
-    // Add new event
-    setCalendarEvents((prevEvents) => [
-      ...prevEvents,
-      {
-        id: String(Date.now()),
-        title,
-        start: selectInfo.startStr,
-        end: selectInfo.endStr,
-        allDay: selectInfo.allDay,
-      },
-    ]);
+    setEditingAppointment(null);
+    setShowAppointmentForm(true);
   };
 
-  // Optionally handle event click (e.g., show details or cancel)
+  // Handle event click for editing/deleting
   const handleEventClick = (clickInfo) => {
-    // For now, do nothing or show alert
-    alert(
-      `Appointment: ${
-        clickInfo.event.title
-      }\n${clickInfo.event.start.toLocaleString()}`
+    const appointment = calendarEvents.find(
+      (appt) => appt.id === parseInt(clickInfo.event.id)
     );
+    if (appointment) {
+      handleEditAppointment(appointment);
+    }
   };
+
+  const handleEditAppointment = (appointment) => {
+    setEditingAppointment(appointment);
+    setShowAppointmentForm(true);
+  };
+
+  const handleDeleteAppointment = async (appointmentId) => {
+    try {
+      await appointmentService.delete(appointmentId);
+      setCalendarEvents((prev) =>
+        prev.filter((appt) => appt.id !== appointmentId)
+      );
+    } catch (err) {
+      console.error("Error deleting appointment:", err);
+    }
+  };
+
+  const handleAppointmentSubmit = async (appointmentData) => {
+    try {
+      if (editingAppointment) {
+        // Update existing appointment
+        const updated = await appointmentService.update(
+          editingAppointment.id,
+          appointmentData
+        );
+        setCalendarEvents((prev) =>
+          prev.map((appt) => (appt.id === updated.id ? updated : appt))
+        );
+      } else {
+        // Create new appointment
+        const newAppointment = await appointmentService.create({
+          ...appointmentData,
+          professionalId: professional.id,
+          professionalName: professional.name,
+        });
+        setCalendarEvents((prev) => [...prev, newAppointment]);
+      }
+      setEditingAppointment(null);
+      setShowAppointmentForm(false);
+    } catch (err) {
+      console.error("Error saving appointment:", err);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <div className="loading-spinner"></div>
+        <p>Loading appointments...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="error-container">
+        <p className="error-message">{error}</p>
+      </div>
+    );
+  }
 
   return (
     <Container>
@@ -102,7 +174,10 @@ const ProfessionalCalendar = ({ onBack, professional }) => {
           <Col className="d-flex justify-content-end">
             <Button
               className="book-appointment-btn rounded-5"
-              onClick={() => setShowAppointmentForm(true)}
+              onClick={() => {
+                setEditingAppointment(null);
+                setShowAppointmentForm(true);
+              }}
             >
               Book Appointment
             </Button>
@@ -143,7 +218,18 @@ const ProfessionalCalendar = ({ onBack, professional }) => {
             />
           </motion.div>
         </Container>
-        <Container fluid></Container>
+
+        {/* Appointment Form Modal */}
+        <AppointmentForm
+          show={showAppointmentForm}
+          handleClose={() => {
+            setShowAppointmentForm(false);
+            setEditingAppointment(null);
+          }}
+          onSubmit={handleAppointmentSubmit}
+          initialData={editingAppointment}
+          professional={professional}
+        />
       </div>
     </Container>
   );

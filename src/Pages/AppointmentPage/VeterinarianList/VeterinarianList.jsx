@@ -3,7 +3,7 @@ import { Container, InputGroup, Form } from "react-bootstrap";
 import { FaSearch, FaUserMd } from "react-icons/fa";
 import { motion } from "framer-motion";
 import ProfessionalCard from "@/Components/HelperComponents/ProfessionalCard/ProfessionalCard";
-import ProfessionalCalendar from "@/Pages/AppointmentPage/ProfessionalCalendar/ProfessionalCalendar";
+import ProfessionalCalendar from "@/Components/HelperComponents/ProfessionalCalendar/ProfessionalCalendar";
 import PaginationBar from "@/Components/HelperComponents/PaginationBar/PaginationBar";
 import { veterinarianService } from "@/Services/localServices/veterinarianService";
 import "./VeterinarianList.css";

@@ -1,0 +1,213 @@
+.professional-calendar-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+.back-button {
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: none;
+    color: var(--primary-green-20-color) !important;
+}
+
+.back-button:hover {
+    transform: translateX(-3px);
+    border: none;
+    background-color: var(--primary-green-20-color);
+    color: var(--white-color) !important;
+}
+
+.professional-details-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+    padding: 1.5rem 2rem;
+    display: flex;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.professional-details-flex {
+    display: flex;
+    align-items: center;
+}
+
+.professional-image {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 1.5rem;
+    border: 2px solid #eee;
+}
+
+.professional-details-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.professional-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+}
+
+.professional-detail-row {
+    display: flex;
+    align-items: center;
+    color: #888;
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+}
+
+.professional-detail-row .icon {
+    margin-right: 0.5rem;
+    font-size: 1.1rem;
+    color: #b0b0b0;
+}
+
+.detail-text {
+    color: #888;
+}
+
+.professional-calendar-header-row {
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.professional-calendar-header-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary1-color);
+    margin-bottom: 0;
+}
+
+.calendar-container {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+/* FullCalendar Customization */
+.fc {
+    font-family: "Poppins", sans-serif;
+}
+
+.fc .fc-toolbar-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--primary1-color);
+}
+
+.fc .fc-button {
+    background-color: var(--primary-green-20-color);
+    border-color: var(--primary-green-20-color);
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    transition: all 0.3s ease;
+}
+
+.fc .fc-button:hover {
+    background-color: var(--primary-green-80);
+    border-color: var(--primary-green-80);
+    transform: translateY(-2px);
+}
+
+.fc .fc-button-primary:not(:disabled).fc-button-active,
+.fc .fc-button-primary:not(:disabled):active {
+    background-color: var(--primary-green-80);
+    border-color: var(--primary-green-80);
+}
+
+.fc .fc-timegrid-slot {
+    height: 2.5rem;
+}
+
+.fc .fc-event {
+    border-radius: 8px;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.fc .fc-event:hover {
+    transform: scale(1.02);
+}
+
+/* Loading and Error States */
+.loading-container,
+.error-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    padding: 2rem;
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--tertiary-color-opacque);
+    border-top: 3px solid var(--secondary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.error-message {
+    color: var(--danger-color);
+    font-size: 1.1rem;
+    text-align: center;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .professional-details-card {
+        padding: 1rem;
+    }
+
+    .professional-details-flex {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .professional-image {
+        margin-right: 0;
+        margin-bottom: 1rem;
+    }
+
+    .professional-detail-row {
+        justify-content: center;
+    }
+
+    .calendar-container {
+        padding: 1rem;
+    }
+
+    .fc .fc-toolbar {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .fc .fc-toolbar-title {
+        font-size: 1.1rem;
+    }
+}

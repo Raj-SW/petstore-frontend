@@ -3,6 +3,7 @@ import { Container, Row, Col, InputGroup, Form } from "react-bootstrap";
 import { FaSearch, FaCut } from "react-icons/fa";
 import { motion } from "framer-motion";
 import ProfessionalCard from "@/Components/HelperComponents/ProfessionalCard/ProfessionalCard";
+import ProfessionalCalendar from "@/Components/HelperComponents/ProfessionalCalendar/ProfessionalCalendar";
 import PaginationBar from "@/Components/HelperComponents/PaginationBar/PaginationBar";
 import { groomerService } from "@/Services/localServices/groomerService";
 import "./GroomerList.css";
@@ -15,6 +16,8 @@ const GroomerList = () => {
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [showCalendar, setShowCalendar] = useState(false);
+  const [selectedGroomer, setSelectedGroomer] = useState(null);
 
   useEffect(() => {
     fetchGroomers();
@@ -53,6 +56,20 @@ const GroomerList = () => {
     (currentPage - 1) * PAGE_SIZE,
     currentPage * PAGE_SIZE
   );
+
+  const handleBook = (groomer) => {
+    setSelectedGroomer(groomer);
+    setShowCalendar(true);
+  };
+
+  if (showCalendar) {
+    return (
+      <ProfessionalCalendar
+        professional={selectedGroomer}
+        onBack={() => setShowCalendar(false)}
+      />
+    );
+  }
 
   if (loading) {
     return (
@@ -114,10 +131,7 @@ const GroomerList = () => {
                 location={groomer.location}
                 badgeIcon={<FaCut className="specialization-icon me-1" />}
                 badgeLabel="Groomer"
-                onBook={() => {
-                  // Handle booking appointment
-                  console.log("Book appointment for:", groomer.name);
-                }}
+                onBook={() => handleBook(groomer)}
               />
             </div>
           ))}
