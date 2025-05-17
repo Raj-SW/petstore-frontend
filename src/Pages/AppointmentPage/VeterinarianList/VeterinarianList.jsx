@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Container, Row, Col, InputGroup, Form } from "react-bootstrap";
+import { Container, InputGroup, Form } from "react-bootstrap";
 import { FaSearch, FaUserMd } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import ProfessionalCard from "@/Components/HelperComponents/ProfessionalCard/ProfessionalCard";
 import ProfessionalCalendar from "@/Pages/AppointmentPage/ProfessionalCalendar/ProfessionalCalendar";
@@ -19,7 +18,6 @@ const VeterinarianList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [showCalendar, setShowCalendar] = useState(false);
   const [selectedVet, setSelectedVet] = useState(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     fetchVets();
@@ -94,8 +92,10 @@ const VeterinarianList = () => {
       transition={{ duration: 0.3 }}
     >
       <Container fluid>
-        <div className="veterinarian-list-header">
-          <h4>Our Veterinarians</h4>
+        <div className="veterinarian-list-header ">
+          <h4 className="poppins-light" style={{ color: "#5C8D89" }}>
+            Our Veterinarians
+          </h4>
           <InputGroup className="search-bar">
             <InputGroup.Text>
               <FaSearch />

@@ -123,7 +123,7 @@ const ProfessionalCard = ({
           </div>
         </Card.Body>
         <Card.Footer className="bg-white border-0 professional-card-footer">
-          <Button onClick={onBook} className="book-appointment-btn">
+          <Button onClick={onBook} className="book-appointment-btn rounded-5">
             Book Appointment
           </Button>
         </Card.Footer>

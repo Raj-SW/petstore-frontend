@@ -68,7 +68,9 @@ const GroomerList = () => {
     >
       <Container fluid>
         <div className="groomer-list-header">
-          <h4>Our Groomers</h4>
+          <h4 className="poppins-light" style={{ color: "#5C8D89" }}>
+            Our Groomers
+          </h4>{" "}
           <InputGroup className="search-bar">
             <InputGroup.Text>
               <FaSearch />

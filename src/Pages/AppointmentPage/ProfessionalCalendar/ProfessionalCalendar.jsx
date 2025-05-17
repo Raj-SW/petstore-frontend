@@ -51,9 +51,9 @@ const ProfessionalCalendar = ({ onBack, professional }) => {
         <Row>
           <Col>
             <Button
-              variant="outline-secondary"
               onClick={onBack}
-              className="back-button mb-3"
+              className="back-button mb-3 rounded-5"
+              variant="outline-primary"
             >
               <FaArrowLeft className="me-2" /> Back to List
             </Button>
@@ -101,8 +101,7 @@ const ProfessionalCalendar = ({ onBack, professional }) => {
           </Col>
           <Col className="d-flex justify-content-end">
             <Button
-              variant="primary"
-              className="book-appointment-btn"
+              className="book-appointment-btn rounded-5"
               onClick={() => setShowAppointmentForm(true)}
             >
               Book Appointment

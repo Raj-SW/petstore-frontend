@@ -139,7 +139,7 @@ a:active {
 }
 
 .primary-color-font {
-  color: var(--primary-color);
+  color: var(--primary-color)
 }
 
 .secondary-color-font {
