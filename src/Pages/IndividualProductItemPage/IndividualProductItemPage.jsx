@@ -10,14 +10,12 @@ import { LuArrowLeft } from "react-icons/lu";
 import { IconContext } from "react-icons";
 
 import "./IndividaulItemPage.css";
-import CustomButton from "@/Components/HelperComponents/CustomButton/CustomButton";
 import Breadcrumb from "@/Components/HelperComponents/Breadcrumb/Breadcrumb";
 import SearchBar from "@/Components/HelperComponents/SearchBar/SearchBar";
 import ReviewService from "../../Services/localServices/ReviewService";
 //Asset Import
 import productImg1 from "@/assets/FeaturedProductsAssets/Product.svg";
 import ProductCard from "@/Components/HelperComponents/ProductCard/ProductCard";
-import ProductReviewCard from "@/Components/HelperComponents/ProductReviewCard/ProductReviewCard";
 import ReviewCarousel from "@/Components/HelperComponents/Carousel/ReviewCarousel";
 //service import
 import ProductService from "@/Services/localServices/ProductService";
@@ -118,7 +116,7 @@ const IndividualProductItemPage = () => {
                   value={{ size: "1.3rem", color: "#002A48" }}
                 >
                   <FiShare2 className="mx-2" />
-                  <span className="me-2 pale-green-color-font">Share:</span>
+                  <span className="me-2 secondary-color-font">Share:</span>
                   <FaFacebook className="mx-2" />
                   <FaTwitter className="mx-2" />
                   <FaInstagram className="mx-2" />
@@ -194,11 +192,12 @@ const IndividualProductItemPage = () => {
                     />
                   </IconContext.Provider>
                 </div>
-                <CustomButton
-                  title="Add to Cart"
+                <Button
                   onClick={handleAddToCart}
-                  variant="success"
-                />
+                  className="rounded-5 add-to-cart-btn"
+                >
+                  Add to Cart
+                </Button>
               </div>
             </Col>
           </Row>
@@ -206,9 +205,7 @@ const IndividualProductItemPage = () => {
           {/* Supplier Product Details */}
           <Row className="mt-5 Supplier-Product-Detail-Container rounded-4 border p-2">
             <Col>
-              <h4 className="pale-green-color-font">
-                Supplier Product Details
-              </h4>
+              <h4 className="secondary-color-font">Supplier Product Details</h4>
               <p>
                 We have had Magie since she was able to leave her mum as a puppy
                 at 8 weeks old. Magie currently lives with two children aged 7
@@ -220,7 +217,7 @@ const IndividualProductItemPage = () => {
           </Row>
         </Container>
         <Container className="related-purchases-container border rounded-4 mt-5 mb-5">
-          <h2 className="pale-green-color-font p-4">Related Purchases</h2>
+          <h2 className="secondary-color-font p-4">Related Purchases</h2>
           <Row className="w-100 d-flex flex-wrap justify-content-center gap-3 mt-3 related-purchases-product mb-5">
             <ProductCard
               imageUrl={productImg1}
@@ -249,7 +246,7 @@ const IndividualProductItemPage = () => {
           </Row>
         </Container>
         <Container className="productReviewsContainer d-flex flex-column text-center mt-5 mb-5">
-          <h3 className="pale-green-color-font">Product Reviews</h3>
+          <h3 className="secondary-color-font">Product Reviews</h3>
           <Row className="productReviewCardsContainer d-flex flex-wrap justify-content-center">
             {reviews && reviews.length > 0 ? (
               <ReviewCarousel reviews={reviews} />

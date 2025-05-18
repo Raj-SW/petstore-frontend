@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./AddToCart.css";
 //Component import
 import { FaCartShopping } from "react-icons/fa6";
 import { IconContext } from "react-icons";
-import { useNavigate } from "react-router-dom";
 import CartModal from "./CartModal";
 
 const AddToCart = ({
@@ -14,6 +13,19 @@ const AddToCart = ({
   onRemoveItem,
 }) => {
   const [showCartModal, setShowCartModal] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const prevItemCount = useRef(itemCount);
+
+  useEffect(() => {
+    if (itemCount > prevItemCount.current) {
+      setIsAnimating(true);
+      const timer = setTimeout(() => {
+        setIsAnimating(false);
+      }, 300); // Match this with the animation duration
+      return () => clearTimeout(timer);
+    }
+    prevItemCount.current = itemCount;
+  }, [itemCount]);
 
   const handleCartClick = () => {
     setShowCartModal(true);
@@ -25,7 +37,11 @@ const AddToCart = ({
         {/* Set icon size here */}
         <div className="cartWrapper" onClick={handleCartClick}>
           <FaCartShopping className="cartIcon" />
-          {itemCount > 0 && <div className="cartBadge">{itemCount}</div>}
+          {itemCount > 0 && (
+            <div className={`cartBadge ${isAnimating ? "animate" : ""}`}>
+              {itemCount}
+            </div>
+          )}
         </div>
       </IconContext.Provider>
 

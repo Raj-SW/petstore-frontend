@@ -34,6 +34,16 @@
     background-color: #F9F9F9;
 }
 
+.add-to-cart-btn {
+    color: white;
+    background-color: var(--secondary-color);
+
+}
+
+.add-to-cart-btn:hover {
+    background-color: var(--primary-green-60) !important;
+}
+
 .related-purchases-product {}
 
 @media (max-width: 768px) {

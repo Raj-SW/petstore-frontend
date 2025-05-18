@@ -30,7 +30,6 @@
 .product-card-container {
     gap: 2rem;
     padding: 4rem 1rem;
-
 }
 
 /* Default gap for smaller screens */
@@ -65,4 +64,103 @@
     .product-card-container {
         gap: 1rem;
     }
+}
+
+/* Cart Button Animations */
+.basket-btn {
+    color: var(--secondary-color);
+}
+
+.basket-btn:hover {
+    cursor: pointer;
+}
+
+
+/* Ripple effect */
+.ripple {
+    position: absolute;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.7);
+    transform: scale(0);
+    animation: ripple 0.6s linear;
+    pointer-events: none;
+}
+
+@keyframes ripple {
+    to {
+        transform: scale(4);
+        opacity: 0;
+    }
+}
+
+/* Success animation */
+.success-animation {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    color: var(--secondary-color);
+    animation: success 0.5s ease forwards;
+}
+
+@keyframes success {
+    0% {
+        transform: translate(-50%, -50%) scale(0);
+    }
+
+    50% {
+        transform: translate(-50%, -50%) scale(1.2);
+    }
+
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+/* Card hover animation */
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+
+@keyframes buttonPop {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.2);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Product image hover effect */
+.image-container {
+    position: relative;
+    overflow: hidden;
+}
+
+.zoom-image {
+    transition: transform 0.5s ease;
+}
+
+.image-container:hover .zoom-image {
+    transform: scale(1.1);
+}
+
+/* Price animation */
+.price-text {
+    transition: color 0.3s ease;
+}
+
+.card:hover .price-text {
+    color: #8B5A2B;
 }

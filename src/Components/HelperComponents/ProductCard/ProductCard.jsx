@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Card } from "react-bootstrap";
+import { Card, Button } from "react-bootstrap";
 import { FaStar, FaShoppingBasket } from "react-icons/fa";
 import { useCart } from "react-use-cart";
 import { useNavigate } from "react-router-dom";
@@ -9,43 +9,39 @@ const ProductCard = ({ id, title, price, rating, imageUrl }) => {
   const { addItem, inCart } = useCart();
   const navigate = useNavigate();
   const [isAdding, setIsAdding] = useState(false);
+  const [clicked, setClicked] = useState(false);
 
   const handleAddToCart = (e) => {
-    e.stopPropagation(); // Prevent card click when clicking add to cart
+    e.stopPropagation();
 
     if (inCart(id)) {
-      return; // Item already in cart
+      return;
     }
 
     setIsAdding(true);
+    setClicked(true);
     try {
-      // Ensure all item information is properly structured
       const itemToAdd = {
-        id: id.toString(), // Ensure ID is string for consistency
-        title: title.trim(), // Clean up title
-        price: parseFloat(price), // Ensure price is a number
-        image: imageUrl, // Store image URL
-        quantity: 1, // Default quantity
-        rating: rating, // Store rating for reference
-        itemTotal: parseFloat(price), // Calculate initial total
-        timestamp: new Date().toISOString(), // Add timestamp for sorting
+        id: id.toString(),
+        title: title.trim(),
+        price: parseFloat(price),
+        image: imageUrl,
+        quantity: 1,
+        rating: rating,
+        itemTotal: parseFloat(price),
+        timestamp: new Date().toISOString(),
       };
 
       addItem(itemToAdd);
 
-      // Visual feedback
-      const button = e.currentTarget;
-      button.style.backgroundColor = "#4CAF50";
-      button.style.color = "white";
-
       setTimeout(() => {
-        button.style.backgroundColor = "";
-        button.style.color = "";
         setIsAdding(false);
-      }, 1000);
+        setClicked(false);
+      }, 300); // Match with CSS animation duration
     } catch (error) {
       console.error("Error adding item to cart:", error);
       setIsAdding(false);
+      setClicked(false);
     }
   };
 
@@ -62,7 +58,7 @@ const ProductCard = ({ id, title, price, rating, imageUrl }) => {
         padding: "0.5rem",
         border: "none",
       }}
-      onClick={handleCardClick} // Add click event to navigate
+      onClick={handleCardClick}
     >
       <div
         className="position-relative image-container"
@@ -79,16 +75,6 @@ const ProductCard = ({ id, title, price, rating, imageUrl }) => {
             objectFit: "fill",
           }}
         />
-        {/* <img
-          src={heartImg}
-          style={{
-            position: "absolute",
-            top: "10px",
-            right: "10px",
-            cursor: "pointer",
-            width: "1.25rem",
-          }}
-        /> */}
       </div>
       <Card.Body className="text-center p-0">
         <Card.Title className="p-0 poppins-medium">{title}</Card.Title>
@@ -108,17 +94,11 @@ const ProductCard = ({ id, title, price, rating, imageUrl }) => {
               ))}
             </div>
           </div>
-          <button
+          <FaShoppingBasket
+            size={30}
             onClick={handleAddToCart}
-            className="add-to-cart-btn"
-            disabled={isAdding || inCart(id)}
-            style={{
-              transition: "all 0.3s ease",
-              opacity: inCart(id) ? 0.5 : 1,
-            }}
-          >
-            <FaShoppingBasket size={20} />
-          </button>
+            className="basket-btn"
+          />
         </div>
       </Card.Body>
     </Card>
