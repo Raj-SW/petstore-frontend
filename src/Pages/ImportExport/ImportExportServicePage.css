@@ -1,0 +1,89 @@
+.importexport-hero-section {
+    background-color: var(--tertiary-color);
+}
+
+.importexport-title {
+    font-size: 2.2rem;
+}
+
+.importexport-desc {
+    color: #4b5c5e;
+    font-size: 1.1rem;
+}
+
+.importexport-btn {
+    font-size: 1rem;
+}
+
+.importexport-img-container {
+    width: 100%;
+    min-width: 12rem;
+    max-width: 22rem;
+    aspect-ratio: 1/1;
+    background: #ededed;
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.importexport-img {
+    width: 100%;
+    height: auto;
+    border-radius: 1rem;
+    object-fit: cover;
+    aspect-ratio: 1/1;
+}
+
+.importexport-services-title {
+    font-size: 2rem;
+}
+
+.importexport-icon-heart,
+.importexport-icon-flag {
+    font-size: 2.2rem;
+    color: #6ed7a2;
+    margin-bottom: 0.2rem;
+}
+
+.importexport-card-text {
+    font-size: 1rem;
+}
+
+.importexport-link {
+    font-size: 1rem;
+}
+
+.importexport-services-section {
+    background: linear-gradient(135deg, #e8fff3 0%, #f3fbf7 100%);
+    position: relative;
+    z-index: 1;
+}
+
+/* Card enhancements */
+.importexport-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 1.5rem;
+    box-shadow: 0 2px 12px 0 rgba(110, 215, 162, 0.10), 0 1.5px 6px 0 rgba(0, 0, 0, 0.04);
+    border: 2px solid #e6f7ee;
+    transition: box-shadow 0.3s, border-color 0.3s, transform 0.3s;
+    overflow: hidden;
+    position: relative;
+}
+
+.importexport-card:hover {
+    box-shadow: 0 8px 32px 0 rgba(110, 215, 162, 0.18), 0 3px 12px 0 rgba(0, 0, 0, 0.08);
+    border-color: #6ed7a2;
+    transform: translateY(-6px) scale(1.03);
+    z-index: 2;
+}
+
+/* Accent line under icon */
+.importexport-card-icon-accent {
+    width: 2.5rem;
+    height: 0.25rem;
+    background: linear-gradient(90deg, #6ed7a2 0%, #b2f7cc 100%);
+    border-radius: 1rem;
+    margin: 0.5rem auto 1.2rem auto;
+}

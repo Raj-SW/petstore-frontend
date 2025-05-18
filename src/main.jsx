@@ -1,13 +1,15 @@
 import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
 import "./index.css";
-import AuthenticationPage from "./Pages/AuthenticationPages/AuthenticationPage.jsx";
 import HomePage from "./Pages/HomePage/HomePage.jsx";
 import IndividualProductItemPage from "./Pages/IndividualProductItemPage/IndividualProductItemPage.jsx";
 import PetShopPage from "./Pages/PetShopPage/PetShopPage.jsx";
 import ServicePage from "./Pages/ServicePage/ServicePage.jsx";
 import AppointmentPage from "./Pages/AppointmentPage/AppointmentPage.jsx";
 import CartCheckOutPage from "./Pages/CartCheckoutPage/CartCheckOutPage.jsx";
+import ImportExportServicePage from "./Pages/ImportExport/ImportExportServicePage.jsx";
+import ExportImportForm from "./Pages/ImportExport/Import/ImportPage.jsx";
+import UserProfile from "./Pages/UserProfile.jsx";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 
 const router = createBrowserRouter([
@@ -24,28 +26,36 @@ const router = createBrowserRouter([
         element: <HomePage />,
       },
       {
-        path: "authpage",
-        element: <AuthenticationPage />,
-      },
-      {
         path: "product/:id",
         element: <IndividualProductItemPage />,
       },
       {
-        path: "PetShop",
+        path: "petshop",
         element: <PetShopPage />,
       },
       {
-        path: "ServicePage",
+        path: "services",
         element: <ServicePage />,
       },
       {
-        path: "AppointmentPage",
+        path: "appointments",
         element: <AppointmentPage />,
       },
       {
-        path: "Checkout",
+        path: "checkout",
         element: <CartCheckOutPage />,
+      },
+      {
+        path: "import-export-service",
+        element: <ImportExportServicePage />,
+      },
+      {
+        path: "import-page",
+        element: <ExportImportForm />,
+      },
+      {
+        path: "profile",
+        element: <UserProfile />,
       },
     ],
   },

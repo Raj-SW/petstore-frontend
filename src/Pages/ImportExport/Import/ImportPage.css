@@ -1,0 +1,93 @@
+/* Info Card Styles */
+.import-info-card {
+    background: var(--tertiary-color);
+    color: #1a3d2f;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px 0 rgba(110, 215, 162, 0.10), 0 1.5px 6px 0 rgba(0, 0, 0, 0.04);
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+}
+
+.import-info-card-header {
+    background: var(--primary-green-20-color);
+    color: #1a3d2f;
+    font-weight: 700;
+    font-size: 1.25rem;
+    padding: 1rem 1.5rem;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+}
+
+.import-info-card-body {
+    padding: 1.5rem;
+}
+
+.import-info-list {
+    list-style: none;
+    padding: 0;
+    margin: 1.5rem 0 0 0;
+}
+
+.import-info-list li {
+    margin-bottom: 1.25rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.import-info-list-desc {
+    font-size: 0.95rem;
+    color: #4b5c5e;
+    margin-left: 2rem;
+    margin-top: 0.25rem;
+}
+
+/* Form Container Styles */
+.import-form-container {
+    background: #f3fbf7;
+    color: #1a3d2f;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px 0 rgba(110, 215, 162, 0.10), 0 1.5px 6px 0 rgba(0, 0, 0, 0.04);
+    padding: 2rem 2rem 1.5rem 2rem;
+}
+
+.import-form-title {
+    color: #1a3d2f;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.import-form-desc {
+    color: #4b5c5e;
+    font-size: 1.05rem;
+}
+
+.import-form-tabs {
+    background: #e6f7ee;
+    border-radius: 12px;
+    padding: 0.5rem 1.5rem;
+    display: flex;
+    gap: 1.5rem;
+    justify-content: flex-start;
+    margin-bottom: 2rem;
+}
+
+.import-form-tabs .nav-link {
+    background: transparent !important;
+    color: #6db89c !important;
+    font-weight: 700;
+    border: none !important;
+    border-radius: 1rem !important;
+    padding: 0.4rem 1.2rem !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    transition: background 0.2s, color 0.2s;
+    outline: none !important;
+}
+
+.import-form-tabs .nav-link.active {
+    background: #6db89c !important;
+    color: #fff !important;
+    font-weight: 700;
+    border: none !important;
+    box-shadow: none !important;
+}

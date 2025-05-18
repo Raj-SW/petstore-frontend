@@ -1,194 +1,184 @@
-import React, { useState } from "react";
-import { Button, Row, Col, Form, Container } from "react-bootstrap";
-import { FaTrash } from "react-icons/fa";
-import { CaretDownIcon } from "@radix-ui/react-icons";
-import "./CartCheckOutPage.css";
+import React, { useEffect, useState } from "react";
+import { Container, Row, Col, Button, Form } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import { CartItem } from "../../Components/HelperComponents/CartItem/CartItem";
-import CustomButton from "@/Components/HelperComponents/CustomButton/CustomButton";
-import { ImCircleRight } from "react-icons/im";
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+import "./CartCheckoutPage.css";
 
-const initialCartItems = [
-  {
-    id: 1,
-    name: "Item Name",
-    desc: "Small item Description",
-    price: 1800,
-    qty: 2,
-  },
-  {
-    id: 2,
-    name: "Item Name",
-    desc: "Small item Description",
-    price: 1800,
-    qty: 2,
-  },
-  {
-    id: 3,
-    name: "Item Name",
-    desc: "Small item Description",
-    price: 1800,
-    qty: 2,
-  },
-  {
-    id: 4,
-    name: "Item Name",
-    desc: "Small item Description",
-    price: 1800,
-    qty: 2,
-  },
-];
+const CartCheckoutPage = () => {
+  const navigate = useNavigate();
+  const [cartItems, setCartItems] = useState([]);
+  const [cartTotal, setCartTotal] = useState(0);
 
-const CartCheckOutPage = () => {
-  const [cartItems, setCartItems] = useState(initialCartItems);
+  useEffect(() => {
+    // Retrieve cart items from sessionStorage
+    const storedItems = sessionStorage.getItem("cartItems");
+    const storedTotal = sessionStorage.getItem("cartTotal");
 
-  const increaseQuantity = (id) => {
-    setCartItems(
-      cartItems.map((item) =>
-        item.id === id ? { ...item, qty: item.qty + 1 } : item
+    if (!storedItems || !storedTotal) {
+      // If no items in cart, redirect to home
+      navigate("/");
+      return;
+    }
+
+    setCartItems(JSON.parse(storedItems));
+    setCartTotal(parseFloat(storedTotal));
+  }, [navigate]);
+
+  const handleQuantityChange = (itemId, newQuantity) => {
+    setCartItems((prevItems) =>
+      prevItems.map((item) =>
+        item.id === itemId ? { ...item, quantity: newQuantity } : item
       )
     );
   };
 
-  const decreaseQuantity = (id) => {
-    setCartItems(
-      cartItems.map((item) =>
-        item.id === id && item.qty > 1 ? { ...item, qty: item.qty - 1 } : item
-      )
+  const handleRemoveItem = (itemId) => {
+    setCartItems((prevItems) => prevItems.filter((item) => item.id !== itemId));
+  };
+
+  const calculateTotal = () => {
+    return cartItems.reduce(
+      (total, item) => total + item.price * item.quantity,
+      0
     );
   };
 
-  const removeItem = (id) => {
-    setCartItems(cartItems.filter((item) => item.id !== id));
-  };
-
-  const subtotal = cartItems.reduce(
-    (total, item) => total + item.price * item.qty,
-    0
-  );
-  const shipping = 20;
-  const total = subtotal + shipping;
+  if (cartItems.length === 0) {
+    return (
+      <Container className="empty-cart-message">
+        <h2>Your cart is empty</h2>
+        <Button
+          variant="primary"
+          className="continue-shopping-btn"
+          onClick={() => navigate("/")}
+        >
+          Continue Shopping
+        </Button>
+      </Container>
+    );
+  }
 
   return (
-    <div className="cart-checkout-wrapper">
-      <Container className="py-5">
-        <Row className="cart-body rounded-4 p-4">
-          <Row className="justify-content-center">
-            <Col lg={8}>
-              <div className="bg-white ">
-                <Row className="mb-3 align-items-center">
+    <div className="cart-checkout-bg">
+      <Container className="cart-checkout-main rounded-4 p-4">
+        <Row>
+          {/* Left: Cart Items */}
+          <Col lg={8} className="cart-items-col">
+            <div
+              className="d-flex align-items-center mb-3 gap-2 continue-shopping-link"
+              style={{ cursor: "pointer" }}
+              onClick={() => navigate("/")}
+            >
+              <FaArrowLeft size={20} />
+              <span className="poppins-medium fs-6">Continue Shopping</span>
+            </div>
+            <div className="cart-items-section">
+              <div className="d-flex align-items-end justify-content-between mb-2">
+                <div>
+                  <h4 className="mb-0">Shopping Cart</h4>
+                  <span className="cart-subtitle text-muted">
+                    You have {cartItems.length} item
+                    {cartItems.length > 1 ? "s" : ""} in your cart
+                  </span>
+                </div>
+              </div>
+              <hr className="my-3" />
+              <div className="cart-items-list">
+                {cartItems.map((item) => (
+                  <CartItem
+                    key={item.id}
+                    item={item}
+                    onIncreaseQuantity={(id) => {
+                      const item = cartItems.find((i) => i.id === id);
+                      if (item) {
+                        handleQuantityChange(id, item.quantity + 1);
+                      }
+                    }}
+                    onDecreaseQuantity={(id) => {
+                      const item = cartItems.find((i) => i.id === id);
+                      if (item && item.quantity > 1) {
+                        handleQuantityChange(id, item.quantity - 1);
+                      }
+                    }}
+                    onRemoveItem={handleRemoveItem}
+                  />
+                ))}
+              </div>
+            </div>
+          </Col>
+
+          {/* Right: Card Details */}
+          <Col lg={4} className="card-details-col">
+            <div className="card-details-wrapper rounded-4 p-4">
+              <h5 className="mb-3 card-details-title">Card Details</h5>
+              <div className="mb-3 card-type-icons d-flex gap-2">
+                {/* Placeholder for card type icons */}
+                <div className="card-type-icon" />
+                <div className="card-type-icon" />
+                <div className="card-type-icon" />
+                <div className="card-type-icon" />
+              </div>
+              <Form>
+                <Form.Group className="mb-2">
+                  <Form.Control placeholder="Cardholder's Name" />
+                </Form.Group>
+                <Form.Group className="mb-2">
+                  <Form.Control placeholder="Card Number" />
+                </Form.Group>
+                <Row className="mb-2">
                   <Col>
-                    <Button variant="link" className="p-0">
-                      <CaretDownIcon
-                        className="CaretDownBreadCrumb"
-                        aria-hidden
-                        style={{
-                          width: "2.5rem",
-                          height: "2.5rem",
-                          color: "#667479",
-                          transform: "rotate(90deg)",
-                        }}
-                      />
-                    </Button>
-                    <p className="poppins-medium fs-6">Continue Shopping</p>
+                    <Form.Control placeholder="Expiration" />
+                  </Col>
+                  <Col>
+                    <Form.Control placeholder="CVC" />
                   </Col>
                 </Row>
-                <h4 className="mb-3">
-                  Shopping Cart{" "}
-                  <span className="text-muted" style={{ fontSize: "1rem" }}>
-                    You have {cartItems.length} items in your cart
+              </Form>
+              <div className="card-summary mt-4">
+                <div className="d-flex justify-content-between text-white mb-2">
+                  <span>Sub Total</span>
+                  <span>${calculateTotal().toFixed(2)}</span>
+                </div>
+                <div className="d-flex justify-content-between text-white mb-2">
+                  <span>Shipping</span>
+                  <span>${(calculateTotal() > 0 ? 20 : 0).toFixed(2)}</span>
+                </div>
+                <div className="d-flex justify-content-between text-white fw-bold mb-3">
+                  <span>Total</span>
+                  <span>
+                    $
+                    {(
+                      calculateTotal() + (calculateTotal() > 0 ? 20 : 0)
+                    ).toFixed(2)}
                   </span>
-                </h4>
-                <hr className="my-3" />
-
-                <Row>
-                  {cartItems.map((item) => (
-                    <CartItem
-                      key={item.id}
-                      item={item}
-                      onIncreaseQuantity={increaseQuantity}
-                      onDecreaseQuantity={decreaseQuantity}
-                      onRemoveItem={removeItem}
-                    />
-                  ))}
-                </Row>
+                </div>
+                <Button
+                  variant="success"
+                  className="checkout-btn d-flex align-items-center justify-content-center w-100"
+                  style={{ gap: "0.5rem" }}
+                  onClick={() => {
+                    // Store updated cart items before proceeding
+                    sessionStorage.setItem(
+                      "cartItems",
+                      JSON.stringify(cartItems)
+                    );
+                    sessionStorage.setItem(
+                      "cartTotal",
+                      calculateTotal().toString()
+                    );
+                    navigate("/checkout");
+                  }}
+                >
+                  Check Out <FaArrowRight />
+                </Button>
               </div>
-            </Col>
-            <Col lg={4}>
-              <div
-                className="card-details-wrapper rounded-4 p-4 mb-4"
-                style={{ minWidth: 300 }}
-              >
-                <h5 className="mb-3" style={{ color: "white" }}>
-                  Card Details
-                </h5>
-                <Form>
-                  <Row className="mb-2">
-                    <Col>
-                      <Form.Label className="mb-1" style={{ color: "white" }}>
-                        Card Type
-                      </Form.Label>
-                      <div className="d-flex gap-2">
-                        {[1, 2, 3, 4].map((_, index) => (
-                          <div
-                            key={index}
-                            style={{
-                              width: 32,
-                              height: 24,
-                              background: "#eee",
-                              borderRadius: 4,
-                            }}
-                          />
-                        ))}
-                      </div>
-                    </Col>
-                  </Row>
-                  <Form.Group className="card-details-form mb-2">
-                    <Form.Control placeholder="Cardholder's Name" />
-                  </Form.Group>
-                  <Form.Group className="mb-2">
-                    <Form.Control placeholder="Card Number" />
-                  </Form.Group>
-                  <Row className="mb-2">
-                    <Col>
-                      <Form.Control placeholder="Expiration" />
-                    </Col>
-                    <Col>
-                      <Form.Control placeholder="CVC" />
-                    </Col>
-                  </Row>
-                  <Row className="mt-4 d-flex flex-column gap-2">
-                    <div className="d-flex justify-content-between">
-                      <span style={{ color: "white" }}>Sub Total</span>
-                      <span style={{ color: "white" }}>
-                        ${subtotal.toFixed(2)}
-                      </span>
-                    </div>
-                    <div className="d-flex justify-content-between">
-                      <span style={{ color: "white" }}>Shipping</span>
-                      <span style={{ color: "white" }}>
-                        ${shipping.toFixed(2)}
-                      </span>
-                    </div>
-                    <div className="d-flex justify-content-between fw-bold">
-                      <span style={{ color: "white" }}>Total</span>
-                      <span style={{ color: "white" }}>
-                        ${total.toFixed(2)}
-                      </span>
-                    </div>
-                    <CustomButton
-                      className="checkout-button"
-                      title={"Check Out"}
-                      icon={<ImCircleRight />}
-                    ></CustomButton>
-                  </Row>
-                </Form>
-              </div>
-            </Col>
-          </Row>
+            </div>
+          </Col>
         </Row>
       </Container>
     </div>
   );
 };
 
-export default CartCheckOutPage;
+export default CartCheckoutPage;

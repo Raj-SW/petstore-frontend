@@ -155,7 +155,7 @@ const ServicePage = () => {
               </Button>
             </Col>
           </Row>
-          <Row>
+          {/* <Row>
             <div className="text-center p-4">
               <h3 className="text-success mb-4">Our Vets on Stand By</h3>
               <Row className="justify-content-center gap-5">
@@ -166,7 +166,7 @@ const ServicePage = () => {
                 <ProductReviewCard reviewDescription=" BSc chate lisien" />
               </Row>
             </div>
-          </Row>
+          </Row> */}
         </Row>
       </Container>
     </>

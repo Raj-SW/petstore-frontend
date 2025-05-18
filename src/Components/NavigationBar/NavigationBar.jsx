@@ -1,7 +1,8 @@
 import { Container, Accordion, Row, Col } from "react-bootstrap";
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import Navbar from "react-bootstrap/Navbar";
 import AddToCart from "./AddToCart";
+import { useCart } from "react-use-cart";
 import SnackBar from "./SnackBar";
 import CardDropDown from "./Dropdowns/CardDropdown";
 import SignUpDropdown from "./Dropdowns/SignUpDropdown";
@@ -13,6 +14,27 @@ import "./NavigationBar.css";
 
 // This is the main navigation bar component for the website
 const NavigationBar = () => {
+  const { items, updateItemQuantity, removeItem, totalItems } = useCart();
+  const [showCartModal, setShowCartModal] = useState(false);
+
+  const handleIncreaseQuantity = (id) => {
+    const item = items.find((item) => item.id === id);
+    if (item) {
+      updateItemQuantity(id, item.quantity + 1);
+    }
+  };
+
+  const handleDecreaseQuantity = (id) => {
+    const item = items.find((item) => item.id === id);
+    if (item && item.quantity > 1) {
+      updateItemQuantity(id, item.quantity - 1);
+    }
+  };
+
+  const handleRemoveItem = (id) => {
+    removeItem(id);
+  };
+
   return (
     <>
       {/* SnackBar component shown at the very top */}
@@ -23,7 +45,7 @@ const NavigationBar = () => {
         collapseOnSelect // Collapses on mobile when clicking outside
         expand="lg" // Expands on large screens
         className="sticky-top" // Sticks to top while scrolling
-        style={{ backgroundColor: "var(--pale-green-color)" }}
+        style={{ backgroundColor: "var(--secondary-color)" }}
         variant="dark" // This changes the hamburger menu color to white
       >
         <Container fluid>
@@ -97,7 +119,15 @@ const NavigationBar = () => {
           <div className="ms-auto d-flex d-none d-md-flex d-card-dropdown">
             <CardDropDown /> {/* Card dropdown menu */}
             <SignUpDropdown /> {/* Sign up/Login dropdown */}
-            <AddToCart itemCount={3} /> {/* Shopping cart with item count */}
+            <AddToCart
+              itemCount={totalItems}
+              cartItems={items}
+              onIncreaseQuantity={handleIncreaseQuantity}
+              onDecreaseQuantity={handleDecreaseQuantity}
+              onRemoveItem={handleRemoveItem}
+              showCartModal={showCartModal}
+              setShowCartModal={setShowCartModal}
+            />
           </div>
         </Container>
 
@@ -116,10 +146,10 @@ const NavigationBar = () => {
                     Services
                   </Accordion.Header>
                   <Accordion.Body className="bg-transparent text-white d-flex flex-column poppins-light">
-                    <a>Vet Care</a>
+                    <a href="/appointments">Vet Care</a>
                     <a>Wellness Tracker</a>
                     <a>Pet Transport</a>
-                    <a>Grooming</a>
+                    <a onClick={() => navigate("/appointments")}>Grooming</a>
                     <a>Boarding</a>
                     <a>Training Centre</a>
                     <a>Pet Relocation</a>

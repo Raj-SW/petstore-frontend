@@ -133,10 +133,22 @@ const CardDropDown = () => {
                 </NavigationMenu.Link>
               </li>
 
-              <ListItem href="" title="Veterinary Appointment"></ListItem>
-              <ListItem href="" title="Pet Taxi Appointment"></ListItem>
-              <ListItem href="" title="Grooming Appointment"></ListItem>
-              <ListItem href="" title="Pet Relocation"></ListItem>
+              <ListItem
+                href="/appointments"
+                title="Veterinary Appointment"
+              ></ListItem>
+              <ListItem
+                href="/appointments"
+                title="Pet Taxi Appointment"
+              ></ListItem>
+              <ListItem
+                href="/appointments"
+                title="Grooming Appointment"
+              ></ListItem>
+              <ListItem
+                href="/import-export-service"
+                title="Pet Relocation"
+              ></ListItem>
             </ul>
           </NavigationMenu.Content>
         </NavigationMenu.Item>
@@ -197,9 +209,9 @@ const CardDropDown = () => {
                   </div>
                 </NavigationMenu.Link>
               </li>
-              <ListItem href="" title="Placeholder Item"></ListItem>
-              <ListItem href="" title="Placeholder Item"></ListItem>
-              <ListItem href="" title="Placeholder Item"></ListItem>
+              <ListItem href="/petshop" title="Placeholder Item"></ListItem>
+              <ListItem href="/petshop" title="Placeholder Item"></ListItem>
+              <ListItem href="/petshop" title="Placeholder Item"></ListItem>
             </ul>
           </NavigationMenu.Content>
         </NavigationMenu.Item>

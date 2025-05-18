@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Col } from "react-bootstrap";
+import { Button, Col, Image } from "react-bootstrap";
 import { FaTrash } from "react-icons/fa";
 import "./CartItem.css";
 
@@ -15,18 +15,20 @@ export const CartItem = ({
     <Col xs={12}>
       <div className="d-flex align-items-center justify-content-between border rounded-3 p-3 mb-3 bg-light">
         <div className="d-flex align-items-center gap-3">
-          <div
+          <Image
+            src={item.image}
+            alt={item.name}
             style={{
               width: 60,
               height: 60,
-              background: "#eee",
+              objectFit: "cover",
               borderRadius: 8,
             }}
           />
           <div>
             <div className="fw-semibold">{item.name}</div>
             <div className="text-muted" style={{ fontSize: "0.9rem" }}>
-              {item.desc}
+              ${item.price.toFixed(2)} each
             </div>
           </div>
         </div>
@@ -36,10 +38,11 @@ export const CartItem = ({
               variant="outline-secondary"
               size="sm"
               onClick={() => onDecreaseQuantity(item.id)}
+              disabled={item.quantity <= 1}
             >
               -
             </Button>
-            <span className="mx-2">{item.qty}</span>
+            <span className="mx-2">{item.quantity}</span>
             <Button
               variant="outline-secondary"
               size="sm"
@@ -49,7 +52,9 @@ export const CartItem = ({
             </Button>
           </div>
         )}
-        <div className="fw-bold">${item.price}</div>
+        <div className="fw-bold">
+          ${(item.price * item.quantity).toFixed(2)}
+        </div>
         {showRemoveButton && (
           <Button
             variant="link"

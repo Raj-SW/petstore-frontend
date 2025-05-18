@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { useCart } from "react-use-cart";
 
 //Component import
 import { Container, Row, Col, Button, Image } from "react-bootstrap";
@@ -27,11 +28,11 @@ const IndividualProductItemPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [reviews, setReviews] = useState([]);
+  const { addItem } = useCart();
 
   useEffect(() => {
     ProductService.fetchProductById(parseInt(id))
       .then((product) => {
-        console.log(product);
         setProduct(product);
         setIsLoading(false);
       })
@@ -42,7 +43,6 @@ const IndividualProductItemPage = () => {
       });
     ReviewService.fetchProductReviews(parseInt(id))
       .then((reviews) => {
-        console.log(reviews);
         setReviews(reviews);
       })
       .catch((err) => {
@@ -53,16 +53,22 @@ const IndividualProductItemPage = () => {
   if (isLoading) return <p>Loading product details...</p>;
   if (!product) return <p>Product not found.</p>;
 
-  //  Decrement quantity
   const handleDecrement = () => {
-    if (quantity > 1) {
-      setQuantity(quantity - 1);
-    }
+    setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
   };
 
-  // Increment quantity
   const handleIncrement = () => {
-    setQuantity(quantity + 1);
+    setQuantity((prev) => prev + 1);
+  };
+
+  const handleAddToCart = () => {
+    addItem({
+      id: product.id,
+      title: product.title,
+      price: parseFloat(product.price),
+      image: product.imageUrl,
+      quantity: quantity,
+    });
   };
 
   return (
@@ -174,25 +180,25 @@ const IndividualProductItemPage = () => {
                   <strong>Quantity</strong>
                 </span>
                 <div className="d-flex align-items-center">
-                  {/* IconContext to style the icons */}
                   <IconContext.Provider
                     value={{ size: "2rem", color: "black" }}
                   >
-                    {/* Decrement Button */}
                     <LuArrowLeft
                       onClick={handleDecrement}
                       style={{ cursor: "pointer" }}
                     />
-                    {/* Quantity Display */}
                     <span className="mx-3">{quantity}</span>
-                    {/* Increment Button */}
                     <LuArrowLeft
                       style={{ transform: "rotate(180deg)", cursor: "pointer" }}
                       onClick={handleIncrement}
                     />
                   </IconContext.Provider>
                 </div>
-                <CustomButton title={"Add to Cart"} />
+                <CustomButton
+                  title="Add to Cart"
+                  onClick={handleAddToCart}
+                  variant="success"
+                />
               </div>
             </Col>
           </Row>

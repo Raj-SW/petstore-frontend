@@ -5,13 +5,18 @@ import "./GlobalCustomStyle.css";
 import { Outlet } from "react-router-dom";
 import NavigationBar from "./Components/NavigationBar/NavigationBar";
 import Footer from "./Components/Footer/Footer";
+import { AuthProvider } from "./context/AuthContext";
+import CartContext from "./context/CartContext";
+
 function App() {
   return (
-    <>
-      <NavigationBar />
-      <Outlet />
-      <Footer />
-    </>
+    <AuthProvider>
+      <CartContext>
+        <NavigationBar />
+        <Outlet />
+        <Footer />
+      </CartContext>
+    </AuthProvider>
   );
 }
 
