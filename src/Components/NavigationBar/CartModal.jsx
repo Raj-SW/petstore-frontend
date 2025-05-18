@@ -43,9 +43,18 @@ const CartModal = ({
       </Modal.Header>
       <Modal.Body>
         {items.length === 0 ? (
-          <div className="empty-cart">
-            <p>Your cart is empty</p>
-            <Button variant="outline-primary" onClick={onHide}>
+          <div className="empty-cart d-flex flex-column align-items-center justify-content-center p-5">
+            <i className="bi bi-cart-x fs-1 text-muted mb-3"></i>
+            <p className="h4 mb-4 text-muted">Your cart is empty</p>
+            <p className="text-muted mb-4">
+              Add some products to your cart to continue shopping
+            </p>
+            <Button
+              variant="primary"
+              onClick={onHide}
+              className="rounded-pill px-4 py-2 button-primary"
+            >
+              <i className="bi bi-arrow-left me-2"></i>
               Continue Shopping
             </Button>
           </div>
@@ -88,12 +97,12 @@ const CartModal = ({
         )}
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={onHide}>
+        <Button className="rounded-5 btn-primary" onClick={onHide}>
           Continue Shopping
         </Button>
         {items.length > 0 && (
           <Button
-            variant="primary"
+            className="rounded-5 btn-primary"
             onClick={handleCheckout}
             disabled={items.length === 0}
           >

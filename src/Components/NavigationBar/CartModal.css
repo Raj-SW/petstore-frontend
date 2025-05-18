@@ -70,13 +70,13 @@
 }
 
 .cart-modal .btn-primary {
-    background-color: var(--primary-green-40-color);
-    border-color: var(--primary-green-40-color);
+    background-color: var(--secondary-color);
+    color: var(--white-color);
+    border: none;
 }
 
 .cart-modal .btn-primary:hover {
-    background-color: var(--primary-green-50-color);
-    border-color: var(--primary-green-50-color);
+    background-color: var(--primary-green-80);
 }
 
 .cart-modal .btn-secondary {

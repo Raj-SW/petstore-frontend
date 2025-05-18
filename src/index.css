@@ -162,6 +162,15 @@ a:active {
   cursor: pointer;
 }
 
+.button-primary {
+  background-color: var(--secondary-color);
+  color: var(--white-color);
+}
+
+.button-primary:hover {
+  background-color: var(--primary-green-80);
+}
+
 /* weight is 400 - 700 */
 /* .caveat-<uniquifier> {
   font-family: "Caveat", cursive;

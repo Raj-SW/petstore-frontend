@@ -33,7 +33,7 @@ const Breadcrumb = ({ items }) => {
               style={{
                 width: "1.5rem",
                 height: "1.5rem",
-                color: "#667479",
+                color: "var(--neutral-color-60)",
                 transform: "rotate(-90deg)",
               }}
             />
