@@ -17,10 +17,9 @@ const CartModal = ({
 
   const handleCheckout = () => {
     if (items.length === 0) {
-      return; // Don't navigate if cart is empty
+      return;
     }
 
-    // Store cart items in sessionStorage for checkout page
     sessionStorage.setItem("cartItems", JSON.stringify(items));
     sessionStorage.setItem("cartTotal", cartTotal.toString());
 
@@ -34,25 +33,32 @@ const CartModal = ({
       onHide={onHide}
       size="lg"
       centered
-      className="cart-modal"
+      className="cart-modal shadow-lg"
     >
-      <Modal.Header closeButton>
-        <Modal.Title className="cart-modal-title">
+      <Modal.Header closeButton className="border-0 pb-0">
+        <Modal.Title className="cart-modal-title poppins-semibold">
+          <i className="bi bi-cart3 me-2 text-secondary"></i>
           Shopping Cart ({totalItems} items)
         </Modal.Title>
       </Modal.Header>
-      <Modal.Body>
+      <Modal.Body className="px-4">
         {items.length === 0 ? (
           <div className="empty-cart d-flex flex-column align-items-center justify-content-center p-5">
-            <i className="bi bi-cart-x fs-1 text-muted mb-3"></i>
-            <p className="h4 mb-4 text-muted">Your cart is empty</p>
-            <p className="text-muted mb-4">
-              Add some products to your cart to continue shopping
+            <div className="empty-cart-icon mb-4">
+              <i className="bi bi-cart-x display-1 text-secondary opacity-50"></i>
+            </div>
+            <h4 className="poppins-medium text-secondary mb-3">
+              Your cart is empty
+            </h4>
+            <p className="text-muted text-center mb-4 poppins-regular">
+              Looks like you haven't added anything to your cart yet.
+              <br />
+              Browse our products and start shopping!
             </p>
             <Button
               variant="primary"
               onClick={onHide}
-              className="rounded-pill px-4 py-2 button-primary"
+              className="rounded-pill px-4 py-2 button-primary shadow-sm"
             >
               <i className="bi bi-arrow-left me-2"></i>
               Continue Shopping
@@ -60,7 +66,7 @@ const CartModal = ({
           </div>
         ) : (
           <>
-            <div className="cart-items">
+            <div className="cart-items py-3">
               {items.map((item) => (
                 <CartItem
                   key={item.id}
@@ -77,18 +83,20 @@ const CartModal = ({
                 />
               ))}
             </div>
-            <div className="cart-summary">
-              <div className="summary-row">
+            <div className="cart-summary shadow-sm">
+              <div className="summary-row poppins-regular">
                 <span>Subtotal:</span>
-                <span>${cartTotal.toFixed(2)}</span>
+                <span className="text-secondary">${cartTotal.toFixed(2)}</span>
               </div>
-              <div className="summary-row">
+              <div className="summary-row poppins-regular">
                 <span>Shipping:</span>
-                <span>${(cartTotal > 0 ? 20 : 0).toFixed(2)}</span>
+                <span className="text-secondary">
+                  ${(cartTotal > 0 ? 20 : 0).toFixed(2)}
+                </span>
               </div>
-              <div className="summary-row total">
+              <div className="summary-row total poppins-semibold">
                 <span>Total:</span>
-                <span>
+                <span className="text-primary">
                   ${(cartTotal + (cartTotal > 0 ? 20 : 0)).toFixed(2)}
                 </span>
               </div>
@@ -96,16 +104,20 @@ const CartModal = ({
           </>
         )}
       </Modal.Body>
-      <Modal.Footer>
-        <Button className="rounded-5 btn-primary" onClick={onHide}>
+      <Modal.Footer className="border-0 pt-2 pb-4">
+        <Button
+          className="rounded-pill px-4 py-2 button-primary shadow-sm"
+          onClick={onHide}
+        >
+          <i className="bi bi-arrow-left me-2"></i>
           Continue Shopping
         </Button>
         {items.length > 0 && (
           <Button
-            className="rounded-5 btn-primary"
+            className="rounded-pill px-4 py-2 button-primary shadow-sm ms-2"
             onClick={handleCheckout}
-            disabled={items.length === 0}
           >
+            <i className="bi bi-credit-card me-2"></i>
             Proceed to Checkout
           </Button>
         )}
