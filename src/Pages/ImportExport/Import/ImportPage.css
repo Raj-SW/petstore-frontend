@@ -1,3 +1,7 @@
+.import-page-container {
+    margin-bottom: 5rem;
+}
+
 /* Info Card Styles */
 .import-info-card {
     background: var(--tertiary-color);
@@ -43,7 +47,6 @@
 
 /* Form Container Styles */
 .import-form-container {
-    background: #f3fbf7;
     color: #1a3d2f;
     border-radius: 12px;
     box-shadow: 0 2px 12px 0 rgba(110, 215, 162, 0.10), 0 1.5px 6px 0 rgba(0, 0, 0, 0.04);
@@ -62,7 +65,7 @@
 }
 
 .import-form-tabs {
-    background: #e6f7ee;
+    background: var(--tertiary-color);
     border-radius: 12px;
     padding: 0.5rem 1.5rem;
     display: flex;
@@ -73,7 +76,7 @@
 
 .import-form-tabs .nav-link {
     background: transparent !important;
-    color: #6db89c !important;
+    color: white !important;
     font-weight: 700;
     border: none !important;
     border-radius: 1rem !important;
@@ -85,9 +88,25 @@
 }
 
 .import-form-tabs .nav-link.active {
-    background: #6db89c !important;
+    background: var(--primary-green-20-color) !important;
     color: #fff !important;
     font-weight: 700;
     border: none !important;
     box-shadow: none !important;
+}
+
+.import-form-container input,
+.import-form-container textarea,
+.import-form-container select {
+    border: 0.1rem solid var(--primary-green-80);
+    border-radius: 6px;
+    box-shadow: none;
+    transition: border-color 0.2s, outline-color 0.2s;
+}
+
+.import-form-container input:focus,
+.import-form-container textarea:focus,
+.import-form-container select:focus {
+    outline: 0.11rem solid #1a3d2f;
+    border-color: #1a3d2f;
 }

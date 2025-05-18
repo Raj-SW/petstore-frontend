@@ -55,14 +55,6 @@ const CartModal = ({
               <br />
               Browse our products and start shopping!
             </p>
-            <Button
-              variant="primary"
-              onClick={onHide}
-              className="rounded-pill px-4 py-2 button-primary shadow-sm"
-            >
-              <i className="bi bi-arrow-left me-2"></i>
-              Continue Shopping
-            </Button>
           </div>
         ) : (
           <>

@@ -87,3 +87,9 @@
     border-radius: 1rem;
     margin: 0.5rem auto 1.2rem auto;
 }
+
+.importexport-btn {
+    background-color: var(--primary-green-80);
+    outline: none;
+    border: none;
+}

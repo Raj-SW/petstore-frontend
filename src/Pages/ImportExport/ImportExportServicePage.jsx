@@ -1,4 +1,3 @@
-import React from "react";
 import { Container, Row, Col, Button, Card } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import Breadcrumb from "@/Components/HelperComponents/Breadcrumb/Breadcrumb";
@@ -9,7 +8,6 @@ const ImportExportServicePage = () => {
   const navigate = useNavigate();
   const breadcrumbItems = [
     { label: "Home", path: "/" },
-    { label: "Services", path: "/ServicePage" },
     { label: "Import/Export" },
   ];
   return (
@@ -34,8 +32,7 @@ const ImportExportServicePage = () => {
             </p>
             <div className="d-flex gap-2 justify-content-center justify-content-md-start w-100">
               <Button
-                variant="success"
-                className="px-4 py-2 poppins-medium importexport-btn"
+                className="px-4 py-2 poppins-medium importexport-btn rounded-5"
                 onClick={() => navigate("/import-page")}
               >
                 Apply

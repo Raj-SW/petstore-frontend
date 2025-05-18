@@ -13,9 +13,8 @@ import "./ImportPage.css";
 const ExportImportForm = () => {
   const breadcrumbItems = [
     { label: "Home", path: "/" },
-    { label: "Services", path: "/ServicePage" },
-    { label: "Import/Export", path: "/ImportExportServicePage" },
-    { label: "Import" },
+    { label: "Import/Export", path: "/import-export-service" },
+    { label: "Apply" },
   ];
 
   // Multi-step form state
@@ -29,7 +28,6 @@ const ExportImportForm = () => {
     city: "",
     country: "",
     zip: "",
-    // ...other fields for next steps
   });
   const [submitted, setSubmitted] = useState(false);
 
@@ -46,7 +44,7 @@ const ExportImportForm = () => {
   };
 
   return (
-    <div>
+    <div className="import-page-container" style={{ height: "fit-content" }}>
       <Container className="pt-4 pb-2">
         <Row>
           <Col>
@@ -57,7 +55,7 @@ const ExportImportForm = () => {
           <Col>
             <div className="d-flex align-items-center gap-3">
               <FaPlaneArrival size={32} />
-              <h1>Import</h1>
+              <h1>Apply</h1>
             </div>
             <p>
               Bringing your pet into the country? Let us handle the paperwork
@@ -131,7 +129,9 @@ const ExportImportForm = () => {
           {/* Right Column: 70% */}
           <Col md={8}>
             <div className="import-form-container">
-              <h2 className="import-form-title">Pet Import Application</h2>
+              <h2 className="import-form-title">
+                Pet Import/Export Application
+              </h2>
               <div className="import-form-desc mb-3">
                 Please fill out the form below to apply for our pet import
                 service. All fields marked with * are required.
