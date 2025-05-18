@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Container, Form, Row, Col, Button } from "react-bootstrap";
-import CustomButton from "@/Components/HelperComponents/CustomButton/CustomButton";
-
+import "./FilterComponent.css";
 const FilterComponent = ({ onApplyFilters }) => {
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
@@ -30,13 +29,13 @@ const FilterComponent = ({ onApplyFilters }) => {
 
   return (
     <Container className="filter-container">
-      <h5 className=" poppins-medium fs-5 primary-color-font">
+      <h5 className=" poppins-medium fs-5 secondary-color-font">
         Filter Products
       </h5>
 
       {/* Category Filter */}
       <div className="filter-section mb-4">
-        <h6 className="poppins-medium primary-color-font">Category</h6>
+        <h6 className="poppins-medium secondary-color-font">Category</h6>
         <Form>
           {categories.map((category) => (
             <Form.Check
@@ -45,7 +44,7 @@ const FilterComponent = ({ onApplyFilters }) => {
               label={category}
               checked={selectedCategories.includes(category)}
               onChange={() => handleCategoryChange(category)}
-              className="poppins-medium primary-color-font"
+              className="poppins-medium secondary-color-font"
             />
           ))}
         </Form>
@@ -53,7 +52,7 @@ const FilterComponent = ({ onApplyFilters }) => {
 
       {/* Price Filter */}
       <div className="filter-section mb-4">
-        <h6 className="poppins-medium primary-color-font">Price</h6>
+        <h6 className="poppins-medium secondary-color-font">Price</h6>
         <Row>
           <Col>
             <Form.Control
@@ -63,7 +62,8 @@ const FilterComponent = ({ onApplyFilters }) => {
               placeholder="Min"
               value={minPrice}
               onChange={(e) => setMinPrice(e.target.value)}
-              className="poppins-regular primary-color-font"
+              className="poppins-regular secondary-color-font"
+              style={{ outline: `1px solid var(--secondary-color)` }}
             />
           </Col>
           <Col>
@@ -73,7 +73,8 @@ const FilterComponent = ({ onApplyFilters }) => {
               placeholder="Max"
               value={maxPrice}
               onChange={(e) => setMaxPrice(e.target.value)}
-              className="poppins-regular primary-color-font"
+              className="poppins-regular secondary-color-font"
+              style={{ outline: `1px solid var(--secondary-color)` }}
             />
           </Col>
         </Row>
@@ -81,7 +82,7 @@ const FilterComponent = ({ onApplyFilters }) => {
 
       {/* Rating Filter */}
       <div className="filter-section mb-4">
-        <h6 className="poppins-medium primary-color-font">Rating</h6>
+        <h6 className="poppins-medium secondary-color-font">Rating</h6>
         <Form>
           {[5, 4, 3, 2, 1].map((value) => (
             <Form.Check
@@ -92,7 +93,7 @@ const FilterComponent = ({ onApplyFilters }) => {
               value={value}
               checked={rating === `${value}`}
               onChange={(e) => setRating(e.target.value)}
-              className="poppins-regular primary-color-font"
+              className="poppins-regular secondary-color-font"
             />
           ))}
         </Form>
@@ -101,7 +102,9 @@ const FilterComponent = ({ onApplyFilters }) => {
       {/* <Button variant="primary" onClick={handleApplyFilters}>
         Apply Filters
       </Button> */}
-      <CustomButton title="Apply Filters" onClick={handleApplyFilters} />
+      <Button onClick={handleApplyFilters} className="rounded-5 filter-btn">
+        Apply Filters
+      </Button>
     </Container>
   );
 };

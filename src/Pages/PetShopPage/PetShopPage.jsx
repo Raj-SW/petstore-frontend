@@ -202,7 +202,7 @@ const PetShopPage = () => {
           <Col className="ProductItemsWrapper">
             <div className="ProductItemsHeaders d-flex justify-content-between w-100 pb-3">
               <div>
-                <p className="poppins-semibold fs-5 primary-color-font ">
+                <p className="poppins-semibold fs-5 secondary-color-font ">
                   Products
                 </p>
               </div>

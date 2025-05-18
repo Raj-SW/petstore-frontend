@@ -146,6 +146,10 @@ a:active {
   color: var(--secondary-color);
 }
 
+.secondary-color-font {
+  color: var(--secondary-color);
+}
+
 .pale-green-color-font {
   color: var(--pale-green-color);
 }

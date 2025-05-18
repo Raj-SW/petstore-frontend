@@ -15,7 +15,7 @@
 }
 
 .breadcrumb-text.active {
-    color: #22c55e !important;
+    color: var(--secondary-color) !important;
     /* Vibrant green */
     font-weight: 700;
 }
