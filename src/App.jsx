@@ -7,14 +7,18 @@ import NavigationBar from "./Components/NavigationBar/NavigationBar";
 import Footer from "./Components/Footer/Footer";
 import { AuthProvider } from "./context/AuthContext";
 import CartContext from "./context/CartContext";
+import { ToastProvider } from "./context/ToastContext";
+import "./context/ToastContext.css";
 
 function App() {
   return (
     <AuthProvider>
       <CartContext>
-        <NavigationBar />
-        <Outlet />
-        <Footer />
+        <ToastProvider>
+          <NavigationBar />
+          <Outlet />
+          <Footer />
+        </ToastProvider>
       </CartContext>
     </AuthProvider>
   );

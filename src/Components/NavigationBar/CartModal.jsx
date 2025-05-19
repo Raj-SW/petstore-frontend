@@ -2,6 +2,7 @@ import React from "react";
 import { Modal, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "react-use-cart";
+import { useToast } from "../../context/ToastContext";
 import { CartItem } from "../HelperComponents/CartItem/CartItem";
 import "./CartModal.css";
 
@@ -14,6 +15,7 @@ const CartModal = ({
 }) => {
   const navigate = useNavigate();
   const { items, cartTotal, totalItems } = useCart();
+  const { showCartToast, showCheckoutToast } = useToast();
 
   const handleCheckout = () => {
     if (items.length === 0) {
@@ -22,9 +24,17 @@ const CartModal = ({
 
     sessionStorage.setItem("cartItems", JSON.stringify(items));
     sessionStorage.setItem("cartTotal", cartTotal.toString());
-
+    showCheckoutToast("success");
     onHide();
     navigate("/checkout");
+  };
+
+  const handleRemoveItem = (itemId) => {
+    const item = items.find((i) => i.id === itemId);
+    if (item) {
+      showCartToast("remove", item.title);
+      onRemoveItem(itemId);
+    }
   };
 
   return (
@@ -71,7 +81,7 @@ const CartModal = ({
                   }}
                   onIncreaseQuantity={onIncreaseQuantity}
                   onDecreaseQuantity={onDecreaseQuantity}
-                  onRemoveItem={onRemoveItem}
+                  onRemoveItem={handleRemoveItem}
                 />
               ))}
             </div>

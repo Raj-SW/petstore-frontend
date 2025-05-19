@@ -3,10 +3,12 @@ import { Container, Row, Col, Button, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { CartItem } from "../../Components/HelperComponents/CartItem/CartItem";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+import { useToast } from "../../context/ToastContext";
 import "./CartCheckoutPage.css";
 
 const CartCheckoutPage = () => {
   const navigate = useNavigate();
+  const { showCartToast, showCheckoutToast } = useToast();
   const [cartItems, setCartItems] = useState([]);
   const [cartTotal, setCartTotal] = useState(0);
 
@@ -34,7 +36,13 @@ const CartCheckoutPage = () => {
   };
 
   const handleRemoveItem = (itemId) => {
-    setCartItems((prevItems) => prevItems.filter((item) => item.id !== itemId));
+    const item = cartItems.find((i) => i.id === itemId);
+    if (item) {
+      showCartToast("remove", item.name);
+      setCartItems((prevItems) =>
+        prevItems.filter((item) => item.id !== itemId)
+      );
+    }
   };
 
   const calculateTotal = () => {
@@ -42,6 +50,14 @@ const CartCheckoutPage = () => {
       (total, item) => total + item.price * item.quantity,
       0
     );
+  };
+
+  const handleCheckout = () => {
+    // Store updated cart items before proceeding
+    sessionStorage.setItem("cartItems", JSON.stringify(cartItems));
+    sessionStorage.setItem("cartTotal", calculateTotal().toString());
+    showCheckoutToast("success");
+    navigate("/checkout");
   };
 
   if (cartItems.length === 0) {
@@ -110,31 +126,8 @@ const CartCheckoutPage = () => {
 
           {/* Right: Card Details */}
           <Col lg={4} className="card-details-col">
-            <div className="card-details-wrapper rounded-4 p-4">
-              <h5 className="mb-3 card-details-title">Card Details</h5>
-              <div className="mb-3 card-type-icons d-flex gap-2">
-                {/* Placeholder for card type icons */}
-                <div className="card-type-icon" />
-                <div className="card-type-icon" />
-                <div className="card-type-icon" />
-                <div className="card-type-icon" />
-              </div>
-              <Form>
-                <Form.Group className="mb-2">
-                  <Form.Control placeholder="Cardholder's Name" />
-                </Form.Group>
-                <Form.Group className="mb-2">
-                  <Form.Control placeholder="Card Number" />
-                </Form.Group>
-                <Row className="mb-2">
-                  <Col>
-                    <Form.Control placeholder="Expiration" />
-                  </Col>
-                  <Col>
-                    <Form.Control placeholder="CVC" />
-                  </Col>
-                </Row>
-              </Form>
+            <div className="card-details-wrapper p-4">
+              <h5 className="card-details-title mb-4">Order Summary</h5>
               <div className="card-summary mt-4">
                 <div className="d-flex justify-content-between text-white mb-2">
                   <span>Sub Total</span>
@@ -157,18 +150,7 @@ const CartCheckoutPage = () => {
                   variant="success"
                   className="checkout-btn d-flex align-items-center justify-content-center w-100"
                   style={{ gap: "0.5rem" }}
-                  onClick={() => {
-                    // Store updated cart items before proceeding
-                    sessionStorage.setItem(
-                      "cartItems",
-                      JSON.stringify(cartItems)
-                    );
-                    sessionStorage.setItem(
-                      "cartTotal",
-                      calculateTotal().toString()
-                    );
-                    navigate("/checkout");
-                  }}
+                  onClick={handleCheckout}
                 >
                   Check Out <FaArrowRight />
                 </Button>
