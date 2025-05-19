@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { CartItem } from "../../Components/HelperComponents/CartItem/CartItem";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { useToast } from "../../context/ToastContext";
-import "./CartCheckoutPage.css";
+import "./CartCheckOutPage.css";
 
 const CartCheckoutPage = () => {
   const navigate = useNavigate();
