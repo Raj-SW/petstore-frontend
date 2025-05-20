@@ -1,32 +1,24 @@
-# Build stage
-FROM node:18-alpine as build
+# Stage 1: Build React App
+FROM node:20-alpine as build
 
-# Set working directory
 WORKDIR /app
-
-# Copy package files
 COPY package*.json ./
-
-# Install dependencies
 RUN npm install
 
-# Copy all files
 COPY . .
-
-# Build the app
 RUN npm run build
 
-# Production stage
+# Stage 2: Serve with Nginx
 FROM nginx:alpine
 
-# Copy built assets from build stage
-COPY --from=build /app/dist /usr/share/nginx/html
+# Remove default nginx page
+RUN rm -rf /usr/share/nginx/html/*
 
-# Copy nginx configuration
+# Copy built React files
+COPY --from=build /app/build /usr/share/nginx/html
+
+# Add custom nginx config for SPA routing
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Expose port 80
 EXPOSE 80
-
-# Start nginx
-CMD ["nginx", "-g", "daemon off;"] 
+CMD ["nginx", "-g", "daemon off;"]
