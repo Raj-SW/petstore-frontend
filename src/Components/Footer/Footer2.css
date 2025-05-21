@@ -1,8 +1,7 @@
 .footerWrapper {
     width: 100%;
     height: auto;
-    /*    background-color: #A7D7C5;*/
-    background-color: var(--primary1-dark-color);
+    background-color: #A7D7C5;
 }
 
 .registerSection {

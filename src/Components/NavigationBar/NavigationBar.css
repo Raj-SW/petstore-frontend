@@ -1,6 +1,15 @@
+.nav-bar {
+    background-color: var(--primary-blue-color);
+}
+
+.brand>img {
+    height: 3.3125rem;
+    border-radius: 25%;
+}
+
 .brand-Name>div>p {
     line-height: 0rem;
-    font-weight: 1000;
+    font-weight: 700;
     color: white;
 }
 
@@ -36,5 +45,6 @@
 .navbar-light .navbar-toggler-icon {
     color: white !important;
 }
+
 
 .paws-mobile-img-container {}

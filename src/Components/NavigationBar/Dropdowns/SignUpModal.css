@@ -1,0 +1,93 @@
+/* Signup Modal Styles */
+.authModal {
+    border-radius: 2rem;
+}
+
+.authModal-body {
+    margin: 0;
+    padding: 0;
+}
+
+.signUpDecoWrapper {
+    background-image: url("../../../assets/Decoratives/loginBackground.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: auto;
+    border-radius: 1rem 0 0 1rem;
+}
+
+/* Form styles */
+.signup-form .form-control {
+    border: 1px solid #ced4da;
+    padding: 0.75rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.signup-form .form-control:focus {
+    border-color: var(--primary-blue-color);
+    box-shadow: 0 0 0 0.2rem rgba(1, 57, 96, 0.25);
+}
+
+.signup-form .input-group-text {
+    border: 1px solid #ced4da;
+    padding: 0.75rem;
+    background-color: #fff;
+}
+
+.signup-form .input-group:focus-within .input-group-text {
+    border-color: var(--primary-blue-color);
+}
+
+.login-link a {
+    color: var(--primary-blue-color);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.login-link a:hover {
+    text-decoration: underline;
+}
+
+/* Custom alert style */
+.custom-login-alert {
+    font-size: 1rem;
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+    min-height: 48px;
+    word-break: break-word;
+}
+
+@media (max-width: 576px) {
+    .custom-login-alert {
+        font-size: 0.95rem;
+        padding: 0.5rem 0.75rem;
+    }
+}
+
+/* Responsive styles */
+@media (max-width: 991.98px) {
+    .signUpDecoWrapper {
+        display: none;
+    }
+
+    .loginContainer {
+        min-height: auto;
+    }
+}
+
+.signup-close-button {
+    right: 0.625rem;
+    top: 0.625rem;
+    z-index: 2;
+    color: var(--primary-blue-color);
+}
+
+@media (max-width: 576px) {
+    .signup-close-button {
+        right: 0.5rem;
+        top: 0.5rem;
+        font-size: 1.25rem;
+    }
+}

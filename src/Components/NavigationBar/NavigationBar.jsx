@@ -44,8 +44,8 @@ const NavigationBar = () => {
       <Navbar
         collapseOnSelect // Collapses on mobile when clicking outside
         expand="lg" // Expands on large screens
-        className="sticky-top" // Sticks to top while scrolling
-        style={{ backgroundColor: "var(--secondary-color)" }}
+        className="sticky-top nav-bar" // Sticks to top while scrolling
+        //style={{ backgroundColor: "var(--secondary-color)" }}
         variant="dark" // This changes the hamburger menu color to white
       >
         <Container fluid>
@@ -78,10 +78,6 @@ const NavigationBar = () => {
                 <img
                   src={vitalPawsLogo}
                   alt="Cat Logo"
-                  style={{
-                    height: "53px",
-                    borderRadius: "25%",
-                  }}
                   className=" vitalPawsLogo"
                 />
               </a>

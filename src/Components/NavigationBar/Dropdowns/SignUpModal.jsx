@@ -17,13 +17,16 @@ import {
   FaEyeSlash,
   FaGoogle,
   FaFacebook,
+  FaExclamationCircle,
+  FaUserPlus,
+  FaTimes,
 } from "react-icons/fa";
 import { IconContext } from "react-icons";
 import brandLogoV2 from "../../../assets/Decoratives/BrandV2.png";
 import dogLogin from "../../../assets/Decoratives/DogPic.png";
 import { useAuth } from "../../../context/AuthContext";
 import AuthService from "../../../Services/authService";
-
+import "./SignUpModal.css";
 const SignUpModal = ({
   show,
   onHide,
@@ -41,6 +44,8 @@ const SignUpModal = ({
   const [loading, setLoading] = useState(false);
   const [alert, setAlert] = useState(null);
   const [termsAccepted, setTermsAccepted] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const validateForm = () => {
     const newErrors = {};
@@ -56,6 +61,11 @@ const SignUpModal = ({
       newErrors.password = "Password is required";
     } else if (formData.password.length < 8) {
       newErrors.password = "Password must be at least 8 characters";
+    }
+    if (!confirmPassword) {
+      newErrors.confirmPassword = "Please confirm your password";
+    } else if (formData.password !== confirmPassword) {
+      newErrors.confirmPassword = "Passwords do not match";
     }
     if (!termsAccepted) {
       newErrors.terms = "You must accept the terms and conditions";
@@ -76,6 +86,13 @@ const SignUpModal = ({
         ...prev,
         [name]: "",
       }));
+    }
+  };
+
+  const handleConfirmPasswordChange = (e) => {
+    setConfirmPassword(e.target.value);
+    if (errors.confirmPassword) {
+      setErrors((prev) => ({ ...prev, confirmPassword: "" }));
     }
   };
 
@@ -133,13 +150,33 @@ const SignUpModal = ({
     }
   };
 
+  const handleClose = () => {
+    setErrors({});
+    setAlert(null);
+    onHide();
+  };
+
   return (
     <Modal
       show={show}
-      onHide={onHide}
+      onHide={handleClose}
       className="authModal signUpModal"
       size="lg"
     >
+      <Modal.Header
+        className="border-0 position-relative m-2 p-0"
+        style={{ minHeight: 0 }}
+      >
+        <Button
+          variant="link"
+          className="position-absolute signup-close-button"
+          style={{ right: 10, top: 10, zIndex: 2 }}
+          onClick={handleClose}
+          aria-label="Close"
+        >
+          <FaTimes size={22} />
+        </Button>
+      </Modal.Header>
       <Modal.Body className="authModal-body d-flex">
         <Container className="d-flex p-0 m-0 loginContainer">
           <Col className="signUpDecoWrapper d-none d-lg-flex flex-column align-items-center justify-content-center">
@@ -156,20 +193,33 @@ const SignUpModal = ({
               Create Your Account
             </h3>
             {alert && (
-              <Alert variant={alert.type} className="mb-3">
-                {alert.message}
+              <Alert
+                variant="danger"
+                className="mb-3 d-flex align-items-center gap-2 custom-login-alert"
+                style={{ background: "var(--error-light)", border: "none" }}
+                role="alert"
+              >
+                <FaExclamationCircle
+                  className="flex-shrink-0"
+                  size={22}
+                  style={{ color: "#D32F2F" }}
+                />
+                <div className="flex-grow-1">{alert.message}</div>
               </Alert>
             )}
-            <Form className="poppins-regular p-4" onSubmit={handleSubmit}>
+            <Form
+              className="poppins-regular p-4 signup-form"
+              onSubmit={handleSubmit}
+            >
               <InputGroup className="mb-3">
-                <InputGroup.Text className="bg-white">
-                  <FaUser className="text-success" />
+                <InputGroup.Text className="bg-white rounded-start-4 secondary-color-font">
+                  <FaUser />
                 </InputGroup.Text>
                 <Form.Control
                   name="fullName"
                   type="text"
                   placeholder="Full Name"
-                  className="border-start-0"
+                  className="border-start-0 rounded-end-4 outlined-input"
                   required
                   value={formData.fullName}
                   onChange={handleInputChange}
@@ -181,14 +231,14 @@ const SignUpModal = ({
               </InputGroup>
 
               <InputGroup className="mb-3">
-                <InputGroup.Text className="bg-white">
-                  <FaEnvelope className="text-success" />
+                <InputGroup.Text className="bg-white rounded-start-4 secondary-color-font">
+                  <FaEnvelope />
                 </InputGroup.Text>
                 <Form.Control
                   name="email"
                   type="email"
                   placeholder="E-mail"
-                  className="border-start-0"
+                  className="border-start-0 rounded-end-4 outlined-input"
                   required
                   value={formData.email}
                   onChange={handleInputChange}
@@ -200,32 +250,54 @@ const SignUpModal = ({
               </InputGroup>
 
               <InputGroup className="mb-3">
-                <InputGroup.Text className="bg-white">
-                  <FaKey className="text-success" />
+                <InputGroup.Text className="bg-white rounded-start-4 secondary-color-font">
+                  <FaKey />
                 </InputGroup.Text>
                 <Form.Control
                   name="password"
                   type={showPassword ? "text" : "password"}
                   placeholder="Password"
-                  className="border-start-0"
+                  className="border-start-0 outlined-input"
                   required
                   value={formData.password}
                   onChange={handleInputChange}
                   isInvalid={!!errors.password}
                 />
                 <InputGroup.Text
-                  className="bg-white"
+                  className="bg-white rounded-end-4 secondary-color-font"
                   onClick={togglePasswordVisibility}
                   style={{ cursor: "pointer" }}
                 >
-                  {showPassword ? (
-                    <FaEye className="text-muted" />
-                  ) : (
-                    <FaEyeSlash className="text-muted" />
-                  )}
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
                 </InputGroup.Text>
                 <Form.Control.Feedback type="invalid">
                   {errors.password}
+                </Form.Control.Feedback>
+              </InputGroup>
+
+              <InputGroup className="mb-3">
+                <InputGroup.Text className="bg-white rounded-start-4 secondary-color-font">
+                  <FaKey />
+                </InputGroup.Text>
+                <Form.Control
+                  name="confirmPassword"
+                  type={showConfirmPassword ? "text" : "password"}
+                  placeholder="Confirm Password"
+                  className="border-start-0 outlined-input"
+                  required
+                  value={confirmPassword}
+                  onChange={handleConfirmPasswordChange}
+                  isInvalid={!!errors.confirmPassword}
+                />
+                <InputGroup.Text
+                  className="bg-white rounded-end-4 secondary-color-font"
+                  onClick={() => setShowConfirmPassword((prev) => !prev)}
+                  style={{ cursor: "pointer" }}
+                >
+                  {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+                </InputGroup.Text>
+                <Form.Control.Feedback type="invalid">
+                  {errors.confirmPassword}
                 </Form.Control.Feedback>
               </InputGroup>
 
@@ -249,26 +321,27 @@ const SignUpModal = ({
                 </Form.Control.Feedback>
               </Form.Group>
 
-              <div className="text-center">
+              <div className="d-grid gap-2">
                 <Button
-                  variant="success"
+                  variant="primary"
                   type="submit"
-                  className="w-100 rounded-pill signup-btn"
+                  className="btn-primary d-flex align-items-center justify-content-center gap-2 rounded-5 signup-btn "
                   disabled={loading}
                 >
+                  <FaUserPlus className="mb-1" />
                   {loading ? "Creating Account..." : "Sign Up"}
                 </Button>
               </div>
             </Form>
 
-            <div className="d-flex align-items-center my-3 pt-4 poppins-regular">
+            <div className="d-flex align-items-center  poppins-regular">
               <div className="flex-grow-1 border-bottom"></div>
-              <span className="mx-2 custom-text-color">Or Sign Up with</span>
+              <span className="mx-2 primary-color-font">Or Sign Up with</span>
               <div className="flex-grow-1 border-bottom"></div>
             </div>
 
-            <IconContext.Provider value={{ color: "#74B49B", size: "1.5rem" }}>
-              <div className="d-flex justify-content-center gap-3 my-3 pt-4 pb-4">
+            <IconContext.Provider value={{ size: "1.5rem" }}>
+              <div className="d-flex justify-content-center gap-3 my-3  ">
                 <FaGoogle
                   onClick={() => handleSocialSignup("google")}
                   style={{ cursor: "pointer" }}
@@ -281,9 +354,9 @@ const SignUpModal = ({
             </IconContext.Provider>
 
             <div className="text-center pb-4 poppins-regular">
-              <p className="mt-4">
+              <p className="mt-4 login-link">
                 Already have an account?{" "}
-                <a href="#" style={{ color: "#76c7c0" }} onClick={onLoginClick}>
+                <a href="#" onClick={onLoginClick}>
                   Log in
                 </a>
               </p>
