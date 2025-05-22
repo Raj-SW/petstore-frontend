@@ -195,7 +195,7 @@ const SignUpModal = ({
             {alert && (
               <Alert
                 variant="danger"
-                className="mb-3 d-flex align-items-center gap-2 custom-login-alert"
+                className="d-flex align-items-center gap-2 custom-login-alert"
                 style={{ background: "var(--error-light)", border: "none" }}
                 role="alert"
               >
@@ -323,9 +323,8 @@ const SignUpModal = ({
 
               <div className="d-grid gap-2">
                 <Button
-                  variant="primary"
                   type="submit"
-                  className="btn-primary d-flex align-items-center justify-content-center gap-2 rounded-5 signup-btn "
+                  className="btn-primary d-flex align-items-center justify-content-center gap-2 rounded-5 signup-btn"
                   disabled={loading}
                 >
                   <FaUserPlus className="mb-1" />

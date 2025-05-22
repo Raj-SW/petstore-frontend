@@ -6,8 +6,7 @@ import LoginModal from "./LoginModal";
 import SignUpModal from "./SignUpModal";
 import "./SignUpDropdown.css";
 
-const SignUpDropdown = () => {
-  const [showLogin, setShowLogin] = useState(false);
+const SignUpDropdown = ({ showLogin, setShowLogin }) => {
   const [showSignUp, setShowSignUp] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 

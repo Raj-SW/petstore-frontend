@@ -1,0 +1,90 @@
+/* SnackBar Styles */
+.snackbar-root {
+    width: 100vw;
+    left: 0;
+    top: 0;
+    z-index: 2000;
+    background: var(--secondary-creme-color);
+    box-shadow: 0 2px 16px 0 rgba(1, 57, 96, 0.07);
+    backdrop-filter: blur(6px);
+    border-bottom: 2px solid var(--primary-blue-color);
+    transition: box-shadow 0.2s, background 0.2s;
+}
+
+.snackbar-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2.5rem;
+    padding: 0.5rem 0;
+    font-size: 1.08rem;
+    font-weight: 500;
+    color: var(--primary-blue-color);
+}
+
+.snackbar-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+}
+
+.snackbar-socials {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.snackbar-social-icon {
+    color: var(--primary-blue-color);
+    background: rgba(1, 57, 96, 0.07);
+    border-radius: 50%;
+    padding: 0.25rem;
+    font-size: 1.35em;
+    margin: 0 0.15rem;
+    transition: background 0.18s, color 0.18s, transform 0.18s;
+    cursor: pointer;
+}
+
+.snackbar-social-icon:hover,
+.snackbar-social-icon:focus {
+    background: var(--secondary-green-color);
+    color: #fff;
+    transform: scale(1.12);
+}
+
+@media (max-width: 991px) {
+    .snackbar-root {
+        border-bottom: 1.5px solid var(--primary-blue-color);
+        font-size: 0.98rem;
+        padding: 0.25rem 0;
+    }
+
+    .snackbar-content {
+        flex-direction: column;
+        gap: 0.25rem;
+        padding: 0.25rem 0.25rem;
+        font-size: 0.98rem;
+    }
+
+    .snackbar-info {
+        gap: 0.25rem;
+        font-size: 0.97rem;
+    }
+
+    .snackbar-socials {
+        gap: 0.25rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .snackbar-root {
+        font-size: 0.93rem;
+        padding: 0.15rem 0;
+    }
+
+    .snackbar-content {
+        gap: 0.15rem;
+        font-size: 0.93rem;
+    }
+}

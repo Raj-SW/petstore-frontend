@@ -50,6 +50,11 @@
     text-decoration: underline;
 }
 
+.signup-btn {
+    background-color: var(--primary-blue-color);
+    color: var(--white-color);
+}
+
 /* Custom alert style */
 .custom-login-alert {
     font-size: 1rem;
