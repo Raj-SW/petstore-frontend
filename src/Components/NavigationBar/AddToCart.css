@@ -3,49 +3,83 @@
     display: inline-block;
     margin-right: 0.5rem;
     padding: 0.5rem 0.7rem;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.cartWrapper:hover {
+    transform: scale(1.05);
 }
 
 .cartIcon {
-    /* Adjust size as needed */
-    color: white;
+    color: var(--white-color);
+    transition: all 0.3s ease;
 }
+
+.cartWrapper:hover .cartIcon {
+    color: var(--tertiary-creme-color);
+}
+
+.cart-modal-header {}
 
 .cartBadge {
     position: absolute;
     bottom: -0.2rem;
-    /* Adjust to position the badge */
     right: -0.3rem;
-    /* Adjust to position the badge */
-    background-color: white;
-    color: var(--secondary-color);
-    /* Use a color variable for easy adjustments */
-    width: 1.2rem;
-    height: 1.2rem;
+    background: linear-gradient(135deg, var(--primary-blue-color), var(--secondary-blue-color));
+    color: var(--white-color);
+    width: 1.4rem;
+    height: 1.4rem;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 18px;
-    /* Adjust font size as needed */
+    font-size: 0.8rem;
     font-weight: bold;
-    transition: transform 0.3s ease;
+    box-shadow: 0 2px 8px rgba(1, 57, 96, 0.2);
+    transition: all 0.3s ease;
+}
+
+.cartWrapper:hover .cartBadge {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(1, 57, 96, 0.3);
 }
 
 /* Animation for cart badge */
 @keyframes cartBadgePop {
     0% {
         transform: scale(1);
+        box-shadow: 0 2px 8px rgba(1, 57, 96, 0.2);
     }
 
     50% {
         transform: scale(1.3);
+        box-shadow: 0 4px 16px rgba(1, 57, 96, 0.4);
     }
 
     100% {
         transform: scale(1);
+        box-shadow: 0 2px 8px rgba(1, 57, 96, 0.2);
     }
 }
 
 .cartBadge.animate {
-    animation: cartBadgePop 0.3s ease;
+    animation: cartBadgePop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .cartWrapper {
+        padding: 0.4rem 0.6rem;
+    }
+
+    .cartIcon {
+        font-size: 1.5rem;
+    }
+
+    .cartBadge {
+        width: 1.2rem;
+        height: 1.2rem;
+        font-size: 0.7rem;
+    }
 }

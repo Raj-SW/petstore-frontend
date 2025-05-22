@@ -119,11 +119,6 @@
     transform: translateY(-2px);
 }
 
-.fc .fc-button-primary:not(:disabled).fc-button-active,
-.fc .fc-button-primary:not(:disabled):active {
-    background-color: var(--primary-green-80);
-    border-color: var(--primary-green-80);
-}
 
 .fc .fc-timegrid-slot {
     height: 2.5rem;

@@ -163,12 +163,13 @@ a:active {
 }
 
 .button-primary {
-  background-color: var(--secondary-color);
+  background-color: var(--primary-blue-color);
   color: var(--white-color);
 }
 
 .button-primary:hover {
-  background-color: var(--primary-green-80);
+  background-color: var(--secondary-blue-color);
+  color: var(--white-color);
 }
 
 body {

@@ -36,6 +36,10 @@
     margin-bottom: 2rem;
 }
 
+.order-summary {
+    background-color: var(--tertiary-creme-color);
+}
+
 .cart-summary {
     background-color: var(--neutral-color-10);
     border-radius: 12px;
@@ -70,13 +74,13 @@
 }
 
 .cart-modal .btn-primary {
-    background-color: var(--secondary-color);
+    background-color: var(--secondary-blue-color);
     color: var(--white-color);
     border: none;
 }
 
 .cart-modal .btn-primary:hover {
-    background-color: var(--primary-green-80);
+    background-color: var(--primary-blue-color);
 }
 
 .cart-modal .btn-secondary {
