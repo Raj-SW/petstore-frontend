@@ -1,9 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useCart } from "react-use-cart";
-
-//Component import
-import { Container, Row, Col, Button, Image } from "react-bootstrap";
+import {
+  Container,
+  Row,
+  Col,
+  Button,
+  Image,
+  Modal,
+  Form,
+} from "react-bootstrap";
 import { FaFacebook, FaTwitter, FaInstagram } from "react-icons/fa";
 import { FiShare2 } from "react-icons/fi";
 import { LuArrowLeft } from "react-icons/lu";
@@ -27,12 +33,24 @@ const IndividualProductItemPage = () => {
   const [quantity, setQuantity] = useState(1);
   const [reviews, setReviews] = useState([]);
   const { addItem } = useCart();
+  const [relatedProducts, setRelatedProducts] = useState([]);
+  const [showReviewModal, setShowReviewModal] = useState(false);
+  const [reviewForm, setReviewForm] = useState({
+    name: "",
+    rating: 5,
+    comment: "",
+  });
+  const [submittingReview, setSubmittingReview] = useState(false);
 
   useEffect(() => {
     ProductService.fetchProductById(parseInt(id))
       .then((product) => {
         setProduct(product);
         setIsLoading(false);
+
+        ProductService.fetchRelatedProducts(product.category, product.id).then(
+          setRelatedProducts
+        );
       })
       .catch((err) => {
         console.error("Error fetching product:", err);
@@ -67,6 +85,32 @@ const IndividualProductItemPage = () => {
       image: product.imageUrl,
       quantity: quantity,
     });
+  };
+
+  // Review modal handlers
+  const handleOpenReviewModal = () => setShowReviewModal(true);
+  const handleCloseReviewModal = () => setShowReviewModal(false);
+  const handleReviewFormChange = (e) => {
+    const { name, value } = e.target;
+    setReviewForm((prev) => ({ ...prev, [name]: value }));
+  };
+  const handleSubmitReview = (e) => {
+    e.preventDefault();
+    setSubmittingReview(true);
+    setTimeout(() => {
+      setReviews((prev) => [
+        ...prev,
+        {
+          name: reviewForm.name,
+          rating: reviewForm.rating,
+          comment: reviewForm.comment,
+          date: new Date().toISOString(),
+        },
+      ]);
+      setReviewForm({ name: "", rating: 5, comment: "" });
+      setSubmittingReview(false);
+      setShowReviewModal(false);
+    }, 800);
   };
 
   return (
@@ -218,31 +262,20 @@ const IndividualProductItemPage = () => {
         </Container>
         <Container className="related-purchases-container border rounded-4 mt-5 mb-5">
           <h2 className="secondary-color-font p-4">Related Purchases</h2>
-          <Row className="w-100 d-flex flex-wrap justify-content-center gap-3 mt-3 related-purchases-product mb-5">
-            <ProductCard
-              imageUrl={productImg1}
-              title={"Pet Oatmeal Spray"}
-              price={"299.9"}
-              rating={4}
-            />{" "}
-            <ProductCard
-              imageUrl={productImg1}
-              title={"Pet Oatmeal Spray"}
-              price={"299.9"}
-              rating={4}
-            />{" "}
-            <ProductCard
-              imageUrl={productImg1}
-              title={"Pet Oatmeal Spray"}
-              price={"299.9"}
-              rating={4}
-            />{" "}
-            <ProductCard
-              imageUrl={productImg1}
-              title={"Pet Oatmeal Spray"}
-              price={"299.9"}
-              rating={4}
-            />
+          <Row className="w-100 d-flex flex-wrap justify-content-center  mt-3 related-purchases-product mb-5">
+            {relatedProducts.length === 0 && <p>No related products found.</p>}
+            {relatedProducts.map((item) => (
+              <Col key={item.id} xs={5} sm={6} md={4} lg={3} className="mb-4">
+                <ProductCard
+                  key={item.id}
+                  id={item.id}
+                  imageUrl={item.imageUrl}
+                  title={item.title}
+                  price={item.price}
+                  rating={item.rating}
+                />
+              </Col>
+            ))}
           </Row>
         </Container>
         <Container className="productReviewsContainer d-flex flex-column text-center mt-5 mb-5">
@@ -258,20 +291,99 @@ const IndividualProductItemPage = () => {
           </Row>
           <div className="text-center">
             <Button
-              variant="success"
-              type="submit"
-              className="pl-2 pr-2 rounded-pill"
-              style={{
-                backgroundColor: "#74B49B",
-                border: "none",
-                width: "fit-content",
-              }}
+              type="button"
+              className="pl-2 pr-2 rounded-5 review-btn"
+              onClick={handleOpenReviewModal}
             >
               Write a Review
             </Button>
           </div>
         </Container>
       </Container>
+      {/* Review Modal */}
+      <Modal show={showReviewModal} onHide={handleCloseReviewModal} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Write a Review</Modal.Title>
+        </Modal.Header>
+        <Form onSubmit={handleSubmitReview}>
+          <Modal.Body>
+            <Form.Group className="mb-3">
+              <Form.Label>Name</Form.Label>
+              <Form.Control
+                type="text"
+                name="name"
+                value={reviewForm.name}
+                onChange={handleReviewFormChange}
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Rating</Form.Label>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row-reverse",
+                  justifyContent: "flex-end",
+                }}
+              >
+                {[5, 4, 3, 2, 1].map((star) => (
+                  <React.Fragment key={star}>
+                    <input
+                      type="radio"
+                      id={`star${star}`}
+                      name="rating"
+                      value={star}
+                      checked={Number(reviewForm.rating) === star}
+                      onChange={handleReviewFormChange}
+                      style={{ display: "none" }}
+                    />
+                    <label
+                      htmlFor={`star${star}`}
+                      style={{
+                        cursor: "pointer",
+                        fontSize: "2rem",
+                        color:
+                          Number(reviewForm.rating) >= star
+                            ? "#FFA500"
+                            : "#E0E0E0",
+                        marginLeft: 2,
+                        marginRight: 2,
+                      }}
+                    >
+                      ★
+                    </label>
+                  </React.Fragment>
+                ))}
+              </div>
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Comment</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={3}
+                name="comment"
+                value={reviewForm.comment}
+                onChange={handleReviewFormChange}
+                required
+              />
+            </Form.Group>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              className="rounded-5 cancel-review-btn"
+              onClick={handleCloseReviewModal}
+            >
+              Cancel
+            </Button>
+            <Button
+              className="rounded-5 submit-review-btn"
+              disabled={submittingReview}
+            >
+              {submittingReview ? "Submitting..." : "Submit Review"}
+            </Button>
+          </Modal.Footer>
+        </Form>
+      </Modal>
     </>
   );
 };

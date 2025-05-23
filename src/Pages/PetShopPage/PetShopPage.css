@@ -94,7 +94,7 @@
 .pagination>.active>a:focus,
 .pagination>.active>span:focus {
     color: white;
-    background-color: #5aa891;
+    background-color: var(--secondary-blue-color);
 }
 
 .active {}

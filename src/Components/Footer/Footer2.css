@@ -1,11 +1,11 @@
 .footerWrapper {
     width: 100%;
     height: auto;
-    background-color: #A7D7C5;
+    background-color: var(--secondary-creme-color);
 }
 
 .registerSection {
-    background-color: #3B746A;
+    background-color: var(--primary-blue-color);
     margin: 0.25rem 0rem;
 
 }
@@ -30,12 +30,12 @@
 }
 
 .subscribeButton {
-    background-color: #3B746A;
+    background-color: var(--primary-blue-color);
 }
 
 .subscribeButton:hover {
-    background-color: #74b49b;
-    border-color: #74b49b;
+    background-color: var(--secondary-blue-color);
+    border-color: var(--secondary-blue-color);
 }
 
 .footerContents {

@@ -1,147 +1,193 @@
- .hero-wrapper {
-     border-radius: 0 0 2.5rem 2.5rem;
- }
+.hero-wrapper {
+    border-radius: 0 0 2.5rem 2.5rem;
+}
 
- .dog-mg-wrapper img {
-     max-height: 24rem;
- }
+.dog-mg-wrapper img {
+    max-height: 24rem;
+}
 
- .heroHeaderWrapper {
-     display: flex;
-     flex-direction: column;
-     align-content: flex-start;
-     justify-content: flex-start;
- }
+.heroHeaderWrapper {
+    display: flex;
+    flex-direction: column;
+    align-content: flex-start;
+    justify-content: flex-start;
+}
 
- .hero-section-message {
-     font-size: 3rem;
-     color: var(--secondary-color);
-     padding: 1rem;
- }
+.hero-section-message {
+    font-size: 3rem;
+    color: var(--secondary-color);
+    padding: 1rem;
+}
 
- .heroMiniSloganHeader {
-     margin-top: 4rem;
- }
+.heroMiniSloganHeader {
+    margin-top: 4rem;
+}
 
- .heroDescription {
-     margin-top: 4rem;
- }
+.heroDescription {
+    margin-top: 4rem;
+}
 
- .background-image-container {
-     background-image: url('../../../assets/HeroSectionAssets/HeroBannerBackground2.png');
-     background-size: cover;
-     background-position: center;
-     background-repeat: no-repeat;
- }
+.background-image-container {
+    background-image: url('../../../assets/HeroSectionAssets/HeroBannerBackground2.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
 
- .cat-banner-container {
-     display: flex;
-     flex-direction: column;
-     align-items: center;
-     justify-content: center;
-     text-align: center;
-     padding: 0rem 0rem 2rem 2rem;
-     font-size: 5rem;
- }
+.cat-banner-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0rem 0rem 2rem 2rem;
+    font-size: 5rem;
+}
 
- .cat-banner-container>img {
+.cat-banner-container>img {
+    max-width: 75%;
+    min-width: 15rem;
+    object-fit: cover;
+    display: block;
+    margin: 0 auto;
+}
 
-     max-width: 75%;
-     min-width: 15rem;
-     /* width: 100%; */
-     object-fit: cover;
-     display: block;
-     margin: 0 auto;
- }
+.animal-banner-carousel {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    padding-top: 7%;
+}
 
- .animal-banner-carousel {
-     position: relative;
-     width: 100%;
-     max-width: 100%;
-     padding-top: 7%;
- }
+.animal-on-banner-image {
+    max-width: 50vw;
+    width: 100%;
+    object-fit: contain;
+    position: absolute;
+    z-index: 10;
+    transform: translate(50%, -64%);
+}
 
- .animal-on-banner-image {
-     max-width: 50vw;
-     width: 100%;
-     object-fit: contain;
-     position: absolute;
-     z-index: 10;
-     transform: translate(50%, -64%);
- }
+.info-wrapper {
+    /* padding-right: 2rem; */
+}
 
- /* Media query for medium to smaller screens */
- @media (max-width: 992px) {
+.app-links-wrapper {
+    display: flex;
+    justify-content: center;
+    padding: 2rem;
+}
 
-     /* Adjust padding for screens smaller than 992px */
-     .animal-banner-carousel {
-         padding-top: 10rem;
-         /* Slightly less padding for medium screens */
-     }
- }
+.app-links-icon-container {
+    display: flex;
+    justify-content: center;
+    padding: 0rem 0rem 0rem 2rem;
+}
 
- @media (max-width: 768px) {
+.app-links-icon-container img {
+    width: 4.5rem;
+}
 
-     /* Adjust padding for tablet screens and smaller */
-     .animal-banner-carousel {
-         padding-top: 6rem;
-         /* Less padding for smaller screens */
-     }
- }
+.main-page-qr-wrapper {
+    display: flex;
+    justify-content: center;
+}
 
- @media (max-width: 576px) {
+.quick-links-wrapper {
+    display: flex;
+    justify-content: center;
+    padding-bottom: 2.5rem;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+}
 
-     /* Adjust padding for mobile screens */
-     .animal-banner-carousel {
-         padding-top: 4rem;
-         /* Minimal padding for small screens */
-     }
- }
+.quicklink {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 0.5rem;
+    text-decoration: none;
+    transition: transform 0.3s ease;
+}
 
- .info-wrapper {
-     /* padding-right: 2rem; */
- }
+.quicklink:hover {
+    transform: translateY(-5px);
+}
 
- .app-links-wrapper {
-     display: flex;
-     justify-content: center;
-     padding: 2rem;
- }
+.quick-links-wrapper>div>a>img {
+    object-fit: cover;
+    max-width: 5.5rem;
+    width: 100%;
+    height: auto;
+    margin-bottom: 0.5rem;
+}
 
- .app-links-icon-container {
-     display: flex;
-     justify-content: center;
-     padding: 0rem 0rem 0rem 2rem;
- }
+.quick-links-wrapper>div>a>p {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--secondary-color);
+    margin: 0;
+}
 
- .app-links-icon-container img {
-     width: 4.5rem;
- }
+.download-app-text {
+    font-weight: 700;
+    font-size: 2.5rem !important;
+    color: var(--secondary-color);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
 
- .main-page-qr-wrapper {
-     display: flex;
-     justify-content: center;
- }
+/* Media query for medium to smaller screens */
+@media (max-width: 992px) {
+    .animal-banner-carousel {
+        padding-top: 10rem;
+    }
 
- .quick-links-wrapper {
-     display: flex;
-     /* justify-content: space-between; */
-     justify-content: center;
-     /* padding-top: 2.5rem; */
-     padding-bottom: 2.5rem;
+    .quick-links-wrapper>div>a>img {
+        max-width: 5rem;
+    }
 
- }
+    .quick-links-wrapper>div>a>p {
+        font-size: 1rem;
+    }
 
- .quicklink {
-     display: flex;
-     flex-direction: column;
-     justify-content: center;
-     align-items: center;
-     margin: 1rem;
- }
+    .download-app-text {
+        font-size: 2rem !important;
+    }
+}
 
- .quick-links-wrapper>div>a>img {
-     object-fit: cover;
-     max-width: 4rem;
-     width: fit-content;
- }
+@media (max-width: 768px) {
+    .animal-banner-carousel {
+        padding-top: 6rem;
+    }
+
+    .quick-links-wrapper {
+        gap: 1rem;
+    }
+
+    .quick-links-wrapper>div>a>img {
+        max-width: 4.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .animal-banner-carousel {
+        padding-top: 4rem;
+    }
+
+    .quick-links-wrapper {
+        gap: 0.5rem;
+    }
+
+    .quick-links-wrapper>div>a>img {
+        max-width: 4rem;
+    }
+
+    .quick-links-wrapper>div>a>p {
+        font-size: 0.9rem;
+    }
+
+    .download-app-text {
+        font-size: 1.75rem !important;
+    }
+}

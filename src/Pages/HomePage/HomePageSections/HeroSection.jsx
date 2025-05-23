@@ -2,6 +2,7 @@ import React from "react";
 import "./HeroSection.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Row, Col } from "react-bootstrap";
+import { motion } from "framer-motion";
 
 //assets import
 import animalBannerHolder from "../../../assets/BannerSliderAssets/animalBannerHolder.png";
@@ -21,9 +22,30 @@ import { IconContext } from "react-icons";
 import { MdQrCode2 } from "react-icons/md";
 
 const HeroSection = () => {
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.5,
+      },
+    },
+  };
+
   return (
     <>
-      <div className="background-image-container hero-wrapper ">
+      <div className="background-image-container hero-wrapper">
         <div className="animal-banner-carousel">
           <img
             src={animalBannerHolder}
@@ -33,71 +55,125 @@ const HeroSection = () => {
           <CarouselComponent />
         </div>
         <h3 className="caveat-Heading hero-section-message text-center mt-5">
-          Welcome to PetShop
+          Welcome to Vital Paws
         </h3>
-        <Row
-          className="d-flex w-100
-        "
-        >
+        <Row className="d-flex w-100">
           <Col className="cat-banner-container">
             <img src={catDogWoman} alt="" className="" />
           </Col>
 
           <Col className="info-wrapper align-content-center p-0">
-            <div className="quick-links-wrapper w-100 d-flex text-center">
-              <div className="quick-link-item text-center">
+            <motion.div
+              className="quick-links-wrapper w-100 d-flex text-center"
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+            >
+              <motion.div
+                className="quick-link-item text-center"
+                variants={itemVariants}
+                whileHover={{ scale: 1.05 }}
+              >
                 <a href="" className="quicklink">
-                  <img src={petClinicIcon} alt="Pet Clinic" />
+                  <motion.img
+                    src={petClinicIcon}
+                    alt="Pet Clinic"
+                    whileHover={{ scale: 1.1 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  />
                   <p className="poppins-regular fs-6">Pet Clinic</p>
                 </a>
-              </div>
-              <div className="quick-link-item text-center">
+              </motion.div>
+              <motion.div
+                className="quick-link-item text-center"
+                variants={itemVariants}
+                whileHover={{ scale: 1.05 }}
+              >
                 <a href="" className="quicklink">
-                  <img src={petGroomingIconImg} alt="Pet Grooming" />
+                  <motion.img
+                    src={petGroomingIconImg}
+                    alt="Pet Grooming"
+                    whileHover={{ scale: 1.1 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  />
                   <p className="poppins-regular fs-6">Pet Grooming</p>
                 </a>
-              </div>
-              <div className="quick-link-item text-center justify-center">
-                <a href="" className="quicklink ">
-                  <img src={petHotelIconImg} alt="Pet Hotel" />
+              </motion.div>
+              <motion.div
+                className="quick-link-item text-center justify-center"
+                variants={itemVariants}
+                whileHover={{ scale: 1.05 }}
+              >
+                <a href="" className="quicklink">
+                  <motion.img
+                    src={petHotelIconImg}
+                    alt="Pet Hotel"
+                    whileHover={{ scale: 1.1 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  />
                   <p className="poppins-regular fs-6">Pet Hotel</p>
                 </a>
-              </div>
-              <div className="quick-link-item text-center">
+              </motion.div>
+              <motion.div
+                className="quick-link-item text-center"
+                variants={itemVariants}
+                whileHover={{ scale: 1.05 }}
+              >
                 <a href="" className="quicklink">
-                  <img src={petTrainingIconImg} alt="Pet Training" />
-                  <p className="poppins-regular fs-9">Pet Training</p>
+                  <motion.img
+                    src={petTrainingIconImg}
+                    alt="Pet Training"
+                    whileHover={{ scale: 1.1 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  />
+                  <p className="poppins-regular fs-6">Pet Training</p>
                 </a>
-              </div>
-            </div>
-            <div className=" p-3 text-left">
+              </motion.div>
+            </motion.div>
+            <div className="p-3 text-left">
               <p className="poppins-regular fs-6">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam
-                dicta facilis, iusto assumenda quaerat dolor in eius quis
-                recusandae minus explicabo atque suscipit rem commodi?
-                Consequatur amet fugiat neque modi? Reiciendis iste nam
-                accusamus rerum ipsum, delectus veritatis quibusdam dignissimos
-                aliquam nesciunt amet reprehenderit eum commodi exercitationem
-                ipsa id. Dolore, ex error eligendi maxime nesciunt laborum.
+                Welcome to Vital Paws, your trusted partner in pet care. We
+                offer comprehensive services including veterinary care,
+                grooming, boarding, and training. Our team of experienced
+                professionals is dedicated to ensuring your pets receive the
+                best care possible. Join our community of happy pets and their
+                owners today!
               </p>
             </div>
-            <div className="app-links-wrapper d-flex flex-wrap align-items-center justify-between p-4">
+            <motion.div
+              className="app-links-wrapper d-flex flex-wrap align-items-center justify-between p-4"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+            >
               <div>
-                <p className="m-0 p-0 caveat-Heading fs-1 ">Download the App</p>
+                <p className="m-0 p-0 caveat-Heading download-app-text">
+                  Download the App
+                </p>
               </div>
-              <div className="app-links-icon-container gap-5 ">
-                <div>
+              <div className="app-links-icon-container gap-5">
+                <motion.div
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                >
                   <img
                     className="on-hover-pointer"
                     src={googleapplogo}
-                    alt=""
+                    alt="Google Play"
                   />
-                </div>
-                <div>
-                  <img src={appstorelogo} alt="" className="on-hover-pointer" />
-                </div>
+                </motion.div>
+                <motion.div
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                >
+                  <img
+                    src={appstorelogo}
+                    alt="App Store"
+                    className="on-hover-pointer"
+                  />
+                </motion.div>
               </div>
-            </div>
+            </motion.div>
           </Col>
         </Row>
       </div>

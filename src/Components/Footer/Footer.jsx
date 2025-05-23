@@ -31,7 +31,7 @@ const Footer = () => {
               </Button>
             </Row>
           </Row>
-          <Row className="footerContentSection mt-5 d-flex flex-wrap justify-content-center justify-content-lg-between">
+          <Row className="footerContentSection mt-5 d-flex flex-wrap justify-content-center justify-content-lg-between primary-color-font">
             <div className="footerContents d-flex gap-5 fs-6 flex-wrap justify-content-center">
               <Col className="fs-6">
                 <h5 className="fs-6">Shopping Categories</h5>
@@ -90,7 +90,7 @@ const Footer = () => {
               </Row>
             </Col>
           </Row>
-          <Row className="footerBrandSection mt-4 d-flex justify-content-between align-items-center p-3 border-top flex-column flex-md-row text-center text-md-start">
+          <Row className="footerBrandSection mt-4 d-flex justify-content-between align-items-center p-3 border-top flex-column flex-md-row text-center text-md-start secondary-color-font">
             <div className="text-muted rightsReserved">
               © 2022 VitalPaws. All rights reserved.
             </div>

@@ -9,7 +9,7 @@
 }
 
 .featuredProductsNavTab {
-    background-color: var(--tertiary-color-opacque);
+    background-color: var(--tertiary-creme-color);
     width: fit-content;
     border-radius: 0.5rem;
     display: flex;
@@ -20,7 +20,7 @@
 }
 
 .featuredProductsNavTab .nav-link {
-    color: var(--secondary-color);
+    color: var(--secondary-blue-color);
     font-size: medium;
     font-weight: 700;
     transition: background-color 0.3s, color 0.3s;
@@ -28,33 +28,66 @@
     margin: 0.5rem 0;
     padding: 0.1rem 0.75rem;
     border-radius: 0.5rem;
+    cursor: pointer;
+    border: none;
+    background: none;
 }
 
 .featuredProductsNavTab .nav-link.active {
     color: #fff;
-    background-color: var(--secondary-color);
+    background-color: var(--primary-creme-color);
 }
 
-.anchor-button {
-    padding: 0.5rem;
-    /* Padding around the link */
-    color: var(--secondary-color) !important;
-    /* Bootstrap secondary text color */
-    /* text-decoration: none; */
-    /* Remove underline */
-    display: inline-flex;
-    align-items: center;
-    /* Align the text and icon vertically */
-    transition: background-color 0.3s ease, color 0.3s ease;
-    /* Smooth transition */
-    border-radius: 1.5rem;
-    /* Optional: rounded corners */
-    border: 0.1rem solid var(--secondary-color);
+.featured-products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 2rem;
+    padding: 2rem 0;
 }
 
-.anchor-button:hover {
-    background-color: var(--secondary-color);
-    /* Background changes to secondary on hover */
-    color: white !important;
-    /* Text color changes to white */
+.product-item {
+    position: relative;
+    overflow: hidden;
+}
+
+/* Animation classes */
+.fade-enter {
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.fade-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 300ms, transform 300ms;
+}
+
+.fade-exit {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.fade-exit-active {
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: opacity 300ms, transform 300ms;
+}
+
+/* Mobile Responsive */
+@media screen and (max-width: 768px) {
+    .featuredProductsNavTab {
+        flex-wrap: wrap;
+        padding: 0.5rem;
+    }
+
+    .featuredProductsNavTab .nav-link {
+        font-size: small;
+        padding: 0.1rem 0.5rem;
+    }
+
+    .featured-products-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 1rem;
+        padding: 1rem 0;
+    }
 }

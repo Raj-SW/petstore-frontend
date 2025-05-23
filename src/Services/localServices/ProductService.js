@@ -58,6 +58,18 @@ class ProductService {
       }, 50); // Simulates a delay for fetching data
     });
   }
+
+  // Fetch related products by category, excluding the current product, limit to 4
+  static fetchRelatedProducts(category, excludeId, limit = 4) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const related = Products.filter(
+          (item) => item.category === category && item.id !== excludeId
+        ).slice(0, limit);
+        resolve(related);
+      }, 50);
+    });
+  }
 }
 
 export default ProductService;

@@ -1,7 +1,3 @@
-.footerWrapper {
-    background-color: var(--primary-color);
-}
-
 .separator-custom {
     border: none;
     /* Remove default hr border */

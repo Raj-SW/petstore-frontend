@@ -36,15 +36,47 @@
 
 .add-to-cart-btn {
     color: white;
-    background-color: var(--secondary-color);
+    background-color: var(--primary-blue-color);
 
 }
 
 .add-to-cart-btn:hover {
-    background-color: var(--primary-green-60) !important;
+    background-color: var(--secondary-blue-color);
+
 }
 
-.related-purchases-product {}
+.related-purchases-container {
+    background-color: var(--tertiary-creme-color);
+}
+
+.review-btn {
+    background-color: var(--primary-blue-color);
+
+}
+
+.review-btn:hover {
+    background-color: var(--tertiary-creme-color);
+    color: var(--primary-blue-color);
+}
+
+.cancel-review-btn {
+    background-color: var(--tertiary-creme-color);
+    color: var(--primary-blue-color);
+}
+
+.cancel-review-btn:hover {
+    background-color: var(--secondary-blue-color);
+    color: var(--white-color);
+}
+
+.submit-review-btn {
+    background-color: var(--primary-blue-color);
+    color: var(--white-color);
+}
+
+.submit-review-btn:hover {
+    background-color: var(--secondary-blue-color);
+}
 
 @media (max-width: 768px) {
     .loginContainer {

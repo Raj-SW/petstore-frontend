@@ -8,8 +8,8 @@
     width: 100%;
     padding: 8px 40px 8px 15px;
     border-radius: 25px;
-    border: 0.2rem solid var(--tertiary-color);
-    outline: none;
+    border: 0.2rem solid var(--primary-blue-color);
+    outline: var(--primary-blue-color);
     font-size: 16px;
     transition: border-color 0.3s ease;
 }
@@ -40,13 +40,13 @@
 }
 
 .search-icon {
-    color: var(--primary-color);
+    color: var(--primary-blue-color);
     font-size: 1.2rem;
     transition: color 0.3s ease;
 }
 
 .search-button:hover:not(:disabled) .search-icon {
-    color: var(--secondary-color);
+    color: var(--secondary-blue-color);
 }
 
 /* Accessibility */
@@ -65,6 +65,6 @@
 /* Focus styles for keyboard navigation */
 .search-input:focus-visible,
 .search-button:focus-visible {
-    outline: 2px solid var(--primary-color);
+    outline: 2px solid var(--primary-blue-color);
     outline-offset: 2px;
 }
