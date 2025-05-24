@@ -10,13 +10,13 @@
     font-weight: 500;
     transition: all 0.3s ease;
     border: none;
-    color: var(--primary-green-20-color) !important;
+    color: var(--primary-blue-color) !important;
 }
 
 .back-button:hover {
     transform: translateX(-3px);
     border: none;
-    background-color: var(--primary-green-20-color);
+    background-color: var(--primary-blue-color);
     color: var(--white-color) !important;
 }
 

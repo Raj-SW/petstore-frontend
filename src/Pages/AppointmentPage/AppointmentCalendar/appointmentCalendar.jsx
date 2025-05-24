@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 // CSS
 import "./appointmentCalendar.css";
+import "@/styles/calendarStyles.css";
 // Components
 import {
   Container,
@@ -136,8 +137,14 @@ const AppointmentCalendar = () => {
     title: appt.title,
     start: appt.datetimeISO,
     end: new Date(new Date(appt.datetimeISO).getTime() + appt.duration * 60000),
-    backgroundColor: appt.type === "vet" ? "#28a745" : "#007bff",
-    borderColor: appt.type === "vet" ? "#28a745" : "#007bff",
+    backgroundColor:
+      appt.type === "vet"
+        ? "var(--primary-blue-color)"
+        : "var(--secondary-blue-color)",
+    borderColor:
+      appt.type === "vet"
+        ? "var(--primary-blue-color)"
+        : "var(--secondary-blue-color)",
     textColor: "#ffffff",
     extendedProps: {
       description: appt.description,

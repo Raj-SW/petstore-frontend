@@ -93,7 +93,10 @@ const VeterinarianList = () => {
     >
       <Container fluid>
         <div className="veterinarian-list-header ">
-          <h4 className="poppins-light" style={{ color: "#5C8D89" }}>
+          <h4
+            className="poppins-light"
+            style={{ color: "var(--primary-blue-color)" }}
+          >
             Our Veterinarians
           </h4>
           <InputGroup className="search-bar">

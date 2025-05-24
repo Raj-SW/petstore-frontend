@@ -16,7 +16,7 @@
 .search-bar {
     width: 300px;
     max-width: 100%;
-    border: 1px solid var(--secondary-color);
+    border: 1px solid var(--secondary-blue-color);
     border-radius: 2rem;
     overflow: hidden;
     font-family: "Poppins", sans-serif;
@@ -24,8 +24,7 @@
 
 .search-bar .input-group-text {
     background-color: var(--white-color);
-    border: none;
-    color: var(--secondary-color);
+    color: var(--secondary-blue-color);
     padding: 0.5rem 0.75rem;
     border-top-left-radius: 2rem;
     border-bottom-left-radius: 2rem;
@@ -44,6 +43,7 @@
 .search-bar .form-control:focus {
     box-shadow: none;
     background-color: var(--white-color);
+    border: 1px solid var(--secondary-color);
 }
 
 .search-bar:focus-within {
