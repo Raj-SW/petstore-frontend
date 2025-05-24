@@ -17,13 +17,13 @@ const AppointmentPage = () => {
 
   return (
     <>
-      <Container fluid>
+      <Container fluid className="justify-content-center">
         <Container className="pt-5 breadcrumb-container">
           <Row className="breadcrumb-row">
             <Breadcrumb items={breadcrumbItems} />
           </Row>
         </Container>
-        <Container className="dashboard-container pt-5 ">
+        <Container className="dashboard-container m-0 d-flex ">
           <Tab.Container activeKey={key} onSelect={(k) => setKey(k)}>
             <Row className="dashboard-row g-0">
               <Col
@@ -31,7 +31,7 @@ const AppointmentPage = () => {
                 lg={3}
                 className="appointment-page-left-col poppins-regular"
               >
-                <div className="dashboard-navigation-desktop w-100 rounded-3  p-3">
+                <div className="dashboard-navigation-desktop rounded-3  p-1">
                   <div className="">
                     <div className="d-flex flex-row align-items-center justify-evenly mb-3">
                       <div className="user-info">
@@ -116,14 +116,10 @@ const AppointmentPage = () => {
                 </div>
               </Col>
               <Col
-                xs={12}
-                lg={9}
                 className="appointment-page-right-col"
                 style={{
                   minHeight: "100vh",
                   backgroundColor: "#ffffff",
-                  paddingLeft: "2rem",
-                  paddingRight: "2rem",
                 }}
               >
                 <Tab.Content>

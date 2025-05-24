@@ -1,15 +1,15 @@
 .professional-card {
     font-family: "Poppins", sans-serif;
     transition: box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    width: fit-content;
+    width: 16rem;
+    height: 26rem;
     margin: 0 auto 1rem auto;
-    height: 100%;
 }
 
-.professional-card .card {
+.professional-card {
     border-radius: 0.75rem;
     border: 1px solid var(--tertiary-color-opacque);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
     transition: box-shadow 0.3s, border-color 0.3s, transform 0.3s;
     background: var(--white-color);
     height: 100%;
@@ -18,7 +18,7 @@
 }
 
 .professional-card .card:hover {
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.13);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
     border-color: var(--secondary-color);
     transform: translateY(-3px);
 }
@@ -58,6 +58,7 @@
 }
 
 .professional-name {
+    text-wrap-style: wrap;
     font-size: 1.15rem;
     font-weight: 600;
     color: var(--primary1-color);
@@ -210,12 +211,12 @@
 
 @media (max-width: 768px) {
     .professional-card {
-        width: max-content;
-        height: auto;
+        width: 17.5rem;
+        height: 27.5rem;
     }
 
     .professional-card .card {
-        height: auto;
+        height: 100%;
     }
 
     .professional-card-header,
@@ -236,4 +237,11 @@
     }
 
     .book-appointment-btn {}
+}
+
+@media (max-width: 576px) {
+    .professional-card {
+        width: 16.25rem;
+        height: 26.25rem;
+    }
 }

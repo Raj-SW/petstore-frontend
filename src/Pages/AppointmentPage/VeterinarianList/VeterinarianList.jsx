@@ -111,25 +111,24 @@ const VeterinarianList = () => {
             />
           </InputGroup>
         </div>
-        <Container className="veterinarian-list d-flex flex-wrap justify-content-center gap-4">
-          {paginatedVets.map((vet) => (
-            <div key={vet.id} className="mb-4 d-flex justify-content-center">
-              <ProfessionalCard
-                name={vet.name}
-                specialty={vet.specialization}
-                qualifications={vet.qualifications}
-                experience={vet.experience}
-                rating={vet.rating}
-                reviews={vet.reviews}
-                image={vet.image}
-                phone={vet.phone}
-                email={vet.email}
-                location={vet.location}
-                badgeIcon={<FaUserMd className="specialization-icon me-1" />}
-                badgeLabel="Veterinarian"
-                onBook={() => handleBook(vet)}
-              />
-            </div>
+        <Container className="veterinarian-list d-flex flex-wrap justify-content-center gap-1">
+          {paginatedVets.map((vet, index) => (
+            <ProfessionalCard
+              id={vet.id}
+              name={vet.name}
+              specialty={vet.specialization}
+              qualifications={vet.qualifications}
+              experience={vet.experience}
+              rating={vet.rating}
+              reviews={vet.reviews}
+              image={vet.image}
+              phone={vet.phone}
+              email={vet.email}
+              location={vet.location}
+              badgeIcon={<FaUserMd className="specialization-icon me-1" />}
+              badgeLabel="Veterinarian"
+              onBook={() => handleBook(vet)}
+            />
           ))}
         </Container>
         {/* Pagination Controls */}

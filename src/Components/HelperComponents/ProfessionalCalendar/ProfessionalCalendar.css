@@ -86,13 +86,7 @@
     margin-bottom: 0;
 }
 
-.calendar-container {
-    background: #fff;
-    border-radius: 16px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
-    padding: 1.5rem;
-    margin-bottom: 2rem;
-}
+
 
 /* FullCalendar Customization */
 .fc {
@@ -193,9 +187,6 @@
         justify-content: center;
     }
 
-    .calendar-container {
-        padding: 1rem;
-    }
 
     .fc .fc-toolbar {
         flex-direction: column;
