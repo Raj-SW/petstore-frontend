@@ -290,8 +290,9 @@ const PetShopPage = () => {
                 viewport={{ once: false, amount: 0.2 }}
               >
                 <Row className="ProductItemContainer d-flex justify-content-center ">
-                  {currentProducts.map((product) => (
+                  {currentProducts.map((product, index) => (
                     <ProductCard
+                      key={index}
                       id={product.id}
                       imageUrl={product.imageUrl}
                       title={product.title}
