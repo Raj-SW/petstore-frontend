@@ -3,7 +3,7 @@ import { Modal, Form, Button, Row, Col } from "react-bootstrap";
 import { motion } from "framer-motion";
 import { veterinarianService } from "@/Services/localServices/veterinarianService";
 import { groomerService } from "@/Services/localServices/groomerService";
-
+import "./AppointmentForm.css";
 const AppointmentForm = ({ show, handleClose, onSubmit, initialData }) => {
   const [formData, setFormData] = useState({
     title: "",

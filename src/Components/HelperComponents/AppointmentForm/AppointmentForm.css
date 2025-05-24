@@ -33,19 +33,23 @@
 }
 
 .modal-content {
-    border-radius: 0.5rem;
+    border-radius: 0.75rem;
+    border: 1px solid var(--secondary-blue-color);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
 .modal-header {
-    border-bottom: 1px solid #dee2e6;
-    background-color: #f8f9fa;
-    border-top-left-radius: 0.5rem;
-    border-top-right-radius: 0.5rem;
+    border-bottom: 1px solid var(--secondary-blue-color);
+    background-color: var(--secondary-creme-color);
+    border-top-left-radius: 0.75rem;
+    border-top-right-radius: 0.75rem;
+    padding: 1.25rem;
 }
 
 .modal-title {
     font-weight: 600;
-    color: #212529;
+    color: var(--primary-blue-color);
+    font-size: 1.25rem;
 }
 
 .form-label {
@@ -55,8 +59,8 @@
 
 .form-control:focus,
 .form-select:focus {
-    border-color: #86b7fe;
-    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    border-color: var(--primary-blue-color);
+    box-shadow: 0 0 0 0.2rem rgba(1, 57, 96, 0.15);
 }
 
 .btn-primary {
@@ -80,17 +84,12 @@
 }
 
 .appointment-form {
-    padding: 1rem;
-}
-
-.appointment-form-header {
-    background-color: #f8f9fa;
-    border-bottom: 1px solid #dee2e6;
+    padding: 1.5rem;
 }
 
 .appointment-form .form-label {
     font-weight: 500;
-    color: #495057;
+    color: var(--primary-blue-color);
     margin-bottom: 0.5rem;
     display: flex;
     align-items: center;
@@ -98,23 +97,33 @@
 }
 
 .appointment-form .form-icon {
-    color: #6c757d;
+    color: var(--secondary-blue-color);
     font-size: 1rem;
 }
 
 .appointment-form .form-control,
-.appointment-form .form-select {
-    border: 1px solid #ced4da;
-    border-radius: 0.375rem;
-    padding: 0.5rem 0.75rem;
-    font-size: 0.875rem;
-    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+.appointment-form .form-select,
+.appointment-form .react-datepicker__input-container input {
+    border: 1px solid var(--secondary-blue-color) !important;
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    background-color: var(--white-color);
 }
 
 .appointment-form .form-control:focus,
-.appointment-form .form-select:focus {
-    border-color: #86b7fe;
-    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+.appointment-form .form-select:focus,
+.appointment-form .react-datepicker__input-container input:focus {
+    border-color: var(--primary-blue-color) !important;
+    box-shadow: 0 0 0 0.2rem rgba(1, 57, 96, 0.15);
+    outline: none;
+}
+
+.appointment-form .form-control:hover,
+.appointment-form .form-select:hover,
+.appointment-form .react-datepicker__input-container input:hover {
+    border-color: var(--primary-blue-color) !important;
 }
 
 .appointment-form .form-control.is-invalid,
@@ -152,60 +161,110 @@
 
 .appointment-form .react-datepicker__input-container input {
     width: 100%;
-    border: 1px solid #ced4da;
-    border-radius: 0.375rem;
-    padding: 0.5rem 0.75rem;
-    font-size: 0.875rem;
+    border: 1px solid var(--secondary-blue-color);
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
 }
 
 .appointment-form .react-datepicker__input-container input:focus {
-    border-color: #86b7fe;
-    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    border-color: var(--primary-blue-color);
+    box-shadow: 0 0 0 0.2rem rgba(1, 57, 96, 0.15);
     outline: none;
 }
 
+.appointment-form .react-datepicker__input-container input:hover {
+    border-color: var(--primary-blue-color);
+}
+
 .appointment-form .btn {
-    padding: 0.5rem 1rem;
-    font-size: 0.875rem;
+    padding: 0.75rem 1.5rem;
+    font-size: 0.95rem;
     font-weight: 500;
-    border-radius: 0.375rem;
-    transition: all 0.15s ease-in-out;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
 }
 
 .appointment-form .btn-primary {
-    background-color: #0d6efd;
-    border-color: #0d6efd;
-    color: #fff;
+    background-color: var(--primary-blue-color);
+    border-color: var(--primary-blue-color);
+    color: var(--white-color);
 }
 
 .appointment-form .btn-primary:hover {
-    background-color: #0b5ed7;
-    border-color: #0a58ca;
+    background-color: var(--secondary-blue-color);
+    border-color: var(--secondary-blue-color);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(1, 57, 96, 0.2);
 }
 
 .appointment-form .btn-outline-secondary {
-    color: #6c757d;
-    border-color: #6c757d;
+    color: var(--primary-blue-color);
+    border-color: var(--secondary-blue-color);
 }
 
 .appointment-form .btn-outline-secondary:hover {
-    background-color: #6c757d;
-    border-color: #6c757d;
-    color: #fff;
+    background-color: var(--secondary-blue-color);
+    border-color: var(--secondary-blue-color);
+    color: var(--white-color);
 }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .appointment-form {
-        padding: 0.5rem;
+        padding: 1rem;
+    }
+
+    .modal-header {
+        padding: 1rem;
     }
 
     .appointment-form .form-label {
-        font-size: 0.875rem;
+        font-size: 0.9rem;
     }
 
     .appointment-form .form-control,
-    .appointment-form .form-select {
-        font-size: 0.875rem;
+    .appointment-form .form-select,
+    .appointment-form .react-datepicker__input-container input {
+        font-size: 0.9rem;
+        padding: 0.6rem 0.8rem;
     }
+
+    .appointment-form .btn {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+    }
+}
+
+input,
+select,
+textarea,
+.form-control,
+.form-select,
+.react-datepicker__input-container input {
+    border: 1px solid var(--secondary-blue-color) !important;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+    background-color: var(--white-color);
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+.form-control:focus,
+.form-select:focus,
+.react-datepicker__input-container input:focus {
+    border-color: var(--primary-blue-color) !important;
+    box-shadow: 0 0 0 0.2rem rgba(1, 57, 96, 0.15);
+    outline: none;
+}
+
+input:hover,
+select:hover,
+textarea:hover,
+.form-control:hover,
+.form-select:hover,
+.react-datepicker__input-container input:hover {
+    border-color: var(--primary-blue-color) !important;
 }
