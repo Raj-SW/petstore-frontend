@@ -44,13 +44,19 @@ const AppointmentPage = () => {
                           }}
                         ></div>
                         <div>
-                          <span className="" style={{ fontSize: "1rem" }}>
+                          <p
+                            className="secondary-color-font"
+                            style={{ fontSize: "1rem" }}
+                          >
                             Appointment Manager
-                          </span>
+                          </p>
                           <br />{" "}
-                          <span className="" style={{ fontSize: "0.8rem" }}>
+                          <p
+                            className=" secondary-color-font"
+                            style={{ fontSize: "0.8rem" }}
+                          >
                             Manage your petcare schedule
-                          </span>
+                          </p>
                         </div>
                       </div>
                     </div>
@@ -92,13 +98,19 @@ const AppointmentPage = () => {
                       }}
                     ></div>
                     <div>
-                      <span className="" style={{ fontSize: "1rem" }}>
+                      <p
+                        className="secondary-color-font "
+                        style={{ fontSize: "1rem" }}
+                      >
                         John Doe
-                      </span>
+                      </p>
                       <br />{" "}
-                      <span className="" style={{ fontSize: "0.8rem" }}>
+                      <p
+                        className="secondary-color-font"
+                        style={{ fontSize: "0.8rem" }}
+                      >
                         123 Main Street, Anytown USA
-                      </span>
+                      </p>
                     </div>
                   </div>
                 </div>

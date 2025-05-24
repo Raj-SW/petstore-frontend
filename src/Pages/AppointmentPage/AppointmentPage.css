@@ -1,8 +1,8 @@
 .appointment-page-left-col {}
 
 .dashboard-navigation-desktop {
-    color: white;
-    background-color: var(--secondary-color);
+    color: var(--secondary-blue-color);
+    background-color: var(--secondary-creme-color);
 }
 
 .appointment-page-left-col .nav-pills .nav-link.active {
@@ -87,7 +87,7 @@
 }
 
 .appointmentNavTabs .nav-link {
-    color: var(--white-color);
+    color: var(--secondary-blue-color);
     font-size: medium;
     font-weight: 400;
     transition: all 0.3s ease;
@@ -99,11 +99,11 @@
 }
 
 .appointmentNavTabs .nav-link:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: var(--primary-creme-color);
 }
 
 .appointmentNavTabs .nav-link.active {
-    background-color: var(--secondary-color);
+    background-color: var(--secondary-blue-color);
     color: var(--white-color);
     font-weight: 600;
     transform: translateY(-1px);

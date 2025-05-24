@@ -4,7 +4,7 @@
 }
 
 .dashboardNavTabs {
-    background-color: var(--tertiary-color-opacque);
+    background-color: var(--primary-creme-color);
     width: fit-content;
     border-radius: 0.5rem;
     display: flex;
@@ -15,7 +15,7 @@
 }
 
 .dashboardNavTabs .nav-link {
-    color: var(--secondary-color);
+    color: var(--secondary-blue-color);
     font-size: medium;
     font-weight: 700;
     transition: background-color 0.3s, color 0.3s;
@@ -27,7 +27,7 @@
 
 .dashboardNavTabs .nav-link.active {
     color: #fff;
-    background-color: var(--secondary-color);
+    background-color: var(--primary-blue-color);
 }
 
 /* Calendar container */
@@ -55,16 +55,19 @@
 
 .fc .fc-button {
     padding: 0.5rem 1rem !important;
+    margin: 0.2rem !important;
+    border-radius: 0.5rem !important;
     font-weight: 500 !important;
     text-transform: capitalize !important;
-    background-color: var(--secondary-color) !important;
-    border-color: var(--secondary-color) !important;
+    background-color: var(--primary-blue-color) !important;
+    border-color: var(--secondary-blue-color) !important;
     font-family: "Poppins", sans-serif;
 }
 
 .fc .fc-button:hover {
-    background-color: var(--primary-color) !important;
-    border-color: var(--primary-color) !important;
+    background-color: var(--tertiary-creme-color) !important;
+    border-color: var(--primary-blue-color) !important;
+    color: var(--primary-blue-color) !important;
 }
 
 
@@ -77,20 +80,22 @@
     padding: 2px 4px;
     cursor: pointer;
     transition: transform 0.2s ease;
-    background-color: var(--tertiary-color) !important;
-    border-color: var(--tertiary-color) !important;
+    background-color: var(--primary-creme-color) !important;
+    border-color: var(--tertiary-creme-color) !important;
+    color: var(--primary-blue-color) !important;
     font-family: "Poppins", sans-serif;
 }
 
 .fc .fc-event:hover {
     transform: scale(1.02);
-    background-color: var(--pale-green-color) !important;
-    border-color: var(--pale-green-color) !important;
+    background-color: var(--secondary-creme-color) !important;
+    border-color: var(--secondary-creme-color) !important;
+    color: var(--primary-blue-color) !important;
 }
 
 .fc .fc-event-title {
     font-weight: 500;
-    color: var(--primary1-color);
+    color: var(--primary-blue-color);
 }
 
 .fc .fc-day-today {
@@ -98,21 +103,21 @@
 }
 
 .fc .fc-timegrid-now-indicator-line {
-    border-color: var(--secondary-color);
+    border-color: var(--secondary-blue-color);
 }
 
 .fc .fc-timegrid-now-indicator-arrow {
-    border-color: var(--secondary-color);
+    border-color: var(--secondary-blue-color);
 }
 
 .fc .fc-col-header-cell {
     background-color: var(--light-color);
-    color: var(--primary1-color);
+    color: var(--primary-blue-color);
     font-weight: 600;
 }
 
 .fc .fc-timegrid-slot-label {
-    color: var(--dark-color);
+    color: var(--primary-blue-color);
     font-weight: 400;
 }
 
@@ -170,7 +175,7 @@
 .search-bar {
     width: 300px;
     max-width: 100%;
-    border: 1px solid var(--secondary-color);
+    border: 1rem solid var(--secondary-blue-color);
     border-radius: 2rem;
     overflow: hidden;
     font-family: "Poppins", sans-serif;
@@ -179,7 +184,7 @@
 .search-bar .input-group-text {
     background-color: var(--white-color);
     border: none;
-    color: var(--secondary-color);
+    color: var(--secondary-blue-color);
     padding: 0.5rem 0.75rem;
     border-top-left-radius: 2rem;
     border-bottom-left-radius: 2rem;
@@ -198,7 +203,7 @@
 
 .search-bar .form-control:focus {
     box-shadow: none;
-    background-color: var(--white-color);
+    background-color: var(--tertiary-creme-color);
 }
 
 .search-bar:focus-within {
