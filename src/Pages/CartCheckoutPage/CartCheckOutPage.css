@@ -1,5 +1,5 @@
 .cart-checkout-bg {
-    background: #f5f5f5;
+    background: var(--tertiary-creme-color);
     min-height: 100vh;
     padding: 2rem 0;
 }
@@ -55,14 +55,14 @@
 }
 
 .card-details-wrapper {
-    background: var(--primary-green-20-color, #74B49B);
+    background: var(--secondary-creme-color);
     border-radius: 15px;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
-    color: #fff;
+    color: var(--primary-blue-color);
 }
 
 .card-details-title {
-    color: #fff;
+    color: var(--primary-blue-color);
     font-family: 'Poppins', sans-serif;
     font-weight: 600;
 }
@@ -99,8 +99,8 @@
 }
 
 .checkout-btn {
-    background: #fff !important;
-    color: var(--primary-green-20-color, #74B49B) !important;
+    background: var(--primary-blue-color);
+    color: var(--white-color);
     border: none !important;
     font-family: 'Poppins', sans-serif;
     font-weight: 600;

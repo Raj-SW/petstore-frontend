@@ -128,16 +128,16 @@ const CartCheckoutPage = () => {
           <Col lg={4} className="card-details-col">
             <div className="card-details-wrapper p-4">
               <h5 className="card-details-title mb-4">Order Summary</h5>
-              <div className="card-summary mt-4">
-                <div className="d-flex justify-content-between text-white mb-2">
+              <div className="card-summary mt-4 primary-color-font ">
+                <div className="d-flex justify-content-between  mb-2">
                   <span>Sub Total</span>
                   <span>${calculateTotal().toFixed(2)}</span>
                 </div>
-                <div className="d-flex justify-content-between text-white mb-2">
+                <div className="d-flex justify-content-betweenmb-2">
                   <span>Shipping</span>
                   <span>${(calculateTotal() > 0 ? 20 : 0).toFixed(2)}</span>
                 </div>
-                <div className="d-flex justify-content-between text-white fw-bold mb-3">
+                <div className="d-flex justify-content-between fw-bold mb-3">
                   <span>Total</span>
                   <span>
                     $

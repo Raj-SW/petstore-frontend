@@ -4,7 +4,7 @@ import FeaturedProductSection from "./HomePageSections/FeaturedProductSection";
 import HeroSection from "./HomePageSections/HeroSection";
 import ServicesSection from "./HomePageSections/ServicesSection";
 import CommunitySection from "./HomePageSections/CommunitySection";
-
+import "./HomePage.css";
 const HomePage = () => {
   return (
     <>

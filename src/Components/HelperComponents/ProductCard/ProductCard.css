@@ -27,11 +27,6 @@
     color: var(--secondary-color);
 }
 
-.product-card-container {
-    gap: 2rem;
-    padding: 4rem 1rem;
-}
-
 /* Default gap for smaller screens */
 .featured-products-gap {
     gap: 1.5rem;
@@ -59,10 +54,6 @@
     .bubbleImg {
         width: 2rem;
         height: 2rem;
-    }
-
-    .product-card-container {
-        gap: 1rem;
     }
 }
 

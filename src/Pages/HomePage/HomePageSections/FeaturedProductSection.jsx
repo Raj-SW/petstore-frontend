@@ -182,7 +182,7 @@ const FeaturedProductSection = () => {
             <Tab.Content>
               {/* Cat Products */}
               <Tab.Pane eventKey="category1">
-                <Row className="justify-content-center product-card-container">
+                <Row className=" product-card-container">
                   {catProducts.map((product) => (
                     <ProductCard
                       id={product.id}
@@ -197,7 +197,7 @@ const FeaturedProductSection = () => {
               </Tab.Pane>
               {/* Dog Products */}
               <Tab.Pane eventKey="category2">
-                <Row className="justify-content-center product-card-container">
+                <Row className=" product-card-container">
                   {dogProducts.map((product) => (
                     <ProductCard
                       key={product.id}
@@ -212,7 +212,7 @@ const FeaturedProductSection = () => {
               </Tab.Pane>
               {/* Apparel Products */}
               <Tab.Pane eventKey="category3">
-                <Row className="justify-content-center product-card-container">
+                <Row className=" product-card-container">
                   {apparelProducts.map((product) => (
                     <ProductCard
                       id={product.id}
@@ -227,7 +227,7 @@ const FeaturedProductSection = () => {
               </Tab.Pane>
               {/* General Products */}
               <Tab.Pane eventKey="category4">
-                <Row className="justify-content-center product-card-container">
+                <Row className="product-card-container">
                   {generalProducts.map((product) => (
                     <ProductCard
                       id={product.id}
