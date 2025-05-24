@@ -291,29 +291,13 @@ const PetShopPage = () => {
               >
                 <Row className="ProductItemContainer d-flex justify-content-center ">
                   {currentProducts.map((product) => (
-                    <Col
-                      key={product.id}
-                      xs={5}
-                      sm={6}
-                      md={4}
-                      lg={3}
-                      className="mb-4"
-                    >
-                      <motion.div
-                        variants={itemVariants}
-                        initial="hidden"
-                        whileInView="visible"
-                        viewport={{ once: true, amount: 0.2 }}
-                      >
-                        <ProductCard
-                          id={product.id}
-                          imageUrl={product.imageUrl}
-                          title={product.title}
-                          price={product.price}
-                          rating={product.rating}
-                        />
-                      </motion.div>
-                    </Col>
+                    <ProductCard
+                      id={product.id}
+                      imageUrl={product.imageUrl}
+                      title={product.title}
+                      price={product.price}
+                      rating={product.rating}
+                    />
                   ))}
                 </Row>
               </motion.div>

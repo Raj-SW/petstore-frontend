@@ -1,71 +1,99 @@
-.zoom-image:hover {
-    transform: scale(1.1);
+/* Card Base Styles */
+.product-card {
+    max-width: 15rem;
+    height: 20rem;
+    border-radius: 15px;
+    box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.1);
+    padding: 0.5rem;
+    border: none;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
 }
 
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* Image Container Styles */
 .image-container {
     overflow: hidden;
     width: 100%;
     height: 100%;
     display: flex;
     justify-content: center;
+    border-radius: 1.5rem;
+    position: relative;
 }
 
-/* Default for larger screens */
-.card {
-    max-width: 15rem;
-    height: 22rem;
+.zoom-image {
+    width: 100%;
+    height: 100%;
+    border-radius: 1.5rem;
+    transition: transform 0.5s ease-in-out;
+    object-fit: fill;
+    will-change: transform;
+    transform: translateZ(0);
 }
 
-.price-text {
-    font-size: 1.2rem;
-    color: #AE7D00;
+.zoom-image:hover {
+    transform: scale(1.1);
+    cursor: pointer;
 }
 
+/* Typography Styles */
 .card-title {
-    font-size: 1.2rem;
+    font-size: clamp(0.875rem, 2vw, 1.2rem);
+    line-height: 1.4;
     color: var(--secondary-color);
-}
-
-/* Default gap for smaller screens */
-.featured-products-gap {
-    gap: 1.5rem;
-    /* You can adjust this */
 }
 
 .card-title:hover {
     cursor: pointer;
 }
 
-/* Media queries for smaller screens */
-@media (max-width: 576px) {
-    .card {
-        max-width: 10rem;
-    }
-
-    .price-text {
-        font-size: 1.2rem;
-    }
-
-    .card-title {
-        font-size: 1rem;
-    }
-
-    .bubbleImg {
-        width: 2rem;
-        height: 2rem;
-    }
+.price-text {
+    font-size: clamp(1rem, 2.5vw, 1.2rem);
+    color: #AE7D00;
+    transition: color 0.3s ease;
 }
 
-/* Cart Button Animations */
+.product-card:hover .price-text {
+    color: #8B5A2B;
+}
+
+/* Rating Stars Styles */
+.rating-stars {
+    display: flex;
+    gap: 0.2rem;
+}
+
+.rating-stars svg {
+    width: clamp(0.8rem, 2vw, 1rem);
+    height: clamp(0.8rem, 2vw, 1rem);
+}
+
+.star-filled {
+    color: #FFA500;
+}
+
+.star-empty {
+    color: #E0E0E0;
+}
+
+/* Cart Button Styles */
 .basket-btn {
     color: var(--secondary-color);
+    cursor: pointer;
 }
 
 .basket-btn:hover {
     cursor: pointer;
 }
-
 
 /* Ripple effect */
 .ripple {
@@ -108,17 +136,7 @@
     }
 }
 
-/* Card hover animation */
-.card {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-}
-
-
+/* Button Pop Animation */
 @keyframes buttonPop {
     0% {
         transform: scale(1);
@@ -133,25 +151,88 @@
     }
 }
 
-/* Product image hover effect */
-.image-container {
-    position: relative;
-    overflow: hidden;
+/* Loading Animation */
+.product-card {
+    opacity: 0;
+    animation: fadeIn 0.3s ease-in forwards;
 }
 
-.zoom-image {
-    transition: transform 0.5s ease;
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
-.image-container:hover .zoom-image {
-    transform: scale(1.1);
+/* Media Queries */
+@media (max-width: 576px) {
+    .product-card {
+        max-width: 10rem;
+        height: auto;
+        min-height: 18rem;
+        margin: 0.25rem;
+        padding: 0.25rem;
+    }
+
+    .image-container {
+        height: 12rem;
+    }
+
+    .card-body {
+        padding: 0.5rem;
+    }
+
+    .price-text {
+        font-size: 1.2rem;
+    }
+
+    .card-title {
+        font-size: 1rem;
+    }
 }
 
-/* Price animation */
-.price-text {
-    transition: color 0.3s ease;
+/* Touch Device Optimizations */
+@media (hover: none) {
+    .product-card:hover {
+        transform: none;
+    }
+
+    .basket-btn {
+        padding: 0.5rem;
+    }
 }
 
-.card:hover .price-text {
-    color: #8B5A2B;
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+
+    .product-card,
+    .zoom-image,
+    .basket-btn {
+        transition: none;
+    }
+}
+
+/* Container Queries for Future Support */
+@container (max-width: 300px) {
+    .product-card {
+        max-width: 100%;
+    }
+
+    .card-title {
+        font-size: 0.875rem;
+    }
+}
+
+/* Default gap for smaller screens */
+.featured-products-gap {
+    gap: 1.5rem;
+    /* You can adjust this */
+}
+
+.bubbleImg {
+    width: 2rem;
+    height: 2rem;
 }

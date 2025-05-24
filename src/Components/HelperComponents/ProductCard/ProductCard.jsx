@@ -38,7 +38,7 @@ const ProductCard = ({ id, title, price, rating, imageUrl }) => {
       setTimeout(() => {
         setIsAdding(false);
         setClicked(false);
-      }, 500); // Increased from 300 to 500 for slower animation
+      }, 500);
     } catch (error) {
       console.error("Error adding item to cart:", error);
       setIsAdding(false);
@@ -51,35 +51,19 @@ const ProductCard = ({ id, title, price, rating, imageUrl }) => {
   };
 
   return (
-    <Card
-      className="card"
-      style={{
-        borderRadius: "15px",
-        boxShadow: "5px 5px 5px 5px rgba(0, 0, 0, 0.1)",
-        padding: "0.5rem",
-        border: "none",
-      }}
-      onClick={handleCardClick}
-    >
+    <Card className="product-card" onClick={handleCardClick}>
       <motion.div
         className="position-relative image-container"
-        style={{ overflow: "hidden", borderRadius: "1.5rem" }}
         whileHover={{ scale: 1.1 }}
         transition={{
-          duration: 0.5, // Increased from 0.3 to 0.5
-          ease: [0.6, -0.05, 0.01, 0.99], // Custom easing for smoother motion
+          duration: 0.5,
+          ease: [0.6, -0.05, 0.01, 0.99],
         }}
       >
         <Card.Img
           src={imageUrl}
           alt={title}
           className="zoom-image d-flex justify-center"
-          style={{
-            width: "100%",
-            borderRadius: "1.5rem",
-            transition: "transform 0.5s ease-in-out", // Increased from 0.3 to 0.5
-            objectFit: "fill",
-          }}
         />
       </motion.div>
       <Card.Body className="text-center p-0">
@@ -87,15 +71,11 @@ const ProductCard = ({ id, title, price, rating, imageUrl }) => {
         <div className="d-flex justify-content-around p-0">
           <div className="poppins-regular">
             <p className="price-text">${price}</p>
-            <div className="mb-2 p-0">
+            <div className="mb-2 p-0 rating-stars">
               {[...Array(5)].map((_, index) => (
                 <FaStar
                   key={index}
-                  style={{
-                    color: index < rating ? "#FFA500" : "#E0E0E0",
-                    marginRight: "2px",
-                    width: "0.8rem",
-                  }}
+                  className={index < rating ? "star-filled" : "star-empty"}
                 />
               ))}
             </div>

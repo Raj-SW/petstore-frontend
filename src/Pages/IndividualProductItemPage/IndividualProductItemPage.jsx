@@ -262,19 +262,17 @@ const IndividualProductItemPage = () => {
         </Container>
         <Container className="related-purchases-container border rounded-4 mt-5 mb-5">
           <h2 className="secondary-color-font p-4">Related Purchases</h2>
-          <Row className="w-100 d-flex flex-wrap justify-content-center  mt-3 related-purchases-product mb-5">
+          <Row className="d-flex flex-wrap justify-content-center  mt-3 related-purchases-product mb-5 gap-2">
             {relatedProducts.length === 0 && <p>No related products found.</p>}
             {relatedProducts.map((item) => (
-              <Col key={item.id} xs={5} sm={6} md={4} lg={3} className="mb-4">
-                <ProductCard
-                  key={item.id}
-                  id={item.id}
-                  imageUrl={item.imageUrl}
-                  title={item.title}
-                  price={item.price}
-                  rating={item.rating}
-                />
-              </Col>
+              <ProductCard
+                key={item.id}
+                id={item.id}
+                imageUrl={item.imageUrl}
+                title={item.title}
+                price={item.price}
+                rating={item.rating}
+              />
             ))}
           </Row>
         </Container>

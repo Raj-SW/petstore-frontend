@@ -19,48 +19,6 @@ const FeaturedProductSection = () => {
   const [generalProducts, setGeneralProducts] = useState([]);
   const [activeTab, setActiveTab] = useState("all");
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        type: "spring",
-        stiffness: 300,
-        damping: 24,
-      },
-    },
-    exit: {
-      y: -20,
-      opacity: 0,
-      transition: {
-        duration: 0.2,
-      },
-    },
-  };
-
-  const tabVariants = {
-    inactive: { scale: 1 },
-    active: {
-      scale: 1.05,
-      transition: {
-        type: "spring",
-        stiffness: 400,
-        damping: 10,
-      },
-    },
-  };
-
   // Fetch featured products for each category
   useEffect(() => {
     ProductService.fetchProductsByCategory("cat")
@@ -96,7 +54,7 @@ const FeaturedProductSection = () => {
     <div className="">
       <Container fluid>
         <Row className="align-items-center justify-content-between p-4 featured-products-heading-container pl-40 pr-40">
-          <Col xs={6} md={7}>
+          <Col>
             <div className="d-flex gap-4 justify-content-center">
               <motion.div
                 className="featured-products-heading"
@@ -104,14 +62,12 @@ const FeaturedProductSection = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
               >
-                <h1 className="caveat-Heading">Featured Products</h1>
+                <h1 className="caveat-Heading fs-1">Featured Products</h1>
               </motion.div>
-              <img src={bubblesImg} alt="" className="bubbleImg" />
             </div>
           </Col>
-          <Col xs={6} md={5} className="d-flex justify-content-center ">
+          <Col className="d-flex justify-content-center ">
             <motion.div
-              className="text-center mt-4"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.4 }}
@@ -122,10 +78,7 @@ const FeaturedProductSection = () => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <p>
-                  {" "}
-                  View More <FaArrowRight />
-                </p>
+                <p>View More</p>
               </Button>
             </motion.div>
           </Col>
