@@ -63,11 +63,16 @@ const PetShopPage = () => {
   };
 
   useEffect(() => {
-    ProductService.fetchAllProducts()
-      .then((data) => {
+    ProductService.fetchAllProducts({
+      page: currentPage,
+      limit: productsPerPage,
+      sort: "-createdAt",
+    })
+      .then(({ products: data, pagination }) => {
+        console.log("Products data received:", data);
         setProducts(data);
         setDisplayedProducts(data);
-        setTotalPages(Math.ceil(data.length / productsPerPage));
+        setTotalPages(pagination.pages);
         setIsLoading(false);
 
         const query = searchParams.get("search");
@@ -81,7 +86,7 @@ const PetShopPage = () => {
         setError(err.message);
         setIsLoading(false);
       });
-  }, [productsPerPage, searchParams]);
+  }, [currentPage, productsPerPage, searchParams]);
 
   // Get current products for pagination
   const indexOfLastProduct = currentPage * productsPerPage;
@@ -101,77 +106,85 @@ const PetShopPage = () => {
     }
   };
 
-  // Update handleSearch to search across multiple product fields
+  // Update handleSearch to use the API
   const handleSearch = (query = searchQuery) => {
-    let filtered = products;
-
     if (query.trim()) {
-      const searchTerms = query.toLowerCase().split(" ");
-
-      filtered = products.filter((product) => {
-        const searchableText = [
-          product.title,
-          product.description,
-          product.category,
-          product.brand,
-        ]
-          .map((text) => text?.toLowerCase() || "")
-          .join(" ");
-
-        return searchTerms.every((term) => searchableText.includes(term));
-      });
+      ProductService.fetchAllProducts({
+        search: query,
+        page: 1,
+        limit: productsPerPage,
+      })
+        .then(({ products: data, pagination }) => {
+          setDisplayedProducts(data);
+          setCurrentPage(1);
+          setTotalPages(pagination.pages);
+        })
+        .catch((err) => {
+          console.error("Error searching products:", err);
+          setError(err.message);
+        });
+    } else {
+      setDisplayedProducts(products);
+      setCurrentPage(1);
+      setTotalPages(Math.ceil(products.length / productsPerPage));
     }
-
-    setDisplayedProducts(filtered);
-    setCurrentPage(1);
-    setTotalPages(Math.ceil(filtered.length / productsPerPage));
   };
 
-  // Apply filters
+  // Update handleApplyFilters to use the API
   const handleApplyFilters = (filters) => {
     const { minPrice, maxPrice, categories, rating } = filters;
 
-    const filtered = products.filter((product) => {
-      const matchesCategory =
-        categories.length === 0 ||
-        categories.some(
-          (category) =>
-            category.toLowerCase() === product.category.toLowerCase()
-        );
-      const matchesPrice =
-        (!minPrice || parseFloat(product.price) >= parseFloat(minPrice)) &&
-        (!maxPrice || parseFloat(product.price) <= parseFloat(maxPrice));
-      const matchesRating =
-        !rating || parseFloat(product.rating) >= parseFloat(rating);
-
-      return matchesCategory && matchesPrice && matchesRating;
-    });
-
-    setDisplayedProducts(filtered);
-    setCurrentPage(1);
-    setTotalPages(Math.ceil(filtered.length / productsPerPage));
+    ProductService.fetchAllProducts({
+      page: 1,
+      limit: productsPerPage,
+      minPrice,
+      maxPrice,
+      category: categories.length > 0 ? categories[0] : undefined,
+    })
+      .then(({ products: data, pagination }) => {
+        setDisplayedProducts(data);
+        setCurrentPage(1);
+        setTotalPages(pagination.pages);
+      })
+      .catch((err) => {
+        console.error("Error applying filters:", err);
+        setError(err.message);
+      });
   };
 
-  // Sort products
+  // Update handleSort to use the API
   const handleSort = (sortType) => {
-    let sorted = [...displayedProducts];
+    let sortParam = "-createdAt";
     switch (sortType) {
       case "priceAsc":
-        sorted.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
+        sortParam = "price";
         break;
       case "priceDesc":
-        sorted.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
+        sortParam = "-price";
         break;
       case "alphabeticalAsc":
-        sorted.sort((a, b) => a.title.localeCompare(b.title));
+        sortParam = "title";
         break;
       case "alphabeticalDesc":
-        sorted.sort((a, b) => b.title.localeCompare(a.title));
+        sortParam = "-title";
         break;
       default:
         break;
     }
-    setDisplayedProducts(sorted);
+
+    ProductService.fetchAllProducts({
+      page: currentPage,
+      limit: productsPerPage,
+      sort: sortParam,
+    })
+      .then(({ products: data, pagination }) => {
+        setDisplayedProducts(data);
+        setTotalPages(pagination.pages);
+      })
+      .catch((err) => {
+        console.error("Error sorting products:", err);
+        setError(err.message);
+      });
   };
 
   const [showFilters, setShowFilters] = useState(false);
