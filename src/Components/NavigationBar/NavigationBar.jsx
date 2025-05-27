@@ -19,6 +19,7 @@ import {
   FaSignInAlt,
   FaStore,
   FaUsers,
+  FaPlane,
 } from "react-icons/fa";
 import pawsImg from "../../assets/NavigationBarAssets/Logo/paws.png";
 import pawsmobileImg from "../../assets/NavigationBarAssets/Logo/pawsMobile.png";
@@ -208,6 +209,9 @@ const NavigationBar = () => {
             </a>
             <a href="/services" className="mobile-menu-link">
               <FaPaw className="me-2" /> Services
+            </a>
+            <a href="/import-export-service" className="mobile-menu-link">
+              <FaPlane className="me-2" /> Import/Export
             </a>
             <a href="/appointments" className="mobile-menu-link">
               <FaUser className="me-2" /> Appointments

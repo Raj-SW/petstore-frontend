@@ -314,13 +314,17 @@ const ExportImportForm = () => {
                           />
                         </Form.Group>
                       </Col>
-                      <Col md={12} className="d-flex justify-content-end">
+                      <Col
+                        md={12}
+                        className="d-flex justify-content-end next-button"
+                      >
                         <Button
                           onClick={handleNext}
                           className="rounded-5 px-4 py-2"
                           style={{
-                            backgroundColor: "var(--primary-green-20-color)",
-                            borderColor: "var(--primary-green-20-color)",
+                            backgroundColor: "var(--primary-blue-color)",
+                            borderColor: "var(--primary-blue-color)",
+                            color: "white",
                             transition: "all 0.3s ease",
                             boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
                           }}
@@ -472,8 +476,9 @@ const ExportImportForm = () => {
                             onClick={handlePrev}
                             className="rounded-5 px-4 py-2"
                             style={{
-                              backgroundColor: "var(--primary-green-20-color)",
-                              borderColor: "var(--primary-green-20-color)",
+                              backgroundColor: "var(--primary-blue-color)",
+                              borderColor: "var(--primary-blue-color)",
+                              color: "white",
                               transition: "all 0.3s ease",
                               boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
                             }}
@@ -495,8 +500,9 @@ const ExportImportForm = () => {
                             onClick={handleNext}
                             className="rounded-5 px-4 py-2"
                             style={{
-                              backgroundColor: "var(--primary-green-20-color)",
-                              borderColor: "var(--primary-green-20-color)",
+                              backgroundColor: "var(--primary-blue-color)",
+                              borderColor: "var(--primary-blue-color)",
+                              color: "white",
                               transition: "all 0.3s ease",
                               boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
                             }}
@@ -621,8 +627,9 @@ const ExportImportForm = () => {
                             onClick={handlePrev}
                             className="rounded-5 px-4 py-2"
                             style={{
-                              backgroundColor: "var(--primary-green-20-color)",
-                              borderColor: "var(--primary-green-20-color)",
+                              backgroundColor: "var(--primary-blue-color)",
+                              borderColor: "var(--primary-blue-color)",
+                              color: "white",
                               transition: "all 0.3s ease",
                               boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
                             }}
@@ -644,8 +651,9 @@ const ExportImportForm = () => {
                             onClick={handleNext}
                             className="rounded-5 px-4 py-2"
                             style={{
-                              backgroundColor: "var(--primary-green-20-color)",
-                              borderColor: "var(--primary-green-20-color)",
+                              backgroundColor: "var(--primary-blue-color)",
+                              borderColor: "var(--primary-blue-color)",
+                              color: "white",
                               transition: "all 0.3s ease",
                               boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
                             }}
@@ -878,8 +886,9 @@ const ExportImportForm = () => {
                             type="submit"
                             className="rounded-5 px-4 py-2"
                             style={{
-                              backgroundColor: "var(--primary-green-20-color)",
-                              borderColor: "var(--primary-green-20-color)",
+                              backgroundColor: "var(--primary-blue-color)",
+                              borderColor: "var(--primary-blue-color)",
+                              color: "white",
                               transition: "all 0.3s ease",
                               boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
                             }}
