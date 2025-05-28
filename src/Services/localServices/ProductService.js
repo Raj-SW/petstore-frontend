@@ -1,5 +1,3 @@
-import Products from "./Products";
-
 class ProductService {
   static API_URL = "http://localhost:5000/api";
 
@@ -188,50 +186,75 @@ class ProductService {
   }
 
   // Fetch products by category
-  static fetchProductsByCategory(category) {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const filteredProducts = Products.filter(
-          (item) => item.category === category
-        );
-        resolve(filteredProducts);
-      }, 50); // Simulates a delay for fetching data
-    });
+  static async fetchProductsByCategory(category) {
+    try {
+      const response = await fetch(
+        `${this.API_URL}/products?category=${category}`
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch products by category");
+      }
+      const responseData = await response.json();
+      return responseData.success ? responseData.data : [];
+    } catch (error) {
+      console.error("Error fetching products by category:", error);
+      return [];
+    }
   }
 
   // Fetch products by apparel
-  static fetchProductsByApparel() {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const filteredProducts = Products.filter(
-          (item) => item.isApparel === true
-        );
-        resolve(filteredProducts);
-      }, 50); // Simulates a delay for fetching data
-    });
+  static async fetchProductsByApparel() {
+    try {
+      const response = await fetch(`${this.API_URL}/products?category=apparel`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch apparel products");
+      }
+      const responseData = await response.json();
+      return responseData.success ? responseData.data : [];
+    } catch (error) {
+      console.error("Error fetching apparel products:", error);
+      return [];
+    }
   }
+
   // Fetch products by name
-  static fetchProductsByName(name) {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const filteredProducts = Products.filter((item) =>
-          item.title.toLowerCase().includes(name.toLowerCase())
-        );
-        resolve(filteredProducts);
-      }, 50); // Simulates a delay for fetching data
-    });
+  static async fetchProductsByName(name) {
+    try {
+      const response = await fetch(
+        `${this.API_URL}/products?search=${encodeURIComponent(name)}`
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch products by name");
+      }
+      const responseData = await response.json();
+      return responseData.success ? responseData.data : [];
+    } catch (error) {
+      console.error("Error fetching products by name:", error);
+      return [];
+    }
   }
 
   // Fetch related products by category, excluding the current product, limit to 4
-  static fetchRelatedProducts(category, excludeId, limit = 4) {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const related = Products.filter(
-          (item) => item.category === category && item.id !== excludeId
-        ).slice(0, limit);
-        resolve(related);
-      }, 50);
-    });
+  static async fetchRelatedProducts(category, excludeId, limit = 4) {
+    try {
+      const response = await fetch(
+        `${this.API_URL}/products?category=${category}&limit=${limit}`
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch related products");
+      }
+      const responseData = await response.json();
+      if (responseData.success) {
+        // Filter out the current product and limit the results
+        return responseData.data
+          .filter((product) => product._id !== excludeId)
+          .slice(0, limit);
+      }
+      return [];
+    } catch (error) {
+      console.error("Error fetching related products:", error);
+      return [];
+    }
   }
 }
 

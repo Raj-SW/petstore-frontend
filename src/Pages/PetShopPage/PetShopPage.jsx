@@ -88,14 +88,6 @@ const PetShopPage = () => {
       });
   }, [currentPage, productsPerPage, searchParams]);
 
-  // Get current products for pagination
-  const indexOfLastProduct = currentPage * productsPerPage;
-  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  const currentProducts = displayedProducts.slice(
-    indexOfFirstProduct,
-    indexOfLastProduct
-  );
-
   // Change page
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -303,7 +295,7 @@ const PetShopPage = () => {
                 viewport={{ once: false, amount: 0.2 }}
               >
                 <Row className="ProductItemContainer d-flex justify-content-center ">
-                  {currentProducts.map((product, index) => (
+                  {displayedProducts.map((product, index) => (
                     <ProductCard
                       key={index}
                       id={product.id}
