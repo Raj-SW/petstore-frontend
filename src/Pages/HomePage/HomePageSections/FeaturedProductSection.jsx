@@ -15,7 +15,7 @@ const FeaturedProductSection = () => {
   const [key, setKey] = useState("category1");
   const [catProducts, setCatProducts] = useState([]);
   const [dogProducts, setDogProducts] = useState([]);
-  const [apparelProducts, setApparelProducts] = useState([]);
+  const [fishProducts, setFishProducts] = useState([]);
   const [generalProducts, setGeneralProducts] = useState([]);
   const [activeTab, setActiveTab] = useState("all");
 
@@ -40,14 +40,13 @@ const FeaturedProductSection = () => {
         )
       )
       .catch((err) => console.error("Error fetching general products:", err));
-
-    ProductService.fetchProductsByApparel()
+    ProductService.fetchProductsByCategory("fish")
       .then((data) =>
-        setApparelProducts(
+        setFishProducts(
           data.filter((product) => product.isFeatured).slice(0, 4)
         )
       )
-      .catch((err) => console.error("Error fetching apparel products:", err));
+      .catch((err) => console.error("Error fetching general products:", err));
   }, []);
 
   return (
@@ -71,13 +70,10 @@ const FeaturedProductSection = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.4 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
-              <Button
-                href={"/PetShop"}
-                className="button-primary rounded-5"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
+              <Button href={"/PetShop"} className="button-primary rounded-5">
                 <p>View More</p>
               </Button>
             </motion.div>
@@ -118,7 +114,7 @@ const FeaturedProductSection = () => {
                       eventKey="category3"
                       className="rounded-5 pt-1 pb-1"
                     >
-                      <p>Apparel</p>
+                      <p>Fish</p>
                     </Nav.Link>
                   </Nav.Item>
                   <Nav.Item>
@@ -138,8 +134,8 @@ const FeaturedProductSection = () => {
                 <Row className=" product-card-container">
                   {catProducts.map((product) => (
                     <ProductCard
-                      id={product.id}
-                      key={product.id}
+                      id={product._id}
+                      key={product._id}
                       imageUrl={product.imageUrl}
                       title={product.title}
                       price={product.price}
@@ -153,8 +149,8 @@ const FeaturedProductSection = () => {
                 <Row className=" product-card-container">
                   {dogProducts.map((product) => (
                     <ProductCard
-                      key={product.id}
-                      id={product.id}
+                      key={product._id}
+                      id={product._id}
                       imageUrl={product.imageUrl}
                       title={product.title}
                       price={product.price}
@@ -166,10 +162,10 @@ const FeaturedProductSection = () => {
               {/* Apparel Products */}
               <Tab.Pane eventKey="category3">
                 <Row className=" product-card-container">
-                  {apparelProducts.map((product) => (
+                  {fishProducts.map((product) => (
                     <ProductCard
-                      id={product.id}
-                      key={product.id}
+                      id={product._id}
+                      key={product._id}
                       imageUrl={product.imageUrl}
                       title={product.title}
                       price={product.price}
@@ -183,8 +179,8 @@ const FeaturedProductSection = () => {
                 <Row className="product-card-container">
                   {generalProducts.map((product) => (
                     <ProductCard
-                      id={product.id}
-                      key={product.id}
+                      id={product._id}
+                      key={product._id}
                       imageUrl={product.imageUrl}
                       title={product.title}
                       price={product.price}

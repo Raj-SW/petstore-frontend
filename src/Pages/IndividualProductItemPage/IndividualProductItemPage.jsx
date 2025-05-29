@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useCart } from "react-use-cart";
 import {
   Container,
@@ -9,6 +9,7 @@ import {
   Image,
   Modal,
   Form,
+  Alert,
 } from "react-bootstrap";
 import { FaFacebook, FaTwitter, FaInstagram } from "react-icons/fa";
 import { FiShare2 } from "react-icons/fi";
@@ -20,7 +21,6 @@ import Breadcrumb from "@/Components/HelperComponents/Breadcrumb/Breadcrumb";
 import SearchBar from "@/Components/HelperComponents/SearchBar/SearchBar";
 import ReviewService from "../../Services/localServices/ReviewService";
 //Asset Import
-import productImg1 from "@/assets/FeaturedProductsAssets/Product.svg";
 import ProductCard from "@/Components/HelperComponents/ProductCard/ProductCard";
 import ReviewCarousel from "@/Components/HelperComponents/Carousel/ReviewCarousel";
 //service import
@@ -28,8 +28,10 @@ import ProductService from "@/Services/localServices/ProductService";
 
 const IndividualProductItemPage = () => {
   const { id } = useParams();
-  const [product, setProduct] = useState();
+  const navigate = useNavigate();
+  const [product, setProduct] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [reviews, setReviews] = useState([]);
   const { addItem } = useCart();
@@ -42,32 +44,69 @@ const IndividualProductItemPage = () => {
   });
   const [submittingReview, setSubmittingReview] = useState(false);
 
+  // Scroll to top when component mounts
   useEffect(() => {
-    ProductService.fetchProductById(parseInt(id))
-      .then((product) => {
-        setProduct(product);
-        setIsLoading(false);
+    window.scrollTo(0, 0);
+  }, []);
 
-        ProductService.fetchRelatedProducts(product.category, product.id).then(
-          setRelatedProducts
+  useEffect(() => {
+    const fetchProductData = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+
+        // Validate and parse the product ID
+        if (!id) {
+          throw new Error("Product ID is missing");
+        }
+
+        console.log("Raw product ID from URL:", id);
+
+        // Try to parse the ID if it's a string number
+        const productId = isNaN(id) ? id : parseInt(id);
+        console.log("Parsed product ID:", productId);
+
+        // Fetch product data
+        const productData = await ProductService.fetchProductById(productId);
+        console.log("Received product data:", productData);
+
+        if (!productData) {
+          throw new Error("Product not found");
+        }
+
+        setProduct(productData);
+        console.log("productData", productData);
+        // Fetch related products if category exists
+        if (productData.category) {
+          console.log(
+            "Fetching related products for category:",
+            productData.category
+          );
+          const related = await ProductService.fetchRelatedProducts(
+            productData.category,
+            productData.id
+          );
+          console.log("Received related products:", related);
+          setRelatedProducts(related);
+        }
+
+        // Fetch reviews
+        console.log("Fetching reviews for product ID:", productId);
+        const productReviews = await ReviewService.fetchProductReviews(
+          productId
         );
-      })
-      .catch((err) => {
-        console.error("Error fetching product:", err);
-        setError("Product not found.");
+        console.log("Received reviews:", productReviews);
+        setReviews(productReviews);
+      } catch (err) {
+        console.error("Error fetching product data:", err);
+        setError(err.message || "Failed to load product details");
+      } finally {
         setIsLoading(false);
-      });
-    ReviewService.fetchProductReviews(parseInt(id))
-      .then((reviews) => {
-        setReviews(reviews);
-      })
-      .catch((err) => {
-        console.error("Error fetching reviews:", err);
-      });
-  }, [id]);
+      }
+    };
 
-  if (isLoading) return <p>Loading product details...</p>;
-  if (!product) return <p>Product not found.</p>;
+    fetchProductData();
+  }, [id]);
 
   const handleDecrement = () => {
     setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
@@ -78,13 +117,33 @@ const IndividualProductItemPage = () => {
   };
 
   const handleAddToCart = () => {
-    addItem({
-      id: product.id,
-      title: product.title,
-      price: parseFloat(product.price),
-      image: product.imageUrl,
-      quantity: quantity,
-    });
+    if (!product) {
+      console.error("No product data available");
+      return;
+    }
+
+    // Ensure we have a valid ID
+    const productId = product._id || product.id;
+    if (!productId) {
+      console.error("Product ID is missing");
+      return;
+    }
+
+    try {
+      const itemToAdd = {
+        id: productId.toString(), // Ensure ID is a string
+        title: product.title?.trim() || "Untitled Product",
+        price: parseFloat(product.price) || 0,
+        image: product.images?.[0] || product.imageUrl || "",
+        quantity: quantity,
+      };
+
+      console.log("Adding item to cart:", itemToAdd);
+      addItem(itemToAdd);
+    } catch (error) {
+      console.error("Error adding item to cart:", error);
+      setError("Failed to add item to cart. Please try again.");
+    }
   };
 
   // Review modal handlers
@@ -94,33 +153,77 @@ const IndividualProductItemPage = () => {
     const { name, value } = e.target;
     setReviewForm((prev) => ({ ...prev, [name]: value }));
   };
-  const handleSubmitReview = (e) => {
+
+  const handleSubmitReview = async (e) => {
     e.preventDefault();
     setSubmittingReview(true);
-    setTimeout(() => {
-      setReviews((prev) => [
-        ...prev,
-        {
-          name: reviewForm.name,
-          rating: reviewForm.rating,
-          comment: reviewForm.comment,
-          date: new Date().toISOString(),
-        },
-      ]);
+    try {
+      const newReview = await ReviewService.submitReview({
+        productId: id,
+        ...reviewForm,
+      });
+      setReviews((prev) => [...prev, newReview]);
       setReviewForm({ name: "", rating: 5, comment: "" });
-      setSubmittingReview(false);
       setShowReviewModal(false);
-    }, 800);
+    } catch (error) {
+      console.error("Error submitting review:", error);
+      setError("Failed to submit review. Please try again.");
+    } finally {
+      setSubmittingReview(false);
+    }
   };
+
+  if (isLoading) {
+    return (
+      <Container
+        className="d-flex justify-content-center align-items-center"
+        style={{ minHeight: "60vh" }}
+      >
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </Container>
+    );
+  }
+
+  if (error) {
+    return (
+      <Container className="mt-5">
+        <Alert variant="danger">
+          <Alert.Heading>Error Loading Product</Alert.Heading>
+          <p>{error}</p>
+          <Button variant="primary" onClick={() => navigate("/petshop")}>
+            Return to Shop
+          </Button>
+        </Alert>
+      </Container>
+    );
+  }
+
+  if (!product) {
+    return (
+      <Container className="mt-5">
+        <Alert variant="warning">
+          <Alert.Heading>Product Not Found</Alert.Heading>
+          <p>
+            The product you're looking for doesn't exist or has been removed.
+          </p>
+          <Button variant="primary" onClick={() => navigate("/petshop")}>
+            Return to Shop
+          </Button>
+        </Alert>
+      </Container>
+    );
+  }
 
   return (
     <>
-      <Container className="d-flex flex-column">
+      <Container className="d-flex flex-column w-100 ">
         <div className="searchbarcontainer">
           <Breadcrumb
             items={[
               { label: "Home", path: "/" },
-              { label: "Pet Shop", path: "/PetShop" },
+              { label: "Pet Shop", path: "/petshop" },
               { label: product.title, path: null },
             ]}
           />
@@ -133,29 +236,31 @@ const IndividualProductItemPage = () => {
           <Row className="g-4">
             <Col lg={6} className="d-flex flex-column align-items-center">
               <Image
-                src={product.imageUrl}
-                alt="Product"
+                src={product.images?.[0] || product.imageUrl}
+                alt={product.title}
                 className="img-fluid rounded mb-3 w-100"
               />
-              <div className="d-flex justify-content-center img-Thumbnail-Container ">
-                {/* Thumbnail Images */}
-                <Image src={product.imageUrl} className="mx-1 flex-grow-1  " />
-                <Image src={product.imageUrl} className="mx-1 flex-grow-1  " />
-                <Image src={product.imageUrl} className="mx-1 flex-grow-1  " />
-                <Image src={product.imageUrl} className="mx-1 flex-grow-1  " />
+              <div className="d-flex justify-content-center img-Thumbnail-Container">
+                {product.images?.map((image, index) => (
+                  <Image
+                    key={index}
+                    src={image}
+                    alt={`${product.title} - Image ${index + 1}`}
+                    className="mx-1 flex-grow-1"
+                  />
+                ))}
               </div>
 
-              {/* Guarantee Badges */}
               <div className="d-flex justify-content-center mt-3 guarantee-badge p-2 w-100 rounded-3 poppins-regular flex-wrap">
                 <div className="p-1">
                   <p>100% Health guarantee</p>
                 </div>
                 <div className="p-1">
-                  <p>100% Guarnatee of pet identification</p>
+                  <p>100% Guarantee of pet identification</p>
                 </div>
               </div>
-              {/* Share Icons */}
-              <div className="d-flex w-100 justify-content-start p-3 poppins-semibold align-items-center ">
+
+              <div className="d-flex w-100 justify-content-start p-3 poppins-semibold align-items-center">
                 <IconContext.Provider
                   value={{ size: "1.3rem", color: "#002A48" }}
                 >
@@ -168,7 +273,6 @@ const IndividualProductItemPage = () => {
               </div>
             </Col>
 
-            {/* Right Column - Product Information */}
             <Col lg={6}>
               <h2 className="mb-3 poppins-bold secondary-color-font">
                 {product.title}
@@ -176,47 +280,19 @@ const IndividualProductItemPage = () => {
               <h4 className="mb-4 poppins-semibold secondary-color-font">
                 $ {product.price}
               </h4>
-              {/* Product Details */}
-              <div className="mb-4 d-flex flex-column item-details-container poppins-medium ">
-                <p>
-                  <strong>Detail 1:</strong> #000078
-                </p>
-                <p>
-                  <strong>Gender:</strong> Female
-                </p>
-                <p>
-                  <strong>Age:</strong> 2 Months
-                </p>
-                <p>
-                  <strong>Size:</strong> Small
-                </p>
-                <p>
-                  <strong>Color:</strong> Apricot & Tan
-                </p>
-                <p>
-                  <strong>Vaccinated:</strong> Yes
-                </p>
-                <p>
-                  <strong>Dewormed:</strong> Yes
-                </p>
-                <p>
-                  <strong>Cert:</strong> Yes (MKA)
-                </p>
-                <p>
-                  <strong>Microchip:</strong> Yes
-                </p>
-                <p>
-                  <strong>Location:</strong> Vietnam
-                </p>
-                <p>
-                  <strong>Published Date:</strong> 12-Oct-2022
-                </p>
+
+              <div className="mb-4 d-flex flex-column item-details-container poppins-medium">
+                {product.specifications &&
+                  Object.entries(product.specifications).map(([key, value]) => (
+                    <p key={key}>
+                      <strong>{key}:</strong> {value}
+                    </p>
+                  ))}
                 <p>
                   <strong>Additional Information:</strong> {product.description}
                 </p>
               </div>
 
-              {/* Quantity and Add to Cart */}
               <div className="d-flex align-items-center mb-4 w-100 justify-content-start poppins-regular gap-3">
                 <span className="me-3">
                   <strong>Quantity</strong>
@@ -246,36 +322,36 @@ const IndividualProductItemPage = () => {
             </Col>
           </Row>
 
-          {/* Supplier Product Details */}
-          <Row className="mt-5 Supplier-Product-Detail-Container rounded-4 border p-2">
-            <Col>
-              <h4 className="secondary-color-font">Supplier Product Details</h4>
-              <p>
-                We have had Magie since she was able to leave her mum as a puppy
-                at 8 weeks old. Magie currently lives with two children aged 7
-                and 13 and has many visitors to the house, which she is great
-                with. There's lots of cats and birds in the garden, and she's
-                not fussed by them.
-              </p>
-            </Col>
-          </Row>
+          {product.supplierDetails && (
+            <Row className="mt-5 Supplier-Product-Detail-Container rounded-4 border p-2">
+              <Col>
+                <h4 className="secondary-color-font">
+                  Supplier Product Details
+                </h4>
+                <p>{product.supplierDetails}</p>
+              </Col>
+            </Row>
+          )}
         </Container>
-        <Container className="related-purchases-container border rounded-4 mt-5 mb-5">
-          <h2 className="secondary-color-font p-4">Related Purchases</h2>
-          <Row className="d-flex flex-wrap justify-content-center  mt-3 related-purchases-product mb-5 gap-2">
-            {relatedProducts.length === 0 && <p>No related products found.</p>}
-            {relatedProducts.map((item) => (
-              <ProductCard
-                key={item.id}
-                id={item.id}
-                imageUrl={item.imageUrl}
-                title={item.title}
-                price={item.price}
-                rating={item.rating}
-              />
-            ))}
+
+        {relatedProducts.length > 0 && (
+          <Row className="related-purchases-container border rounded-4 mt-5 mb-5">
+            <h2 className="secondary-color-font p-4">Related Products</h2>
+            <Row className="d-flex flex-wrap justify-content-center mt-3 related-purchases-product mb-5 gap-3">
+              {relatedProducts.map((item) => (
+                <ProductCard
+                  key={item.id}
+                  id={item.id}
+                  imageUrl={item.images?.[0] || item.imageUrl}
+                  title={item.title}
+                  price={item.price}
+                  rating={item.rating}
+                />
+              ))}
+            </Row>
           </Row>
-        </Container>
+        )}
+
         <Container className="productReviewsContainer d-flex flex-column text-center mt-5 mb-5">
           <h3 className="secondary-color-font">Product Reviews</h3>
           <Row className="productReviewCardsContainer d-flex flex-wrap justify-content-center">
@@ -298,13 +374,14 @@ const IndividualProductItemPage = () => {
           </div>
         </Container>
       </Container>
+
       {/* Review Modal */}
-      <Modal show={showReviewModal} onHide={handleCloseReviewModal} centered>
+      <Modal show={showReviewModal} onHide={handleCloseReviewModal}>
         <Modal.Header closeButton>
           <Modal.Title>Write a Review</Modal.Title>
         </Modal.Header>
-        <Form onSubmit={handleSubmitReview}>
-          <Modal.Body>
+        <Modal.Body>
+          <Form onSubmit={handleSubmitReview}>
             <Form.Group className="mb-3">
               <Form.Label>Name</Form.Label>
               <Form.Control
@@ -317,42 +394,18 @@ const IndividualProductItemPage = () => {
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Rating</Form.Label>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "row-reverse",
-                  justifyContent: "flex-end",
-                }}
+              <Form.Select
+                name="rating"
+                value={reviewForm.rating}
+                onChange={handleReviewFormChange}
+                required
               >
-                {[5, 4, 3, 2, 1].map((star) => (
-                  <React.Fragment key={star}>
-                    <input
-                      type="radio"
-                      id={`star${star}`}
-                      name="rating"
-                      value={star}
-                      checked={Number(reviewForm.rating) === star}
-                      onChange={handleReviewFormChange}
-                      style={{ display: "none" }}
-                    />
-                    <label
-                      htmlFor={`star${star}`}
-                      style={{
-                        cursor: "pointer",
-                        fontSize: "2rem",
-                        color:
-                          Number(reviewForm.rating) >= star
-                            ? "#FFA500"
-                            : "#E0E0E0",
-                        marginLeft: 2,
-                        marginRight: 2,
-                      }}
-                    >
-                      ★
-                    </label>
-                  </React.Fragment>
+                {[5, 4, 3, 2, 1].map((rating) => (
+                  <option key={rating} value={rating}>
+                    {rating} Stars
+                  </option>
                 ))}
-              </div>
+              </Form.Select>
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Comment</Form.Label>
@@ -365,22 +418,11 @@ const IndividualProductItemPage = () => {
                 required
               />
             </Form.Group>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-              className="rounded-5 cancel-review-btn"
-              onClick={handleCloseReviewModal}
-            >
-              Cancel
-            </Button>
-            <Button
-              className="rounded-5 submit-review-btn"
-              disabled={submittingReview}
-            >
+            <Button type="submit" className="w-100" disabled={submittingReview}>
               {submittingReview ? "Submitting..." : "Submit Review"}
             </Button>
-          </Modal.Footer>
-        </Form>
+          </Form>
+        </Modal.Body>
       </Modal>
     </>
   );

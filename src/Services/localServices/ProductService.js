@@ -1,5 +1,51 @@
 class ProductService {
   static API_URL = "http://localhost:5000/api";
+  static requestQueue = new Map();
+  static retryDelays = [1000, 2000, 4000]; // Exponential backoff delays
+
+  // Helper method to handle rate limiting with retries
+  static async handleRequest(url, options = {}, retryCount = 0) {
+    try {
+      const response = await fetch(url, options);
+
+      if (response.status === 429) {
+        if (retryCount < this.retryDelays.length) {
+          console.log(
+            `Rate limited. Retrying in ${this.retryDelays[retryCount]}ms...`
+          );
+          await new Promise((resolve) =>
+            setTimeout(resolve, this.retryDelays[retryCount])
+          );
+          return this.handleRequest(url, options, retryCount + 1);
+        }
+        throw new Error("Too many requests. Please try again later.");
+      }
+
+      if (!response.ok) {
+        throw new Error(`Request failed: ${response.statusText}`);
+      }
+      return response;
+    } catch (error) {
+      console.error("Request error:", error);
+      throw error;
+    }
+  }
+
+  // Helper method to debounce requests
+  static debounceRequest(key, requestFn) {
+    if (this.requestQueue.has(key)) {
+      return this.requestQueue.get(key);
+    }
+
+    const promise = requestFn();
+    this.requestQueue.set(key, promise);
+
+    promise.finally(() => {
+      this.requestQueue.delete(key);
+    });
+
+    return promise;
+  }
 
   // Fetch all products with filtering, sorting, and pagination
   static async fetchAllProducts(params = {}) {
@@ -16,17 +62,15 @@ class ProductService {
         ...(params.search && { search: params.search }),
       });
 
-      console.log(queryParams);
-      const response = await fetch(`${this.API_URL}/products?${queryParams}`);
-      if (!response.ok) {
-        throw new Error("Failed to fetch products");
-      }
-      const responseData = await response.json();
+      const response = await this.handleRequest(
+        `${this.API_URL}/products?${queryParams}`
+      );
+      const data = await response.json();
 
-      if (responseData.success) {
+      if (data.success) {
         return {
-          products: responseData.data,
-          pagination: responseData.pagination,
+          products: data.data,
+          pagination: data.pagination,
         };
       }
       return { products: [], pagination: { total: 0, page: 1, pages: 1 } };
@@ -39,18 +83,22 @@ class ProductService {
   // Fetch a single product by ID
   static async fetchProductById(id) {
     try {
-      const response = await fetch(`${this.API_URL}/products/${id}`);
-      if (!response.ok) {
-        throw new Error("Failed to fetch product");
+      if (!id) {
+        throw new Error("Product ID is required");
       }
-      const responseData = await response.json();
 
-      if (responseData.success) {
-        return responseData.data;
+      const response = await this.handleRequest(
+        `${this.API_URL}/products/${id}`
+      );
+      const data = await response.json();
+
+      if (!data.success) {
+        throw new Error(data.message || "Failed to fetch product");
       }
-      throw new Error("Product not found");
+
+      return data.data;
     } catch (error) {
-      console.error("Error fetching product:", error);
+      console.error("Error in fetchProductById:", error);
       throw error;
     }
   }
@@ -173,7 +221,7 @@ class ProductService {
   // Helper method to transform product data for frontend
   static transformProductData(product) {
     return {
-      id: product._id,
+      id: product._id || product.id,
       title: product.title,
       description: product.description,
       price: product.price,
@@ -185,24 +233,27 @@ class ProductService {
       isActive: product.isActive,
       createdAt: product.createdAt,
       updatedAt: product.updatedAt,
+      specifications: product.specifications || {},
+      supplierDetails: product.supplierDetails || "",
     };
   }
 
   // Fetch products by category
   static async fetchProductsByCategory(category) {
-    try {
-      const response = await fetch(
-        `${this.API_URL}/products?category=${category}`
-      );
-      if (!response.ok) {
-        throw new Error("Failed to fetch products by category");
+    const cacheKey = `category_${category}`;
+
+    return this.debounceRequest(cacheKey, async () => {
+      try {
+        const response = await this.handleRequest(
+          `${this.API_URL}/products?category=${category}`
+        );
+        const data = await response.json();
+        return data.success ? data.data : [];
+      } catch (error) {
+        console.error("Error fetching products by category:", error);
+        return [];
       }
-      const responseData = await response.json();
-      return responseData.success ? responseData.data : [];
-    } catch (error) {
-      console.error("Error fetching products by category:", error);
-      return [];
-    }
+    });
   }
 
   // Fetch products by apparel
@@ -238,22 +289,19 @@ class ProductService {
   }
 
   // Fetch related products by category, excluding the current product, limit to 4
-  static async fetchRelatedProducts(category, excludeId, limit = 4) {
+  static async fetchRelatedProducts(category, currentProductId) {
     try {
-      const response = await fetch(
-        `${this.API_URL}/products?category=${category}&limit=${limit}`
+      const response = await this.handleRequest(
+        `${this.API_URL}/products?category=${category}&limit=4`
       );
-      if (!response.ok) {
-        throw new Error("Failed to fetch related products");
+      const data = await response.json();
+
+      if (!data.success) {
+        throw new Error(data.message || "Failed to fetch related products");
       }
-      const responseData = await response.json();
-      if (responseData.success) {
-        // Filter out the current product and limit the results
-        return responseData.data
-          .filter((product) => product._id !== excludeId)
-          .slice(0, limit);
-      }
-      return [];
+
+      // Filter out the current product from related products
+      return data.data.filter((product) => product._id !== currentProductId);
     } catch (error) {
       console.error("Error fetching related products:", error);
       return [];

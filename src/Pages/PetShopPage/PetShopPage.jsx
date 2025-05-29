@@ -23,8 +23,8 @@ import FilterComponent from "./FilterComponent";
 
 const PetShopPage = () => {
   const [searchParams] = useSearchParams();
-  const [products, setProducts] = useState([]); // Original product list
-  const [displayedProducts, setDisplayedProducts] = useState([]); // Products shown after sorting, searching, and filtering
+  const [products, setProducts] = useState([]);
+  const [displayedProducts, setDisplayedProducts] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -69,9 +69,13 @@ const PetShopPage = () => {
       sort: "-createdAt",
     })
       .then(({ products: data, pagination }) => {
-        console.log("Products data received:", data);
-        setProducts(data);
-        setDisplayedProducts(data);
+        // Transform the data to ensure proper ID handling
+        const transformedProducts = data.map((product) => ({
+          ...product,
+          id: product._id || product.id, // Handle both MongoDB _id and regular id
+        }));
+        setProducts(transformedProducts);
+        setDisplayedProducts(transformedProducts);
         setTotalPages(pagination.pages);
         setIsLoading(false);
 
@@ -89,13 +93,9 @@ const PetShopPage = () => {
   }, [currentPage, productsPerPage, searchParams]);
 
   // Change page
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-    // Scroll to top of product grid
-    const productGrid = document.querySelector(".ProductItemBody");
-    if (productGrid) {
-      productGrid.scrollIntoView({ behavior: "smooth" });
-    }
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   // Update handleSearch to use the API
@@ -107,7 +107,12 @@ const PetShopPage = () => {
         limit: productsPerPage,
       })
         .then(({ products: data, pagination }) => {
-          setDisplayedProducts(data);
+          // Transform the data to ensure proper ID handling
+          const transformedProducts = data.map((product) => ({
+            ...product,
+            id: product._id || product.id, // Handle both MongoDB _id and regular id
+          }));
+          setDisplayedProducts(transformedProducts);
           setCurrentPage(1);
           setTotalPages(pagination.pages);
         })
@@ -147,7 +152,12 @@ const PetShopPage = () => {
       }
     )
       .then(({ products: data, pagination }) => {
-        setDisplayedProducts(data);
+        // Transform the data to ensure proper ID handling
+        const transformedProducts = data.map((product) => ({
+          ...product,
+          id: product._id || product.id, // Handle both MongoDB _id and regular id
+        }));
+        setDisplayedProducts(transformedProducts);
         setCurrentPage(1);
         setTotalPages(pagination.pages);
       })

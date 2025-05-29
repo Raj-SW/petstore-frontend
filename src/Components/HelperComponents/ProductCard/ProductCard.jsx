@@ -47,6 +47,7 @@ const ProductCard = ({ id, title, price, rating, imageUrl }) => {
   };
 
   const handleCardClick = () => {
+    console.log("id from product card", id);
     navigate(`/product/${id}`);
   };
 
