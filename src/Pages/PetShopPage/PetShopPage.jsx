@@ -126,13 +126,26 @@ const PetShopPage = () => {
   const handleApplyFilters = (filters) => {
     const { minPrice, maxPrice, categories, rating } = filters;
 
-    ProductService.fetchAllProducts({
-      page: 1,
-      limit: productsPerPage,
-      minPrice,
-      maxPrice,
-      category: categories.length > 0 ? categories[0] : undefined,
-    })
+    // Only include price parameters if they have valid values
+    const priceFilters = {};
+    if (minPrice && minPrice > 0) {
+      priceFilters.minPrice = minPrice;
+    }
+    if (maxPrice && maxPrice < Infinity) {
+      priceFilters.maxPrice = maxPrice;
+    }
+
+    ProductService.fetchProductsWithFilters(
+      {
+        category: categories.length > 0 ? categories[0] : undefined,
+        ...priceFilters,
+        minRating: rating || undefined,
+      },
+      {
+        page: 1,
+        limit: productsPerPage,
+      }
+    )
       .then(({ products: data, pagination }) => {
         setDisplayedProducts(data);
         setCurrentPage(1);
@@ -164,11 +177,14 @@ const PetShopPage = () => {
         break;
     }
 
-    ProductService.fetchAllProducts({
-      page: currentPage,
-      limit: productsPerPage,
-      sort: sortParam,
-    })
+    ProductService.fetchProductsWithFilters(
+      {},
+      {
+        page: currentPage,
+        limit: productsPerPage,
+        sort: sortParam,
+      }
+    )
       .then(({ products: data, pagination }) => {
         setDisplayedProducts(data);
         setTotalPages(pagination.pages);

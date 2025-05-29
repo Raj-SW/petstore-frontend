@@ -1,35 +1,48 @@
 import React, { useState } from "react";
 import { Container, Form, Row, Col, Button } from "react-bootstrap";
 import "./FilterComponent.css";
+
 const FilterComponent = ({ onApplyFilters }) => {
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
-  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [rating, setRating] = useState("");
 
   const categories = ["Dog", "Cat", "Bird", "Fish", "Small Pets", "General"];
 
   const handleCategoryChange = (category) => {
-    setSelectedCategories((prev) =>
-      prev.includes(category)
-        ? prev.filter((item) => item !== category)
-        : [...prev, category]
-    );
+    setSelectedCategory(category === selectedCategory ? "" : category);
   };
 
   const handleApplyFilters = () => {
     const filters = {
       minPrice: minPrice || 0,
       maxPrice: maxPrice || Infinity,
-      categories: selectedCategories,
+      categories: selectedCategory ? [selectedCategory] : [],
       rating: rating || 0,
     };
     onApplyFilters(filters);
   };
 
+  const handleClearFilters = () => {
+    // Reset all filter states
+    setMinPrice("");
+    setMaxPrice("");
+    setSelectedCategory("");
+    setRating("");
+
+    // Apply empty filters to reset the product list
+    onApplyFilters({
+      minPrice: 0,
+      maxPrice: Infinity,
+      categories: [],
+      rating: 0,
+    });
+  };
+
   return (
     <Container className="filter-container">
-      <h5 className=" poppins-medium fs-5 secondary-color-font">
+      <h5 className="poppins-medium fs-5 secondary-color-font">
         Filter Products
       </h5>
 
@@ -40,9 +53,11 @@ const FilterComponent = ({ onApplyFilters }) => {
           {categories.map((category) => (
             <Form.Check
               key={category}
-              type="checkbox"
+              type="radio"
+              id={`category-${category}`}
+              name="category"
               label={category}
-              checked={selectedCategories.includes(category)}
+              checked={selectedCategory === category}
               onChange={() => handleCategoryChange(category)}
               className="poppins-medium secondary-color-font"
             />
@@ -99,11 +114,14 @@ const FilterComponent = ({ onApplyFilters }) => {
         </Form>
       </div>
 
-      {/* <Button variant="primary" onClick={handleApplyFilters}>
-        Apply Filters
-      </Button> */}
       <Button onClick={handleApplyFilters} className="rounded-5 filter-btn">
         Apply Filters
+      </Button>
+      <Button
+        onClick={handleClearFilters}
+        className="rounded-5 filter-btn mx-2 mt-2"
+      >
+        Clear Filters
       </Button>
     </Container>
   );
