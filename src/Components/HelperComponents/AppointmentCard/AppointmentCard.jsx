@@ -17,8 +17,9 @@ const AppointmentCard = ({
   onDelete,
 }) => {
   // parse + format date/time
-  const dt = parseISO(datetimeISO);
-  const formatted = format(dt, "eee, MMM d, h:mm a");
+  const formatted = datetimeISO
+    ? format(parseISO(datetimeISO), "eee, MMM d, h:mm a")
+    : "No date set";
 
   // Generate UI Avatar URL as fallback
   const getAvatarUrl = () => {

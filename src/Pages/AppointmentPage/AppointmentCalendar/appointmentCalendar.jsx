@@ -13,6 +13,7 @@ import {
   Button,
   Form,
   InputGroup,
+  Modal,
 } from "react-bootstrap";
 import { FaSearch } from "react-icons/fa";
 import FullCalendar from "@fullcalendar/react";
@@ -22,9 +23,11 @@ import interactionPlugin from "@fullcalendar/interaction";
 import { motion } from "framer-motion";
 import AppointmentCard from "@/Components/HelperComponents/AppointmentCard/AppointmentCard";
 import AppointmentForm from "@/Components/HelperComponents/AppointmentForm/AppointmentForm";
-import { appointmentService } from "@/Services/localServices/appointmentService";
+import AppointmentService from "../../../Services/localServices/appointmentService";
+import { useToast } from "../../../context/ToastContext";
 
 const AppointmentCalendar = () => {
+  const { addToast } = useToast();
   const [activeKey, setActiveKey] = useState("calendar-view");
   const [filter, setFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
@@ -33,21 +36,53 @@ const AppointmentCalendar = () => {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showDetails, setShowDetails] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState(null);
 
   // Fetch appointments on component mount
   useEffect(() => {
     fetchAppointments();
-  }, []);
+  }, [filter]);
 
   const fetchAppointments = async () => {
     try {
       setLoading(true);
-      const data = await appointmentService.getAll();
-      setAppointments(data);
       setError(null);
+      let appointments;
+
+      if (filter === "all") {
+        appointments = await AppointmentService.getAll();
+      } else {
+        appointments = await AppointmentService.getByType(filter);
+      }
+
+      const formattedEvents = appointments.map((appointment) => ({
+        id: appointment._id,
+        title: appointment.title,
+        start: new Date(appointment.datetimeISO),
+        end: new Date(
+          new Date(appointment.datetimeISO).getTime() +
+            appointment.duration * 60000
+        ),
+        backgroundColor: appointment.type === "vet" ? "#28a745" : "#007bff",
+        borderColor: appointment.type === "vet" ? "#28a745" : "#007bff",
+        textColor: "#ffffff",
+        extendedProps: {
+          description: appointment.description,
+          status: appointment.status,
+          location: appointment.location,
+          role: appointment.role,
+          petName: appointment.petName,
+          ownerName: appointment.ownerName,
+          duration: appointment.duration,
+          notes: appointment.notes,
+        },
+      }));
+
+      setAppointments(formattedEvents);
     } catch (err) {
-      setError("Failed to fetch appointments");
-      console.error("Error fetching appointments:", err);
+      setError(err.message);
+      addToast("Failed to fetch appointments", "error");
     } finally {
       setLoading(false);
     }
@@ -74,7 +109,7 @@ const AppointmentCalendar = () => {
     try {
       if (editingAppointment) {
         // Update existing appointment
-        const updated = await appointmentService.update(
+        const updated = await AppointmentService.update(
           editingAppointment.id,
           appointmentData
         );
@@ -83,7 +118,7 @@ const AppointmentCalendar = () => {
         );
       } else {
         // Create new appointment
-        const newAppointment = await appointmentService.create(appointmentData);
+        const newAppointment = await AppointmentService.create(appointmentData);
         setAppointments((prev) => [...prev, newAppointment]);
       }
       setEditingAppointment(null);
@@ -101,7 +136,7 @@ const AppointmentCalendar = () => {
 
   const handleDeleteAppointment = async (appointmentId) => {
     try {
-      await appointmentService.delete(appointmentId);
+      await AppointmentService.delete(appointmentId);
       setAppointments((prev) =>
         prev.filter((appt) => appt.id !== appointmentId)
       );
@@ -131,35 +166,61 @@ const AppointmentCalendar = () => {
     grooming: "Grooming Appointments",
   }[filter];
 
-  // Convert appointments to FullCalendar events
-  const calendarEvents = filtered.map((appt) => ({
-    id: appt.id.toString(),
-    title: appt.title,
-    start: appt.datetimeISO,
-    end: new Date(new Date(appt.datetimeISO).getTime() + appt.duration * 60000),
-    backgroundColor:
-      appt.type === "vet"
-        ? "var(--primary-blue-color)"
-        : "var(--secondary-blue-color)",
-    borderColor:
-      appt.type === "vet"
-        ? "var(--primary-blue-color)"
-        : "var(--secondary-blue-color)",
-    textColor: "#ffffff",
-    extendedProps: {
-      description: appt.description,
-      status: appt.status,
-      location: appt.location,
-      role: appt.role,
-    },
-  }));
+  const handleFormSubmit = async (formData) => {
+    try {
+      if (selectedEvent?._id) {
+        await AppointmentService.update(selectedEvent._id, formData);
+        addToast("Appointment updated successfully", "success");
+      } else {
+        const newAppointment = await AppointmentService.create(formData);
+        setAppointments((prev) => [...prev, newAppointment]);
+        addToast("Appointment created successfully", "success");
+      }
+      setShowAppointmentForm(false);
+      fetchAppointments();
+    } catch (err) {
+      addToast(err.message || "Failed to save appointment", "error");
+    }
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await AppointmentService.delete(id);
+      addToast("Appointment deleted successfully", "success");
+      setShowDetails(false);
+      fetchAppointments();
+    } catch (err) {
+      addToast(err.message || "Failed to delete appointment", "error");
+    }
+  };
+
+  const handleStatusUpdate = async (id, newStatus) => {
+    try {
+      await AppointmentService.updateStatus(id, newStatus);
+      addToast("Appointment status updated successfully", "success");
+      setShowDetails(false);
+      fetchAppointments();
+    } catch (err) {
+      addToast(err.message || "Failed to update appointment status", "error");
+    }
+  };
 
   if (loading) {
-    return <div>Loading appointments...</div>;
+    return (
+      <div className="text-center p-5">
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
   }
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return (
+      <div className="alert alert-danger m-3" role="alert">
+        {error}
+      </div>
+    );
   }
 
   return (
@@ -213,7 +274,7 @@ const AppointmentCalendar = () => {
                       selectMirror={true}
                       dayMaxEvents={true}
                       weekends={true}
-                      events={calendarEvents}
+                      events={appointments}
                       select={handleDateSelect}
                       eventClick={handleEventClick}
                       height="auto"
@@ -254,7 +315,12 @@ const AppointmentCalendar = () => {
                     {filtered.map((appt) => (
                       <AppointmentCard
                         key={appt.id}
-                        {...appt}
+                        title={appt.title}
+                        datetimeISO={appt.start.toISOString()}
+                        description={appt.extendedProps.description}
+                        status={appt.extendedProps.status}
+                        role={appt.extendedProps.role}
+                        location={appt.extendedProps.location}
                         onEdit={() => handleEditAppointment(appt)}
                         onDelete={() => handleDeleteAppointment(appt.id)}
                       />
@@ -288,7 +354,12 @@ const AppointmentCalendar = () => {
                       .map((appt) => (
                         <AppointmentCard
                           key={appt.id}
-                          {...appt}
+                          title={appt.title}
+                          datetimeISO={appt.start.toISOString()}
+                          description={appt.extendedProps.description}
+                          status={appt.extendedProps.status}
+                          role={appt.extendedProps.role}
+                          location={appt.extendedProps.location}
                           onEdit={() => handleEditAppointment(appt)}
                           onDelete={() => handleDeleteAppointment(appt.id)}
                         />
@@ -307,9 +378,26 @@ const AppointmentCalendar = () => {
             setShowAppointmentForm(false);
             setEditingAppointment(null);
           }}
-          onSubmit={handleAppointmentSubmit}
+          onSubmit={handleFormSubmit}
           initialData={editingAppointment}
         />
+
+        <Modal show={showDetails} onHide={() => setShowDetails(false)}>
+          <Modal.Header closeButton>
+            <Modal.Title>Appointment Details</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {selectedEvent && (
+              <AppointmentCard
+                appointment={selectedEvent}
+                onDelete={() => handleDelete(selectedEvent.id)}
+                onStatusUpdate={(status) =>
+                  handleStatusUpdate(selectedEvent.id, status)
+                }
+              />
+            )}
+          </Modal.Body>
+        </Modal>
       </Container>
     </motion.div>
   );

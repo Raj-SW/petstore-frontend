@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import ProfessionalCard from "@/Components/HelperComponents/ProfessionalCard/ProfessionalCard";
 import ProfessionalCalendar from "@/Components/HelperComponents/ProfessionalCalendar/ProfessionalCalendar";
 import PaginationBar from "@/Components/HelperComponents/PaginationBar/PaginationBar";
-import { veterinarianService } from "@/Services/localServices/veterinarianService";
+import ProfessionalService from "@/Services/localServices/professionalService";
 import "./VeterinarianList.css";
 
 const PAGE_SIZE = 10;
@@ -26,7 +26,9 @@ const VeterinarianList = () => {
   const fetchVets = async () => {
     try {
       setLoading(true);
-      const data = await veterinarianService.getAll();
+      const data = await ProfessionalService.getAll({
+        role: "veterinarian",
+      });
       setVets(data);
       setError(null);
     } catch (err) {
@@ -112,8 +114,9 @@ const VeterinarianList = () => {
           </InputGroup>
         </div>
         <Container className="veterinarian-list d-flex flex-wrap justify-content-center gap-1">
-          {paginatedVets.map((vet, index) => (
+          {paginatedVets.map((vet) => (
             <ProfessionalCard
+              key={vet.id}
               id={vet.id}
               name={vet.name}
               specialty={vet.specialization}

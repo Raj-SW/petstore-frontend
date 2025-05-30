@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Form, Button, Row, Col } from "react-bootstrap";
 import { motion } from "framer-motion";
-import { veterinarianService } from "@/Services/localServices/veterinarianService";
-import { groomerService } from "@/Services/localServices/groomerService";
+import ProfessionalService from "@/Services/localServices/professionalService";
 import "./AppointmentForm.css";
 const AppointmentForm = ({ show, handleClose, onSubmit, initialData }) => {
   const [formData, setFormData] = useState({
@@ -41,8 +40,8 @@ const AppointmentForm = ({ show, handleClose, onSubmit, initialData }) => {
       try {
         setLoading(true);
         const [vets, groomers] = await Promise.all([
-          veterinarianService.getAll(),
-          groomerService.getAll(),
+          ProfessionalService.getAll({ profession: "veterinarian" }),
+          ProfessionalService.getAll({ profession: "groomer" }),
         ]);
         setVeterinarians(vets);
         setGroomers(groomers);

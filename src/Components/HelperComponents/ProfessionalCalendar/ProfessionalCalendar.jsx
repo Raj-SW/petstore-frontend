@@ -12,7 +12,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import AppointmentForm from "@/Components/HelperComponents/AppointmentForm/AppointmentForm";
-import { appointmentService } from "@/Services/localServices/appointmentService";
+import AppointmentService from "@/Services/localServices/appointmentService";
 import "./ProfessionalCalendar.css";
 
 const ProfessionalCalendar = ({ onBack, professional }) => {
@@ -30,7 +30,7 @@ const ProfessionalCalendar = ({ onBack, professional }) => {
   const fetchAppointments = async () => {
     try {
       setLoading(true);
-      const data = await appointmentService.getByProfessional(professional.id);
+      const data = await AppointmentService.getByProfessional(professional.id);
       setCalendarEvents(data);
       setError(null);
     } catch (err) {
