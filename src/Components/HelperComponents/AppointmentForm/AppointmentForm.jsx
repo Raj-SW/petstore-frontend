@@ -1,19 +1,26 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Modal, Form, Button, Row, Col } from "react-bootstrap";
 import { motion } from "framer-motion";
 import ProfessionalService from "@/Services/localServices/professionalService";
+import {
+  APPOINTMENT_TYPES,
+  APPOINTMENT_DURATIONS,
+} from "@/constants/appointmentConstants";
 import "./AppointmentForm.css";
+
 const AppointmentForm = ({ show, handleClose, onSubmit, initialData }) => {
   const [formData, setFormData] = useState({
     title: "",
     datetimeISO: "",
     description: "",
-    type: "vet",
+    type: APPOINTMENT_TYPES.VET,
     location: "",
-    duration: 60,
+    duration: APPOINTMENT_DURATIONS.DEFAULT,
     notes: "",
   });
 
+  const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [veterinarians, setVeterinarians] = useState([]);
   const [groomers, setGroomers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -27,9 +34,9 @@ const AppointmentForm = ({ show, handleClose, onSubmit, initialData }) => {
         title: "",
         datetimeISO: "",
         description: "",
-        type: "vet",
+        type: APPOINTMENT_TYPES.VET,
         location: "",
-        duration: 60,
+        duration: APPOINTMENT_DURATIONS.DEFAULT,
         notes: "",
       });
     }
@@ -57,17 +64,56 @@ const AppointmentForm = ({ show, handleClose, onSubmit, initialData }) => {
     fetchProviders();
   }, []);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+  const validateForm = useCallback(() => {
+    const newErrors = {};
+    if (!formData.title) newErrors.title = "Title is required";
+    if (!formData.datetimeISO)
+      newErrors.datetimeISO = "Date and time is required";
+    if (!formData.description)
+      newErrors.description = "Description is required";
+    if (!formData.location) newErrors.location = "Location is required";
+    if (formData.duration < APPOINTMENT_DURATIONS.MIN) {
+      newErrors.duration = `Duration must be at least ${APPOINTMENT_DURATIONS.MIN} minutes`;
+    }
+    if (formData.duration > APPOINTMENT_DURATIONS.MAX) {
+      newErrors.duration = `Duration cannot exceed ${APPOINTMENT_DURATIONS.MAX} minutes`;
+    }
 
-  const handleSubmit = (e) => {
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  }, [formData]);
+
+  const handleChange = useCallback(
+    (e) => {
+      const { name, value } = e.target;
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+      // Clear error when field is modified
+      if (errors[name]) {
+        setErrors((prev) => ({
+          ...prev,
+          [name]: undefined,
+        }));
+      }
+    },
+    [errors]
+  );
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSubmit(formData);
+    if (!validateForm()) return;
+
+    setIsSubmitting(true);
+    try {
+      await onSubmit(formData);
+      handleClose();
+    } catch (error) {
+      setErrors({ submit: error.message });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (loading) {
@@ -113,11 +159,15 @@ const AppointmentForm = ({ show, handleClose, onSubmit, initialData }) => {
                     name="type"
                     value={formData.type}
                     onChange={handleChange}
+                    isInvalid={!!errors.type}
                     required
                   >
-                    <option value="vet">Veterinarian</option>
-                    <option value="grooming">Grooming</option>
+                    <option value={APPOINTMENT_TYPES.VET}>Veterinarian</option>
+                    <option value={APPOINTMENT_TYPES.GROOMING}>Grooming</option>
                   </Form.Select>
+                  <Form.Control.Feedback type="invalid">
+                    {errors.type}
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
               <Col md={6}>
@@ -127,10 +177,11 @@ const AppointmentForm = ({ show, handleClose, onSubmit, initialData }) => {
                     name="title"
                     value={formData.title}
                     onChange={handleChange}
+                    isInvalid={!!errors.title}
                     required
                   >
                     <option value="">Select a provider</option>
-                    {formData.type === "vet"
+                    {formData.type === APPOINTMENT_TYPES.VET
                       ? veterinarians.map((vet) => (
                           <option key={vet.id} value={vet.name}>
                             {vet.name} - {vet.specialization}
@@ -142,6 +193,9 @@ const AppointmentForm = ({ show, handleClose, onSubmit, initialData }) => {
                           </option>
                         ))}
                   </Form.Select>
+                  <Form.Control.Feedback type="invalid">
+                    {errors.title}
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
             </Row>
@@ -155,8 +209,12 @@ const AppointmentForm = ({ show, handleClose, onSubmit, initialData }) => {
                     name="datetimeISO"
                     value={formData.datetimeISO}
                     onChange={handleChange}
+                    isInvalid={!!errors.datetimeISO}
                     required
                   />
+                  <Form.Control.Feedback type="invalid">
+                    {errors.datetimeISO}
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
               <Col md={6}>
@@ -167,10 +225,15 @@ const AppointmentForm = ({ show, handleClose, onSubmit, initialData }) => {
                     name="duration"
                     value={formData.duration}
                     onChange={handleChange}
-                    min="15"
+                    min={APPOINTMENT_DURATIONS.MIN}
+                    max={APPOINTMENT_DURATIONS.MAX}
                     step="15"
+                    isInvalid={!!errors.duration}
                     required
                   />
+                  <Form.Control.Feedback type="invalid">
+                    {errors.duration}
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
             </Row>
@@ -183,8 +246,12 @@ const AppointmentForm = ({ show, handleClose, onSubmit, initialData }) => {
                 name="description"
                 value={formData.description}
                 onChange={handleChange}
+                isInvalid={!!errors.description}
                 required
               />
+              <Form.Control.Feedback type="invalid">
+                {errors.description}
+              </Form.Control.Feedback>
             </Form.Group>
 
             <Form.Group className="mb-3">
@@ -194,8 +261,12 @@ const AppointmentForm = ({ show, handleClose, onSubmit, initialData }) => {
                 name="location"
                 value={formData.location}
                 onChange={handleChange}
+                isInvalid={!!errors.location}
                 required
               />
+              <Form.Control.Feedback type="invalid">
+                {errors.location}
+              </Form.Control.Feedback>
             </Form.Group>
 
             <Form.Group className="mb-3">
@@ -209,12 +280,19 @@ const AppointmentForm = ({ show, handleClose, onSubmit, initialData }) => {
               />
             </Form.Group>
 
+            {errors.submit && (
+              <div className="alert alert-danger" role="alert">
+                {errors.submit}
+              </div>
+            )}
+
             <div className="d-flex justify-content-end gap-2">
               <Button variant="secondary" onClick={handleClose}>
                 Cancel
               </Button>
-              <Button variant="primary" type="submit">
-                {initialData ? "Update" : "Create"} Appointment
+              <Button variant="primary" type="submit" disabled={isSubmitting}>
+                {isSubmitting ? "Saving..." : initialData ? "Update" : "Create"}{" "}
+                Appointment
               </Button>
             </div>
           </Form>

@@ -1,24 +1,42 @@
 class AppointmentService {
   static API_URL = import.meta.env.VITE_NODE_API_URL;
+  static MAX_RETRIES = 3;
+  static TIMEOUT = 5000;
 
-  // Helper method to handle API requests
-  static async handleRequest(url, options = {}) {
+  static async handleRequest(url, options = {}, retryCount = 0) {
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), this.TIMEOUT);
+
       const response = await fetch(url, {
         ...options,
+        signal: controller.signal,
         headers: {
           "Content-Type": "application/json",
           ...options.headers,
         },
       });
 
+      clearTimeout(timeoutId);
+
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Something went wrong");
+        if (response.status === 429 && retryCount < this.MAX_RETRIES) {
+          await new Promise((resolve) =>
+            setTimeout(resolve, Math.pow(2, retryCount) * 1000)
+          );
+          return this.handleRequest(url, options, retryCount + 1);
+        }
+        throw new Error(
+          error.message || `HTTP error! status: ${response.status}`
+        );
       }
 
       return response.json();
     } catch (error) {
+      if (error.name === "AbortError") {
+        throw new Error("Request timeout");
+      }
       console.error("API Error:", error);
       throw error;
     }
@@ -47,7 +65,19 @@ class AppointmentService {
     return response.data;
   }
 
-  // Update appointment status (accept/reject/cancel)
+  // Update appointment
+  static async update(id, appointmentData) {
+    const response = await this.handleRequest(
+      `${this.API_URL}/appointments/${id}`,
+      {
+        method: "PUT",
+        body: JSON.stringify(appointmentData),
+      }
+    );
+    return response.data;
+  }
+
+  // Update appointment status
   static async updateStatus(id, status, notes) {
     const response = await this.handleRequest(
       `${this.API_URL}/appointments/${id}/status`,
@@ -59,16 +89,45 @@ class AppointmentService {
     return response.data;
   }
 
-  // Cancel appointment
-  static async cancel(id, cancellationReason) {
+  // Delete appointment
+  static async delete(id) {
     const response = await this.handleRequest(
-      `${this.API_URL}/appointments/${id}/cancel`,
+      `${this.API_URL}/appointments/${id}`,
       {
-        method: "PATCH",
-        body: JSON.stringify({ cancellationReason }),
+        method: "DELETE",
       }
     );
     return response.data;
+  }
+
+  // Get appointments by type
+  static async getByType(type) {
+    const response = await this.handleRequest(
+      `${this.API_URL}/appointments/type/${type}`
+    );
+    return response.data;
+  }
+
+  // Get appointments by date range
+  static async getByDateRange(startDate, endDate) {
+    const response = await this.handleRequest(
+      `${
+        this.API_URL
+      }/appointments/range?start=${startDate.toISOString()}&end=${endDate.toISOString()}`
+    );
+    return response.data;
+  }
+
+  // Check availability
+  static async checkAvailability(datetimeISO, duration, type) {
+    const response = await this.handleRequest(
+      `${this.API_URL}/appointments/check-availability`,
+      {
+        method: "POST",
+        body: JSON.stringify({ datetimeISO, duration, type }),
+      }
+    );
+    return response.data.available;
   }
 
   // Get my appointments (for a user)
@@ -112,42 +171,12 @@ class AppointmentService {
     return response.data;
   }
 
-  // Get appointments by type (vet/grooming)
-  static async getByType(type) {
-    const response = await this.handleRequest(
-      `${this.API_URL}/appointments/type/${type}`
-    );
-    return response.data;
-  }
-
-  // Get appointments by date range
-  static async getByDateRange(startDate, endDate) {
-    const response = await this.handleRequest(
-      `${
-        this.API_URL
-      }/appointments/range?start=${startDate.toISOString()}&end=${endDate.toISOString()}`
-    );
-    return response.data;
-  }
-
   // Get appointments by pet ID
   static async getByPetId(petId) {
     const response = await this.handleRequest(
       `${this.API_URL}/appointments/pet/${petId}`
     );
     return response.data;
-  }
-
-  // Check availability for a specific date and time
-  static async checkAvailability(datetimeISO, duration, type) {
-    const response = await this.handleRequest(
-      `${this.API_URL}/appointments/check-availability`,
-      {
-        method: "POST",
-        body: JSON.stringify({ datetimeISO, duration, type }),
-      }
-    );
-    return response.data.available;
   }
 }
 

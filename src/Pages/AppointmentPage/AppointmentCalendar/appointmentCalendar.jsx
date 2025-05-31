@@ -224,182 +224,154 @@ const AppointmentCalendar = () => {
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.3 }}
-    >
-      <Container fluid>
-        <Tab.Container activeKey={activeKey} onSelect={(k) => setActiveKey(k)}>
-          <Row className="align-items-center mb-4 dashboard-header-row">
-            <Col>
-              <Nav variant="pills" className="dashboardNavTabs poppins-medium">
-                <Nav.Item>
-                  <Nav.Link eventKey="calendar-view">Calendar View</Nav.Link>
-                </Nav.Item>
-                <Nav.Item>
-                  <Nav.Link eventKey="list-view">List View</Nav.Link>
-                </Nav.Item>
-                <Nav.Item>
-                  <Nav.Link eventKey="history-view">History</Nav.Link>
-                </Nav.Item>
-              </Nav>
-            </Col>
-          </Row>
+    <Container>
+      <Tab.Container activeKey={activeKey} onSelect={(k) => setActiveKey(k)}>
+        <Row className=" dashboard-header-row w-100">
+          <Nav className="dashboardNavTabs poppins-medium">
+            <Nav.Item>
+              <Nav.Link eventKey="calendar-view">Calendar View</Nav.Link>
+            </Nav.Item>
+            <Nav.Item>
+              <Nav.Link eventKey="list-view">List View</Nav.Link>
+            </Nav.Item>
+            <Nav.Item>
+              <Nav.Link eventKey="history-view">History</Nav.Link>
+            </Nav.Item>
+          </Nav>
 
-          <Row>
-            <Col>
-              <Tab.Content>
-                {/* 1) Calendar View */}
-                <Tab.Pane eventKey="calendar-view">
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.3 }}
-                    className="calendar-container"
-                  >
-                    <FullCalendar
-                      plugins={[
-                        dayGridPlugin,
-                        timeGridPlugin,
-                        interactionPlugin,
-                      ]}
-                      initialView="timeGridWeek"
-                      headerToolbar={{
-                        left: "prev,next today",
-                        center: "title",
-                        right: "dayGridMonth,timeGridWeek,timeGridDay",
-                      }}
-                      selectable={true}
-                      selectMirror={true}
-                      dayMaxEvents={true}
-                      weekends={true}
-                      events={appointments}
-                      select={handleDateSelect}
-                      eventClick={handleEventClick}
-                      height="auto"
-                      slotMinTime="08:00:00"
-                      slotMaxTime="18:00:00"
-                      allDaySlot={false}
-                      slotDuration="00:30:00"
-                      eventTimeFormat={{
-                        hour: "numeric",
-                        minute: "2-digit",
-                        meridiem: "short",
-                      }}
-                    />
-                  </motion.div>
-                </Tab.Pane>
+          <Tab.Content className="appointment-calendar-content">
+            {/* 1) Calendar View */}
+            <Tab.Pane eventKey="calendar-view">
+              <div
+                // initial={{ opacity: 0, scale: 0.95 }}
+                // animate={{ opacity: 1, scale: 1 }}
+                // transition={{ duration: 0.3 }}
+                className="calendar-container"
+              >
+                <FullCalendar
+                  plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+                  initialView="timeGridWeek"
+                  headerToolbar={{
+                    left: "prev,next today",
+                    center: "title",
+                    right: "dayGridMonth,timeGridWeek,timeGridDay",
+                  }}
+                  selectable={true}
+                  selectMirror={true}
+                  dayMaxEvents={true}
+                  weekends={true}
+                  events={appointments}
+                  select={handleDateSelect}
+                  eventClick={handleEventClick}
+                  height="auto"
+                  slotMinTime="08:00:00"
+                  slotMaxTime="18:00:00"
+                  allDaySlot={false}
+                  slotDuration="00:30:00"
+                  eventTimeFormat={{
+                    hour: "numeric",
+                    minute: "2-digit",
+                    meridiem: "short",
+                  }}
+                />
+              </div>
+            </Tab.Pane>
 
-                {/* 2) List View */}
-                <Tab.Pane eventKey="list-view">
-                  <motion.div
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <div className="appointment-list-header">
-                      <h4>Upcoming Appointments</h4>
-                      <InputGroup className="search-bar">
-                        <InputGroup.Text>
-                          <FaSearch />
-                        </InputGroup.Text>
-                        <Form.Control
-                          type="text"
-                          placeholder="Search appointments..."
-                          value={searchQuery}
-                          onChange={(e) => setSearchQuery(e.target.value)}
-                        />
-                      </InputGroup>
-                    </div>
-                    {filtered.map((appt) => (
-                      <AppointmentCard
-                        key={appt.id}
-                        title={appt.title}
-                        datetimeISO={appt.start.toISOString()}
-                        description={appt.extendedProps.description}
-                        status={appt.extendedProps.status}
-                        role={appt.extendedProps.role}
-                        location={appt.extendedProps.location}
-                        onEdit={() => handleEditAppointment(appt)}
-                        onDelete={() => handleDeleteAppointment(appt.id)}
-                      />
-                    ))}
-                  </motion.div>
-                </Tab.Pane>
+            {/* 2) List View */}
+            <Tab.Pane eventKey="list-view" className="">
+              <div className="appointment-list-header">
+                <h4>Upcoming Appointments</h4>
+                <InputGroup className="search-bar">
+                  <InputGroup.Text>
+                    <FaSearch />
+                  </InputGroup.Text>
+                  <Form.Control
+                    type="text"
+                    placeholder="Search appointments..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                </InputGroup>
+              </div>
+              {filtered.map((appt) => (
+                <AppointmentCard
+                  key={appt.id}
+                  title={appt.title}
+                  datetimeISO={appt.start.toISOString()}
+                  description={appt.extendedProps.description}
+                  status={appt.extendedProps.status}
+                  role={appt.extendedProps.role}
+                  location={appt.extendedProps.location}
+                  onEdit={() => handleEditAppointment(appt)}
+                  onDelete={() => handleDeleteAppointment(appt.id)}
+                />
+              ))}
+            </Tab.Pane>
 
-                {/* 3) History View */}
-                <Tab.Pane eventKey="history-view">
-                  <motion.div
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <div className="appointment-list-header">
-                      <h4>Past Appointments</h4>
-                      <InputGroup className="search-bar">
-                        <InputGroup.Text>
-                          <FaSearch />
-                        </InputGroup.Text>
-                        <Form.Control
-                          type="text"
-                          placeholder="Search appointments..."
-                          value={searchQuery}
-                          onChange={(e) => setSearchQuery(e.target.value)}
-                        />
-                      </InputGroup>
-                    </div>
-                    {filtered
-                      .filter((appt) => new Date(appt.datetimeISO) < new Date())
-                      .map((appt) => (
-                        <AppointmentCard
-                          key={appt.id}
-                          title={appt.title}
-                          datetimeISO={appt.start.toISOString()}
-                          description={appt.extendedProps.description}
-                          status={appt.extendedProps.status}
-                          role={appt.extendedProps.role}
-                          location={appt.extendedProps.location}
-                          onEdit={() => handleEditAppointment(appt)}
-                          onDelete={() => handleDeleteAppointment(appt.id)}
-                        />
-                      ))}
-                  </motion.div>
-                </Tab.Pane>
-              </Tab.Content>
-            </Col>
-          </Row>
-        </Tab.Container>
+            {/* 3) History View */}
+            <Tab.Pane eventKey="history-view">
+              <div className="appointment-list-header">
+                <h4>Past Appointments</h4>
+                <InputGroup className="search-bar">
+                  <InputGroup.Text>
+                    <FaSearch />
+                  </InputGroup.Text>
+                  <Form.Control
+                    type="text"
+                    placeholder="Search appointments..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                </InputGroup>
+              </div>
+              {filtered
+                .filter((appt) => new Date(appt.datetimeISO) < new Date())
+                .map((appt) => (
+                  <AppointmentCard
+                    key={appt.id}
+                    title={appt.title}
+                    datetimeISO={appt.start.toISOString()}
+                    description={appt.extendedProps.description}
+                    status={appt.extendedProps.status}
+                    role={appt.extendedProps.role}
+                    location={appt.extendedProps.location}
+                    onEdit={() => handleEditAppointment(appt)}
+                    onDelete={() => handleDeleteAppointment(appt.id)}
+                  />
+                ))}
+            </Tab.Pane>
+          </Tab.Content>
+        </Row>
+      </Tab.Container>
 
-        {/* Appointment Form Modal */}
-        <AppointmentForm
-          show={showAppointmentForm}
-          handleClose={() => {
-            setShowAppointmentForm(false);
-            setEditingAppointment(null);
-          }}
-          onSubmit={handleFormSubmit}
-          initialData={editingAppointment}
-        />
+      {/* Appointment Form Modal */}
+      <AppointmentForm
+        show={showAppointmentForm}
+        handleClose={() => {
+          setShowAppointmentForm(false);
+          setEditingAppointment(null);
+        }}
+        onSubmit={handleFormSubmit}
+        initialData={editingAppointment}
+      />
 
-        <Modal show={showDetails} onHide={() => setShowDetails(false)}>
-          <Modal.Header closeButton>
-            <Modal.Title>Appointment Details</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            {selectedEvent && (
-              <AppointmentCard
-                appointment={selectedEvent}
-                onDelete={() => handleDelete(selectedEvent.id)}
-                onStatusUpdate={(status) =>
-                  handleStatusUpdate(selectedEvent.id, status)
-                }
-              />
-            )}
-          </Modal.Body>
-        </Modal>
-      </Container>
-    </motion.div>
+      <Modal show={showDetails} onHide={() => setShowDetails(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Appointment Details</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {selectedEvent && (
+            <AppointmentCard
+              appointment={selectedEvent}
+              onDelete={() => handleDelete(selectedEvent.id)}
+              onStatusUpdate={(status) =>
+                handleStatusUpdate(selectedEvent.id, status)
+              }
+            />
+          )}
+        </Modal.Body>
+      </Modal>
+    </Container>
   );
 };
 

@@ -251,7 +251,7 @@
 
 /* Navigation Tabs */
 .dashboardNavTabs {
-    background-color: var(--tertiary-creme-color);
+    background-color: var(--secondary-creme-color);
     width: fit-content;
     border-radius: 0.5rem;
     display: flex;
