@@ -1,157 +1,151 @@
-/* UserProfile.css */
+/* Custom styles for UserProfile component */
 
-/* Main container styles */
+/* UserProfile component styles */
+
+/* Page container */
 .profile-container {
-    min-height: 100vh;
+    padding: 2rem 1rem;
     background-color: var(--neutral-color-10);
-    padding: 2rem 0;
+    min-height: calc(100vh - 80px);
 }
 
 /* Card styles */
-.profile-card {
+.card {
     border: none;
-    border-radius: 16px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    background-color: white;
-    transition: transform 0.3s ease;
-    margin-bottom: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    background-color: var(--white-color);
+    overflow: hidden;
 }
 
-.profile-card:hover {
+.card:hover {
     transform: translateY(-5px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
 }
 
-/* Profile header */
-.profile-header {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 2rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid var(--neutral-color-20);
+.card-header {
+    background-color: var(--secondary-creme-color);
+    border-bottom: none;
+    padding: 1.25rem;
 }
 
-.profile-header h2 {
+.card-header h5 {
+    color: var(--primary-blue-color);
     margin: 0;
-    font-size: 1.75rem;
-    color: var(--neutral-color-80);
+    font-weight: 600;
 }
 
-/* Avatar section styles */
-.avatar-container {
-    position: relative;
-    width: 150px;
-    height: 150px;
-    margin: 0 auto 2.5rem;
-    padding: 1rem;
-}
-
-.avatar-image {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 3px solid var(--secondary-color);
-    transition: all 0.3s ease;
-    background-color: var(--neutral-color-10);
-}
-
-.avatar-upload-button {
-    position: absolute;
-    bottom: 0.5rem;
-    right: 0.5rem;
-    background-color: var(--primary-green-40-color);
-    border: 2px solid white;
-    border-radius: 50%;
-    padding: 0.5rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.avatar-upload-button:hover {
-    transform: scale(1.1);
-    background-color: var(--primary-green-50-color);
-}
-
-.avatar-upload-button input[type="file"] {
-    display: none;
-}
-
-/* Form styles */
-.profile-form {
-    padding: 2rem;
-    max-width: 800px;
-    margin: 0 auto;
-}
-
-.form-label {
-    font-weight: 500;
-    color: var(--neutral-color-80);
-    margin-bottom: 0.75rem;
-    font-size: 0.95rem;
-}
-
-.form-control {
-    border: 1px solid var(--neutral-color-30);
-    border-radius: 8px;
-    padding: 0.75rem 1rem;
-    transition: all 0.3s ease;
-    font-size: 1rem;
-    background-color: var(--neutral-color-10);
-}
-
-.form-control:focus {
-    border-color: var(--primary-green-40-color);
-    box-shadow: 0 0 0 0.2rem rgba(76, 175, 80, 0.15);
-    background-color: white;
-}
-
-.form-control.is-invalid {
-    border-color: var(--error-color);
-    background-color: var(--error-color-10);
+.card-body {
+    padding: 1.5rem;
 }
 
 /* Button styles */
-.save-button {
-    background-color: var(--primary-green-40-color);
-    border: none;
-    border-radius: 8px;
-    padding: 0.875rem 2rem;
-    font-weight: 500;
+.btn-primary {
+    background-color: var(--primary-blue-color);
+    border-color: var(--primary-blue-color);
     transition: all 0.3s ease;
-    font-size: 1rem;
-    min-width: 200px;
-    margin: 2rem auto 0;
-    display: block;
 }
 
-.save-button:hover {
-    background-color: var(--primary-green-50-color);
+.btn-primary:hover {
+    background-color: var(--secondary-blue-color);
+    border-color: var(--secondary-blue-color);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.save-button:disabled {
-    background-color: var(--neutral-color-40);
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
+.btn-outline-primary {
+    color: var(--primary-blue-color);
+    border-color: var(--primary-blue-color);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary-blue-color);
+    border-color: var(--primary-blue-color);
+}
+
+/* Pet card styles */
+.pet-card {
+    border: 1px solid var(--neutral-color-20);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    margin-bottom: 1rem;
+}
+
+.pet-card:hover {
+    border-color: var(--secondary-blue-color);
+    background-color: var(--neutral-color-10);
+}
+
+.pet-image {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border: 2px solid var(--secondary-creme-color);
+}
+
+/* Profile image styles */
+.profile-image-container {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 1.5rem;
+}
+
+.profile-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border: 3px solid var(--secondary-creme-color);
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+/* Form styles */
+.form-control {
+    border-radius: 8px;
+    border: 1px solid var(--neutral-color-30);
+    padding: 0.75rem 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: var(--secondary-blue-color);
+    box-shadow: 0 0 0 0.2rem rgba(0, 85, 190, 0.15);
+}
+
+.form-label {
+    color: var(--neutral-color-80);
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+/* Modal styles */
+.modal-content {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+}
+
+.modal-header {
+    background-color: var(--secondary-creme-color);
+    border-bottom: none;
+    padding: 1.5rem;
+}
+
+.modal-header .modal-title {
+    color: var(--primary-blue-color);
+    font-weight: 600;
+}
+
+.modal-body {
+    padding: 1.5rem;
 }
 
 /* Alert styles */
 .alert {
     border-radius: 8px;
     border: none;
-    padding: 1rem 1.5rem;
     margin-bottom: 1.5rem;
-    font-size: 0.95rem;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
 }
 
 .alert-success {
@@ -164,167 +158,68 @@
     color: var(--error-color-80);
 }
 
-/* Tooltip styles */
-.tooltip-icon {
-    color: var(--neutral-color-60);
-    cursor: help;
-    transition: color 0.3s ease;
-    margin-left: 0.5rem;
-}
-
-.tooltip-icon:hover {
-    color: var(--primary-green-40-color);
-}
-
-/* Loading spinner styles */
+/* Loading spinner */
 .spinner-container {
+    min-height: 60vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 200px;
+}
+
+/* Info text styles */
+.text-muted {
+    color: var(--neutral-color-60) !important;
 }
 
 /* Responsive styles */
-@media (max-width: 768px) {
+@media (max-width: 991.98px) {
     .profile-container {
-        padding: 1rem 0;
+        padding: 1rem;
     }
 
-    .profile-form {
-        padding: 1.5rem;
+    .card {
+        margin-bottom: 1rem;
     }
 
-    .avatar-container {
-        width: 120px;
-        height: 120px;
-        margin-bottom: 2rem;
+    .card-header {
+        padding: 1rem;
     }
 
-    .save-button {
+    .card-body {
+        padding: 1.25rem;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .profile-image-container {
+        width: 100px;
+        height: 100px;
+    }
+
+    .pet-image {
+        width: 50px;
+        height: 50px;
+    }
+
+    .modal-header,
+    .modal-body {
+        padding: 1rem;
+    }
+
+    .btn {
         width: 100%;
-        min-width: unset;
+        margin-bottom: 0.5rem;
     }
 
-    .profile-header h2 {
-        font-size: 1.5rem;
+    .btn:last-child {
+        margin-bottom: 0;
     }
-}
 
-/* Animation classes */
-.fade-enter {
-    opacity: 0;
-    transform: translateY(20px);
-}
+    .d-flex.justify-content-end {
+        flex-direction: column;
+    }
 
-.fade-enter-active {
-    opacity: 1;
-    transform: translateY(0);
-    transition: opacity 300ms, transform 300ms;
-}
-
-.fade-exit {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.fade-exit-active {
-    opacity: 0;
-    transform: translateY(-20px);
-    transition: opacity 300ms, transform 300ms;
-}
-
-/* Section divider */
-.section-divider {
-    height: 1px;
-    background-color: var(--neutral-color-20);
-    margin: 2.5rem 0;
-}
-
-/* Password section styles */
-.password-section {
-    background-color: var(--neutral-color-10);
-    border-radius: 12px;
-    padding: 2rem;
-    margin-top: 2rem;
-    border: 1px solid var(--neutral-color-20);
-}
-
-.password-section-title {
-    color: var(--neutral-color-80);
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin-bottom: 1.5rem;
-    padding-bottom: 0.75rem;
-    border-bottom: 1px solid var(--neutral-color-20);
-}
-
-/* Breadcrumb styles */
-.breadcrumb-container {
-    margin-bottom: 2rem;
-    padding: 0 1rem;
-}
-
-.breadcrumb-item {
-    color: var(--neutral-color-60);
-    font-size: 0.9rem;
-}
-
-.breadcrumb-item.active {
-    color: var(--primary-green-40-color);
-    font-weight: 500;
-}
-
-/* Form group spacing */
-.form-group {
-    margin-bottom: 1.75rem;
-}
-
-/* Input group styles */
-.input-group {
-    position: relative;
-}
-
-.input-group-text {
-    background-color: var(--neutral-color-10);
-    border: 1px solid var(--neutral-color-30);
-    border-right: none;
-    border-radius: 8px 0 0 8px;
-    padding: 0.75rem 1rem;
-}
-
-.input-group .form-control {
-    border-radius: 0 8px 8px 0;
-}
-
-/* Helper text styles */
-.helper-text {
-    font-size: 0.875rem;
-    color: var(--neutral-color-60);
-    margin-top: 0.5rem;
-}
-
-/* Required field indicator */
-.required-field::after {
-    content: "*";
-    color: var(--error-color);
-    margin-left: 4px;
-}
-
-/* Form feedback styles */
-.form-control-feedback {
-    font-size: 0.875rem;
-    margin-top: 0.5rem;
-}
-
-/* Form section spacing */
-.form-section {
-    margin-bottom: 2.5rem;
-}
-
-/* Form section title */
-.form-section-title {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: var(--neutral-color-80);
-    margin-bottom: 1.5rem;
+    .gap-2 {
+        gap: 0.5rem !important;
+    }
 }
