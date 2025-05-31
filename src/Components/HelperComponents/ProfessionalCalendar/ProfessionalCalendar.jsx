@@ -25,12 +25,14 @@ const ProfessionalCalendar = ({ onBack, professional }) => {
   // Fetch appointments for this professional
   useEffect(() => {
     fetchAppointments();
-  }, [professional.id]);
+  }, [professional._id]);
 
   const fetchAppointments = async () => {
     try {
       setLoading(true);
-      const data = await AppointmentService.getByProfessional(professional.id);
+      const data = await AppointmentService.getByProfessionalId(
+        professional.id
+      );
       setCalendarEvents(data);
       setError(null);
     } catch (err) {

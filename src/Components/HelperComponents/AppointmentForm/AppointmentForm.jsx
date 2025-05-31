@@ -40,8 +40,8 @@ const AppointmentForm = ({ show, handleClose, onSubmit, initialData }) => {
       try {
         setLoading(true);
         const [vets, groomers] = await Promise.all([
-          ProfessionalService.getAll({ profession: "veterinarian" }),
-          ProfessionalService.getAll({ profession: "groomer" }),
+          ProfessionalService.getAll({ role: "veterinarian" }),
+          ProfessionalService.getAll({ role: "groomer" }),
         ]);
         setVeterinarians(vets);
         setGroomers(groomers);

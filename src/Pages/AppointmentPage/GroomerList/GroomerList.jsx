@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import ProfessionalCard from "@/Components/HelperComponents/ProfessionalCard/ProfessionalCard";
 import ProfessionalCalendar from "@/Components/HelperComponents/ProfessionalCalendar/ProfessionalCalendar";
 import PaginationBar from "@/Components/HelperComponents/PaginationBar/PaginationBar";
-import { groomerService } from "@/Services/localServices/groomerService";
+import ProfessionalService from "@/Services/localServices/professionalService";
 import "./GroomerList.css";
 
 const PAGE_SIZE = 10;
@@ -26,7 +26,7 @@ const GroomerList = () => {
   const fetchGroomers = async () => {
     try {
       setLoading(true);
-      const data = await groomerService.getAll();
+      const data = await ProfessionalService.getAll({ role: "groomer" });
       setGroomers(data);
       setError(null);
     } catch (err) {
@@ -58,6 +58,7 @@ const GroomerList = () => {
   );
 
   const handleBook = (groomer) => {
+    console.log("groomer: ", groomer);
     setSelectedGroomer(groomer);
     setShowCalendar(true);
   };
@@ -122,6 +123,7 @@ const GroomerList = () => {
               className="mb-4 d-flex justify-content-center"
             >
               <ProfessionalCard
+                id={groomer._id}
                 name={groomer.name}
                 specialty={groomer.specialties?.join(", ")}
                 qualifications={groomer.qualifications || []}

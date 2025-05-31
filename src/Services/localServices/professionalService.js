@@ -17,7 +17,9 @@ class ProfessionalService {
 
   // Fetch professionals by specialization
   static async getByRole(role) {
-    const res = await fetch(`${this.API_URL}/role/${encodeURIComponent(role)}`);
+    const res = await fetch(
+      `${this.API_URL}/professionals?role=${encodeURIComponent(role)}`
+    );
     const data = await res.json();
     if (!res.ok)
       throw new Error(data.message || "Failed to fetch professionals");
