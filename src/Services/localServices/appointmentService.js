@@ -1,3 +1,5 @@
+import axios from "axios";
+
 class AppointmentService {
   static API_URL = import.meta.env.VITE_NODE_API_URL;
   static MAX_RETRIES = 3;
@@ -5,38 +7,29 @@ class AppointmentService {
 
   static async handleRequest(url, options = {}, retryCount = 0) {
     try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), this.TIMEOUT);
-
-      const response = await fetch(url, {
+      const response = await axios({
+        url,
         ...options,
-        signal: controller.signal,
+        timeout: this.TIMEOUT,
         headers: {
           "Content-Type": "application/json",
           ...options.headers,
         },
       });
 
-      clearTimeout(timeoutId);
-
-      if (!response.ok) {
-        const error = await response.json();
-        if (response.status === 429 && retryCount < this.MAX_RETRIES) {
-          await new Promise((resolve) =>
-            setTimeout(resolve, Math.pow(2, retryCount) * 1000)
-          );
-          return this.handleRequest(url, options, retryCount + 1);
-        }
-        throw new Error(
-          error.message || `HTTP error! status: ${response.status}`
+      return response;
+    } catch (error) {
+      if (error.response?.status === 429 && retryCount < this.MAX_RETRIES) {
+        await new Promise((resolve) =>
+          setTimeout(resolve, Math.pow(2, retryCount) * 1000)
         );
+        return this.handleRequest(url, options, retryCount + 1);
       }
 
-      return response.json();
-    } catch (error) {
-      if (error.name === "AbortError") {
+      if (error.code === "ECONNABORTED") {
         throw new Error("Request timeout");
       }
+
       console.error("API Error:", error);
       throw error;
     }
@@ -45,7 +38,7 @@ class AppointmentService {
   // Get all appointments
   static async getAll() {
     const response = await this.handleRequest(`${this.API_URL}/appointments`);
-    return response.data;
+    return response.data.data;
   }
 
   // Get appointment by ID
@@ -53,16 +46,16 @@ class AppointmentService {
     const response = await this.handleRequest(
       `${this.API_URL}/appointments/${id}`
     );
-    return response.data;
+    return response.data.data;
   }
 
   // Create new appointment
   static async create(appointmentData) {
     const response = await this.handleRequest(`${this.API_URL}/appointments`, {
       method: "POST",
-      body: JSON.stringify(appointmentData),
+      data: appointmentData,
     });
-    return response.data;
+    return response.data.data;
   }
 
   // Update appointment
@@ -71,10 +64,10 @@ class AppointmentService {
       `${this.API_URL}/appointments/${id}`,
       {
         method: "PUT",
-        body: JSON.stringify(appointmentData),
+        data: appointmentData,
       }
     );
-    return response.data;
+    return response.data.data;
   }
 
   // Update appointment status
@@ -83,10 +76,10 @@ class AppointmentService {
       `${this.API_URL}/appointments/${id}/status`,
       {
         method: "PATCH",
-        body: JSON.stringify({ status, notes }),
+        data: { status, notes },
       }
     );
-    return response.data;
+    return response.data.data;
   }
 
   // Delete appointment
@@ -97,7 +90,7 @@ class AppointmentService {
         method: "DELETE",
       }
     );
-    return response.data;
+    return response.data.data;
   }
 
   // Get appointments by type
@@ -105,17 +98,21 @@ class AppointmentService {
     const response = await this.handleRequest(
       `${this.API_URL}/appointments/type/${type}`
     );
-    return response.data;
+    return response.data.data;
   }
 
   // Get appointments by date range
   static async getByDateRange(startDate, endDate) {
     const response = await this.handleRequest(
-      `${
-        this.API_URL
-      }/appointments/range?start=${startDate.toISOString()}&end=${endDate.toISOString()}`
+      `${this.API_URL}/appointments/range`,
+      {
+        params: {
+          start: startDate.toISOString(),
+          end: endDate.toISOString(),
+        },
+      }
     );
-    return response.data;
+    return response.data.data;
   }
 
   // Check availability
@@ -124,7 +121,7 @@ class AppointmentService {
       `${this.API_URL}/appointments/check-availability`,
       {
         method: "POST",
-        body: JSON.stringify({ datetimeISO, duration, type }),
+        data: { datetimeISO, duration, type },
       }
     );
     return response.data.available;
@@ -135,7 +132,7 @@ class AppointmentService {
     const response = await this.handleRequest(
       `${this.API_URL}/appointments/my-appointments`
     );
-    return response.data;
+    return response.data.data;
   }
 
   // Get service provider's appointments
@@ -143,7 +140,7 @@ class AppointmentService {
     const response = await this.handleRequest(
       `${this.API_URL}/appointments/provider/appointments`
     );
-    return response.data;
+    return response.data.data;
   }
 
   // Get appointments by professional ID
@@ -152,7 +149,7 @@ class AppointmentService {
     const response = await this.handleRequest(
       `${this.API_URL}/appointments/professional/${professionalId}`
     );
-    return response.data;
+    return response.data.data;
   }
 
   // Get appointments by owner ID
@@ -160,7 +157,7 @@ class AppointmentService {
     const response = await this.handleRequest(
       `${this.API_URL}/appointments/owner/${ownerId}`
     );
-    return response.data;
+    return response.data.data;
   }
 
   // Get appointments by status
@@ -168,7 +165,7 @@ class AppointmentService {
     const response = await this.handleRequest(
       `${this.API_URL}/appointments/status/${status}`
     );
-    return response.data;
+    return response.data.data;
   }
 
   // Get appointments by pet ID
@@ -176,7 +173,7 @@ class AppointmentService {
     const response = await this.handleRequest(
       `${this.API_URL}/appointments/pet/${petId}`
     );
-    return response.data;
+    return response.data.data;
   }
 }
 

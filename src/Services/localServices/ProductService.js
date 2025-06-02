@@ -1,14 +1,25 @@
+import axios from "axios";
+
 class ProductService {
-  static API_URL = "http://localhost:5000/api";
+  static API_URL = import.meta.env.VITE_NODE_API_URL;
   static requestQueue = new Map();
   static retryDelays = [1000, 2000, 4000]; // Exponential backoff delays
 
   // Helper method to handle rate limiting with retries
   static async handleRequest(url, options = {}, retryCount = 0) {
     try {
-      const response = await fetch(url, options);
+      const response = await axios({
+        url,
+        ...options,
+        headers: {
+          "Content-Type": "application/json",
+          ...options.headers,
+        },
+      });
 
-      if (response.status === 429) {
+      return response;
+    } catch (error) {
+      if (error.response?.status === 429) {
         if (retryCount < this.retryDelays.length) {
           console.log(
             `Rate limited. Retrying in ${this.retryDelays[retryCount]}ms...`
@@ -21,11 +32,6 @@ class ProductService {
         throw new Error("Too many requests. Please try again later.");
       }
 
-      if (!response.ok) {
-        throw new Error(`Request failed: ${response.statusText}`);
-      }
-      return response;
-    } catch (error) {
       console.error("Request error:", error);
       throw error;
     }
@@ -65,12 +71,11 @@ class ProductService {
       const response = await this.handleRequest(
         `${this.API_URL}/products?${queryParams}`
       );
-      const data = await response.json();
 
-      if (data.success) {
+      if (response.data.success) {
         return {
-          products: data.data,
-          pagination: data.pagination,
+          products: response.data.data,
+          pagination: response.data.pagination,
         };
       }
       return { products: [], pagination: { total: 0, page: 1, pages: 1 } };
@@ -90,13 +95,12 @@ class ProductService {
       const response = await this.handleRequest(
         `${this.API_URL}/products/${id}`
       );
-      const data = await response.json();
 
-      if (!data.success) {
-        throw new Error(data.message || "Failed to fetch product");
+      if (!response.data.success) {
+        throw new Error(response.data.message || "Failed to fetch product");
       }
 
-      return data.data;
+      return response.data.data;
     } catch (error) {
       console.error("Error in fetchProductById:", error);
       throw error;
@@ -106,20 +110,11 @@ class ProductService {
   // Create a new product
   static async createProduct(productData) {
     try {
-      const response = await fetch(`${this.API_URL}/products`, {
+      const response = await this.handleRequest(`${this.API_URL}/products`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(productData),
+        data: productData,
       });
-
-      if (!response.ok) {
-        throw new Error("Failed to create product");
-      }
-
-      const responseData = await response.json();
-      return responseData.data;
+      return response.data.data;
     } catch (error) {
       console.error("Error creating product:", error);
       throw error;
@@ -129,20 +124,14 @@ class ProductService {
   // Update a product
   static async updateProduct(id, productData) {
     try {
-      const response = await fetch(`${this.API_URL}/products/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(productData),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to update product");
-      }
-
-      const responseData = await response.json();
-      return responseData.data;
+      const response = await this.handleRequest(
+        `${this.API_URL}/products/${id}`,
+        {
+          method: "PUT",
+          data: productData,
+        }
+      );
+      return response.data.data;
     } catch (error) {
       console.error("Error updating product:", error);
       throw error;
@@ -152,16 +141,13 @@ class ProductService {
   // Delete a product
   static async deleteProduct(id) {
     try {
-      const response = await fetch(`${this.API_URL}/products/${id}`, {
-        method: "DELETE",
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to delete product");
-      }
-
-      const responseData = await response.json();
-      return responseData.success;
+      const response = await this.handleRequest(
+        `${this.API_URL}/products/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
+      return response.data.success;
     } catch (error) {
       console.error("Error deleting product:", error);
       throw error;
@@ -176,20 +162,17 @@ class ProductService {
         formData.append("images", image);
       });
 
-      const response = await fetch(
+      const response = await this.handleRequest(
         `${this.API_URL}/products/${productId}/images`,
         {
           method: "POST",
-          body: formData,
+          data: formData,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         }
       );
-
-      if (!response.ok) {
-        throw new Error("Failed to upload images");
-      }
-
-      const responseData = await response.json();
-      return responseData.data;
+      return response.data.data;
     } catch (error) {
       console.error("Error uploading images:", error);
       throw error;
@@ -199,19 +182,13 @@ class ProductService {
   // Delete product image
   static async deleteProductImage(productId, imageId) {
     try {
-      const response = await fetch(
+      const response = await this.handleRequest(
         `${this.API_URL}/products/${productId}/images/${imageId}`,
         {
           method: "DELETE",
         }
       );
-
-      if (!response.ok) {
-        throw new Error("Failed to delete image");
-      }
-
-      const responseData = await response.json();
-      return responseData.success;
+      return response.data.success;
     } catch (error) {
       console.error("Error deleting image:", error);
       throw error;
@@ -247,8 +224,7 @@ class ProductService {
         const response = await this.handleRequest(
           `${this.API_URL}/products?category=${category}`
         );
-        const data = await response.json();
-        return data.success ? data.data : [];
+        return response.data.success ? response.data.data : [];
       } catch (error) {
         console.error("Error fetching products by category:", error);
         return [];
@@ -259,12 +235,10 @@ class ProductService {
   // Fetch products by apparel
   static async fetchProductsByApparel() {
     try {
-      const response = await fetch(`${this.API_URL}/products?category=apparel`);
-      if (!response.ok) {
-        throw new Error("Failed to fetch apparel products");
-      }
-      const responseData = await response.json();
-      return responseData.success ? responseData.data : [];
+      const response = await this.handleRequest(
+        `${this.API_URL}/products?category=apparel`
+      );
+      return response.data.success ? response.data.data : [];
     } catch (error) {
       console.error("Error fetching apparel products:", error);
       return [];
@@ -274,34 +248,32 @@ class ProductService {
   // Fetch products by name
   static async fetchProductsByName(name) {
     try {
-      const response = await fetch(
+      const response = await this.handleRequest(
         `${this.API_URL}/products?search=${encodeURIComponent(name)}`
       );
-      if (!response.ok) {
-        throw new Error("Failed to fetch products by name");
-      }
-      const responseData = await response.json();
-      return responseData.success ? responseData.data : [];
+      return response.data.success ? response.data.data : [];
     } catch (error) {
       console.error("Error fetching products by name:", error);
       return [];
     }
   }
 
-  // Fetch related products by category, excluding the current product, limit to 4
+  // Fetch related products
   static async fetchRelatedProducts(category, currentProductId) {
     try {
       const response = await this.handleRequest(
         `${this.API_URL}/products?category=${category}&limit=4`
       );
-      const data = await response.json();
 
-      if (!data.success) {
-        throw new Error(data.message || "Failed to fetch related products");
+      if (!response.data.success) {
+        throw new Error(
+          response.data.message || "Failed to fetch related products"
+        );
       }
 
-      // Filter out the current product from related products
-      return data.data.filter((product) => product._id !== currentProductId);
+      return response.data.data.filter(
+        (product) => product._id !== currentProductId
+      );
     } catch (error) {
       console.error("Error fetching related products:", error);
       return [];
@@ -319,12 +291,10 @@ class ProductService {
         maxPrice: maxPrice || Infinity,
       });
 
-      const response = await fetch(`${this.API_URL}/products?${queryParams}`);
-      if (!response.ok) {
-        throw new Error("Failed to fetch products by price range");
-      }
-      const responseData = await response.json();
-      return responseData.success ? responseData.data : [];
+      const response = await this.handleRequest(
+        `${this.API_URL}/products?${queryParams}`
+      );
+      return response.data.success ? response.data.data : [];
     } catch (error) {
       console.error("Error fetching products by price range:", error);
       return [];
@@ -341,12 +311,10 @@ class ProductService {
         minRating: minRating || 0,
       });
 
-      const response = await fetch(`${this.API_URL}/products?${queryParams}`);
-      if (!response.ok) {
-        throw new Error("Failed to fetch products by rating");
-      }
-      const responseData = await response.json();
-      return responseData.success ? responseData.data : [];
+      const response = await this.handleRequest(
+        `${this.API_URL}/products?${queryParams}`
+      );
+      return response.data.success ? response.data.data : [];
     } catch (error) {
       console.error("Error fetching products by rating:", error);
       return [];
@@ -412,17 +380,15 @@ class ProductService {
       }
 
       console.log("Query Parameters:", Object.fromEntries(queryParams));
-      const response = await fetch(`${this.API_URL}/products?${queryParams}`);
-      if (!response.ok) {
-        throw new Error("Failed to fetch products with filters");
-      }
-      const responseData = await response.json();
+      const response = await this.handleRequest(
+        `${this.API_URL}/products?${queryParams}`
+      );
 
-      if (responseData.success) {
-        console.log("Response Data:", responseData);
+      if (response.data.success) {
+        console.log("Response Data:", response.data);
         return {
-          products: responseData.data,
-          pagination: responseData.pagination,
+          products: response.data.data,
+          pagination: response.data.pagination,
         };
       }
       return { products: [], pagination: { total: 0, page: 1, pages: 1 } };

@@ -19,12 +19,15 @@ import {
   FaTimes,
   FaSignInAlt,
   FaExclamationCircle,
+  FaEnvelope,
 } from "react-icons/fa";
 import { IconContext } from "react-icons";
 import brandLogoV2 from "../../../assets/Decoratives/BrandV2.png";
 import catLogin from "../../../assets/Decoratives/Cat with Log In.png";
 import { useAuth } from "../../../context/AuthContext";
+import { useToast } from "../../../context/ToastContext";
 import AuthService from "../../../Services/authService";
+import ForgotPasswordModal from "../../Auth/ForgotPasswordModal";
 import "./LoginModal.css";
 
 const LoginModal = ({
@@ -35,18 +38,22 @@ const LoginModal = ({
   onSignUpClick,
 }) => {
   const { login } = useAuth();
+  const { showAuthToast } = useToast();
   const [formData, setFormData] = useState({
-    username: "",
+    email: "",
     password: "",
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [alert, setAlert] = useState(null);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
 
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.username.trim()) {
-      newErrors.username = "Username is required";
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = "Email is invalid";
     }
     if (!formData.password) {
       newErrors.password = "Password is required";
@@ -77,8 +84,9 @@ const LoginModal = ({
     setAlert(null);
 
     try {
-      const result = await login(formData.username, formData.password);
+      const result = await login(formData.email, formData.password);
       if (result.success) {
+        showAuthToast("login", "success");
         onHide();
       } else {
         setAlert({
@@ -165,20 +173,20 @@ const LoginModal = ({
               <Form.Group className="mb-3">
                 <InputGroup hasValidation>
                   <InputGroup.Text className="bg-white rounded-start-4">
-                    <FaUser className="text-primary " />
+                    <FaEnvelope className="text-primary " />
                   </InputGroup.Text>
                   <Form.Control
-                    name="username"
-                    type="text"
-                    placeholder="Username"
+                    name="email"
+                    type="email"
+                    placeholder="Email"
                     className="border-start-0 rounded-end-4"
                     required
-                    value={formData.username}
+                    value={formData.email}
                     onChange={handleInputChange}
-                    isInvalid={!!errors.username}
+                    isInvalid={!!errors.email}
                   />
                   <Form.Control.Feedback type="invalid">
-                    {errors.username}
+                    {errors.email}
                   </Form.Control.Feedback>
                 </InputGroup>
               </Form.Group>
@@ -222,9 +230,13 @@ const LoginModal = ({
                   label="Remember me"
                   className="text-primary"
                 />
-                <a href="#" className="text-primary text-decoration-none">
+                <Button
+                  variant="link"
+                  className="text-primary text-decoration-none p-0"
+                  onClick={() => setShowForgotPassword(true)}
+                >
                   Forgot password?
-                </a>
+                </Button>
               </div>
 
               <div className="d-grid gap-2">
@@ -286,6 +298,12 @@ const LoginModal = ({
           </Col>
         </Container>
       </Modal.Body>
+
+      <ForgotPasswordModal
+        show={showForgotPassword}
+        onHide={() => setShowForgotPassword(false)}
+        onLoginClick={() => setShowForgotPassword(false)}
+      />
     </Modal>
   );
 };

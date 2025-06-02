@@ -84,7 +84,8 @@ export const ToastProvider = ({ children }) => {
         error: "Login failed. Please check your credentials.",
       },
       signup: {
-        success: "Account created successfully! Welcome to VitalPaws.",
+        success:
+          "Account created successfully! Welcome to VitalPaws. Now try to login",
         error: "Signup failed. Please try again.",
       },
       logout: {

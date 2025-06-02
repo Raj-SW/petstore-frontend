@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
 
+const API_URL = import.meta.env.VITE_NODE_API_URL;
+
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
@@ -20,7 +22,7 @@ export const AuthProvider = ({ children }) => {
 
   const validateToken = async (token) => {
     try {
-      const response = await axios.get("/api/auth/validate", {
+      const response = await axios.get(`${API_URL}/auth/validate`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setUser(response.data.user);
@@ -32,11 +34,11 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const login = async (username, password) => {
+  const login = async (email, password) => {
     try {
       setError(null);
-      const response = await axios.post("/api/auth/login", {
-        username,
+      const response = await axios.post(`${API_URL}/auth/login`, {
+        email,
         password,
       });
 
@@ -53,7 +55,7 @@ export const AuthProvider = ({ children }) => {
   const signup = async (userData) => {
     try {
       setError(null);
-      const response = await axios.post("/api/auth/signup", userData);
+      const response = await axios.post(`${API_URL}/auth/signup`, userData);
 
       const { token, user } = response.data;
       localStorage.setItem("token", token);
@@ -72,13 +74,60 @@ export const AuthProvider = ({ children }) => {
 
   const updateUser = async (userData) => {
     try {
-      const response = await axios.put("/api/auth/user", userData, {
+      const response = await axios.put(`${API_URL}/auth/user`, userData, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       setUser(response.data.user);
       return { success: true };
     } catch (err) {
       setError(err.response?.data?.message || "Update failed");
+      return { success: false, error: err.response?.data?.message };
+    }
+  };
+
+  const requestPasswordReset = async (email) => {
+    try {
+      setError(null);
+      const response = await axios.post(`${API_URL}/auth/forgot-password`, {
+        email,
+      });
+      return { success: true, data: response.data };
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to send reset email");
+      return { success: false, error: err.response?.data?.message };
+    }
+  };
+
+  const resetPassword = async (token, newPassword) => {
+    try {
+      setError(null);
+      const response = await axios.post(`${API_URL}/auth/reset-password`, {
+        token,
+        newPassword,
+      });
+      return { success: true, data: response.data };
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to reset password");
+      return { success: false, error: err.response?.data?.message };
+    }
+  };
+
+  const changePassword = async (oldPassword, newPassword) => {
+    try {
+      setError(null);
+      const response = await axios.put(
+        `${API_URL}/auth/change-password`,
+        {
+          oldPassword,
+          newPassword,
+        },
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
+      );
+      return { success: true, data: response.data };
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to change password");
       return { success: false, error: err.response?.data?.message };
     }
   };
@@ -91,6 +140,9 @@ export const AuthProvider = ({ children }) => {
     signup,
     logout,
     updateUser,
+    requestPasswordReset,
+    resetPassword,
+    changePassword,
   };
 
   return (

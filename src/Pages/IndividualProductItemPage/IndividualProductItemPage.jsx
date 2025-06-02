@@ -59,46 +59,32 @@ const IndividualProductItemPage = () => {
         if (!id) {
           throw new Error("Product ID is missing");
         }
-
-        console.log("Raw product ID from URL:", id);
-
         // Try to parse the ID if it's a string number
         const productId = isNaN(id) ? id : parseInt(id);
-        console.log("Parsed product ID:", productId);
 
         // Fetch product data
         const productData = await ProductService.fetchProductById(productId);
-        console.log("Received product data:", productData);
 
         if (!productData) {
           throw new Error("Product not found");
         }
 
         setProduct(productData);
-        console.log("productData", productData);
         // Fetch related products if category exists
         if (productData.category) {
-          console.log(
-            "Fetching related products for category:",
-            productData.category
-          );
           const related = await ProductService.fetchRelatedProducts(
             productData.category,
             productData.id
           );
-          console.log("Received related products:", related);
           setRelatedProducts(related);
         }
 
         // Fetch reviews
-        console.log("Fetching reviews for product ID:", productId);
         const productReviews = await ReviewService.fetchProductReviews(
           productId
         );
-        console.log("Received reviews:", productReviews);
         setReviews(productReviews);
       } catch (err) {
-        console.error("Error fetching product data:", err);
         setError(err.message || "Failed to load product details");
       } finally {
         setIsLoading(false);
@@ -118,14 +104,12 @@ const IndividualProductItemPage = () => {
 
   const handleAddToCart = () => {
     if (!product) {
-      console.error("No product data available");
       return;
     }
 
     // Ensure we have a valid ID
     const productId = product._id || product.id;
     if (!productId) {
-      console.error("Product ID is missing");
       return;
     }
 
@@ -138,10 +122,8 @@ const IndividualProductItemPage = () => {
         quantity: quantity,
       };
 
-      console.log("Adding item to cart:", itemToAdd);
       addItem(itemToAdd);
     } catch (error) {
-      console.error("Error adding item to cart:", error);
       setError("Failed to add item to cart. Please try again.");
     }
   };
@@ -166,7 +148,6 @@ const IndividualProductItemPage = () => {
       setReviewForm({ name: "", rating: 5, comment: "" });
       setShowReviewModal(false);
     } catch (error) {
-      console.error("Error submitting review:", error);
       setError("Failed to submit review. Please try again.");
     } finally {
       setSubmittingReview(false);
@@ -340,7 +321,7 @@ const IndividualProductItemPage = () => {
             <Row className="d-flex flex-wrap justify-content-center mt-3 related-purchases-product mb-5 gap-3">
               {relatedProducts.map((item) => (
                 <ProductCard
-                  key={item.id}
+                  key={item._id}
                   id={item.id}
                   imageUrl={item.images?.[0] || item.imageUrl}
                   title={item.title}

@@ -25,8 +25,10 @@ import { IconContext } from "react-icons";
 import brandLogoV2 from "../../../assets/Decoratives/BrandV2.png";
 import dogLogin from "../../../assets/Decoratives/DogPic.png";
 import { useAuth } from "../../../context/AuthContext";
+import { useToast } from "../../../context/ToastContext";
 import AuthService from "../../../Services/authService";
 import "./SignUpModal.css";
+
 const SignUpModal = ({
   show,
   onHide,
@@ -35,8 +37,9 @@ const SignUpModal = ({
   onLoginClick,
 }) => {
   const { signup } = useAuth();
+  const { showAuthToast } = useToast();
   const [formData, setFormData] = useState({
-    fullName: "",
+    name: "",
     email: "",
     password: "",
   });
@@ -49,8 +52,8 @@ const SignUpModal = ({
 
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.fullName.trim()) {
-      newErrors.fullName = "Full name is required";
+    if (!formData.name.trim()) {
+      newErrors.name = "Name is required";
     }
     if (!formData.email.trim()) {
       newErrors.email = "Email is required";
@@ -106,6 +109,7 @@ const SignUpModal = ({
     try {
       const result = await signup(formData);
       if (result.success) {
+        showAuthToast("signup", "success");
         onHide();
       } else {
         setAlert({
@@ -216,17 +220,17 @@ const SignUpModal = ({
                   <FaUser />
                 </InputGroup.Text>
                 <Form.Control
-                  name="fullName"
+                  name="name"
                   type="text"
-                  placeholder="Full Name"
+                  placeholder="Name"
                   className="border-start-0 rounded-end-4 outlined-input"
                   required
-                  value={formData.fullName}
+                  value={formData.name}
                   onChange={handleInputChange}
-                  isInvalid={!!errors.fullName}
+                  isInvalid={!!errors.name}
                 />
                 <Form.Control.Feedback type="invalid">
-                  {errors.fullName}
+                  {errors.name}
                 </Form.Control.Feedback>
               </InputGroup>
 

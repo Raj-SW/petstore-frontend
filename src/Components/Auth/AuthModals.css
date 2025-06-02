@@ -1,0 +1,154 @@
+.authModal {
+    border-radius: 1rem;
+}
+
+.authModal-body {
+    padding: 1.5rem;
+}
+
+.close-button {
+    right: 1rem;
+    top: 1rem;
+    z-index: 1;
+}
+
+.input-group-text {
+    border: 1px solid #ced4da;
+    padding: 0.75rem;
+    background-color: #fff;
+}
+
+.input-group:focus-within .input-group-text {
+    border-color: var(--primary-blue-color);
+}
+
+.form-control {
+    border: 1px solid #ced4da;
+    padding: 0.75rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-control:focus {
+    border-color: var(--primary-blue-color);
+    box-shadow: 0 0 0 0.2rem rgba(1, 57, 96, 0.25);
+}
+
+.btn-primary {
+    background-color: var(--primary-blue-color);
+    border-color: var(--primary-blue-color);
+    padding: 0.75rem;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-primary:hover {
+    background-color: var(--secondary-blue-color);
+    border-color: var(--secondary-blue-color);
+}
+
+.btn-primary:disabled {
+    background-color: var(--primary-blue-color);
+    border-color: var(--primary-blue-color);
+    opacity: 0.65;
+}
+
+.alert {
+    border-radius: 0.5rem;
+    padding: 1rem;
+}
+
+.alert-danger {
+    background-color: var(--error-light);
+    border: none;
+    color: var(--error-dark);
+}
+
+.alert-success {
+    background-color: var(--success-light);
+    border: none;
+    color: var(--success-dark);
+}
+
+/* Password strength indicator */
+.password-strength {
+    height: 4px;
+    margin-top: 0.5rem;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+}
+
+.password-strength.weak {
+    background-color: var(--error-color);
+    width: 33.33%;
+}
+
+.password-strength.medium {
+    background-color: var(--warning-color);
+    width: 66.66%;
+}
+
+.password-strength.strong {
+    background-color: var(--success-color);
+    width: 100%;
+}
+
+/* Social login buttons */
+.social-login-divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 1.5rem 0;
+}
+
+.social-login-divider::before,
+.social-login-divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.social-login-divider span {
+    padding: 0 1rem;
+    color: #6c757d;
+    font-size: 0.875rem;
+}
+
+.social-icons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.social-icons button {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid #dee2e6;
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.social-icons button:hover {
+    background-color: #f8f9fa;
+    border-color: var(--primary-blue-color);
+}
+
+/* Remember me checkbox */
+.form-check-input:checked {
+    background-color: var(--primary-blue-color);
+    border-color: var(--primary-blue-color);
+}
+
+/* Links */
+.text-primary {
+    color: var(--primary-blue-color) !important;
+}
+
+.text-primary:hover {
+    color: var(--secondary-blue-color) !important;
+    text-decoration: none;
+}

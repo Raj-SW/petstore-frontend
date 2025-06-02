@@ -10,6 +10,7 @@ import CartCheckOutPage from "./Pages/CartCheckoutPage/CartCheckOutPage.jsx";
 import ImportExportServicePage from "./Pages/ImportExport/ImportExportServicePage.jsx";
 import ExportImportForm from "./Pages/ImportExport/Import/ImportPage.jsx";
 import UserProfile from "./Pages/UserProfile.jsx";
+import ResetPassword from "./Components/Auth/ResetPassword.jsx";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 
 const router = createBrowserRouter([
@@ -56,6 +57,10 @@ const router = createBrowserRouter([
       {
         path: "profile",
         element: <UserProfile />,
+      },
+      {
+        path: "reset-password",
+        element: <ResetPassword />,
       },
     ],
   },
