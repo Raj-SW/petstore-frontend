@@ -42,32 +42,37 @@ const SignUpModal = ({
     name: "",
     email: "",
     password: "",
+    confirmPassword: "",
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [alert, setAlert] = useState(null);
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [confirmPassword, setConfirmPassword] = useState("");
 
   const validateForm = () => {
     const newErrors = {};
     if (!formData.name.trim()) {
       newErrors.name = "Name is required";
     }
-    if (!formData.email.trim()) {
+    if (!formData.email) {
       newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Email is invalid";
+      newErrors.email = "Please enter a valid email address";
     }
     if (!formData.password) {
       newErrors.password = "Password is required";
     } else if (formData.password.length < 8) {
-      newErrors.password = "Password must be at least 8 characters";
+      newErrors.password = "Password must be at least 8 characters long";
+    } else if (
+      !/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])/.test(formData.password)
+    ) {
+      newErrors.password =
+        "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character";
     }
-    if (!confirmPassword) {
+    if (!formData.confirmPassword) {
       newErrors.confirmPassword = "Please confirm your password";
-    } else if (formData.password !== confirmPassword) {
+    } else if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = "Passwords do not match";
     }
     if (!termsAccepted) {
@@ -92,13 +97,6 @@ const SignUpModal = ({
     }
   };
 
-  const handleConfirmPasswordChange = (e) => {
-    setConfirmPassword(e.target.value);
-    if (errors.confirmPassword) {
-      setErrors((prev) => ({ ...prev, confirmPassword: "" }));
-    }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
@@ -107,20 +105,25 @@ const SignUpModal = ({
     setAlert(null);
 
     try {
-      const result = await signup(formData);
+      const result = await signup({
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+      });
+
       if (result.success) {
         showAuthToast("signup", "success");
         onHide();
       } else {
         setAlert({
-          type: "danger",
+          type: "error",
           message: result.error || "Signup failed. Please try again.",
         });
       }
     } catch (error) {
       setAlert({
-        type: "danger",
-        message: error.message || "An error occurred during signup.",
+        type: "error",
+        message: "An unexpected error occurred. Please try again.",
       });
     } finally {
       setLoading(false);
@@ -289,8 +292,8 @@ const SignUpModal = ({
                   placeholder="Confirm Password"
                   className="border-start-0 outlined-input"
                   required
-                  value={confirmPassword}
-                  onChange={handleConfirmPasswordChange}
+                  value={formData.confirmPassword}
+                  onChange={handleInputChange}
                   isInvalid={!!errors.confirmPassword}
                 />
                 <InputGroup.Text

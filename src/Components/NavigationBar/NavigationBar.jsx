@@ -24,6 +24,8 @@ import {
 import pawsImg from "../../assets/NavigationBarAssets/Logo/paws.png";
 import pawsmobileImg from "../../assets/NavigationBarAssets/Logo/pawsMobile.png";
 import vitalPawsLogo from "../../assets/NavigationBarAssets/Logo/vitalPawsLogo.png";
+import { useAuth } from "../../context/AuthContext";
+import { Dropdown } from "react-bootstrap";
 import "./NavigationBar.css";
 
 // This is the main navigation bar component for the website
@@ -33,6 +35,7 @@ const NavigationBar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const mobileMenuRef = useRef(null);
+  const { user, logout } = useAuth();
 
   // Accessibility: trap focus in mobile menu
   useEffect(() => {
@@ -76,9 +79,6 @@ const NavigationBar = () => {
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [mobileMenuOpen]);
-
-  // Example: user info (replace with real auth context if available)
-  const user = null; // or { name: "Raj" }
 
   return (
     <>
@@ -158,7 +158,34 @@ const NavigationBar = () => {
           {/* Desktop Navigation Items */}
           <div className="ms-auto d-flex d-none d-md-flex d-card-dropdown">
             <CardDropDown /> {/* Card dropdown menu */}
-            <SignUpDropdown showLogin={showLogin} setShowLogin={setShowLogin} />
+            {user ? (
+              <Dropdown align="end" className="ms-3">
+                <Dropdown.Toggle
+                  variant="link"
+                  className="d-flex align-items-center text-white text-decoration-none p-0 border-0"
+                  style={{ boxShadow: "none", height: "100%" }}
+                >
+                  <div className="d-flex align-items-center">
+                    <FaUserCircle size={28} className="me-2" />
+                    <span className="fw-bold">{user.name}</span>
+                  </div>
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                  <Dropdown.Item href="/profile">
+                    <FaUser className="me-2" /> Profile
+                  </Dropdown.Item>
+                  <Dropdown.Divider />
+                  <Dropdown.Item onClick={logout} style={{ color: "#d32f2f" }}>
+                    <FaSignInAlt className="me-2" /> Log out
+                  </Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+            ) : (
+              <SignUpDropdown
+                showLogin={showLogin}
+                setShowLogin={setShowLogin}
+              />
+            )}
             <AddToCart
               itemCount={totalItems}
               cartItems={items}
@@ -207,18 +234,60 @@ const NavigationBar = () => {
             <a href="/petshop" className="mobile-menu-link">
               <FaStore className="me-2" /> Pet Shop
             </a>
-            <a href="/services" className="mobile-menu-link">
-              <FaPaw className="me-2" /> Services
-            </a>
-            <a href="/import-export-service" className="mobile-menu-link">
-              <FaPlane className="me-2" /> Import/Export
-            </a>
-            <a href="/appointments" className="mobile-menu-link">
-              <FaUser className="me-2" /> Appointments
-            </a>
-            <a href="/community" className="mobile-menu-link">
+
+            <Accordion className="mobile-menu-accordion">
+              <Accordion.Item eventKey="0">
+                <Accordion.Header className="mobile-menu-link">
+                  <FaPaw className="me-2" /> Services
+                </Accordion.Header>
+                <Accordion.Body className="ps-4">
+                  <a href="/services" className="mobile-menu-link d-block mb-2">
+                    All Services
+                  </a>
+                  <a
+                    href="/import-export-service"
+                    className="mobile-menu-link d-block"
+                  >
+                    Import/Export
+                  </a>
+                </Accordion.Body>
+              </Accordion.Item>
+
+              <Accordion.Item eventKey="1">
+                <Accordion.Header className="mobile-menu-link">
+                  <FaUser className="me-2" /> Appointments
+                </Accordion.Header>
+                <Accordion.Body className="ps-4">
+                  <a
+                    href="/appointments/vet"
+                    className="mobile-menu-link d-block mb-2"
+                  >
+                    Vet Appointment
+                  </a>
+                  <a
+                    href="/appointments/groomer"
+                    className="mobile-menu-link d-block mb-2"
+                  >
+                    Groomer Appointment
+                  </a>
+                  <a
+                    href="/appointments/pet-taxi"
+                    className="mobile-menu-link d-block"
+                  >
+                    Pet Taxi
+                  </a>
+                </Accordion.Body>
+              </Accordion.Item>
+            </Accordion>
+
+            <div
+              className="mobile-menu-link coming-soon"
+              style={{ opacity: 0.6, cursor: "not-allowed" }}
+            >
               <FaUsers className="me-2" /> Community
-            </a>
+              <span className="ms-2 badge bg-secondary">Coming Soon</span>
+            </div>
+
             <a href="/profile" className="mobile-menu-link">
               <FaUserCircle className="me-2" /> Profile
             </a>
@@ -247,17 +316,32 @@ const NavigationBar = () => {
               <a href="/profile" className="mobile-menu-account-link">
                 <FaUserCircle className="me-1" /> Profile
               </a>
-              <a
-                href="#"
-                className="mobile-menu-account-link"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setMobileMenuOpen(false);
-                  setShowLogin(true);
-                }}
-              >
-                <FaSignInAlt className="me-1" /> Login
-              </a>
+              {user ? (
+                <a
+                  href="#"
+                  className="mobile-menu-account-link"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    logout();
+                    setMobileMenuOpen(false);
+                  }}
+                  style={{ color: "#d32f2f" }}
+                >
+                  <FaSignInAlt className="me-1" /> Logout
+                </a>
+              ) : (
+                <a
+                  href="#"
+                  className="mobile-menu-account-link"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setMobileMenuOpen(false);
+                    setShowLogin(true);
+                  }}
+                >
+                  <FaSignInAlt className="me-1" /> Login
+                </a>
+              )}
             </div>
           </div>
         </nav>

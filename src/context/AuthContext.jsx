@@ -3,6 +3,9 @@ import axios from "axios";
 
 const API_URL = import.meta.env.VITE_NODE_API_URL;
 
+// Configure axios to include credentials
+axios.defaults.withCredentials = true;
+
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
@@ -11,24 +14,18 @@ export const AuthProvider = ({ children }) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Check for stored token and validate it
-    const token = localStorage.getItem("token");
-    if (token) {
-      validateToken(token);
-    } else {
-      setLoading(false);
-    }
+    // Check if user is logged in on initial load
+    checkAuthStatus();
   }, []);
 
-  const validateToken = async (token) => {
+  const checkAuthStatus = async () => {
     try {
-      const response = await axios.get(`${API_URL}/auth/validate`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setUser(response.data.user);
+      const response = await axios.get(`${API_URL}/auth/me`);
+      if (response.data.success) {
+        setUser(response.data.data);
+      }
     } catch (err) {
-      localStorage.removeItem("token");
-      setError("Session expired. Please login again.");
+      setUser(null);
     } finally {
       setLoading(false);
     }
@@ -42,13 +39,16 @@ export const AuthProvider = ({ children }) => {
         password,
       });
 
-      const { token, user } = response.data;
-      localStorage.setItem("token", token);
-      setUser(user);
-      return { success: true };
+      if (response.data.success) {
+        setUser(response.data.data);
+        return { success: true };
+      }
     } catch (err) {
       setError(err.response?.data?.message || "Login failed");
-      return { success: false, error: err.response?.data?.message };
+      return {
+        success: false,
+        error: err.response?.data?.message || "Login failed",
+      };
     }
   };
 
@@ -57,31 +57,24 @@ export const AuthProvider = ({ children }) => {
       setError(null);
       const response = await axios.post(`${API_URL}/auth/signup`, userData);
 
-      const { token, user } = response.data;
-      localStorage.setItem("token", token);
-      setUser(user);
-      return { success: true };
+      if (response.data.success) {
+        return { success: true };
+      }
     } catch (err) {
       setError(err.response?.data?.message || "Signup failed");
-      return { success: false, error: err.response?.data?.message };
+      return {
+        success: false,
+        error: err.response?.data?.message || "Signup failed",
+      };
     }
   };
 
-  const logout = () => {
-    localStorage.removeItem("token");
-    setUser(null);
-  };
-
-  const updateUser = async (userData) => {
+  const logout = async () => {
     try {
-      const response = await axios.put(`${API_URL}/auth/user`, userData, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      });
-      setUser(response.data.user);
-      return { success: true };
+      await axios.post(`${API_URL}/auth/logout`);
+      setUser(null);
     } catch (err) {
-      setError(err.response?.data?.message || "Update failed");
-      return { success: false, error: err.response?.data?.message };
+      console.error("Logout error:", err);
     }
   };
 
@@ -94,7 +87,10 @@ export const AuthProvider = ({ children }) => {
       return { success: true, data: response.data };
     } catch (err) {
       setError(err.response?.data?.message || "Failed to send reset email");
-      return { success: false, error: err.response?.data?.message };
+      return {
+        success: false,
+        error: err.response?.data?.message || "Failed to send reset email",
+      };
     }
   };
 
@@ -103,32 +99,34 @@ export const AuthProvider = ({ children }) => {
       setError(null);
       const response = await axios.post(`${API_URL}/auth/reset-password`, {
         token,
-        newPassword,
+        password: newPassword,
       });
       return { success: true, data: response.data };
     } catch (err) {
       setError(err.response?.data?.message || "Failed to reset password");
-      return { success: false, error: err.response?.data?.message };
+      return {
+        success: false,
+        error: err.response?.data?.message || "Failed to reset password",
+      };
     }
   };
 
-  const changePassword = async (oldPassword, newPassword) => {
+  const resendVerificationEmail = async (email) => {
     try {
       setError(null);
-      const response = await axios.put(
-        `${API_URL}/auth/change-password`,
-        {
-          oldPassword,
-          newPassword,
-        },
-        {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        }
-      );
+      const response = await axios.post(`${API_URL}/auth/resend-verification`, {
+        email,
+      });
       return { success: true, data: response.data };
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to change password");
-      return { success: false, error: err.response?.data?.message };
+      setError(
+        err.response?.data?.message || "Failed to resend verification email"
+      );
+      return {
+        success: false,
+        error:
+          err.response?.data?.message || "Failed to resend verification email",
+      };
     }
   };
 
@@ -139,10 +137,9 @@ export const AuthProvider = ({ children }) => {
     login,
     signup,
     logout,
-    updateUser,
     requestPasswordReset,
     resetPassword,
-    changePassword,
+    resendVerificationEmail,
   };
 
   return (

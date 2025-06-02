@@ -201,3 +201,30 @@
 .mobile-header {
     display: none !important;
 }
+
+.accordion-item {
+    background-color: var(--primary-blue-color) !important;
+    border: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.mobile-menu-link .accordion-header {
+    background-color: var(--primary-blue-color) !important;
+    border: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+
+}
+
+.accordion-button {
+    background-color: var(--primary-blue-color) !important;
+    border: none !important;
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+    color: var(--secondary-green-color) !important;
+}
+
+.mobile-menu-link {
+    color: #fff !important;
+}

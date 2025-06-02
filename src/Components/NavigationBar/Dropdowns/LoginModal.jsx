@@ -50,10 +50,10 @@ const LoginModal = ({
 
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.email.trim()) {
+    if (!formData.email) {
       newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Email is invalid";
+      newErrors.email = "Please enter a valid email address";
     }
     if (!formData.password) {
       newErrors.password = "Password is required";
@@ -90,14 +90,14 @@ const LoginModal = ({
         onHide();
       } else {
         setAlert({
-          type: "danger",
+          type: "error",
           message: result.error || "Login failed. Please try again.",
         });
       }
     } catch (error) {
       setAlert({
-        type: "danger",
-        message: error.message || "An error occurred during login.",
+        type: "error",
+        message: "An unexpected error occurred. Please try again.",
       });
     } finally {
       setLoading(false);
@@ -107,22 +107,21 @@ const LoginModal = ({
   const handleSocialLogin = async (provider) => {
     setLoading(true);
     setAlert(null);
-
     try {
       const result = await AuthService.socialLogin(provider);
       if (result.success) {
         onHide();
       } else {
         setAlert({
-          type: "danger",
+          type: "error",
           message:
             result.error || `${provider} login failed. Please try again.`,
         });
       }
     } catch (error) {
       setAlert({
-        type: "danger",
-        message: error.message || `An error occurred during ${provider} login.`,
+        type: "error",
+        message: "Social login failed. Please try again.",
       });
     } finally {
       setLoading(false);
@@ -153,7 +152,7 @@ const LoginModal = ({
             </h3>
             {alert && (
               <Alert
-                variant="danger"
+                variant={alert.type}
                 className="mb-3 d-flex align-items-center gap-2 custom-login-alert m-4"
                 style={{ background: "var(--error-light)", border: "none" }}
                 role="alert"
