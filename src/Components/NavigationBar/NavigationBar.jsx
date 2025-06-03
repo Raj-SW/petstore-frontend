@@ -313,7 +313,13 @@ const NavigationBar = () => {
             <div className="mobile-menu-divider my-3"></div>
             <div className="mobile-menu-section-title mb-2">Account</div>
             <div className="mobile-menu-account d-flex gap-3 mb-3">
-              <a href="/profile" className="mobile-menu-account-link">
+              <a
+                href="/profile"
+                className="mobile-menu-account-link"
+                tabIndex={!user ? -1 : 0}
+                aria-disabled={!user}
+                style={!user ? { pointerEvents: "none", opacity: 0.5 } : {}}
+              >
                 <FaUserCircle className="me-1" /> Profile
               </a>
               {user ? (

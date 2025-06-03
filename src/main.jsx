@@ -12,6 +12,8 @@ import ExportImportForm from "./Pages/ImportExport/Import/ImportPage.jsx";
 import UserProfile from "./Pages/UserProfile.jsx";
 import ResetPassword from "./Components/Auth/ResetPassword.jsx";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import ProtectedRoute from "./Components/Auth/ProtectedRoute";
+import { GlobalToastProvider } from "./context/GlobalToastContext";
 
 const router = createBrowserRouter([
   {
@@ -56,7 +58,11 @@ const router = createBrowserRouter([
       },
       {
         path: "profile",
-        element: <UserProfile />,
+        element: (
+          <ProtectedRoute>
+            <UserProfile />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "reset-password",
@@ -66,4 +72,8 @@ const router = createBrowserRouter([
   },
 ]);
 const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(<RouterProvider router={router} />);
+root.render(
+  <GlobalToastProvider>
+    <RouterProvider router={router} />
+  </GlobalToastProvider>
+);

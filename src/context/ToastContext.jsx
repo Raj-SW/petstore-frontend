@@ -160,14 +160,14 @@ export const ToastProvider = ({ children }) => {
       <ToastContainer
         className="p-3"
         position="top-end"
-        style={{ zIndex: 9999 }}
+        style={{ zIndex: 9999, position: "fixed", top: 0, right: 0 }}
       >
         {toasts.map((toast) => (
           <Toast
             key={toast.id}
             onClose={() => removeToast(toast.id)}
             show={true}
-            delay={56000}
+            delay={1000}
             autohide
             className="toast-custom"
           >
@@ -177,10 +177,57 @@ export const ToastProvider = ({ children }) => {
                 <strong className="ms-2 me-auto">Notification</strong>
               </div>
             </Toast.Header>
-            <Toast.Body>{toast.message}</Toast.Body>
+            <Toast.Body
+              style={{ position: "relative", paddingBottom: "1.5rem" }}
+            >
+              {toast.message}
+              {/* Progress Bar */}
+              <ToastProgressBar key={toast.id} duration={4000} />
+            </Toast.Body>
           </Toast>
         ))}
       </ToastContainer>
     </ToastContext.Provider>
+  );
+};
+
+// Progress bar component for toast auto-close
+const ToastProgressBar = ({ duration }) => {
+  const [width, setWidth] = React.useState(100);
+  React.useEffect(() => {
+    let start;
+    let frame;
+    const animate = (timestamp) => {
+      if (!start) start = timestamp;
+      const elapsed = timestamp - start;
+      const percent = Math.max(0, 100 - (elapsed / duration) * 100);
+      setWidth(percent);
+      if (percent > 0) {
+        frame = requestAnimationFrame(animate);
+      }
+    };
+    frame = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(frame);
+  }, [duration]);
+  return (
+    <div
+      style={{
+        position: "absolute",
+        left: 0,
+        bottom: 0,
+        height: "4px",
+        width: "100%",
+        background: "rgba(0,0,0,0.08)",
+      }}
+    >
+      <div
+        style={{
+          height: "100%",
+          width: `${width}%`,
+          background: "var(--primary-color, #0d6efd)",
+          transition: "width 0.1s linear",
+        }}
+      />
+    </div>
   );
 };
