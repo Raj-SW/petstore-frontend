@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 // CSS
 import "./appointmentCalendar.css";
 import "@/styles/calendarStyles.css";
@@ -6,11 +6,8 @@ import "@/styles/calendarStyles.css";
 import {
   Container,
   Row,
-  Col,
   Tab,
   Nav,
-  Dropdown,
-  Button,
   Form,
   InputGroup,
   Modal,
@@ -20,7 +17,6 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import { motion } from "framer-motion";
 import AppointmentCard from "@/Components/HelperComponents/AppointmentCard/AppointmentCard";
 import AppointmentForm from "@/Components/HelperComponents/AppointmentForm/AppointmentForm";
 import AppointmentService from "../../../Services/localServices/appointmentService";

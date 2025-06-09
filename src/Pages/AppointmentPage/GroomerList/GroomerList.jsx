@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Container, Row, Col, InputGroup, Form } from "react-bootstrap";
+import { useState, useEffect } from "react";
+import { Container, InputGroup, Form } from "react-bootstrap";
 import { FaSearch, FaCut } from "react-icons/fa";
 import { motion } from "framer-motion";
 import ProfessionalCard from "@/Components/HelperComponents/ProfessionalCard/ProfessionalCard";

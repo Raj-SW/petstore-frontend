@@ -1,4 +1,3 @@
-import React from "react";
 import { CartProvider as UseCartProvider } from "react-use-cart";
 
 const CartContext = ({ children }) => {

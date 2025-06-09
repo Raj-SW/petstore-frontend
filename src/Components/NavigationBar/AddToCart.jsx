@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import "./AddToCart.css";
 //Component import
 import { FaCartShopping } from "react-icons/fa6";

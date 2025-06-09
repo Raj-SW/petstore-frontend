@@ -1,12 +1,5 @@
-import { Card, Button, Badge } from "react-bootstrap";
-import {
-  FaStar,
-  FaPhone,
-  FaEnvelope,
-  FaMapMarkerAlt,
-  FaUserMd,
-} from "react-icons/fa";
-import { motion } from "framer-motion";
+import { Card, Button } from "react-bootstrap";
+import { FaStar, FaPhone, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
 import "./ProfessionalCard.css";
 
 const ProfessionalCard = ({

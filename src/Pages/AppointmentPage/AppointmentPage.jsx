@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import "./AppointmentPage.css";
 //Component Imports
-import { Container, Col, Row, Card, Tab, Nav } from "react-bootstrap";
+import { Container, Col, Row, Tab, Nav } from "react-bootstrap";
 import Breadcrumb from "@/Components/HelperComponents/Breadcrumb/Breadcrumb";
 import AppointmentCalendar from "./AppointmentCalendar/appointmentCalendar";
 import VeterinarianList from "./VeterinarianList/VeterinarianList";

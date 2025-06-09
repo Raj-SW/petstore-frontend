@@ -1,4 +1,3 @@
-import React from "react";
 import { Modal, Button, Row, Col } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "react-use-cart";
@@ -65,7 +64,7 @@ const CartModal = ({
               Your cart is empty
             </h4>
             <p className="text-muted text-center mb-4 poppins-regular">
-              Looks like you haven't added anything to your cart yet.
+              Looks like you haven&apos;t added anything to your cart yet.
               <br />
               Browse our products and start shopping!
             </p>

@@ -1,4 +1,3 @@
-import React from "react";
 import { Carousel } from "primereact/carousel";
 import "primereact/resources/themes/saga-green/theme.css";
 import "primereact/resources/primereact.min.css";

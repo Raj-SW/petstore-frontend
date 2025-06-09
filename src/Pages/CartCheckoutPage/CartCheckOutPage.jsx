@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Container, Row, Col, Button, Form } from "react-bootstrap";
+import { useEffect, useState } from "react";
+import { Container, Row, Col, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { CartItem } from "../../Components/HelperComponents/CartItem/CartItem";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";

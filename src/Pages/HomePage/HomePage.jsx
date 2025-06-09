@@ -1,4 +1,3 @@
-import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import FeaturedProductSection from "./HomePageSections/FeaturedProductSection";
 import HeroSection from "./HomePageSections/HeroSection";

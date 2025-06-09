@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Breadcrumb from "@/Components/HelperComponents/Breadcrumb/Breadcrumb";
 import { Container, Row, Col, Form, Button, Alert, Nav } from "react-bootstrap";
 import {
@@ -346,569 +346,560 @@ const ExportImportForm = () => {
                     </Row>
                   )}
                   {step === 2 && (
-                    <>
-                      <Row className="g-3">
-                        <Col md={6}>
-                          <Form.Group>
-                            <Form.Label>Pet Name *</Form.Label>
-                            <Form.Control
-                              name="petName"
-                              value={form.petName || ""}
+                    <Row className="g-3">
+                      <Col md={6}>
+                        <Form.Group>
+                          <Form.Label>Pet Name *</Form.Label>
+                          <Form.Control
+                            name="petName"
+                            value={form.petName || ""}
+                            onChange={handleChange}
+                            required
+                          />
+                        </Form.Group>
+                      </Col>
+                      <Col md={6}>
+                        <Form.Group>
+                          <Form.Label>Pet Type *</Form.Label>
+                          <Form.Select
+                            name="petType"
+                            value={form.petType || ""}
+                            onChange={handleChange}
+                            required
+                          >
+                            <option value="">Select pet type</option>
+                            <option value="Dog">Dog</option>
+                            <option value="Cat">Cat</option>
+                            <option value="Bird">Bird</option>
+                            <option value="Other">Other</option>
+                          </Form.Select>
+                        </Form.Group>
+                      </Col>
+                      <Col md={6}>
+                        <Form.Group>
+                          <Form.Label>Breed *</Form.Label>
+                          <Form.Control
+                            name="breed"
+                            value={form.breed || ""}
+                            onChange={handleChange}
+                            required
+                          />
+                        </Form.Group>
+                      </Col>
+                      <Col md={6}>
+                        <Form.Group>
+                          <Form.Label>Age *</Form.Label>
+                          <Form.Control
+                            name="age"
+                            value={form.age || ""}
+                            onChange={handleChange}
+                            required
+                          />
+                        </Form.Group>
+                      </Col>
+                      <Col md={12}>
+                        <Form.Group>
+                          <Form.Label>Gender *</Form.Label>
+                          <div className="d-flex gap-4 mt-2">
+                            <Form.Check
+                              type="radio"
+                              label="Male"
+                              name="gender"
+                              id="gender-male"
+                              value="Male"
+                              checked={form.gender === "Male"}
                               onChange={handleChange}
                               required
                             />
-                          </Form.Group>
-                        </Col>
-                        <Col md={6}>
-                          <Form.Group>
-                            <Form.Label>Pet Type *</Form.Label>
-                            <Form.Select
-                              name="petType"
-                              value={form.petType || ""}
-                              onChange={handleChange}
-                              required
-                            >
-                              <option value="">Select pet type</option>
-                              <option value="Dog">Dog</option>
-                              <option value="Cat">Cat</option>
-                              <option value="Bird">Bird</option>
-                              <option value="Other">Other</option>
-                            </Form.Select>
-                          </Form.Group>
-                        </Col>
-                        <Col md={6}>
-                          <Form.Group>
-                            <Form.Label>Breed *</Form.Label>
-                            <Form.Control
-                              name="breed"
-                              value={form.breed || ""}
+                            <Form.Check
+                              type="radio"
+                              label="Female"
+                              name="gender"
+                              id="gender-female"
+                              value="Female"
+                              checked={form.gender === "Female"}
                               onChange={handleChange}
                               required
                             />
-                          </Form.Group>
-                        </Col>
-                        <Col md={6}>
-                          <Form.Group>
-                            <Form.Label>Age *</Form.Label>
-                            <Form.Control
-                              name="age"
-                              value={form.age || ""}
-                              onChange={handleChange}
-                              required
+                          </div>
+                        </Form.Group>
+                      </Col>
+                      <Col md={12}>
+                        <Form.Group className="mb-3">
+                          <div className="p-3 border rounded bg-dark-subtle">
+                            <Form.Check
+                              type="checkbox"
+                              label={
+                                <span>
+                                  <b>Is your pet microchipped?</b> *
+                                </span>
+                              }
+                              name="microchipped"
+                              id="microchipped"
+                              checked={!!form.microchipped}
+                              onChange={(e) =>
+                                setForm((f) => ({
+                                  ...f,
+                                  microchipped: e.target.checked,
+                                }))
+                              }
                             />
-                          </Form.Group>
-                        </Col>
-                        <Col md={12}>
-                          <Form.Group>
-                            <Form.Label>Gender *</Form.Label>
-                            <div className="d-flex gap-4 mt-2">
-                              <Form.Check
-                                type="radio"
-                                label="Male"
-                                name="gender"
-                                id="gender-male"
-                                value="Male"
-                                checked={form.gender === "Male"}
-                                onChange={handleChange}
-                                required
-                              />
-                              <Form.Check
-                                type="radio"
-                                label="Female"
-                                name="gender"
-                                id="gender-female"
-                                value="Female"
-                                checked={form.gender === "Female"}
-                                onChange={handleChange}
-                                required
-                              />
+                            <div className="text-secondary small ms-4 mt-1">
+                              Most countries require pets to be microchipped
+                              before import.
                             </div>
-                          </Form.Group>
-                        </Col>
-                        <Col md={12}>
-                          <Form.Group className="mb-3">
-                            <div className="p-3 border rounded bg-dark-subtle">
-                              <Form.Check
-                                type="checkbox"
-                                label={
-                                  <span>
-                                    <b>Is your pet microchipped?</b> *
-                                  </span>
-                                }
-                                name="microchipped"
-                                id="microchipped"
-                                checked={!!form.microchipped}
-                                onChange={(e) =>
-                                  setForm((f) => ({
-                                    ...f,
-                                    microchipped: e.target.checked,
-                                  }))
-                                }
-                              />
-                              <div className="text-secondary small ms-4 mt-1">
-                                Most countries require pets to be microchipped
-                                before import.
-                              </div>
-                            </div>
-                          </Form.Group>
-                        </Col>
-                        <Col md={12}>
-                          <Form.Group>
-                            <Form.Label>
-                              Microchip Number (if applicable)
-                            </Form.Label>
-                            <Form.Control
-                              name="microchipNumber"
-                              value={form.microchipNumber || ""}
-                              onChange={handleChange}
-                              placeholder="123456789012345"
-                            />
-                            <div className="text-secondary small mt-1">
-                              The microchip number is usually 15 digits long.
-                            </div>
-                          </Form.Group>
-                        </Col>
-                        <Col
-                          md={12}
-                          className="d-flex justify-content-between mt-3"
+                          </div>
+                        </Form.Group>
+                      </Col>
+                      <Col md={12}>
+                        <Form.Group>
+                          <Form.Label>
+                            Microchip Number (if applicable)
+                          </Form.Label>
+                          <Form.Control
+                            name="microchipNumber"
+                            value={form.microchipNumber || ""}
+                            onChange={handleChange}
+                            placeholder="123456789012345"
+                          />
+                          <div className="text-secondary small mt-1">
+                            The microchip number is usually 15 digits long.
+                          </div>
+                        </Form.Group>
+                      </Col>
+                      <Col
+                        md={12}
+                        className="d-flex justify-content-between mt-3"
+                      >
+                        <Button
+                          onClick={handlePrev}
+                          className="rounded-5 px-4 py-2"
+                          style={{
+                            backgroundColor: "var(--primary-blue-color)",
+                            borderColor: "var(--primary-blue-color)",
+                            color: "white",
+                            transition: "all 0.3s ease",
+                            boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                          }}
+                          onMouseOver={(e) => {
+                            e.currentTarget.style.transform =
+                              "translateY(-2px)";
+                            e.currentTarget.style.boxShadow =
+                              "0 4px 8px rgba(0,0,0,0.2)";
+                          }}
+                          onMouseOut={(e) => {
+                            e.currentTarget.style.transform = "translateY(0)";
+                            e.currentTarget.style.boxShadow =
+                              "0 2px 4px rgba(0,0,0,0.1)";
+                          }}
                         >
-                          <Button
-                            onClick={handlePrev}
-                            className="rounded-5 px-4 py-2"
-                            style={{
-                              backgroundColor: "var(--primary-blue-color)",
-                              borderColor: "var(--primary-blue-color)",
-                              color: "white",
-                              transition: "all 0.3s ease",
-                              boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-                            }}
-                            onMouseOver={(e) => {
-                              e.currentTarget.style.transform =
-                                "translateY(-2px)";
-                              e.currentTarget.style.boxShadow =
-                                "0 4px 8px rgba(0,0,0,0.2)";
-                            }}
-                            onMouseOut={(e) => {
-                              e.currentTarget.style.transform = "translateY(0)";
-                              e.currentTarget.style.boxShadow =
-                                "0 2px 4px rgba(0,0,0,0.1)";
-                            }}
-                          >
-                            <FaArrowLeft className="me-1" /> Previous
-                          </Button>
-                          <Button
-                            onClick={handleNext}
-                            className="rounded-5 px-4 py-2"
-                            style={{
-                              backgroundColor: "var(--primary-blue-color)",
-                              borderColor: "var(--primary-blue-color)",
-                              color: "white",
-                              transition: "all 0.3s ease",
-                              boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-                            }}
-                            onMouseOver={(e) => {
-                              e.currentTarget.style.transform =
-                                "translateY(-2px)";
-                              e.currentTarget.style.boxShadow =
-                                "0 4px 8px rgba(0,0,0,0.2)";
-                            }}
-                            onMouseOut={(e) => {
-                              e.currentTarget.style.transform = "translateY(0)";
-                              e.currentTarget.style.boxShadow =
-                                "0 2px 4px rgba(0,0,0,0.1)";
-                            }}
-                          >
-                            Next <FaArrowRight className="ms-1" />
-                          </Button>
-                        </Col>
-                      </Row>
-                    </>
+                          <FaArrowLeft className="me-1" /> Previous
+                        </Button>
+                        <Button
+                          onClick={handleNext}
+                          className="rounded-5 px-4 py-2"
+                          style={{
+                            backgroundColor: "var(--primary-blue-color)",
+                            borderColor: "var(--primary-blue-color)",
+                            color: "white",
+                            transition: "all 0.3s ease",
+                            boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                          }}
+                          onMouseOver={(e) => {
+                            e.currentTarget.style.transform =
+                              "translateY(-2px)";
+                            e.currentTarget.style.boxShadow =
+                              "0 4px 8px rgba(0,0,0,0.2)";
+                          }}
+                          onMouseOut={(e) => {
+                            e.currentTarget.style.transform = "translateY(0)";
+                            e.currentTarget.style.boxShadow =
+                              "0 2px 4px rgba(0,0,0,0.1)";
+                          }}
+                        >
+                          Next <FaArrowRight className="ms-1" />
+                        </Button>
+                      </Col>
+                    </Row>
                   )}
                   {step === 3 && (
-                    <>
-                      <Row className="g-3">
-                        <Col md={6}>
-                          <Form.Group>
-                            <Form.Label>Origin Country *</Form.Label>
-                            <Form.Select
-                              name="originCountry"
-                              value={form.originCountry || ""}
-                              onChange={handleChange}
-                              required
-                            >
-                              <option value="">Select country</option>
-                              <option value="USA">USA</option>
-                              <option value="Canada">Canada</option>
-                              <option value="UK">UK</option>
-                              <option value="Australia">Australia</option>
-                              <option value="Other">Other</option>
-                            </Form.Select>
-                            <div className="text-secondary small mt-1">
-                              The country your pet is coming from.
-                            </div>
-                          </Form.Group>
-                        </Col>
-                        <Col md={6}>
-                          <Form.Group>
-                            <Form.Label>Destination Country *</Form.Label>
-                            <Form.Select
-                              name="destinationCountry"
-                              value={form.destinationCountry || ""}
-                              onChange={handleChange}
-                              required
-                            >
-                              <option value="">Select country</option>
-                              <option value="USA">USA</option>
-                              <option value="Canada">Canada</option>
-                              <option value="UK">UK</option>
-                              <option value="Australia">Australia</option>
-                              <option value="Other">Other</option>
-                            </Form.Select>
-                            <div className="text-secondary small mt-1">
-                              The country your pet is traveling to.
-                            </div>
-                          </Form.Group>
-                        </Col>
-                        <Col md={12}>
-                          <Form.Group>
-                            <Form.Label>Estimated Arrival Date *</Form.Label>
-                            <Form.Control
-                              type="date"
-                              name="arrivalDate"
-                              value={form.arrivalDate || ""}
-                              onChange={handleChange}
-                              required
-                            />
-                            <div className="text-secondary small mt-1">
-                              Please select a date within the next 6 months.
-                            </div>
-                          </Form.Group>
-                        </Col>
-                        <Col md={12}>
-                          <Form.Group>
-                            <Form.Label>Transport Method *</Form.Label>
-                            <Form.Select
-                              name="transportMethod"
-                              value={form.transportMethod || ""}
-                              onChange={handleChange}
-                              required
-                            >
-                              <option value="">Select transport method</option>
-                              <option value="Air">Air</option>
-                              <option value="Sea">Sea</option>
-                              <option value="Land">Land</option>
-                              <option value="Other">Other</option>
-                            </Form.Select>
-                          </Form.Group>
-                        </Col>
-                        <Col md={12}>
-                          <Form.Group>
-                            <Form.Label>Purpose of Import *</Form.Label>
-                            <Form.Select
-                              name="importPurpose"
-                              value={form.importPurpose || ""}
-                              onChange={handleChange}
-                              required
-                            >
-                              <option value="">Select purpose</option>
-                              <option value="Personal">Personal</option>
-                              <option value="Breeding">Breeding</option>
-                              <option value="Show">Show</option>
-                              <option value="Relocation">Relocation</option>
-                              <option value="Other">Other</option>
-                            </Form.Select>
-                          </Form.Group>
-                        </Col>
-                        <Col
-                          md={12}
-                          className="d-flex justify-content-between mt-3"
+                    <Row className="g-3">
+                      <Col md={6}>
+                        <Form.Group>
+                          <Form.Label>Origin Country *</Form.Label>
+                          <Form.Select
+                            name="originCountry"
+                            value={form.originCountry || ""}
+                            onChange={handleChange}
+                            required
+                          >
+                            <option value="">Select country</option>
+                            <option value="USA">USA</option>
+                            <option value="Canada">Canada</option>
+                            <option value="UK">UK</option>
+                            <option value="Australia">Australia</option>
+                            <option value="Other">Other</option>
+                          </Form.Select>
+                          <div className="text-secondary small mt-1">
+                            The country your pet is coming from.
+                          </div>
+                        </Form.Group>
+                      </Col>
+                      <Col md={6}>
+                        <Form.Group>
+                          <Form.Label>Destination Country *</Form.Label>
+                          <Form.Select
+                            name="destinationCountry"
+                            value={form.destinationCountry || ""}
+                            onChange={handleChange}
+                            required
+                          >
+                            <option value="">Select country</option>
+                            <option value="USA">USA</option>
+                            <option value="Canada">Canada</option>
+                            <option value="UK">UK</option>
+                            <option value="Australia">Australia</option>
+                            <option value="Other">Other</option>
+                          </Form.Select>
+                          <div className="text-secondary small mt-1">
+                            The country your pet is traveling to.
+                          </div>
+                        </Form.Group>
+                      </Col>
+                      <Col md={12}>
+                        <Form.Group>
+                          <Form.Label>Estimated Arrival Date *</Form.Label>
+                          <Form.Control
+                            type="date"
+                            name="arrivalDate"
+                            value={form.arrivalDate || ""}
+                            onChange={handleChange}
+                            required
+                          />
+                          <div className="text-secondary small mt-1">
+                            Please select a date within the next 6 months.
+                          </div>
+                        </Form.Group>
+                      </Col>
+                      <Col md={12}>
+                        <Form.Group>
+                          <Form.Label>Transport Method *</Form.Label>
+                          <Form.Select
+                            name="transportMethod"
+                            value={form.transportMethod || ""}
+                            onChange={handleChange}
+                            required
+                          >
+                            <option value="">Select transport method</option>
+                            <option value="Air">Air</option>
+                            <option value="Sea">Sea</option>
+                            <option value="Land">Land</option>
+                            <option value="Other">Other</option>
+                          </Form.Select>
+                        </Form.Group>
+                      </Col>
+                      <Col md={12}>
+                        <Form.Group>
+                          <Form.Label>Purpose of Import *</Form.Label>
+                          <Form.Select
+                            name="importPurpose"
+                            value={form.importPurpose || ""}
+                            onChange={handleChange}
+                            required
+                          >
+                            <option value="">Select purpose</option>
+                            <option value="Personal">Personal</option>
+                            <option value="Breeding">Breeding</option>
+                            <option value="Show">Show</option>
+                            <option value="Relocation">Relocation</option>
+                            <option value="Other">Other</option>
+                          </Form.Select>
+                        </Form.Group>
+                      </Col>
+                      <Col
+                        md={12}
+                        className="d-flex justify-content-between mt-3"
+                      >
+                        <Button
+                          onClick={handlePrev}
+                          className="rounded-5 px-4 py-2"
+                          style={{
+                            backgroundColor: "var(--primary-blue-color)",
+                            borderColor: "var(--primary-blue-color)",
+                            color: "white",
+                            transition: "all 0.3s ease",
+                            boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                          }}
+                          onMouseOver={(e) => {
+                            e.currentTarget.style.transform =
+                              "translateY(-2px)";
+                            e.currentTarget.style.boxShadow =
+                              "0 4px 8px rgba(0,0,0,0.2)";
+                          }}
+                          onMouseOut={(e) => {
+                            e.currentTarget.style.transform = "translateY(0)";
+                            e.currentTarget.style.boxShadow =
+                              "0 2px 4px rgba(0,0,0,0.1)";
+                          }}
                         >
-                          <Button
-                            onClick={handlePrev}
-                            className="rounded-5 px-4 py-2"
-                            style={{
-                              backgroundColor: "var(--primary-blue-color)",
-                              borderColor: "var(--primary-blue-color)",
-                              color: "white",
-                              transition: "all 0.3s ease",
-                              boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-                            }}
-                            onMouseOver={(e) => {
-                              e.currentTarget.style.transform =
-                                "translateY(-2px)";
-                              e.currentTarget.style.boxShadow =
-                                "0 4px 8px rgba(0,0,0,0.2)";
-                            }}
-                            onMouseOut={(e) => {
-                              e.currentTarget.style.transform = "translateY(0)";
-                              e.currentTarget.style.boxShadow =
-                                "0 2px 4px rgba(0,0,0,0.1)";
-                            }}
-                          >
-                            <FaArrowLeft className="me-1" /> Previous
-                          </Button>
-                          <Button
-                            onClick={handleNext}
-                            className="rounded-5 px-4 py-2"
-                            style={{
-                              backgroundColor: "var(--primary-blue-color)",
-                              borderColor: "var(--primary-blue-color)",
-                              color: "white",
-                              transition: "all 0.3s ease",
-                              boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-                            }}
-                            onMouseOver={(e) => {
-                              e.currentTarget.style.transform =
-                                "translateY(-2px)";
-                              e.currentTarget.style.boxShadow =
-                                "0 4px 8px rgba(0,0,0,0.2)";
-                            }}
-                            onMouseOut={(e) => {
-                              e.currentTarget.style.transform = "translateY(0)";
-                              e.currentTarget.style.boxShadow =
-                                "0 2px 4px rgba(0,0,0,0.1)";
-                            }}
-                          >
-                            Next <FaArrowRight className="ms-1" />
-                          </Button>
-                        </Col>
-                      </Row>
-                    </>
+                          <FaArrowLeft className="me-1" /> Previous
+                        </Button>
+                        <Button
+                          onClick={handleNext}
+                          className="rounded-5 px-4 py-2"
+                          style={{
+                            backgroundColor: "var(--primary-blue-color)",
+                            borderColor: "var(--primary-blue-color)",
+                            color: "white",
+                            transition: "all 0.3s ease",
+                            boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                          }}
+                          onMouseOver={(e) => {
+                            e.currentTarget.style.transform =
+                              "translateY(-2px)";
+                            e.currentTarget.style.boxShadow =
+                              "0 4px 8px rgba(0,0,0,0.2)";
+                          }}
+                          onMouseOut={(e) => {
+                            e.currentTarget.style.transform = "translateY(0)";
+                            e.currentTarget.style.boxShadow =
+                              "0 2px 4px rgba(0,0,0,0.1)";
+                          }}
+                        >
+                          Next <FaArrowRight className="ms-1" />
+                        </Button>
+                      </Col>
+                    </Row>
                   )}
                   {step === 4 && (
-                    <>
-                      <Row className="g-3">
-                        <Col md={12}>
-                          <div className="p-3 border rounded mb-3 bg-white bg-opacity-10">
-                            <Form.Check
-                              type="checkbox"
-                              label={
-                                <span>
-                                  <b>Is your pet vaccinated against rabies?</b>
-                                </span>
-                              }
-                              name="rabiesVaccinated"
-                              id="rabiesVaccinated"
-                              checked={!!form.rabiesVaccinated}
-                              onChange={(e) =>
-                                setForm((f) => ({
-                                  ...f,
-                                  rabiesVaccinated: e.target.checked,
-                                }))
-                              }
-                            />
-                            <div className="text-secondary small ms-4 mt-1">
-                              Most countries require rabies vaccination at least
-                              21 days before travel.
-                            </div>
+                    <Row className="g-3">
+                      <Col md={12}>
+                        <div className="p-3 border rounded mb-3 bg-white bg-opacity-10">
+                          <Form.Check
+                            type="checkbox"
+                            label={
+                              <span>
+                                <b>Is your pet vaccinated against rabies?</b>
+                              </span>
+                            }
+                            name="rabiesVaccinated"
+                            id="rabiesVaccinated"
+                            checked={!!form.rabiesVaccinated}
+                            onChange={(e) =>
+                              setForm((f) => ({
+                                ...f,
+                                rabiesVaccinated: e.target.checked,
+                              }))
+                            }
+                          />
+                          <div className="text-secondary small ms-4 mt-1">
+                            Most countries require rabies vaccination at least
+                            21 days before travel.
                           </div>
-                        </Col>
-                        <Col md={12}>
-                          <div className="p-3 border rounded mb-3 bg-white bg-opacity-10">
-                            <Form.Check
-                              type="checkbox"
-                              label={
-                                <span>
-                                  <b>
-                                    Do you have a veterinary health certificate?
-                                  </b>
-                                </span>
-                              }
-                              name="healthCertificate"
-                              id="healthCertificate"
-                              checked={!!form.healthCertificate}
-                              onChange={(e) =>
-                                setForm((f) => ({
-                                  ...f,
-                                  healthCertificate: e.target.checked,
-                                }))
-                              }
-                            />
-                            <div className="text-secondary small ms-4 mt-1">
-                              This document must be issued within 10 days of
-                              travel.
-                            </div>
+                        </div>
+                      </Col>
+                      <Col md={12}>
+                        <div className="p-3 border rounded mb-3 bg-white bg-opacity-10">
+                          <Form.Check
+                            type="checkbox"
+                            label={
+                              <span>
+                                <b>
+                                  Do you have a veterinary health certificate?
+                                </b>
+                              </span>
+                            }
+                            name="healthCertificate"
+                            id="healthCertificate"
+                            checked={!!form.healthCertificate}
+                            onChange={(e) =>
+                              setForm((f) => ({
+                                ...f,
+                                healthCertificate: e.target.checked,
+                              }))
+                            }
+                          />
+                          <div className="text-secondary small ms-4 mt-1">
+                            This document must be issued within 10 days of
+                            travel.
                           </div>
-                        </Col>
-                        <Col md={12}>
-                          <div className="p-3 border rounded mb-3 bg-white bg-opacity-10">
-                            <Form.Check
-                              type="checkbox"
-                              label={
-                                <span>
-                                  <b>Does your pet have a pet passport?</b>
-                                </span>
-                              }
-                              name="petPassport"
-                              id="petPassport"
-                              checked={!!form.petPassport}
-                              onChange={(e) =>
-                                setForm((f) => ({
-                                  ...f,
-                                  petPassport: e.target.checked,
-                                }))
-                              }
-                            />
-                            <div className="text-secondary small ms-4 mt-1">
-                              Pet passports are accepted from certain countries.
-                            </div>
+                        </div>
+                      </Col>
+                      <Col md={12}>
+                        <div className="p-3 border rounded mb-3 bg-white bg-opacity-10">
+                          <Form.Check
+                            type="checkbox"
+                            label={
+                              <span>
+                                <b>Does your pet have a pet passport?</b>
+                              </span>
+                            }
+                            name="petPassport"
+                            id="petPassport"
+                            checked={!!form.petPassport}
+                            onChange={(e) =>
+                              setForm((f) => ({
+                                ...f,
+                                petPassport: e.target.checked,
+                              }))
+                            }
+                          />
+                          <div className="text-secondary small ms-4 mt-1">
+                            Pet passports are accepted from certain countries.
                           </div>
-                        </Col>
-                        <Col md={12}>
-                          <Form.Group>
-                            <Form.Label className="fw-bold">
-                              Additional Information
-                            </Form.Label>
-                            <Form.Control
-                              as="textarea"
-                              rows={3}
-                              name="additionalInfo"
-                              value={form.additionalInfo || ""}
-                              onChange={handleChange}
-                              placeholder="Please provide any additional information about your pet's health, special requirements, or other details that may be relevant."
-                            />
-                          </Form.Group>
-                        </Col>
-                        <Col md={12}>
-                          <div className="p-3 border rounded mb-3 bg-white bg-opacity-10">
-                            <Form.Check
-                              type="checkbox"
-                              label={
-                                <span>
-                                  <b>I agree to the terms and conditions *</b>
-                                </span>
-                              }
-                              name="agreeTerms"
-                              id="agreeTerms"
-                              checked={!!form.agreeTerms}
-                              onChange={(e) =>
-                                setForm((f) => ({
-                                  ...f,
-                                  agreeTerms: e.target.checked,
-                                }))
-                              }
-                              required
-                            />
-                            <div className="text-secondary small ms-4 mt-1">
-                              By checking this box, you agree to our{" "}
-                              <a
-                                href="/terms"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                              >
-                                Terms of Service
-                              </a>{" "}
-                              and{" "}
-                              <a
-                                href="/privacy"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                              >
-                                Privacy Policy
-                              </a>
-                              .
-                            </div>
+                        </div>
+                      </Col>
+                      <Col md={12}>
+                        <Form.Group>
+                          <Form.Label className="fw-bold">
+                            Additional Information
+                          </Form.Label>
+                          <Form.Control
+                            as="textarea"
+                            rows={3}
+                            name="additionalInfo"
+                            value={form.additionalInfo || ""}
+                            onChange={handleChange}
+                            placeholder="Please provide any additional information about your pet's health, special requirements, or other details that may be relevant."
+                          />
+                        </Form.Group>
+                      </Col>
+                      <Col md={12}>
+                        <div className="p-3 border rounded mb-3 bg-white bg-opacity-10">
+                          <Form.Check
+                            type="checkbox"
+                            label={
+                              <span>
+                                <b>I agree to the terms and conditions *</b>
+                              </span>
+                            }
+                            name="agreeTerms"
+                            id="agreeTerms"
+                            checked={!!form.agreeTerms}
+                            onChange={(e) =>
+                              setForm((f) => ({
+                                ...f,
+                                agreeTerms: e.target.checked,
+                              }))
+                            }
+                            required
+                          />
+                          <div className="text-secondary small ms-4 mt-1">
+                            By checking this box, you agree to our{" "}
+                            <a
+                              href="/terms"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              Terms of Service
+                            </a>{" "}
+                            and{" "}
+                            <a
+                              href="/privacy"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              Privacy Policy
+                            </a>
+                            .
                           </div>
-                        </Col>
-                        <Col md={12}>
-                          <Form.Group>
-                            <Form.Label className="fw-bold">
-                              Upload Health & Import Documents
-                            </Form.Label>
-                            <Form.Control
-                              type="file"
-                              name="uploadDocs"
-                              multiple
-                              onChange={(e) => {
-                                const files = Array.from(e.target.files);
-                                setForm((f) => ({ ...f, uploadDocs: files }));
-                              }}
-                            />
-                            {form.uploadDocs && form.uploadDocs.length > 0 && (
-                              <ul
-                                className="mt-2"
-                                style={{ listStyle: "none", paddingLeft: 0 }}
-                              >
-                                {form.uploadDocs.map((file, idx) => (
-                                  <li
-                                    key={idx}
-                                    className="d-flex align-items-center gap-2 mb-1"
+                        </div>
+                      </Col>
+                      <Col md={12}>
+                        <Form.Group>
+                          <Form.Label className="fw-bold">
+                            Upload Health & Import Documents
+                          </Form.Label>
+                          <Form.Control
+                            type="file"
+                            name="uploadDocs"
+                            multiple
+                            onChange={(e) => {
+                              const files = Array.from(e.target.files);
+                              setForm((f) => ({ ...f, uploadDocs: files }));
+                            }}
+                          />
+                          {form.uploadDocs && form.uploadDocs.length > 0 && (
+                            <ul
+                              className="mt-2"
+                              style={{ listStyle: "none", paddingLeft: 0 }}
+                            >
+                              {form.uploadDocs.map((file, idx) => (
+                                <li
+                                  key={idx}
+                                  className="d-flex align-items-center gap-2 mb-1"
+                                >
+                                  <span className="text-success">
+                                    {file.name}
+                                  </span>
+                                  <Button
+                                    size="sm"
+                                    variant="outline-danger"
+                                    className="rounded-5"
+                                    style={{
+                                      transition: "all 0.3s ease",
+                                      boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                                    }}
+                                    onMouseOver={(e) => {
+                                      e.currentTarget.style.transform =
+                                        "translateY(-2px)";
+                                      e.currentTarget.style.boxShadow =
+                                        "0 4px 8px rgba(0,0,0,0.2)";
+                                    }}
+                                    onMouseOut={(e) => {
+                                      e.currentTarget.style.transform =
+                                        "translateY(0)";
+                                      e.currentTarget.style.boxShadow =
+                                        "0 2px 4px rgba(0,0,0,0.1)";
+                                    }}
+                                    onClick={() => {
+                                      setForm((f) => ({
+                                        ...f,
+                                        uploadDocs: f.uploadDocs.filter(
+                                          (_, i) => i !== idx
+                                        ),
+                                      }));
+                                    }}
                                   >
-                                    <span className="text-success">
-                                      {file.name}
-                                    </span>
-                                    <Button
-                                      size="sm"
-                                      variant="outline-danger"
-                                      className="rounded-5"
-                                      style={{
-                                        transition: "all 0.3s ease",
-                                        boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-                                      }}
-                                      onMouseOver={(e) => {
-                                        e.currentTarget.style.transform =
-                                          "translateY(-2px)";
-                                        e.currentTarget.style.boxShadow =
-                                          "0 4px 8px rgba(0,0,0,0.2)";
-                                      }}
-                                      onMouseOut={(e) => {
-                                        e.currentTarget.style.transform =
-                                          "translateY(0)";
-                                        e.currentTarget.style.boxShadow =
-                                          "0 2px 4px rgba(0,0,0,0.1)";
-                                      }}
-                                      onClick={() => {
-                                        setForm((f) => ({
-                                          ...f,
-                                          uploadDocs: f.uploadDocs.filter(
-                                            (_, i) => i !== idx
-                                          ),
-                                        }));
-                                      }}
-                                    >
-                                      Remove
-                                    </Button>
-                                  </li>
-                                ))}
-                              </ul>
-                            )}
-                            <div className="text-secondary small mt-1">
-                              Upload health certificates, vaccination records,
-                              or other relevant documents (PDF, JPG, PNG).
-                            </div>
-                          </Form.Group>
-                        </Col>
-                        <Col
-                          md={12}
-                          className="d-flex justify-content-end mt-3"
+                                    Remove
+                                  </Button>
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                          <div className="text-secondary small mt-1">
+                            Upload health certificates, vaccination records, or
+                            other relevant documents (PDF, JPG, PNG).
+                          </div>
+                        </Form.Group>
+                      </Col>
+                      <Col md={12} className="d-flex justify-content-end mt-3">
+                        <Button
+                          type="submit"
+                          className="rounded-5 px-4 py-2"
+                          style={{
+                            backgroundColor: "var(--primary-blue-color)",
+                            borderColor: "var(--primary-blue-color)",
+                            color: "white",
+                            transition: "all 0.3s ease",
+                            boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                          }}
+                          onMouseOver={(e) => {
+                            e.currentTarget.style.transform =
+                              "translateY(-2px)";
+                            e.currentTarget.style.boxShadow =
+                              "0 4px 8px rgba(0,0,0,0.2)";
+                          }}
+                          onMouseOut={(e) => {
+                            e.currentTarget.style.transform = "translateY(0)";
+                            e.currentTarget.style.boxShadow =
+                              "0 2px 4px rgba(0,0,0,0.1)";
+                          }}
                         >
-                          <Button
-                            type="submit"
-                            className="rounded-5 px-4 py-2"
-                            style={{
-                              backgroundColor: "var(--primary-blue-color)",
-                              borderColor: "var(--primary-blue-color)",
-                              color: "white",
-                              transition: "all 0.3s ease",
-                              boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-                            }}
-                            onMouseOver={(e) => {
-                              e.currentTarget.style.transform =
-                                "translateY(-2px)";
-                              e.currentTarget.style.boxShadow =
-                                "0 4px 8px rgba(0,0,0,0.2)";
-                            }}
-                            onMouseOut={(e) => {
-                              e.currentTarget.style.transform = "translateY(0)";
-                              e.currentTarget.style.boxShadow =
-                                "0 2px 4px rgba(0,0,0,0.1)";
-                            }}
-                          >
-                            Submit Application
-                          </Button>
-                        </Col>
-                      </Row>
-                    </>
+                          Submit Application
+                        </Button>
+                      </Col>
+                    </Row>
                   )}
                 </Form>
               )}

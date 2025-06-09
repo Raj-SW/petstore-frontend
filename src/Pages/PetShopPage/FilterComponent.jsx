@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Container, Form, Row, Col, Button } from "react-bootstrap";
 import "./FilterComponent.css";
 

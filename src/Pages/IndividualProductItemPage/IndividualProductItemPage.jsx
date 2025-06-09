@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useCart } from "react-use-cart";
 import {
@@ -124,7 +124,9 @@ const IndividualProductItemPage = () => {
 
       addItem(itemToAdd);
     } catch (error) {
-      setError("Failed to add item to cart. Please try again.");
+      setError(
+        `Failed to add item to cart. Please try again. \n${error.message}`
+      );
     }
   };
 
@@ -148,7 +150,7 @@ const IndividualProductItemPage = () => {
       setReviewForm({ name: "", rating: 5, comment: "" });
       setShowReviewModal(false);
     } catch (error) {
-      setError("Failed to submit review. Please try again.");
+      setError(`Failed to submit review. Please try again. \n${error.message}`);
     } finally {
       setSubmittingReview(false);
     }
@@ -187,7 +189,8 @@ const IndividualProductItemPage = () => {
         <Alert variant="warning">
           <Alert.Heading>Product Not Found</Alert.Heading>
           <p>
-            The product you're looking for doesn't exist or has been removed.
+            The product you&apos;re looking for doesn&apos;t exist or has been
+            removed.
           </p>
           <Button variant="primary" onClick={() => navigate("/petshop")}>
             Return to Shop

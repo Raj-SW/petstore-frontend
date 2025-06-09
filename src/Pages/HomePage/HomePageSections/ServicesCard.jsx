@@ -1,5 +1,4 @@
-import React from "react";
-import { Container, Row, Col, Image } from "react-bootstrap";
+import { Container, Row, Col } from "react-bootstrap";
 import "./ServicesCard.css";
 import imgGrooming from "../../assets/ServicesCardAssets/serviceImg1.png";
 import imgVeterinary from "../../assets/ServicesCardAssets/serviceImg2.png";

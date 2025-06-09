@@ -1,4 +1,3 @@
-import React from "react";
 import { Button, Col, Image } from "react-bootstrap";
 import { FaTrash } from "react-icons/fa";
 import { BsPlus, BsDash } from "react-icons/bs";

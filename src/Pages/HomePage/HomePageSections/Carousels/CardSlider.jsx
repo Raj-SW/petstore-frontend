@@ -1,4 +1,3 @@
-import React from "react";
 import { Carousel, Card, Row } from "react-bootstrap";
 
 const CardSlider = () => {
@@ -13,7 +12,7 @@ const CardSlider = () => {
                 <Card.Title>Card Title 1</Card.Title>
                 <Card.Text>
                   Some quick example text to build on the card title and make up
-                  the bulk of the card's content.
+                  the bulk of the card&apos;s content.
                 </Card.Text>
               </Card.Body>
             </Card>
@@ -23,7 +22,7 @@ const CardSlider = () => {
                 <Card.Title>Card Title 1</Card.Title>
                 <Card.Text>
                   Some quick example text to build on the card title and make up
-                  the bulk of the card's content.
+                  the bulk of the card&apos;s content.
                 </Card.Text>
               </Card.Body>
             </Card>{" "}
@@ -33,7 +32,7 @@ const CardSlider = () => {
                 <Card.Title>Card Title 1</Card.Title>
                 <Card.Text>
                   Some quick example text to build on the card title and make up
-                  the bulk of the card's content.
+                  the bulk of the card&apos;s content.
                 </Card.Text>
               </Card.Body>
             </Card>
@@ -48,7 +47,7 @@ const CardSlider = () => {
                 <Card.Title>Card Title 2</Card.Title>
                 <Card.Text>
                   Some quick example text to build on the card title and make up
-                  the bulk of the card's content.
+                  the bulk of the card&apos;s content.
                 </Card.Text>
               </Card.Body>
             </Card>
@@ -58,7 +57,7 @@ const CardSlider = () => {
                 <Card.Title>Card Title 2</Card.Title>
                 <Card.Text>
                   Some quick example text to build on the card title and make up
-                  the bulk of the card's content.
+                  the bulk of the card&apos;s content.
                 </Card.Text>
               </Card.Body>
             </Card>{" "}
@@ -68,7 +67,7 @@ const CardSlider = () => {
                 <Card.Title>Card Title 1</Card.Title>
                 <Card.Text>
                   Some quick example text to build on the card title and make up
-                  the bulk of the card's content.
+                  the bulk of the card&apos;s content.
                 </Card.Text>
               </Card.Body>
             </Card>

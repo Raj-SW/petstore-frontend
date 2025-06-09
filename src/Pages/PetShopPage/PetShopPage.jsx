@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import "./PetShopPage.css";
-import { useParams, useSearchParams } from "react-router-dom";
-import { motion, useInView } from "framer-motion";
+import { useSearchParams } from "react-router-dom";
+import { motion } from "framer-motion";
 
 // Component Import
 import {

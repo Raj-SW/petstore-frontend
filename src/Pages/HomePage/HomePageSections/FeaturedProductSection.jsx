@@ -1,15 +1,12 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Row, Col, Container, Tab, Nav, Button } from "react-bootstrap";
-import AnchorButton from "../../../Components/HelperComponents/AnchorButton/AnchorButton";
 import ProductCard from "../../../Components/HelperComponents/ProductCard/ProductCard";
 import ProductService from "@/Services/localServices/ProductService";
-import { motion, AnimatePresence } from "framer-motion";
-import { FaArrowRight } from "react-icons/fa6";
+import { motion } from "framer-motion";
 
 //Assets Import
 import "./FeaturedProductSection.css";
-import bubblesImg from "../../../assets/Decoratives/bubbles.png";
 
 const FeaturedProductSection = () => {
   const [key, setKey] = useState("category1");
@@ -17,7 +14,6 @@ const FeaturedProductSection = () => {
   const [dogProducts, setDogProducts] = useState([]);
   const [fishProducts, setFishProducts] = useState([]);
   const [generalProducts, setGeneralProducts] = useState([]);
-  const [activeTab, setActiveTab] = useState("all");
 
   // Fetch featured products for each category
   useEffect(() => {

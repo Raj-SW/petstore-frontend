@@ -1,5 +1,5 @@
-import { Container, Accordion, Row, Col } from "react-bootstrap";
-import React, { useState, useRef, useEffect } from "react";
+import { Container, Accordion } from "react-bootstrap";
+import { useState, useRef, useEffect } from "react";
 import Navbar from "react-bootstrap/Navbar";
 import AddToCart from "./AddToCart";
 import { useCart } from "react-use-cart";
@@ -19,7 +19,6 @@ import {
   FaSignInAlt,
   FaStore,
   FaUsers,
-  FaPlane,
 } from "react-icons/fa";
 import pawsImg from "../../assets/NavigationBarAssets/Logo/paws.png";
 import pawsmobileImg from "../../assets/NavigationBarAssets/Logo/pawsMobile.png";
@@ -259,21 +258,18 @@ const NavigationBar = () => {
                 </Accordion.Header>
                 <Accordion.Body className="ps-4">
                   <a
-                    href="/appointments/vet"
+                    href="/appointments"
                     className="mobile-menu-link d-block mb-2"
                   >
                     Vet Appointment
                   </a>
                   <a
-                    href="/appointments/groomer"
+                    href="/appointments"
                     className="mobile-menu-link d-block mb-2"
                   >
                     Groomer Appointment
                   </a>
-                  <a
-                    href="/appointments/pet-taxi"
-                    className="mobile-menu-link d-block"
-                  >
+                  <a href="/appointments" className="mobile-menu-link d-block">
                     Pet Taxi
                   </a>
                 </Accordion.Body>

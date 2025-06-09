@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Modal, Form, Button, Row, Col } from "react-bootstrap";
 import { motion } from "framer-motion";
 import ProfessionalService from "@/Services/localServices/professionalService";

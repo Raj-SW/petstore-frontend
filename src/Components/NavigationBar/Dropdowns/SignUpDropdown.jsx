@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { IconContext } from "react-icons";
 import { RxAvatar } from "react-icons/rx";
-import { IoMdClose } from "react-icons/io";
 import LoginModal from "./LoginModal";
 import SignUpModal from "./SignUpModal";
 import "./SignUpDropdown.css";

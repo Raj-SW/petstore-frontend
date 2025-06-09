@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   Container,
@@ -10,13 +10,11 @@ import {
   Alert,
 } from "react-bootstrap";
 import { FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
-import { useAuth } from "../../context/AuthContext";
 import "./AuthModals.css";
 
 const ResetPassword = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { login } = useAuth();
 
   const [formData, setFormData] = useState({
     password: "",
@@ -106,7 +104,7 @@ const ResetPassword = () => {
     } catch (error) {
       setAlert({
         type: "danger",
-        message: "An error occurred. Please try again later.",
+        message: `An error occurred. Please try again later. \n${error.message}`,
       });
     } finally {
       setLoading(false);

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Container, Row, Col, Form, Button, Modal } from "react-bootstrap";
 import "./SubscribeSection.css";
 const SubscribeSection = () => {
@@ -14,7 +14,7 @@ const SubscribeSection = () => {
             {/* Left Text Column */}
             <Col md={6} className="mb-3 mb-md-0">
               <h4 className="subscribe-heading caveat-Heading fs-3">
-                Register Now So You Don't Miss Our Programs
+                Register Now So You Don&apos;t Miss Our Programs
               </h4>
             </Col>
 

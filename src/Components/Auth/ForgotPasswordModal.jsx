@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Modal, Button, Form, Alert } from "react-bootstrap";
 import { FaTimes, FaExclamationCircle, FaEnvelope } from "react-icons/fa";
-import { useAuth } from "../../context/AuthContext";
 import "./AuthModals.css";
 
 const ForgotPasswordModal = ({ show, onHide, onLoginClick }) => {
@@ -38,7 +37,7 @@ const ForgotPasswordModal = ({ show, onHide, onLoginClick }) => {
     } catch (error) {
       setAlert({
         type: "danger",
-        message: "An error occurred. Please try again later.",
+        message: `An error occurred. Please try again later. \n${error.message}`,
       });
     } finally {
       setLoading(false);

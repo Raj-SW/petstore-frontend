@@ -1,5 +1,4 @@
 import "./App.css";
-import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./styles/GlobalCustomStyle/GlobalCustomStyle.css";
 import { Outlet } from "react-router-dom";

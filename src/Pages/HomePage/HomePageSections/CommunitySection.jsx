@@ -1,5 +1,4 @@
-import React from "react";
-import { Container, Row, Col, Image } from "react-bootstrap";
+import { Container, Col } from "react-bootstrap";
 import { motion } from "framer-motion";
 import "./CommunitySection.css";
 import mobileThumbnailImg from "../../../assets/CommunityAssets/mobileThumbnail4.png";

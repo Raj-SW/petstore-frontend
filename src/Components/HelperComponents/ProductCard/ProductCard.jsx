@@ -1,6 +1,6 @@
-import React, { useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import PropTypes from "prop-types";
-import { Card, Button } from "react-bootstrap";
+import { Card } from "react-bootstrap";
 import { FaStar, FaShoppingBasket } from "react-icons/fa";
 import { useCart } from "react-use-cart";
 import { useNavigate } from "react-router-dom";
@@ -13,7 +13,6 @@ const ProductCard = ({ id, title, price, rating, imageUrl }) => {
   const navigate = useNavigate();
   const { showCartToast } = useToast();
   const [isAdding, setIsAdding] = useState(false);
-  const [clicked, setClicked] = useState(false);
 
   // Memoize the rating stars array
   const ratingStars = useMemo(() => Array(5).fill(null), []);
@@ -27,7 +26,6 @@ const ProductCard = ({ id, title, price, rating, imageUrl }) => {
     }
 
     setIsAdding(true);
-    setClicked(true);
 
     try {
       const itemToAdd = {
@@ -44,11 +42,10 @@ const ProductCard = ({ id, title, price, rating, imageUrl }) => {
       await addItem(itemToAdd);
       showCartToast("add", title);
     } catch (error) {
-      showCartToast("error", "Failed to add item to cart.");
+      showCartToast("error", "Failed to add item to cart. ");
     } finally {
       setTimeout(() => {
         setIsAdding(false);
-        setClicked(false);
       }, 500);
     }
   };

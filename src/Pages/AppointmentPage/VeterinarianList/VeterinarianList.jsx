@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Container, InputGroup, Form } from "react-bootstrap";
 import { FaSearch, FaUserMd } from "react-icons/fa";
 import { motion } from "framer-motion";
@@ -32,7 +32,7 @@ const VeterinarianList = () => {
       setVets(data);
       setError(null);
     } catch (err) {
-      setError("Failed to fetch veterinarians");
+      setError(`Failed to fetch veterinarians \n${err.message}`);
     } finally {
       setLoading(false);
     }

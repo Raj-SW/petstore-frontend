@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   Col,
   Container,
@@ -287,8 +287,8 @@ const UserProfile = () => {
                 ))}
                 {!pets.length && (
                   <div className="text-center text-muted py-4">
-                    No pets added yet. Click the "Add Pet" button to add your
-                    first pet.
+                    No pets added yet. Click the &quot;Add Pet&quot; button to
+                    add your first pet.
                   </div>
                 )}
               </Card.Body>

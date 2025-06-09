@@ -1,15 +1,15 @@
-export type AppointmentType = 'vet' | 'grooming';
-export type AppointmentStatus = 'Confirmed' | 'Pending' | 'Cancelled';
-export type AppointmentRole = 'Veterinarian' | 'Groomer';
+export type AppointmentType = "vet" | "grooming";
+export type AppointmentStatus = "Confirmed" | "Pending" | "Cancelled";
+export type AppointmentRole = "Veterinarian" | "Groomer";
 
 export interface Appointment {
   id: number;
   title: string;
   datetimeISO: string;
   description: string;
-  status: 'Confirmed' | 'Pending' | 'Cancelled';
-  type: 'vet' | 'grooming';
-  role: 'Veterinarian' | 'Groomer';
+  status: "Confirmed" | "Pending" | "Cancelled";
+  type: "vet" | "grooming";
+  role: "Veterinarian" | "Groomer";
   location: string;
   icon?: string;
   petName?: string;
@@ -21,7 +21,7 @@ export interface Appointment {
 
 export interface AppointmentFormData {
   title: string;
-  type: 'vet' | 'grooming';
+  type: "vet" | "grooming";
   datetime: Date;
   description: string;
   location: string;
@@ -68,4 +68,4 @@ export interface TimeSlot {
   endTime: string;
   isAvailable: boolean;
   appointmentId?: number;
-} 
+}

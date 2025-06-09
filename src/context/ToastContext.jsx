@@ -5,7 +5,6 @@ import {
   FaExclamationCircle,
   FaInfoCircle,
   FaShoppingCart,
-  FaSignInAlt,
   FaCreditCard,
   FaKey,
   FaBell,

@@ -1,4 +1,3 @@
-import React from "react";
 import { format, parseISO, isSameDay } from "date-fns";
 import { Card } from "react-bootstrap";
 import "./TimeSlotGrid.css";

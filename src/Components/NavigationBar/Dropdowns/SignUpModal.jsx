@@ -123,7 +123,7 @@ const SignUpModal = ({
     } catch (error) {
       setAlert({
         type: "error",
-        message: "An unexpected error occurred. Please try again.",
+        message: `An unexpected error occurred. Please try again. \n${error.message}`,
       });
     } finally {
       setLoading(false);
