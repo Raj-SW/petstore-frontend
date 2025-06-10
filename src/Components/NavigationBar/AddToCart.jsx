@@ -4,23 +4,18 @@ import "./AddToCart.css";
 import { FaCartShopping } from "react-icons/fa6";
 import { IconContext } from "react-icons";
 import { useToast } from "../../context/ToastContext";
+import { useCart } from "react-use-cart";
 import CartModal from "./CartModal";
 
-const AddToCart = ({
-  itemCount,
-  cartItems,
-  onIncreaseQuantity,
-  onDecreaseQuantity,
-  onRemoveItem,
-  currentItem,
-}) => {
+const AddToCart = ({ currentItem }) => {
   const [showCartModal, setShowCartModal] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
-  const prevItemCount = useRef(itemCount);
+  const { totalItems } = useCart();
+  const prevItemCount = useRef(totalItems);
   const { showCartToast } = useToast();
 
   useEffect(() => {
-    if (itemCount > prevItemCount.current && currentItem) {
+    if (totalItems > prevItemCount.current && currentItem) {
       setIsAnimating(true);
       showCartToast("add", currentItem.title);
       const timer = setTimeout(() => {
@@ -28,8 +23,8 @@ const AddToCart = ({
       }, 300); // Match this with the animation duration
       return () => clearTimeout(timer);
     }
-    prevItemCount.current = itemCount;
-  }, [itemCount, currentItem, showCartToast]);
+    prevItemCount.current = totalItems;
+  }, [totalItems, currentItem, showCartToast]);
 
   const handleCartClick = () => {
     setShowCartModal(true);
@@ -41,22 +36,15 @@ const AddToCart = ({
         {/* Set icon size here */}
         <div className="cartWrapper" onClick={handleCartClick}>
           <FaCartShopping className="cartIcon" />
-          {itemCount > 0 && (
+          {totalItems > 0 && (
             <div className={`cartBadge ${isAnimating ? "animate" : ""}`}>
-              {itemCount}
+              {totalItems}
             </div>
           )}
         </div>
       </IconContext.Provider>
 
-      <CartModal
-        show={showCartModal}
-        onHide={() => setShowCartModal(false)}
-        cartItems={cartItems}
-        onIncreaseQuantity={onIncreaseQuantity}
-        onDecreaseQuantity={onDecreaseQuantity}
-        onRemoveItem={onRemoveItem}
-      />
+      <CartModal show={showCartModal} onHide={() => setShowCartModal(false)} />
     </>
   );
 };

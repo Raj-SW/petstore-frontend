@@ -6,15 +6,10 @@ import { CartItem } from "../HelperComponents/CartItem/CartItem";
 import { BsCreditCard, BsArrowLeft } from "react-icons/bs";
 import "./CartModal.css";
 
-const CartModal = ({
-  show,
-  onHide,
-  onIncreaseQuantity,
-  onDecreaseQuantity,
-  onRemoveItem,
-}) => {
+const CartModal = ({ show, onHide }) => {
   const navigate = useNavigate();
-  const { items, cartTotal, totalItems } = useCart();
+  const { items, cartTotal, totalItems, updateItemQuantity, removeItem } =
+    useCart();
   const { showCartToast, showCheckoutToast } = useToast();
 
   const handleCheckout = () => {
@@ -33,8 +28,12 @@ const CartModal = ({
     const item = items.find((i) => i.id === itemId);
     if (item) {
       showCartToast("remove", item.title);
-      onRemoveItem(itemId);
+      removeItem(itemId);
     }
+  };
+
+  const handleQuantityChange = (itemId, newQuantity) => {
+    updateItemQuantity(itemId, newQuantity);
   };
 
   return (
@@ -85,8 +84,12 @@ const CartModal = ({
                         quantity: item.quantity || 1,
                         price: item.price,
                       }}
-                      onIncreaseQuantity={onIncreaseQuantity}
-                      onDecreaseQuantity={onDecreaseQuantity}
+                      onIncreaseQuantity={(id) =>
+                        handleQuantityChange(id, item.quantity + 1)
+                      }
+                      onDecreaseQuantity={(id) =>
+                        handleQuantityChange(id, item.quantity - 1)
+                      }
                       onRemoveItem={handleRemoveItem}
                     />
                   ))}

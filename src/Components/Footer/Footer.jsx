@@ -11,8 +11,8 @@ import appStoreImg from "../../assets/Decoratives/app-store.png";
 
 const Footer = () => {
   return (
-    <div className="footerWrapper">
-      <Container className="footerContainer d-flex flex-column">
+    <footer className="footerWrapper">
+      <Container className="footerContainer">
         <Row className="registerSection d-flex flex-row justify-content-around align-items-center p-4 mt-5 rounded-4 ml-1 mr-1">
           <h3 className="text-wrap text-white caveat-Heading subscribe-heading">
             Register Now So You Don&apos;t Miss Our Programs
@@ -103,7 +103,7 @@ const Footer = () => {
           </div>
         </Row>
       </Container>
-    </div>
+    </footer>
   );
 };
 
