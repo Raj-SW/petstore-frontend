@@ -119,10 +119,10 @@ const IndividualProductItemPage = () => {
         title: product.title?.trim() || "Untitled Product",
         price: parseFloat(product.price) || 0,
         image: product.images?.[0] || product.imageUrl || "",
-        quantity: quantity,
       };
 
-      addItem(itemToAdd);
+      // Add item with quantity as a separate parameter
+      addItem(itemToAdd, quantity);
     } catch (error) {
       setError(
         `Failed to add item to cart. Please try again. \n${error.message}`

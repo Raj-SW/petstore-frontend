@@ -81,7 +81,7 @@ const CartModal = ({ show, onHide }) => {
                         ...item,
                         name: item.title,
                         image: item.image,
-                        quantity: item.quantity || 1,
+                        quantity: item.quantity,
                         price: item.price,
                       }}
                       onIncreaseQuantity={(id) =>
