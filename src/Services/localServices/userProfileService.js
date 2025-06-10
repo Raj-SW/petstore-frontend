@@ -6,7 +6,7 @@ class UserProfileService {
   // User Profile Operations
   async getUserProfile() {
     try {
-      const response = await axios.get(`${API_URL}/user/profile`);
+      const response = await axios.get(`${API_URL}/users/me`);
       return response.data;
     } catch (error) {
       throw this.handleError(error);

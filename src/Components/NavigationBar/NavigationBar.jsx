@@ -89,7 +89,6 @@ const NavigationBar = () => {
         collapseOnSelect // Collapses on mobile when clicking outside
         expand="lg" // Expands on large screens
         className="sticky-top nav-bar" // Sticks to top while scrolling
-        //style={{ backgroundColor: "var(--secondary-color)" }}
         variant="dark" // This changes the hamburger menu color to white
       >
         <Container fluid>
@@ -151,7 +150,33 @@ const NavigationBar = () => {
 
           {/* Mobile Sign Up Button */}
           <div className="d-flex d-lg-none align-items-center">
-            <SignUpDropdown showLogin={showLogin} setShowLogin={setShowLogin} />
+            {user ? (
+              <Dropdown align="end" className="ms-3">
+                <Dropdown.Toggle
+                  variant="link"
+                  className="d-flex align-items-center text-white text-decoration-none p-0 border-0"
+                  style={{ boxShadow: "none", height: "100%" }}
+                >
+                  <div className="d-flex align-items-center">
+                    <FaUserCircle size={28} className="me-2" />
+                  </div>
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                  <Dropdown.Item href="/profile">
+                    <FaUser className="me-2" /> Profile
+                  </Dropdown.Item>
+                  <Dropdown.Divider />
+                  <Dropdown.Item onClick={logout} style={{ color: "#d32f2f" }}>
+                    <FaSignInAlt className="me-2" /> Log out
+                  </Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+            ) : (
+              <SignUpDropdown
+                showLogin={showLogin}
+                setShowLogin={setShowLogin}
+              />
+            )}{" "}
           </div>
 
           {/* Desktop Navigation Items */}
@@ -284,9 +309,11 @@ const NavigationBar = () => {
               <span className="ms-2 badge bg-secondary">Coming Soon</span>
             </div>
 
-            <a href="/profile" className="mobile-menu-link">
-              <FaUserCircle className="me-2" /> Profile
-            </a>
+            {user && (
+              <a href="/profile" className="mobile-menu-link">
+                <FaUserCircle className="me-2" /> Profile
+              </a>
+            )}
             <a href="/checkout" className="mobile-menu-link">
               <FaShoppingCart className="me-2" /> Cart ({totalItems})
             </a>
@@ -309,28 +336,24 @@ const NavigationBar = () => {
             <div className="mobile-menu-divider my-3"></div>
             <div className="mobile-menu-section-title mb-2">Account</div>
             <div className="mobile-menu-account d-flex gap-3 mb-3">
-              <a
-                href="/profile"
-                className="mobile-menu-account-link"
-                tabIndex={!user ? -1 : 0}
-                aria-disabled={!user}
-                style={!user ? { pointerEvents: "none", opacity: 0.5 } : {}}
-              >
-                <FaUserCircle className="me-1" /> Profile
-              </a>
               {user ? (
-                <a
-                  href="#"
-                  className="mobile-menu-account-link"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    logout();
-                    setMobileMenuOpen(false);
-                  }}
-                  style={{ color: "#d32f2f" }}
-                >
-                  <FaSignInAlt className="me-1" /> Logout
-                </a>
+                <>
+                  <a href="/profile" className="mobile-menu-account-link">
+                    <FaUserCircle className="me-1" /> Profile
+                  </a>
+                  <a
+                    href="#"
+                    className="mobile-menu-account-link"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      logout();
+                      setMobileMenuOpen(false);
+                    }}
+                    style={{ color: "#d32f2f" }}
+                  >
+                    <FaSignInAlt className="me-1" /> Logout
+                  </a>
+                </>
               ) : (
                 <a
                   href="#"
