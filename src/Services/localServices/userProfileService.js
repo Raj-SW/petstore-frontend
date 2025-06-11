@@ -15,7 +15,8 @@ class UserProfileService {
 
   async updateUserProfile(profileData) {
     try {
-      const response = await axios.put(`${API_URL}/user/profile`, profileData);
+      const response = await axios.put(`${API_URL}/users/me`, profileData);
+      console.log(response.data);
       return response.data;
     } catch (error) {
       throw this.handleError(error);
@@ -37,7 +38,7 @@ class UserProfileService {
   // Pet Operations
   async getUserPets() {
     try {
-      const response = await axios.get(`${API_URL}/user/pets`);
+      const response = await axios.get(`${API_URL}/pets`);
       return response.data;
     } catch (error) {
       throw this.handleError(error);
@@ -46,7 +47,7 @@ class UserProfileService {
 
   async addPet(petData) {
     try {
-      const response = await axios.post(`${API_URL}/user/pets`, petData);
+      const response = await axios.post(`${API_URL}/pets`, petData);
       return response.data;
     } catch (error) {
       throw this.handleError(error);
@@ -55,10 +56,7 @@ class UserProfileService {
 
   async updatePet(petId, petData) {
     try {
-      const response = await axios.put(
-        `${API_URL}/user/pets/${petId}`,
-        petData
-      );
+      const response = await axios.patch(`${API_URL}/pets/${petId}`, petData);
       return response.data;
     } catch (error) {
       throw this.handleError(error);
@@ -67,7 +65,16 @@ class UserProfileService {
 
   async deletePet(petId) {
     try {
-      const response = await axios.delete(`${API_URL}/user/pets/${petId}`);
+      const response = await axios.delete(`${API_URL}/pets/${petId}`);
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  async getPet(petId) {
+    try {
+      const response = await axios.get(`${API_URL}/pets/${petId}`);
       return response.data;
     } catch (error) {
       throw this.handleError(error);

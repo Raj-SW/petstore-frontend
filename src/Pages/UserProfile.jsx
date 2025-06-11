@@ -19,7 +19,7 @@ import "./UserProfile.css";
 const UserProfile = () => {
   // State for user details
   const [userDetails, setUserDetails] = useState({
-    name: "",
+    username: "",
     email: "",
     phone: "",
     address: "",
@@ -47,7 +47,6 @@ const UserProfile = () => {
     gender: "",
     color: "",
     description: "",
-    image: "https://placehold.co/150x150?text=Pet",
   });
 
   // State for password change
@@ -62,32 +61,58 @@ const UserProfile = () => {
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
-  // Fetch user details and pets
+  // Gender options
+  const genderOptions = ["male", "female", "other"];
+
+  // Pet type options
+  const petTypeOptions = ["Dog", "Cat", "Bird", "Fish", "Small Pets", "Other"];
+
+  // Separate fetch functions for better error handling and reusability
+  const fetchUserProfile = async () => {
+    try {
+      const profileData = await UserProfileService.getUserProfile();
+      setUserDetails(profileData.data);
+      console.log("profileData from user profile", profileData);
+    } catch (err) {
+      setError(`Failed to load profile: ${err.message}`);
+    }
+  };
+
+  const fetchUserPets = async () => {
+    try {
+      const petsData = await UserProfileService.getUserPets();
+      setPets(Array.isArray(petsData) ? petsData : []);
+    } catch (err) {
+      setError(`Failed to load pets: ${err.message}`);
+      setPets([]);
+    }
+  };
+
+  // Initial data fetch
   useEffect(() => {
-    const fetchData = async () => {
+    const initializeData = async () => {
       setIsLoading(true);
       setError("");
+
       try {
-        const [profileData, petsData] = await Promise.all([
-          UserProfileService.getUserProfile(),
-          UserProfileService.getUserPets(),
-        ]);
-        setUserDetails(profileData);
-        setPets(petsData);
-      } catch (err) {
-        setError(err.message);
+        // Fetch profile and pets in parallel
+        await Promise.all([fetchUserProfile(), fetchUserPets()]);
+      } catch (error) {
+        setError(`Failed to initialize data: ${error.message}`);
       } finally {
         setIsLoading(false);
       }
     };
-    fetchData();
+
+    initializeData();
   }, []);
 
-  // Handle pet form submission
+  // Optimize pet form submission
   const handlePetSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
+
     try {
       if (selectedPet) {
         // Update existing pet
@@ -95,16 +120,18 @@ const UserProfile = () => {
           selectedPet.id,
           petForm
         );
-        setPets(
-          pets.map((pet) => (pet.id === selectedPet.id ? updatedPet : pet))
+        setPets((prevPets) =>
+          prevPets.map((pet) => (pet.id === selectedPet.id ? updatedPet : pet))
         );
         setSuccessMessage("Pet updated successfully!");
       } else {
         // Add new pet
         const newPet = await UserProfileService.addPet(petForm);
-        setPets([...pets, newPet]);
+        setPets((prevPets) => [...prevPets, newPet]);
         setSuccessMessage("Pet added successfully!");
       }
+
+      // Reset form and close modal
       setShowPetModal(false);
       setPetForm({
         name: "",
@@ -114,7 +141,6 @@ const UserProfile = () => {
         gender: "",
         color: "",
         description: "",
-        image: "https://placehold.co/150x150?text=Pet",
       });
       setSelectedPet(null);
     } catch (err) {
@@ -164,21 +190,68 @@ const UserProfile = () => {
     }
   };
 
-  // Handle pet deletion
+  // Optimize pet deletion
   const handleDeletePet = async (petId) => {
-    if (window.confirm("Are you sure you want to delete this pet?")) {
-      setIsLoading(true);
-      setError("");
-      try {
-        await UserProfileService.deletePet(petId);
-        setPets(pets.filter((pet) => pet.id !== petId));
-        setSuccessMessage("Pet deleted successfully!");
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setIsLoading(false);
-      }
+    if (!window.confirm("Are you sure you want to delete this pet?")) {
+      return;
     }
+
+    setIsLoading(true);
+    setError("");
+
+    try {
+      await UserProfileService.deletePet(petId);
+      setPets((prevPets) => prevPets.filter((pet) => pet.id !== petId));
+      setSuccessMessage("Pet deleted successfully!");
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Memoize pet list rendering
+  const renderPetList = () => {
+    if (!pets || pets.length === 0) {
+      return (
+        <div className="text-center py-4">
+          <p className="text-muted mb-0">No pets added yet.</p>
+        </div>
+      );
+    }
+
+    return pets.map((pet) => (
+      <div key={pet.id} className="pet-card p-3">
+        <div className="d-flex align-items-center">
+          <div className="ms-3 flex-grow-1">
+            <h6 className="mb-1">{pet.name}</h6>
+            <small className="text-muted d-block">
+              {pet.breed} • {pet.age} years • {pet.type}
+            </small>
+          </div>
+          <div className="d-flex flex-column gap-2">
+            <Button
+              variant="outline-primary"
+              size="sm"
+              onClick={() => {
+                setSelectedPet(pet);
+                setPetForm(pet);
+                setShowPetModal(true);
+              }}
+            >
+              <FaPencilAlt />
+            </Button>
+            <Button
+              variant="outline-danger"
+              size="sm"
+              onClick={() => handleDeletePet(pet.id)}
+            >
+              <FaTrash />
+            </Button>
+          </div>
+        </div>
+      </div>
+    ));
   };
 
   // Clear messages after 3 seconds
@@ -247,51 +320,7 @@ const UserProfile = () => {
                   Add Pet
                 </Button>
               </Card.Header>
-              <Card.Body>
-                {pets.map((pet) => (
-                  <div key={pet.id} className="pet-card p-3">
-                    <div className="d-flex align-items-center">
-                      <Image
-                        src={pet.image}
-                        roundedCircle
-                        className="pet-image"
-                      />
-                      <div className="ms-3 flex-grow-1">
-                        <h6 className="mb-1">{pet.name}</h6>
-                        <small className="text-muted d-block">
-                          {pet.breed} • {pet.age} years
-                        </small>
-                      </div>
-                      <div className="d-flex flex-column gap-2">
-                        <Button
-                          variant="outline-primary"
-                          size="sm"
-                          onClick={() => {
-                            setSelectedPet(pet);
-                            setPetForm(pet);
-                            setShowPetModal(true);
-                          }}
-                        >
-                          <FaPencilAlt />
-                        </Button>
-                        <Button
-                          variant="outline-danger"
-                          size="sm"
-                          onClick={() => handleDeletePet(pet.id)}
-                        >
-                          <FaTrash />
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-                {!pets.length && (
-                  <div className="text-center text-muted py-4">
-                    No pets added yet. Click the &quot;Add Pet&quot; button to
-                    add your first pet.
-                  </div>
-                )}
-              </Card.Body>
+              <Card.Body>{renderPetList()}</Card.Body>
             </Card>
           </Col>
 
@@ -319,23 +348,19 @@ const UserProfile = () => {
                 <div className="profile-details">
                   <div className="mb-3">
                     <label className="text-muted small">Name</label>
-                    <div className="fw-medium">{userDetails.name}</div>
+                    <p className="fw-medium">{userDetails.name}</p>
                   </div>
                   <div className="mb-3">
                     <label className="text-muted small">Email</label>
-                    <div className="fw-medium">{userDetails.email}</div>
+                    <p className="fw-medium">{userDetails.email}</p>
                   </div>
                   <div className="mb-3">
                     <label className="text-muted small">Phone</label>
-                    <div className="fw-medium">{userDetails.phone}</div>
+                    <p className="fw-medium">{userDetails.phone}</p>
                   </div>
                   <div className="mb-3">
                     <label className="text-muted small">Address</label>
-                    <div className="fw-medium">
-                      {userDetails.address}
-                      <br />
-                      {userDetails.city}, {userDetails.state} {userDetails.zip}
-                    </div>
+                    <p className="fw-medium">{userDetails.address}</p>
                   </div>
                 </div>
               </Card.Body>
@@ -385,7 +410,7 @@ const UserProfile = () => {
               <Row>
                 <Col md={6}>
                   <Form.Group className="mb-3">
-                    <Form.Label>Pet Name</Form.Label>
+                    <Form.Label>Pet Name *</Form.Label>
                     <Form.Control
                       type="text"
                       value={petForm.name}
@@ -398,22 +423,28 @@ const UserProfile = () => {
                 </Col>
                 <Col md={6}>
                   <Form.Group className="mb-3">
-                    <Form.Label>Pet Type</Form.Label>
-                    <Form.Control
-                      type="text"
+                    <Form.Label>Pet Type *</Form.Label>
+                    <Form.Select
                       value={petForm.type}
                       onChange={(e) =>
                         setPetForm({ ...petForm, type: e.target.value })
                       }
                       required
-                    />
+                    >
+                      <option value="">Select pet type</option>
+                      {petTypeOptions.map((type) => (
+                        <option key={type} value={type}>
+                          {type}
+                        </option>
+                      ))}
+                    </Form.Select>
                   </Form.Group>
                 </Col>
               </Row>
               <Row>
                 <Col md={6}>
                   <Form.Group className="mb-3">
-                    <Form.Label>Breed</Form.Label>
+                    <Form.Label>Breed *</Form.Label>
                     <Form.Control
                       type="text"
                       value={petForm.breed}
@@ -426,9 +457,11 @@ const UserProfile = () => {
                 </Col>
                 <Col md={6}>
                   <Form.Group className="mb-3">
-                    <Form.Label>Age</Form.Label>
+                    <Form.Label>Age *</Form.Label>
                     <Form.Control
                       type="number"
+                      min="0"
+                      step="0.1"
                       value={petForm.age}
                       onChange={(e) =>
                         setPetForm({ ...petForm, age: e.target.value })
@@ -441,7 +474,7 @@ const UserProfile = () => {
               <Row>
                 <Col md={6}>
                   <Form.Group className="mb-3">
-                    <Form.Label>Gender</Form.Label>
+                    <Form.Label>Gender *</Form.Label>
                     <Form.Select
                       value={petForm.gender}
                       onChange={(e) =>
@@ -449,15 +482,18 @@ const UserProfile = () => {
                       }
                       required
                     >
-                      <option value="">Select Gender</option>
-                      <option value="Male">Male</option>
-                      <option value="Female">Female</option>
+                      <option value="">Select gender</option>
+                      {genderOptions.map((gender) => (
+                        <option key={gender} value={gender}>
+                          {gender.charAt(0).toUpperCase() + gender.slice(1)}
+                        </option>
+                      ))}
                     </Form.Select>
                   </Form.Group>
                 </Col>
                 <Col md={6}>
                   <Form.Group className="mb-3">
-                    <Form.Label>Color</Form.Label>
+                    <Form.Label>Color *</Form.Label>
                     <Form.Control
                       type="text"
                       value={petForm.color}
@@ -469,17 +505,21 @@ const UserProfile = () => {
                   </Form.Group>
                 </Col>
               </Row>
-              <Form.Group className="mb-3">
-                <Form.Label>Description</Form.Label>
-                <Form.Control
-                  as="textarea"
-                  rows={3}
-                  value={petForm.description}
-                  onChange={(e) =>
-                    setPetForm({ ...petForm, description: e.target.value })
-                  }
-                />
-              </Form.Group>
+              <Row>
+                <Col md={12}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Description</Form.Label>
+                    <Form.Control
+                      as="textarea"
+                      rows={3}
+                      value={petForm.description}
+                      onChange={(e) =>
+                        setPetForm({ ...petForm, description: e.target.value })
+                      }
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
               <div className="d-flex justify-content-end gap-2">
                 <Button
                   variant="secondary"
