@@ -5,10 +5,24 @@ export { default as Product } from "./entities/Product";
 export { default as Appointment } from "./entities/Appointment";
 export { default as Review } from "./entities/Review";
 
-// DTOs
+// Auth DTOs
 export {
   LoginDTO,
   SignupDTO,
   PasswordResetDTO,
   PasswordChangeDTO,
 } from "./dto/AuthDTO";
+
+// Product DTOs
+export {
+  ProductCreateDTO,
+  ProductUpdateDTO,
+  ProductFilterDTO,
+} from "./dto/ProductDTO";
+
+// Appointment DTOs
+export {
+  AppointmentCreateDTO,
+  AppointmentUpdateDTO,
+  AppointmentFilterDTO,
+} from "./dto/AppointmentDTO";
