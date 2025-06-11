@@ -15,8 +15,10 @@ class UserProfileService {
 
   async updateUserProfile(profileData) {
     try {
-      const response = await axios.put(`${API_URL}/users/me`, profileData);
-      console.log(response.data);
+      const response = await axios.patch(
+        `${API_URL}/users/update-profile`,
+        profileData
+      );
       return response.data;
     } catch (error) {
       throw this.handleError(error);

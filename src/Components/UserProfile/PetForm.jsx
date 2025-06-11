@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import { Modal, Form, Button } from "react-bootstrap";
+import { Modal, Form, Button, Spinner } from "react-bootstrap";
 import { Pet } from "../../models";
 
-const PetForm = ({ show, onHide, onSubmit, initialData = null, isLoading }) => {
+const PetForm = ({ show, onHide, onSubmit, initialData, isLoading }) => {
   const [formData, setFormData] = useState({
     name: "",
     type: "",
@@ -12,28 +12,42 @@ const PetForm = ({ show, onHide, onSubmit, initialData = null, isLoading }) => {
     color: "",
     description: "",
   });
-  const [errors, setErrors] = useState([]);
-
-  const genderOptions = ["male", "female", "other"];
-  const petTypeOptions = ["Dog", "Cat", "Bird", "Fish", "Small Pets", "Other"];
 
   useEffect(() => {
     if (initialData) {
-      setFormData(initialData);
+      setFormData({
+        name: initialData.name || "",
+        type: initialData.type || "",
+        breed: initialData.breed || "",
+        age: initialData.age || "",
+        gender: initialData.gender || "",
+        color: initialData.color || "",
+        description: initialData.description || "",
+      });
+    } else {
+      // Reset form when adding new pet
+      setFormData({
+        name: "",
+        type: "",
+        breed: "",
+        age: "",
+        gender: "",
+        color: "",
+        description: "",
+      });
     }
-  }, [initialData]);
+  }, [initialData, show]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const pet = new Pet(formData);
-    const { isValid, errors } = pet.validate();
 
-    if (!isValid) {
-      setErrors(errors);
-      return;
-    }
+    // Convert age to number
+    const petData = {
+      ...formData,
+      age: Number(formData.age),
+    };
 
-    onSubmit(pet);
+    onSubmit(petData);
   };
 
   const handleChange = (e) => {
@@ -49,20 +63,10 @@ const PetForm = ({ show, onHide, onSubmit, initialData = null, isLoading }) => {
       <Modal.Header closeButton>
         <Modal.Title>{initialData ? "Edit Pet" : "Add New Pet"}</Modal.Title>
       </Modal.Header>
-      <Form onSubmit={handleSubmit}>
-        <Modal.Body>
-          {errors.length > 0 && (
-            <div className="alert alert-danger">
-              {errors.map((error, index) => (
-                <p key={index} className="mb-0">
-                  {error}
-                </p>
-              ))}
-            </div>
-          )}
-
+      <Modal.Body>
+        <Form onSubmit={handleSubmit}>
           <Form.Group className="mb-3">
-            <Form.Label>Name</Form.Label>
+            <Form.Label>Pet Name *</Form.Label>
             <Form.Control
               type="text"
               name="name"
@@ -73,24 +77,25 @@ const PetForm = ({ show, onHide, onSubmit, initialData = null, isLoading }) => {
           </Form.Group>
 
           <Form.Group className="mb-3">
-            <Form.Label>Type</Form.Label>
+            <Form.Label>Pet Type *</Form.Label>
             <Form.Select
               name="type"
               value={formData.type}
               onChange={handleChange}
               required
             >
-              <option value="">Select Type</option>
-              {petTypeOptions.map((type) => (
-                <option key={type} value={type}>
-                  {type}
-                </option>
-              ))}
+              <option value="">Select pet type</option>
+              <option value="Dog">Dog</option>
+              <option value="Cat">Cat</option>
+              <option value="Bird">Bird</option>
+              <option value="Fish">Fish</option>
+              <option value="Small Pets">Small Pets</option>
+              <option value="Other">Other</option>
             </Form.Select>
           </Form.Group>
 
           <Form.Group className="mb-3">
-            <Form.Label>Breed</Form.Label>
+            <Form.Label>Breed *</Form.Label>
             <Form.Control
               type="text"
               name="breed"
@@ -101,7 +106,7 @@ const PetForm = ({ show, onHide, onSubmit, initialData = null, isLoading }) => {
           </Form.Group>
 
           <Form.Group className="mb-3">
-            <Form.Label>Age</Form.Label>
+            <Form.Label>Age *</Form.Label>
             <Form.Control
               type="number"
               name="age"
@@ -114,29 +119,28 @@ const PetForm = ({ show, onHide, onSubmit, initialData = null, isLoading }) => {
           </Form.Group>
 
           <Form.Group className="mb-3">
-            <Form.Label>Gender</Form.Label>
+            <Form.Label>Gender *</Form.Label>
             <Form.Select
               name="gender"
               value={formData.gender}
               onChange={handleChange}
               required
             >
-              <option value="">Select Gender</option>
-              {genderOptions.map((gender) => (
-                <option key={gender} value={gender}>
-                  {gender}
-                </option>
-              ))}
+              <option value="">Select gender</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="other">Other</option>
             </Form.Select>
           </Form.Group>
 
           <Form.Group className="mb-3">
-            <Form.Label>Color</Form.Label>
+            <Form.Label>Color *</Form.Label>
             <Form.Control
               type="text"
               name="color"
               value={formData.color}
               onChange={handleChange}
+              required
             />
           </Form.Group>
 
@@ -150,16 +154,33 @@ const PetForm = ({ show, onHide, onSubmit, initialData = null, isLoading }) => {
               rows={3}
             />
           </Form.Group>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={onHide}>
-            Cancel
-          </Button>
-          <Button variant="primary" type="submit" disabled={isLoading}>
-            {isLoading ? "Saving..." : initialData ? "Update" : "Add Pet"}
-          </Button>
-        </Modal.Footer>
-      </Form>
+
+          <div className="d-flex justify-content-end gap-2">
+            <Button variant="secondary" onClick={onHide}>
+              Cancel
+            </Button>
+            <Button variant="primary" type="submit" disabled={isLoading}>
+              {isLoading ? (
+                <>
+                  <Spinner
+                    as="span"
+                    animation="border"
+                    size="sm"
+                    role="status"
+                    aria-hidden="true"
+                    className="me-2"
+                  />
+                  Saving...
+                </>
+              ) : initialData ? (
+                "Save Changes"
+              ) : (
+                "Add Pet"
+              )}
+            </Button>
+          </div>
+        </Form>
+      </Modal.Body>
     </Modal>
   );
 };

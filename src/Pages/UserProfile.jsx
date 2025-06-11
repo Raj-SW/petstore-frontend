@@ -79,26 +79,28 @@ const UserProfile = () => {
 
     try {
       if (selectedPet) {
+        // Update existing pet
         const updatedPet = await UserProfileService.updatePet(
           selectedPet.id,
           petData
         );
         setPets((prevPets) =>
           prevPets.map((pet) =>
-            pet.id === selectedPet.id ? new Pet(updatedPet) : pet
+            pet.id === selectedPet.id ? new Pet(updatedPet.data) : pet
           )
         );
         setSuccessMessage("Pet updated successfully!");
       } else {
+        // Add new pet
         const newPet = await UserProfileService.addPet(petData);
-        setPets((prevPets) => [...prevPets, new Pet(newPet)]);
+        setPets((prevPets) => [...prevPets, new Pet(newPet.data)]);
         setSuccessMessage("Pet added successfully!");
       }
 
       setShowPetModal(false);
       setSelectedPet(null);
     } catch (err) {
-      setError(err.message);
+      setError(err.message || "Failed to save pet");
     } finally {
       setIsLoading(false);
     }
@@ -109,17 +111,23 @@ const UserProfile = () => {
     setIsLoading(true);
     setError("");
     try {
-      const updatedProfile = await UserProfileService.updateUserProfile({
+      // Only send the fields that can be updated
+      const updateData = {
         name: profileData.name,
         email: profileData.email,
         phoneNumber: profileData.phoneNumber,
         address: profileData.address,
-      });
-      setUserDetails(new User(updatedProfile.data));
+      };
+
+      // Send the update request
+      const response = await UserProfileService.updateUserProfile(updateData);
+
+      // Update the state with the response data
+      setUserDetails(new User(response.data));
       setShowProfileModal(false);
       setSuccessMessage("Profile updated successfully!");
     } catch (err) {
-      setError(err.message);
+      setError(err.message || "Failed to update profile");
     } finally {
       setIsLoading(false);
     }

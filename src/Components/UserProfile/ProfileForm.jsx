@@ -1,26 +1,36 @@
-import { Modal, Form, Button } from "react-bootstrap";
-import { User } from "../../models";
+import { useState, useEffect } from "react";
+import { Modal, Form, Button, Spinner } from "react-bootstrap";
 
 const ProfileForm = ({ show, onHide, onSubmit, initialData, isLoading }) => {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phoneNumber: "",
+    address: "",
+  });
+
+  useEffect(() => {
+    if (initialData) {
+      setFormData({
+        name: initialData.name || "",
+        email: initialData.email || "",
+        phoneNumber: initialData.phoneNumber || "",
+        address: initialData.address || "",
+      });
+    }
+  }, [initialData]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    const formData = new FormData(e.target);
-    const userData = {
-      name: formData.get("name"),
-      email: formData.get("email"),
-      phoneNumber: formData.get("phoneNumber"),
-      address: formData.get("address"),
-    };
+    onSubmit(formData);
+  };
 
-    const user = new User(userData);
-    const { isValid, errors } = user.validate();
-
-    if (!isValid) {
-      // Handle validation errors
-      return;
-    }
-
-    onSubmit(userData);
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   return (
@@ -28,14 +38,15 @@ const ProfileForm = ({ show, onHide, onSubmit, initialData, isLoading }) => {
       <Modal.Header closeButton>
         <Modal.Title>Edit Profile</Modal.Title>
       </Modal.Header>
-      <Form onSubmit={handleSubmit}>
-        <Modal.Body>
+      <Modal.Body>
+        <Form onSubmit={handleSubmit}>
           <Form.Group className="mb-3">
-            <Form.Label>Username</Form.Label>
+            <Form.Label>Name</Form.Label>
             <Form.Control
               type="text"
               name="name"
-              defaultValue={initialData?.name}
+              value={formData.name}
+              onChange={handleChange}
               required
             />
           </Form.Group>
@@ -45,7 +56,8 @@ const ProfileForm = ({ show, onHide, onSubmit, initialData, isLoading }) => {
             <Form.Control
               type="email"
               name="email"
-              defaultValue={initialData?.email}
+              value={formData.email}
+              onChange={handleChange}
               required
             />
           </Form.Group>
@@ -55,7 +67,9 @@ const ProfileForm = ({ show, onHide, onSubmit, initialData, isLoading }) => {
             <Form.Control
               type="tel"
               name="phoneNumber"
-              defaultValue={initialData?.phoneNumber}
+              value={formData.phoneNumber}
+              onChange={handleChange}
+              required
             />
           </Form.Group>
 
@@ -64,19 +78,36 @@ const ProfileForm = ({ show, onHide, onSubmit, initialData, isLoading }) => {
             <Form.Control
               type="text"
               name="address"
-              defaultValue={initialData?.address}
+              value={formData.address}
+              onChange={handleChange}
+              required
             />
           </Form.Group>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={onHide}>
-            Cancel
-          </Button>
-          <Button variant="primary" type="submit" disabled={isLoading}>
-            {isLoading ? "Saving..." : "Save Changes"}
-          </Button>
-        </Modal.Footer>
-      </Form>
+
+          <div className="d-flex justify-content-end gap-2">
+            <Button variant="secondary" onClick={onHide}>
+              Cancel
+            </Button>
+            <Button variant="primary" type="submit" disabled={isLoading}>
+              {isLoading ? (
+                <>
+                  <Spinner
+                    as="span"
+                    animation="border"
+                    size="sm"
+                    role="status"
+                    aria-hidden="true"
+                    className="me-2"
+                  />
+                  Saving...
+                </>
+              ) : (
+                "Save Changes"
+              )}
+            </Button>
+          </div>
+        </Form>
+      </Modal.Body>
     </Modal>
   );
 };
