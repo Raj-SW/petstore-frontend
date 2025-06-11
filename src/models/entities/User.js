@@ -1,56 +1,56 @@
 class User {
   constructor(data = {}) {
-    this.id = data.id || data._id || null;
-    this.username = data.username || "";
+    this.id = data._id || "";
+    this.name = data.name || "";
     this.email = data.email || "";
-    this.firstName = data.firstName || "";
-    this.lastName = data.lastName || "";
-    this.role = data.role || "user";
-    this.isActive = data.isActive ?? true;
+    this.phoneNumber = data.phoneNumber || "";
+    this.address = data.address || "";
+    this.role = data.role || "customer";
+    this.isEmailVerified = data.isEmailVerified || false;
     this.createdAt = data.createdAt ? new Date(data.createdAt) : new Date();
     this.updatedAt = data.updatedAt ? new Date(data.updatedAt) : new Date();
   }
 
-  get fullName() {
-    return `${this.firstName} ${this.lastName}`.trim();
-  }
-
   toJSON() {
     return {
-      id: this.id,
-      username: this.username,
+      _id: this.id,
+      name: this.name,
       email: this.email,
-      firstName: this.firstName,
-      lastName: this.lastName,
+      phoneNumber: this.phoneNumber,
+      address: this.address,
       role: this.role,
-      isActive: this.isActive,
-      createdAt: this.createdAt,
-      updatedAt: this.updatedAt,
+      isEmailVerified: this.isEmailVerified,
+      createdAt: this.createdAt.toISOString(),
+      updatedAt: this.updatedAt.toISOString(),
     };
-  }
-
-  static fromJSON(json) {
-    return new User(json);
   }
 
   validate() {
     const errors = [];
 
-    if (!this.email) errors.push("Email is required");
-    if (!this.username) errors.push("Username is required");
+    if (!this.name) {
+      errors.push("Name is required");
+    }
 
-    if (this.email && !this.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+    if (!this.email) {
+      errors.push("Email is required");
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.email)) {
       errors.push("Invalid email format");
     }
 
-    if (this.username && this.username.length < 3) {
-      errors.push("Username must be at least 3 characters long");
+    if (!this.phoneNumber) {
+      errors.push("Phone number is required");
     }
 
-    return {
-      isValid: errors.length === 0,
-      errors,
-    };
+    if (!this.address) {
+      errors.push("Address is required");
+    }
+
+    return errors;
+  }
+
+  static fromJSON(json) {
+    return new User(json);
   }
 }
 
