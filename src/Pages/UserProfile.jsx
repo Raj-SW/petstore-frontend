@@ -21,7 +21,7 @@ const UserProfile = () => {
   const [userDetails, setUserDetails] = useState({
     username: "",
     email: "",
-    phone: "",
+    phoneNumber: "",
     address: "",
     city: "",
     state: "",
@@ -356,7 +356,7 @@ const UserProfile = () => {
                   </div>
                   <div className="mb-3">
                     <label className="text-muted small">Phone</label>
-                    <p className="fw-medium">{userDetails.phone}</p>
+                    <p className="fw-medium">{userDetails.phoneNumber}</p>
                   </div>
                   <div className="mb-3">
                     <label className="text-muted small">Address</label>
@@ -576,9 +576,12 @@ const UserProfile = () => {
                 <Form.Label>Phone</Form.Label>
                 <Form.Control
                   type="tel"
-                  value={userDetails.phone}
+                  value={userDetails.phoneNumber}
                   onChange={(e) =>
-                    setUserDetails({ ...userDetails, phone: e.target.value })
+                    setUserDetails({
+                      ...userDetails,
+                      phoneNumber: e.target.value,
+                    })
                   }
                   required
                 />
@@ -594,50 +597,7 @@ const UserProfile = () => {
                   required
                 />
               </Form.Group>
-              <Row>
-                <Col>
-                  <Form.Group className="mb-3">
-                    <Form.Label>City</Form.Label>
-                    <Form.Control
-                      type="text"
-                      value={userDetails.city}
-                      onChange={(e) =>
-                        setUserDetails({ ...userDetails, city: e.target.value })
-                      }
-                      required
-                    />
-                  </Form.Group>
-                </Col>
-                <Col>
-                  <Form.Group className="mb-3">
-                    <Form.Label>State</Form.Label>
-                    <Form.Control
-                      type="text"
-                      value={userDetails.state}
-                      onChange={(e) =>
-                        setUserDetails({
-                          ...userDetails,
-                          state: e.target.value,
-                        })
-                      }
-                      required
-                    />
-                  </Form.Group>
-                </Col>
-                <Col>
-                  <Form.Group className="mb-3">
-                    <Form.Label>ZIP</Form.Label>
-                    <Form.Control
-                      type="text"
-                      value={userDetails.zip}
-                      onChange={(e) =>
-                        setUserDetails({ ...userDetails, zip: e.target.value })
-                      }
-                      required
-                    />
-                  </Form.Group>
-                </Col>
-              </Row>
+
               <div className="d-flex justify-content-end gap-2">
                 <Button
                   variant="secondary"

@@ -20,6 +20,8 @@ import {
   FaExclamationCircle,
   FaUserPlus,
   FaTimes,
+  FaPhone,
+  FaMapMarkerAlt,
 } from "react-icons/fa";
 import { IconContext } from "react-icons";
 import brandLogoV2 from "../../../assets/Decoratives/BrandV2.png";
@@ -43,6 +45,8 @@ const SignUpModal = ({
     email: "",
     password: "",
     confirmPassword: "",
+    phoneNumber: "",
+    address: "",
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
@@ -59,6 +63,14 @@ const SignUpModal = ({
       newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = "Please enter a valid email address";
+    }
+    if (!formData.phoneNumber) {
+      newErrors.phoneNumber = "Phone number is required";
+    } else if (!/^\+?[\d\s-]{8,}$/.test(formData.phoneNumber)) {
+      newErrors.phoneNumber = "Please enter a valid phone number";
+    }
+    if (!formData.address.trim()) {
+      newErrors.address = "Address is required";
     }
     if (!formData.password) {
       newErrors.password = "Password is required";
@@ -109,6 +121,8 @@ const SignUpModal = ({
         name: formData.name,
         email: formData.email,
         password: formData.password,
+        phoneNumber: formData.phoneNumber,
+        address: formData.address,
       });
 
       if (result.success) {
@@ -253,6 +267,44 @@ const SignUpModal = ({
                 />
                 <Form.Control.Feedback type="invalid">
                   {errors.email}
+                </Form.Control.Feedback>
+              </InputGroup>
+
+              <InputGroup className="mb-3">
+                <InputGroup.Text className="bg-white rounded-start-4 secondary-color-font">
+                  <FaPhone />
+                </InputGroup.Text>
+                <Form.Control
+                  name="phoneNumber"
+                  type="tel"
+                  placeholder="Phone Number"
+                  className="border-start-0 rounded-end-4 outlined-input"
+                  required
+                  value={formData.phoneNumber}
+                  onChange={handleInputChange}
+                  isInvalid={!!errors.phone}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.phone}
+                </Form.Control.Feedback>
+              </InputGroup>
+
+              <InputGroup className="mb-3">
+                <InputGroup.Text className="bg-white rounded-start-4 secondary-color-font">
+                  <FaMapMarkerAlt />
+                </InputGroup.Text>
+                <Form.Control
+                  name="address"
+                  type="text"
+                  placeholder="Address"
+                  className="border-start-0 rounded-end-4 outlined-input"
+                  required
+                  value={formData.address}
+                  onChange={handleInputChange}
+                  isInvalid={!!errors.address}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.address}
                 </Form.Control.Feedback>
               </InputGroup>
 
