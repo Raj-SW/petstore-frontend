@@ -162,8 +162,12 @@ const AppointmentForm = ({ show, handleClose, onSubmit, initialData }) => {
                     isInvalid={!!errors.type}
                     required
                   >
-                    <option value={APPOINTMENT_TYPES.VET}>Veterinarian</option>
-                    <option value={APPOINTMENT_TYPES.GROOMING}>Grooming</option>
+                    <option key="vet" value={APPOINTMENT_TYPES.VET}>
+                      Veterinarian
+                    </option>
+                    <option key="grooming" value={APPOINTMENT_TYPES.GROOMING}>
+                      Grooming
+                    </option>
                   </Form.Select>
                   <Form.Control.Feedback type="invalid">
                     {errors.type}

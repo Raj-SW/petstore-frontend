@@ -109,7 +109,7 @@ const AppointmentCard = ({
             transition={{ delay: 0.3 }}
           >
             <FaMapMarkerAlt className="location-icon" />
-            {location}
+            <span>{location}</span>
           </motion.div>
         )}
 

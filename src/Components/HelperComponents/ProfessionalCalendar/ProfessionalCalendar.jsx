@@ -31,7 +31,7 @@ const ProfessionalCalendar = ({ onBack, professional }) => {
     try {
       setLoading(true);
       const data = await AppointmentService.getByProfessionalId(
-        professional.id
+        professional._id
       );
       setCalendarEvents(data);
       setError(null);

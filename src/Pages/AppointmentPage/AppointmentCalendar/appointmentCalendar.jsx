@@ -47,9 +47,11 @@ const AppointmentCalendar = () => {
       let appointments;
 
       if (filter === "all") {
-        appointments = await AppointmentService.getAll();
+        appointments = await AppointmentService.getAllMyAppointments();
+        console.log(appointments);
       } else {
         appointments = await AppointmentService.getByType(filter);
+        console.log(appointments);
       }
 
       const formattedEvents = appointments.map((appointment) => ({

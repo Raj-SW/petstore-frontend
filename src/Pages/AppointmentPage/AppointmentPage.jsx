@@ -8,7 +8,7 @@ import VeterinarianList from "./VeterinarianList/VeterinarianList";
 import GroomerList from "./GroomerList/GroomerList";
 
 const AppointmentPage = () => {
-  const [key, setKey] = useState("dashboard");
+  const [key, setKey] = useState("vet");
 
   const breadcrumbItems = [
     { label: "Home", path: "/" },

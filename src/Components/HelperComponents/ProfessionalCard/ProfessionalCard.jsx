@@ -9,7 +9,6 @@ const ProfessionalCard = ({
   qualifications = [],
   experience,
   rating,
-  reviews,
   image,
   phone,
   email,
@@ -69,10 +68,6 @@ const ProfessionalCard = ({
               />
             ))}
           </div>
-          <span className="rating-text">
-            {rating?.toFixed(1)}
-            {reviews !== undefined ? ` (${reviews} reviews)` : ""}
-          </span>
         </div>
         <div className="professional-contact">
           {phone && (

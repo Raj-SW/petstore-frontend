@@ -36,8 +36,10 @@ class AppointmentService {
   }
 
   // Get all appointments
-  static async getAll() {
-    const response = await this.handleRequest(`${this.API_URL}/appointments`);
+  static async getAllMyAppointments() {
+    const response = await this.handleRequest(
+      `${this.API_URL}/appointments/my-appointments`
+    );
     return response.data.data;
   }
 
@@ -94,7 +96,7 @@ class AppointmentService {
   }
 
   // Get appointments by type
-  static async getByType(type) {
+  static async getAllMyAppointmentsByType(type) {
     const response = await this.handleRequest(
       `${this.API_URL}/appointments/type/${type}`
     );

@@ -119,7 +119,7 @@ const GroomerList = () => {
         <Container className="groomer-list d-flex flex-wrap justify-content-center gap-4">
           {paginatedGroomers.map((groomer) => (
             <div
-              key={groomer.id}
+              key={groomer._id}
               className="mb-4 d-flex justify-content-center"
             >
               <ProfessionalCard
@@ -129,7 +129,6 @@ const GroomerList = () => {
                 qualifications={groomer.qualifications || []}
                 experience={groomer.experience}
                 rating={groomer.rating}
-                reviews={groomer.reviews}
                 image={groomer.image}
                 phone={groomer.phone}
                 email={groomer.email}
