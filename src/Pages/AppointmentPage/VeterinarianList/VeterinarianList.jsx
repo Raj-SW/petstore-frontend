@@ -114,6 +114,11 @@ const VeterinarianList = () => {
           </InputGroup>
         </div>
         <Container className="veterinarian-list d-flex flex-wrap justify-content-center gap-4">
+          {(paginatedVets.length === 0 || paginatedVets == undefined) && (
+            <div className="text-center">
+              <p>No veterinarians found</p>
+            </div>
+          )}
           {paginatedVets.map((vet) => (
             <div key={vet._id} className="mb-4 d-flex justify-content-center">
               <ProfessionalCard

@@ -117,6 +117,12 @@ const GroomerList = () => {
         </div>
 
         <Container className="groomer-list d-flex flex-wrap justify-content-center gap-4">
+          {(paginatedGroomers.length === 0 ||
+            paginatedGroomers == undefined) && (
+            <div className="text-center">
+              <p>No groomers found</p>
+            </div>
+          )}
           {paginatedGroomers.map((groomer) => (
             <div
               key={groomer._id}

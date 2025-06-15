@@ -33,6 +33,7 @@ const ProfessionalCalendar = ({ onBack, professional }) => {
       const data = await AppointmentService.getByProfessionalId(
         professional._id
       );
+      console.log("Data: ", data);
       setCalendarEvents(data);
       setError(null);
     } catch (err) {
@@ -69,8 +70,7 @@ const ProfessionalCalendar = ({ onBack, professional }) => {
       setCalendarEvents((prev) =>
         prev.filter((appt) => appt.id !== appointmentId)
       );
-    } catch (err) {
-    }
+    } catch (err) {}
   };
 
   const handleAppointmentSubmit = async (appointmentData) => {

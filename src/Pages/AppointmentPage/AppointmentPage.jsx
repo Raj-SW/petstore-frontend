@@ -43,14 +43,6 @@ const AppointmentPage = () => {
                 <div className="">
                   <div className="d-flex flex-row align-items-center justify-evenly mb-3">
                     <div className="user-info">
-                      <div
-                        style={{
-                          width: "3rem",
-                          height: "3rem",
-                          backgroundColor: "#ffffff",
-                          borderRadius: "50%",
-                        }}
-                      ></div>
                       <div>
                         <p
                           className="secondary-color-font"

@@ -227,13 +227,13 @@ const AppointmentCalendar = () => {
         <Row className=" dashboard-header-row w-100">
           <Nav className="dashboardNavTabs poppins-medium">
             <Nav.Item>
-              <Nav.Link eventKey="calendar-view">Calendar View</Nav.Link>
-            </Nav.Item>
-            <Nav.Item>
               <Nav.Link eventKey="list-view">List View</Nav.Link>
             </Nav.Item>
             <Nav.Item>
               <Nav.Link eventKey="history-view">History</Nav.Link>
+            </Nav.Item>
+            <Nav.Item>
+              <Nav.Link eventKey="calendar-view">Calendar View</Nav.Link>
             </Nav.Item>
           </Nav>
 
@@ -291,6 +291,11 @@ const AppointmentCalendar = () => {
                   />
                 </InputGroup>
               </div>
+              {filtered.length === 0 && (
+                <div className="text-center">
+                  <p>No Upcoming appointments found</p>
+                </div>
+              )}
               {filtered.map((appt) => (
                 <AppointmentCard
                   key={appt.id}
@@ -322,6 +327,11 @@ const AppointmentCalendar = () => {
                   />
                 </InputGroup>
               </div>
+              {filtered.length === 0 && (
+                <div className="text-center">
+                  <p>No Past appointments found</p>
+                </div>
+              )}
               {filtered
                 .filter((appt) => new Date(appt.datetimeISO) < new Date())
                 .map((appt) => (
