@@ -37,7 +37,6 @@ const ProfessionalCalendar = ({ onBack, professional }) => {
       setError(null);
     } catch (err) {
       setError("Failed to fetch appointments");
-      console.error("Error fetching appointments:", err);
     } finally {
       setLoading(false);
     }
@@ -71,7 +70,6 @@ const ProfessionalCalendar = ({ onBack, professional }) => {
         prev.filter((appt) => appt.id !== appointmentId)
       );
     } catch (err) {
-      console.error("Error deleting appointment:", err);
     }
   };
 

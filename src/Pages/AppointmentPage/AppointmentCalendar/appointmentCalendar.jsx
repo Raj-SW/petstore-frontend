@@ -124,7 +124,6 @@ const AppointmentCalendar = () => {
       setEditingAppointment(null);
       setShowAppointmentForm(false);
     } catch (err) {
-      console.error("Error saving appointment:", err);
       // You might want to show an error message to the user here
     }
   };
@@ -141,7 +140,6 @@ const AppointmentCalendar = () => {
         prev.filter((appt) => appt.id !== appointmentId)
       );
     } catch (err) {
-      console.error("Error deleting appointment:", err);
       // You might want to show an error message to the user here
     }
   };

@@ -55,7 +55,6 @@ const AppointmentForm = ({ show, handleClose, onSubmit, initialData }) => {
         setError(null);
       } catch (err) {
         setError("Failed to fetch providers");
-        console.error("Error fetching providers:", err);
       } finally {
         setLoading(false);
       }

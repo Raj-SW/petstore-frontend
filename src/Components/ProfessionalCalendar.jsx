@@ -18,7 +18,7 @@ const handleDateSelect = (selectInfo) => {
     ownerId: "",
     ownerName: "",
     notes: "",
-    professionalId: professional.id,
+    professionalId: professional._id,
     professionalName: professional.name,
   });
 };
