@@ -21,9 +21,11 @@ import AppointmentCard from "@/Components/HelperComponents/AppointmentCard/Appoi
 import AppointmentForm from "@/Components/HelperComponents/AppointmentForm/AppointmentForm";
 import AppointmentService from "../../../Services/localServices/appointmentService";
 import { useToast } from "../../../context/ToastContext";
+import { useAuth } from "../../../context/AuthContext";
 
 const AppointmentCalendar = () => {
   const { addToast } = useToast();
+  const { user, loading: authLoading } = useAuth();
   const [activeKey, setActiveKey] = useState("calendar-view");
   const [filter, setFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
@@ -37,8 +39,10 @@ const AppointmentCalendar = () => {
 
   // Fetch appointments on component mount
   useEffect(() => {
-    fetchAppointments();
-  }, [filter]);
+    if (!authLoading) {
+      fetchAppointments();
+    }
+  }, [filter, authLoading]);
 
   const fetchAppointments = async () => {
     try {
@@ -48,10 +52,8 @@ const AppointmentCalendar = () => {
 
       if (filter === "all") {
         appointments = await AppointmentService.getAllMyAppointments();
-        console.log(appointments);
       } else {
         appointments = await AppointmentService.getByType(filter);
-        console.log(appointments);
       }
 
       const formattedEvents = appointments.map((appointment) => ({

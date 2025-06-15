@@ -187,12 +187,12 @@ const AppointmentForm = ({ show, handleClose, onSubmit, initialData }) => {
                     <option value="">Select a provider</option>
                     {formData.type === APPOINTMENT_TYPES.VET
                       ? veterinarians.map((vet) => (
-                          <option key={vet.id} value={vet.name}>
+                          <option key={vet._id} value={vet.name}>
                             {vet.name} - {vet.specialization}
                           </option>
                         ))
                       : groomers.map((groomer) => (
-                          <option key={groomer.id} value={groomer.name}>
+                          <option key={groomer._id} value={groomer.name}>
                             {groomer.name} - {groomer.specialties.join(", ")}
                           </option>
                         ))}

@@ -5,7 +5,6 @@ class ProfessionalService {
   // Fetch all professionals with optional filters
   static async getAll(params = {}) {
     try {
-      console.log("API_URL: ", this.API_URL);
       const response = await axios.get(`${this.API_URL}/professionals`, {
         params,
       });

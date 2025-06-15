@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./AppointmentPage.css";
 //Component Imports
 import { Container, Col, Row, Tab, Nav } from "react-bootstrap";
@@ -6,9 +6,18 @@ import Breadcrumb from "@/Components/HelperComponents/Breadcrumb/Breadcrumb";
 import AppointmentCalendar from "./AppointmentCalendar/appointmentCalendar";
 import VeterinarianList from "./VeterinarianList/VeterinarianList";
 import GroomerList from "./GroomerList/GroomerList";
+import { useAuth } from "@/context/AuthContext";
 
 const AppointmentPage = () => {
   const [key, setKey] = useState("vet");
+  const { user } = useAuth();
+
+  // Effect to handle tab changes when user logs out
+  useEffect(() => {
+    if (!user && key === "dashboard") {
+      setKey("vet");
+    }
+  }, [user, key]);
 
   const breadcrumbItems = [
     { label: "Home", path: "/" },
@@ -17,7 +26,7 @@ const AppointmentPage = () => {
 
   return (
     <>
-      <Container className="pt-5 breadcrumb-container">
+      <Container className="pt-5 breadcrumb-container mb-5">
         <Row className="breadcrumb-row">
           <Breadcrumb items={breadcrumbItems} />
         </Row>
@@ -60,14 +69,16 @@ const AppointmentPage = () => {
                     </div>
                   </div>
                   <Nav className="flex-column appointmentNavTabs">
-                    <Nav.Item>
-                      <Nav.Link
-                        eventKey="dashboard"
-                        className={key === "dashboard" ? "active" : ""}
-                      >
-                        Dashboard
-                      </Nav.Link>
-                    </Nav.Item>
+                    {user && (
+                      <Nav.Item>
+                        <Nav.Link
+                          eventKey="dashboard"
+                          className={key === "dashboard" ? "active" : ""}
+                        >
+                          Dashboard
+                        </Nav.Link>
+                      </Nav.Item>
+                    )}
                     <Nav.Item>
                       <Nav.Link
                         eventKey="vet"
@@ -101,14 +112,16 @@ const AppointmentPage = () => {
                       className="secondary-color-font "
                       style={{ fontSize: "1rem" }}
                     >
-                      John Doe
+                      {user ? user.name : "Guest User"}
                     </p>
                     <br />{" "}
                     <p
                       className="secondary-color-font"
                       style={{ fontSize: "0.8rem" }}
                     >
-                      123 Main Street, Anytown USA
+                      {user
+                        ? user.address
+                        : "Please login to view your address"}
                     </p>
                   </div>
                 </div>
@@ -121,9 +134,11 @@ const AppointmentPage = () => {
               }}
             >
               <Tab.Content>
-                <Tab.Pane eventKey="dashboard">
-                  <AppointmentCalendar />
-                </Tab.Pane>
+                {user && (
+                  <Tab.Pane eventKey="dashboard">
+                    <AppointmentCalendar />
+                  </Tab.Pane>
+                )}
                 <Tab.Pane eventKey="vet">
                   <VeterinarianList />
                 </Tab.Pane>
