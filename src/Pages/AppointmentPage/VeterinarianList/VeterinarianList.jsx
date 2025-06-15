@@ -119,8 +119,8 @@ const VeterinarianList = () => {
               <p>No veterinarians found</p>
             </div>
           )}
-          {paginatedVets.map((vet) => (
-            <div key={vet._id} className="mb-4 d-flex justify-content-center">
+          {paginatedVets.map((vet, index) => (
+            <div key={index} className="mb-4 d-flex justify-content-center">
               <ProfessionalCard
                 id={vet._id}
                 name={vet.name}

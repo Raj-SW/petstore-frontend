@@ -21,7 +21,8 @@ const ProfessionalCalendar = ({ onBack, professional }) => {
   const [editingAppointment, setEditingAppointment] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  const [professionalInfo, setProfessionalInfo] = useState(null);
+  const [professionalAppointments, setProfessionalAppointments] = useState([]);
   // Fetch appointments for this professional
   useEffect(() => {
     fetchAppointments();
@@ -30,11 +31,21 @@ const ProfessionalCalendar = ({ onBack, professional }) => {
   const fetchAppointments = async () => {
     try {
       setLoading(true);
-      const data = await AppointmentService.getByProfessionalId(
+      const professionalData = await AppointmentService.getByProfessionalId(
         professional._id
       );
-      console.log("Data: ", data);
-      setCalendarEvents(data);
+      console.log("Professional Data: ", professionalData);
+      setProfessionalInfo(professionalData);
+
+      const appointments = await AppointmentService.getProfessionalAppointments(
+        professional._id
+      );
+      setProfessionalAppointments(appointments);
+      console.log(
+        "Professional professionalAppointments: ",
+        professionalAppointments
+      );
+      setCalendarEvents(professionalAppointments);
       setError(null);
     } catch (err) {
       setError("Failed to fetch appointments");
@@ -134,32 +145,34 @@ const ProfessionalCalendar = ({ onBack, professional }) => {
         <div className="professional-details-card">
           <div className="professional-details-flex">
             <img
-              src={professional.image}
-              alt={professional.name}
+              src={professionalInfo.profileImage}
+              alt="profile Image of professional"
               className="professional-image"
             />
             <div className="professional-details-info">
-              <h3 className="professional-name">{professional.name}</h3>
+              <h3 className="professional-name">{professionalInfo.name}</h3>
               <div className="professional-detail-row">
                 <span className="icon">
                   <FaMapMarkerAlt />
                 </span>
                 <span className="detail-text">
-                  Location: {professional.location}
+                  Location: {professionalInfo.address}
                 </span>
               </div>
               <div className="professional-detail-row">
                 <span className="icon">
                   <FaPhone />
                 </span>
-                <span className="detail-text">{professional.phone}</span>
+                <span className="detail-text">
+                  {professionalInfo.phoneNumber}
+                </span>
               </div>
               <div className="professional-detail-row">
                 <span className="icon">
                   <FaNotesMedical />
                 </span>
                 <span className="detail-text">
-                  Specialities: {professional.specialization}
+                  Specialities: {professionalInfo.specialization}
                 </span>
               </div>
             </div>
@@ -168,7 +181,7 @@ const ProfessionalCalendar = ({ onBack, professional }) => {
         <Row className="professional-calendar-header-row">
           <Col>
             <h4 className="mb-4 professional-calendar-header-title">
-              {professional.name} schedule
+              {professionalInfo.name} schedule
             </h4>
           </Col>
           <Col className="d-flex justify-content-end">

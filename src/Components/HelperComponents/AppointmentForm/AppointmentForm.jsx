@@ -185,8 +185,8 @@ const AppointmentForm = ({ show, handleClose, onSubmit, initialData }) => {
                   >
                     <option value="">Select a provider</option>
                     {formData.type === APPOINTMENT_TYPES.VET
-                      ? veterinarians.map((vet) => (
-                          <option key={vet._id} value={vet.name}>
+                      ? veterinarians.map((vet, index) => (
+                          <option key={index} value={vet.name}>
                             {vet.name} - {vet.specialization}
                           </option>
                         ))

@@ -149,7 +149,7 @@ class AppointmentService {
   static async getByProfessionalId(professionalId) {
     console.log("professionalId: ", professionalId);
     const response = await this.handleRequest(
-      `${this.API_URL}/appointments/professional/${professionalId}`
+      `${this.API_URL}/professionals/${professionalId}`
     );
     return response.data.data;
   }
@@ -176,6 +176,22 @@ class AppointmentService {
       `${this.API_URL}/appointments/pet/${petId}`
     );
     return response.data.data;
+  }
+
+  // Fetch appointments for a specific professional (using axios)
+  static async getProfessionalAppointments(professionalId) {
+    try {
+      const API_URL = import.meta.env.VITE_NODE_API_URL;
+      const response = await axios.get(
+        `${API_URL}/appointments/professional/${professionalId}`,
+        { withCredentials: true }
+      );
+      console.log("Professional Appointments response: ", response.data);
+      return response.data; // returns the whole response, e.g. { success, data, pagination }
+    } catch (error) {
+      console.error("Error fetching professional appointments:", error);
+      throw error;
+    }
   }
 }
 

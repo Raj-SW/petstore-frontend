@@ -123,11 +123,8 @@ const GroomerList = () => {
               <p>No groomers found</p>
             </div>
           )}
-          {paginatedGroomers.map((groomer) => (
-            <div
-              key={groomer._id}
-              className="mb-4 d-flex justify-content-center"
-            >
+          {paginatedGroomers.map((groomer, index) => (
+            <div key={index} className="mb-4 d-flex justify-content-center">
               <ProfessionalCard
                 id={groomer._id}
                 name={groomer.name}
