@@ -53,7 +53,12 @@ const ProfessionalCalendar = ({ onBack, professional }) => {
       setLoading(false);
     }
   };
-
+  const getAvatarUrl = () => {
+    const bgColor = "74B49B";
+    return `https://ui-avatars.com/api/?name=${encodeURIComponent(
+      professionalInfo.name
+    )}&background=${bgColor}&color=fff&size=128`;
+  };
   // Handle slot selection to book an appointment
   const handleDateSelect = (selectInfo) => {
     setEditingAppointment(null);
@@ -142,41 +147,73 @@ const ProfessionalCalendar = ({ onBack, professional }) => {
             </Button>
           </Col>
         </Row>
-        <div className="professional-details-card">
-          <div className="professional-details-flex">
-            <img
-              src={professionalInfo.profileImage}
-              alt="profile Image of professional"
-              className="professional-image"
-            />
-            <div className="professional-details-info">
-              <h3 className="professional-name">{professionalInfo.name}</h3>
-              <div className="professional-detail-row">
-                <span className="icon">
-                  <FaMapMarkerAlt />
-                </span>
-                <span className="detail-text">
-                  Location: {professionalInfo.address}
-                </span>
-              </div>
-              <div className="professional-detail-row">
-                <span className="icon">
-                  <FaPhone />
-                </span>
-                <span className="detail-text">
-                  {professionalInfo.phoneNumber}
-                </span>
-              </div>
-              <div className="professional-detail-row">
-                <span className="icon">
-                  <FaNotesMedical />
-                </span>
-                <span className="detail-text">
-                  Specialities: {professionalInfo.specialization}
-                </span>
-              </div>
+        <div
+          className="professional-details-card d-flex justify-content-between align-items-start"
+          style={{ position: "relative" }}
+        >
+          <div className="professional-details-info" style={{ flex: 1 }}>
+            <h3 className="professional-name mb-1">{professionalInfo.name}</h3>
+            <div className="d-flex align-items-center mb-2">
+              <span className="me-2">{professionalInfo.specialization}</span>
+              <span className="badge bg-success ms-2">
+                {professionalInfo.role}
+              </span>
             </div>
+            <div className="d-flex align-items-center mb-2">
+              <span className="me-2">
+                ⭐ {professionalInfo.rating} ({professionalInfo.reviewCount}{" "}
+                reviews)
+              </span>
+              <span className="ms-2">
+                Experience: {professionalInfo.experience} yrs
+              </span>
+            </div>
+            <div className="mb-2">
+              <strong>Qualifications:</strong>{" "}
+              {professionalInfo.qualifications &&
+              professionalInfo.qualifications.length > 0
+                ? professionalInfo.qualifications.join(", ")
+                : "N/A"}
+            </div>
+            <div className="d-flex align-items-center mb-2">
+              <span className="icon me-2">
+                <FaPhone />
+              </span>
+              <span>{professionalInfo.phoneNumber}</span>
+            </div>
+            <div className="d-flex align-items-center mb-2">
+              <span className="icon me-2">
+                <FaMapMarkerAlt />
+              </span>
+              <span>{professionalInfo.address}</span>
+            </div>
+            {professionalInfo.bio && (
+              <div className="mb-2">
+                <strong>Bio:</strong>{" "}
+                <span style={{ color: "#666" }}>{professionalInfo.bio}</span>
+              </div>
+            )}
+            {professionalInfo.services &&
+              professionalInfo.services.length > 0 && (
+                <div className="mb-2">
+                  <strong>Services:</strong>{" "}
+                  {professionalInfo.services.map((s) => s.name).join(", ")}
+                </div>
+              )}
           </div>
+          <img
+            src={getAvatarUrl()}
+            alt="Profile of professional"
+            className="professional-image"
+            style={{
+              width: 120,
+              height: 120,
+              objectFit: "cover",
+              borderRadius: "50%",
+              marginLeft: 32,
+              boxShadow: "0 2px 8px rgba(0,0,0,0.10)",
+            }}
+          />
         </div>
         <Row className="professional-calendar-header-row">
           <Col>
