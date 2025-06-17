@@ -34,21 +34,18 @@ const ProfessionalCalendar = ({ onBack, professional }) => {
       const professionalData = await AppointmentService.getByProfessionalId(
         professional._id
       );
-      console.log("Professional Data: ", professionalData);
+
       setProfessionalInfo(professionalData);
 
       const appointments = await AppointmentService.getProfessionalAppointments(
         professional._id
       );
       setProfessionalAppointments(appointments);
-      console.log(
-        "Professional professionalAppointments: ",
-        professionalAppointments
-      );
+
       setCalendarEvents(professionalAppointments);
       setError(null);
     } catch (err) {
-      setError("Failed to fetch appointments");
+      setError("Failed to fetch appointments", err.message);
     } finally {
       setLoading(false);
     }
@@ -56,7 +53,7 @@ const ProfessionalCalendar = ({ onBack, professional }) => {
   const getAvatarUrl = () => {
     const bgColor = "74B49B";
     return `https://ui-avatars.com/api/?name=${encodeURIComponent(
-      professionalInfo.name
+      professionalInfo?.name ?? "N A"
     )}&background=${bgColor}&color=fff&size=128`;
   };
   // Handle slot selection to book an appointment
@@ -225,7 +222,15 @@ const ProfessionalCalendar = ({ onBack, professional }) => {
             <Button
               className="book-appointment-btn rounded-5"
               onClick={() => {
-                setEditingAppointment(null);
+                setEditingAppointment({
+                  professionalId: professionalInfo._id,
+                  professionalName: professionalInfo.name,
+                  role: professionalInfo.role,
+                  specialization: professionalInfo.specialization,
+                  phoneNumber: professionalInfo.phoneNumber,
+                  address: professionalInfo.address,
+                  profileImage: professionalInfo.profileImage,
+                });
                 setShowAppointmentForm(true);
               }}
             >
@@ -278,7 +283,7 @@ const ProfessionalCalendar = ({ onBack, professional }) => {
           }}
           onSubmit={handleAppointmentSubmit}
           initialData={editingAppointment}
-          professional={professional}
+          professionalInfo={professionalInfo}
         />
       </div>
     </Container>

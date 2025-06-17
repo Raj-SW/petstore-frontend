@@ -147,7 +147,6 @@ class AppointmentService {
 
   // Get appointments by professional ID
   static async getByProfessionalId(professionalId) {
-    console.log("professionalId: ", professionalId);
     const response = await this.handleRequest(
       `${this.API_URL}/professionals/${professionalId}`
     );
@@ -186,7 +185,6 @@ class AppointmentService {
         `${API_URL}/appointments/professional/${professionalId}`,
         { withCredentials: true }
       );
-      console.log("Professional Appointments response: ", response.data);
       return response.data; // returns the whole response, e.g. { success, data, pagination }
     } catch (error) {
       console.error("Error fetching professional appointments:", error);

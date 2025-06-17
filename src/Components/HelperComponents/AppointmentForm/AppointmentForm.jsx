@@ -2,64 +2,69 @@ import { useState, useEffect, useCallback } from "react";
 import { Modal, Form, Button, Row, Col } from "react-bootstrap";
 import { motion } from "framer-motion";
 import ProfessionalService from "@/Services/localServices/professionalService";
-import {
-  APPOINTMENT_TYPES,
-  APPOINTMENT_DURATIONS,
-} from "@/constants/appointmentConstants";
+import { APPOINTMENT_DURATIONS } from "@/constants/appointmentConstants";
+import PropTypes from "prop-types";
 import "./AppointmentForm.css";
 
-const AppointmentForm = ({ show, handleClose, onSubmit, initialData }) => {
+const AppointmentForm = ({
+  show,
+  handleClose,
+  onSubmit,
+  initialData,
+  professionalInfo,
+}) => {
   const [formData, setFormData] = useState({
+    professionalName: professionalInfo?.name || "",
     title: "",
     datetimeISO: "",
     description: "",
-    type: APPOINTMENT_TYPES.VET,
-    location: "",
+    type: professionalInfo?.role,
+    address: "",
     duration: APPOINTMENT_DURATIONS.DEFAULT,
     notes: "",
   });
 
   const [errors, setErrors] = useState({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [veterinarians, setVeterinarians] = useState([]);
-  const [groomers, setGroomers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    // Helper to map incoming data to form fields
+    const mapToFormData = (data, profInfo) => ({
+      professionalName: data?.professionalName || profInfo?.name || "",
+      title: data?.title || "",
+      datetimeISO: data?.datetimeISO || "",
+      description: data?.description || "",
+      type: data?.role || profInfo?.role,
+      address: data?.address || profInfo?.address || "",
+      duration: data?.duration || APPOINTMENT_DURATIONS.DEFAULT,
+      notes: data?.notes || "",
+    });
+
     if (initialData) {
-      setFormData(initialData);
+      setFormData(mapToFormData(initialData, professionalInfo));
+    } else if (professionalInfo) {
+      setFormData(mapToFormData({}, professionalInfo));
     } else {
-      setFormData({
-        title: "",
-        datetimeISO: "",
-        description: "",
-        type: APPOINTMENT_TYPES.VET,
-        location: "",
-        duration: APPOINTMENT_DURATIONS.DEFAULT,
-        notes: "",
-      });
+      setFormData(mapToFormData({}, {}));
     }
-  }, [initialData]);
+  }, [initialData, professionalInfo]);
 
   useEffect(() => {
     const fetchProviders = async () => {
       try {
         setLoading(true);
-        const [vets, groomers] = await Promise.all([
+        await Promise.all([
           ProfessionalService.getAll({ role: "veterinarian" }),
           ProfessionalService.getAll({ role: "groomer" }),
         ]);
-        setVeterinarians(vets);
-        setGroomers(groomers);
         setError(null);
-      } catch (err) {
+      } catch {
         setError("Failed to fetch providers");
       } finally {
         setLoading(false);
       }
     };
-
     fetchProviders();
   }, []);
 
@@ -70,14 +75,13 @@ const AppointmentForm = ({ show, handleClose, onSubmit, initialData }) => {
       newErrors.datetimeISO = "Date and time is required";
     if (!formData.description)
       newErrors.description = "Description is required";
-    if (!formData.location) newErrors.location = "Location is required";
+    if (!formData.address) newErrors.address = "Location is required";
     if (formData.duration < APPOINTMENT_DURATIONS.MIN) {
       newErrors.duration = `Duration must be at least ${APPOINTMENT_DURATIONS.MIN} minutes`;
     }
     if (formData.duration > APPOINTMENT_DURATIONS.MAX) {
       newErrors.duration = `Duration cannot exceed ${APPOINTMENT_DURATIONS.MAX} minutes`;
     }
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   }, [formData]);
@@ -103,15 +107,11 @@ const AppointmentForm = ({ show, handleClose, onSubmit, initialData }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
-
-    setIsSubmitting(true);
     try {
       await onSubmit(formData);
       handleClose();
     } catch (error) {
       setErrors({ submit: error.message });
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -154,20 +154,15 @@ const AppointmentForm = ({ show, handleClose, onSubmit, initialData }) => {
               <Col md={6}>
                 <Form.Group className="mb-3">
                   <Form.Label>Appointment Type</Form.Label>
-                  <Form.Select
+                  <Form.Control
+                    disabled={true}
+                    type="text"
                     name="type"
                     value={formData.type}
                     onChange={handleChange}
-                    isInvalid={!!errors.type}
+                    isInvalid={!!errors.role}
                     required
-                  >
-                    <option key="vet" value={APPOINTMENT_TYPES.VET}>
-                      Veterinarian
-                    </option>
-                    <option key="grooming" value={APPOINTMENT_TYPES.GROOMING}>
-                      Grooming
-                    </option>
-                  </Form.Select>
+                  />
                   <Form.Control.Feedback type="invalid">
                     {errors.type}
                   </Form.Control.Feedback>
@@ -176,28 +171,17 @@ const AppointmentForm = ({ show, handleClose, onSubmit, initialData }) => {
               <Col md={6}>
                 <Form.Group className="mb-3">
                   <Form.Label>Provider</Form.Label>
-                  <Form.Select
-                    name="title"
-                    value={formData.title}
+                  <Form.Control
+                    disabled={true}
+                    type="text"
+                    name="name"
+                    value={formData.professionalName}
                     onChange={handleChange}
-                    isInvalid={!!errors.title}
+                    isInvalid={!!errors.professionalName}
                     required
-                  >
-                    <option value="">Select a provider</option>
-                    {formData.type === APPOINTMENT_TYPES.VET
-                      ? veterinarians.map((vet, index) => (
-                          <option key={index} value={vet.name}>
-                            {vet.name} - {vet.specialization}
-                          </option>
-                        ))
-                      : groomers.map((groomer) => (
-                          <option key={groomer._id} value={groomer.name}>
-                            {groomer.name} - {groomer.specialties.join(", ")}
-                          </option>
-                        ))}
-                  </Form.Select>
+                  />
                   <Form.Control.Feedback type="invalid">
-                    {errors.title}
+                    {errors.professionalName}
                   </Form.Control.Feedback>
                 </Form.Group>
               </Col>
@@ -260,15 +244,16 @@ const AppointmentForm = ({ show, handleClose, onSubmit, initialData }) => {
             <Form.Group className="mb-3">
               <Form.Label>Location</Form.Label>
               <Form.Control
+                disabled={true}
                 type="text"
-                name="location"
-                value={formData.location}
+                name="address"
+                value={formData.address}
                 onChange={handleChange}
-                isInvalid={!!errors.location}
+                isInvalid={!!errors.address}
                 required
               />
               <Form.Control.Feedback type="invalid">
-                {errors.location}
+                {errors.address}
               </Form.Control.Feedback>
             </Form.Group>
 
@@ -293,9 +278,8 @@ const AppointmentForm = ({ show, handleClose, onSubmit, initialData }) => {
               <Button variant="secondary" onClick={handleClose}>
                 Cancel
               </Button>
-              <Button variant="primary" type="submit" disabled={isSubmitting}>
-                {isSubmitting ? "Saving..." : initialData ? "Update" : "Create"}{" "}
-                Appointment
+              <Button variant="primary" type="submit">
+                Create Appointment
               </Button>
             </div>
           </Form>
@@ -303,6 +287,14 @@ const AppointmentForm = ({ show, handleClose, onSubmit, initialData }) => {
       </Modal.Body>
     </Modal>
   );
+};
+
+AppointmentForm.propTypes = {
+  show: PropTypes.bool.isRequired,
+  handleClose: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+  initialData: PropTypes.object,
+  professionalInfo: PropTypes.object,
 };
 
 export default AppointmentForm;

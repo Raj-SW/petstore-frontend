@@ -7,39 +7,6 @@ const API_URL = import.meta.env.VITE_NODE_API_URL;
 axios.defaults.withCredentials = true;
 axios.defaults.headers.common["Content-Type"] = "application/json";
 
-// Add request interceptor for debugging
-axios.interceptors.request.use((request) => {
-  console.log("Starting Request:", {
-    url: request.url,
-    method: request.method,
-    headers: request.headers,
-    withCredentials: request.withCredentials,
-    data: request.data,
-  });
-  return request;
-});
-
-// Add response interceptor for debugging
-axios.interceptors.response.use(
-  (response) => {
-    console.log("Response:", {
-      status: response.status,
-      headers: response.headers,
-      data: response.data,
-    });
-    return response;
-  },
-  (error) => {
-    console.error("Response Error:", {
-      status: error.response?.status,
-      statusText: error.response?.statusText,
-      data: error.response?.data,
-      headers: error.response?.headers,
-    });
-    return Promise.reject(error);
-  }
-);
-
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
@@ -55,25 +22,23 @@ export const AuthProvider = ({ children }) => {
   // Robustly check authentication status and update user state
   const checkAuthStatus = async () => {
     try {
-      console.log("Checking auth status...");
       const response = await axios.get(`${API_URL}/users/me`, {
         withCredentials: true,
       });
-      console.log("Auth check response:", response.data);
       // Accepts both status: 'success' and legacy success: true for flexibility
       if (
         (response.data &&
           response.data.status === "success" &&
           response.data.data) ||
-        (response.data && response.data.success && response.data.data)
+        (response.data?.success && response.data?.data)
       ) {
         setUser(response.data.data);
       } else {
         setUser(null);
       }
     } catch (err) {
-      console.error("Auth check error:", err);
       setUser(null);
+      throw err;
     } finally {
       setLoading(false);
     }
@@ -82,7 +47,6 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       setError(null);
-      console.log("Attempting login...");
       const response = await axios.post(
         `${API_URL}/auth/login`,
         {
@@ -93,14 +57,12 @@ export const AuthProvider = ({ children }) => {
           withCredentials: true,
         }
       );
-      console.log("Login response:", response.data);
 
       if (response.data.success) {
         setUser(response.data.data);
         return { success: true };
       }
     } catch (err) {
-      console.error("Login error:", err);
       setError(err.response?.data?.message || "Login failed");
       return {
         success: false,
@@ -128,7 +90,6 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      console.log("Attempting logout...");
       await axios.post(
         `${API_URL}/auth/logout`,
         {},
@@ -136,11 +97,10 @@ export const AuthProvider = ({ children }) => {
           withCredentials: true,
         }
       );
-      console.log("Logout successful");
       setUser(null);
     } catch (err) {
-      console.error("Logout error:", err);
       setUser(null);
+      throw err;
     }
   };
 
