@@ -13,7 +13,7 @@ export const APPOINTMENT_STATUS = {
 export const APPOINTMENT_DURATIONS = {
   MIN: 15,
   MAX: 180,
-  DEFAULT: 60,
+  DEFAULT: 30,
 };
 
 export const TIME_SLOTS = {

@@ -1,10 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
 import { Modal, Form, Button, Row, Col } from "react-bootstrap";
 import { motion } from "framer-motion";
-import ProfessionalService from "@/Services/localServices/professionalService";
 import { APPOINTMENT_DURATIONS } from "@/constants/appointmentConstants";
 import PropTypes from "prop-types";
 import "./AppointmentForm.css";
+import UserProfileService from "@/Services/localServices/userProfileService";
+import AppointmentService from "@/Services/localServices/appointmentService";
 
 const AppointmentForm = ({
   show,
@@ -25,8 +26,9 @@ const AppointmentForm = ({
   });
 
   const [errors, setErrors] = useState({});
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [pets, setPets] = useState([]);
+  const [petsLoading, setPetsLoading] = useState(false);
+  const [petsError, setPetsError] = useState(null);
 
   useEffect(() => {
     // Helper to map incoming data to form fields
@@ -51,22 +53,21 @@ const AppointmentForm = ({
   }, [initialData, professionalInfo]);
 
   useEffect(() => {
-    const fetchProviders = async () => {
-      try {
-        setLoading(true);
-        await Promise.all([
-          ProfessionalService.getAll({ role: "veterinarian" }),
-          ProfessionalService.getAll({ role: "groomer" }),
-        ]);
-        setError(null);
-      } catch {
-        setError("Failed to fetch providers");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchProviders();
-  }, []);
+    if (show) {
+      setPetsLoading(true);
+      UserProfileService.getUserPets()
+        .then((res) => {
+          setPets(res.data || []);
+          setPetsError(null);
+          setPetsLoading(false);
+        })
+        .catch(() => {
+          setPetsError("Failed to fetch pets");
+          setPets([]);
+        })
+        .finally(() => setPetsLoading(false));
+    }
+  }, [show]);
 
   const validateForm = useCallback(() => {
     const newErrors = {};
@@ -108,30 +109,19 @@ const AppointmentForm = ({
     e.preventDefault();
     if (!validateForm()) return;
     try {
-      await onSubmit(formData);
+      await AppointmentService.create(formData);
       handleClose();
     } catch (error) {
       setErrors({ submit: error.message });
     }
   };
 
-  if (loading) {
+  if (petsLoading) {
     return (
       <Modal show={show} onHide={handleClose} size="lg">
         <Modal.Header closeButton>
           <Modal.Title>Loading...</Modal.Title>
         </Modal.Header>
-      </Modal>
-    );
-  }
-
-  if (error) {
-    return (
-      <Modal show={show} onHide={handleClose} size="lg">
-        <Modal.Header closeButton>
-          <Modal.Title>Error</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>{error}</Modal.Body>
       </Modal>
     );
   }
@@ -206,21 +196,21 @@ const AppointmentForm = ({
               </Col>
               <Col md={6}>
                 <Form.Group className="mb-3">
-                  <Form.Label>Duration (minutes)</Form.Label>
-                  <Form.Control
-                    type="number"
-                    name="duration"
-                    value={formData.duration}
+                  <Form.Label>Pet</Form.Label>
+                  <Form.Select
+                    name="petId"
+                    value={formData.petId}
                     onChange={handleChange}
-                    min={APPOINTMENT_DURATIONS.MIN}
-                    max={APPOINTMENT_DURATIONS.MAX}
-                    step="15"
-                    isInvalid={!!errors.duration}
                     required
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.duration}
-                  </Form.Control.Feedback>
+                    disabled={petsLoading}
+                  >
+                    {pets.map((pet) => (
+                      <option key={pet.id || pet._id} value={pet.id || pet._id}>
+                        {pet.name} ({pet.type})
+                      </option>
+                    ))}
+                  </Form.Select>
+                  {petsError && <div className="text-danger">{petsError}</div>}
                 </Form.Group>
               </Col>
             </Row>
@@ -255,17 +245,6 @@ const AppointmentForm = ({
               <Form.Control.Feedback type="invalid">
                 {errors.address}
               </Form.Control.Feedback>
-            </Form.Group>
-
-            <Form.Group className="mb-3">
-              <Form.Label>Additional Notes</Form.Label>
-              <Form.Control
-                as="textarea"
-                rows={2}
-                name="notes"
-                value={formData.notes}
-                onChange={handleChange}
-              />
             </Form.Group>
 
             {errors.submit && (

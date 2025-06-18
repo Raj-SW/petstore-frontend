@@ -1,34 +1,55 @@
 import { format, parseISO } from "date-fns";
 import { Button, ButtonGroup } from "react-bootstrap";
-import { FaEdit, FaTrash, FaClock, FaMapMarkerAlt } from "react-icons/fa";
+import {
+  FaEdit,
+  FaTrash,
+  FaClock,
+  FaMapMarkerAlt,
+  FaPaw,
+} from "react-icons/fa";
 import { motion } from "framer-motion";
 import "./AppointmentCard.css";
 
 const AppointmentCard = ({
+  professionalName,
   title,
-  datetimeISO,
+  dateTime,
   description,
   status,
   role,
   location,
+  petName,
   icon,
   onEdit,
   onDelete,
 }) => {
-  // parse + format date/time
-  const formatted = datetimeISO
-    ? format(parseISO(datetimeISO), "eee, MMM d, h:mm a")
-    : "No date set";
+  // parse + format date/time with error handling
+  const getFormattedDate = () => {
+    if (!dateTime) {
+      console.log("No datetimeISO provided", dateTime);
+      return "No date set";
+    }
+
+    try {
+      const parsed = parseISO(dateTime);
+      if (isNaN(parsed.getTime())) {
+        console.log("Invalid dateTime format:", dateTime);
+        return "Invalid date";
+      }
+      return format(parsed, "eee, MMM d, h:mm a");
+    } catch (error) {
+      console.log("Error parsing dateTime:", error, dateTime);
+      return "Date error";
+    }
+  };
+
+  const formatted = getFormattedDate();
 
   // Generate UI Avatar URL as fallback
   const getAvatarUrl = () => {
-    const name =
-      role === "Veterinarian"
-        ? "Dr. " + title.split(" ")[0]
-        : title.split(" ")[0];
     const bgColor = role === "Veterinarian" ? "74B49B" : "5C8D89";
     return `https://ui-avatars.com/api/?name=${encodeURIComponent(
-      name
+      professionalName
     )}&background=${bgColor}&color=fff&size=128`;
   };
 
@@ -68,7 +89,7 @@ const AppointmentCard = ({
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.1 }}
         >
-          <h3 className="appointment-title">{title}</h3>
+          <h3 className="appointment-title">{professionalName}</h3>
           <div className="badge-group">
             {role && (
               <motion.span
@@ -113,6 +134,19 @@ const AppointmentCard = ({
           </motion.div>
         )}
 
+        {/* Pet Name */}
+        {petName && (
+          <motion.div
+            className="appointment-pet"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.35 }}
+          >
+            <FaPaw className="pet-icon" />
+            <span>{petName}</span>
+          </motion.div>
+        )}
+
         {/* Description */}
         {description && (
           <motion.p
@@ -133,15 +167,6 @@ const AppointmentCard = ({
           transition={{ delay: 0.5 }}
         >
           <ButtonGroup size="sm">
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button
-                variant="outline-primary"
-                onClick={onEdit}
-                className="action-button"
-              >
-                <FaEdit /> Edit
-              </Button>
-            </motion.div>
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Button
                 variant="outline-danger"

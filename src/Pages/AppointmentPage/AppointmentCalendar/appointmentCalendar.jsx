@@ -13,10 +13,6 @@ import {
   Modal,
 } from "react-bootstrap";
 import { FaSearch } from "react-icons/fa";
-import FullCalendar from "@fullcalendar/react";
-import dayGridPlugin from "@fullcalendar/daygrid";
-import timeGridPlugin from "@fullcalendar/timegrid";
-import interactionPlugin from "@fullcalendar/interaction";
 import AppointmentCard from "@/Components/HelperComponents/AppointmentCard/AppointmentCard";
 import AppointmentForm from "@/Components/HelperComponents/AppointmentForm/AppointmentForm";
 import AppointmentService from "../../../Services/localServices/appointmentService";
@@ -26,7 +22,7 @@ import { useAuth } from "../../../context/AuthContext";
 const AppointmentCalendar = () => {
   const { addToast } = useToast();
   const { user, loading: authLoading } = useAuth();
-  const [activeKey, setActiveKey] = useState("calendar-view");
+  const [activeKey, setActiveKey] = useState("list-view");
   const [filter, setFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [showAppointmentForm, setShowAppointmentForm] = useState(false);
@@ -42,44 +38,22 @@ const AppointmentCalendar = () => {
     if (!authLoading) {
       fetchAppointments();
     }
-  }, [filter, authLoading]);
+  }, []);
 
   const fetchAppointments = async () => {
     try {
       setLoading(true);
       setError(null);
-      let appointments;
 
+      let response;
       if (filter === "all") {
-        appointments = await AppointmentService.getAllMyAppointments();
+        response = await AppointmentService.getAllMyAppointments();
+        setAppointments(response);
+        console.log(response);
       } else {
-        appointments = await AppointmentService.getByType(filter);
+        response = await AppointmentService.getByType(filter);
+        setAppointments(response);
       }
-
-      const formattedEvents = appointments.map((appointment) => ({
-        id: appointment._id,
-        title: appointment.title,
-        start: new Date(appointment.datetimeISO),
-        end: new Date(
-          new Date(appointment.datetimeISO).getTime() +
-            appointment.duration * 60000
-        ),
-        backgroundColor: appointment.type === "vet" ? "#28a745" : "#007bff",
-        borderColor: appointment.type === "vet" ? "#28a745" : "#007bff",
-        textColor: "#ffffff",
-        extendedProps: {
-          description: appointment.description,
-          status: appointment.status,
-          location: appointment.location,
-          role: appointment.role,
-          petName: appointment.petName,
-          ownerName: appointment.ownerName,
-          duration: appointment.duration,
-          notes: appointment.notes,
-        },
-      }));
-
-      setAppointments(formattedEvents);
     } catch (err) {
       setError(err.message);
       addToast("Failed to fetch appointments", "error");
@@ -87,19 +61,6 @@ const AppointmentCalendar = () => {
       setLoading(false);
     }
   };
-
-  // Filter logic
-  const filtered = appointments
-    .filter((a) => filter === "all" || a.type === filter)
-    .filter((a) => {
-      if (!searchQuery) return true;
-      const query = searchQuery.toLowerCase();
-      return (
-        a.title.toLowerCase().includes(query) ||
-        a.description.toLowerCase().includes(query) ||
-        a.location.toLowerCase().includes(query)
-      );
-    });
 
   const handleSelect = (eventKey) => {
     setFilter(eventKey);
@@ -232,14 +193,14 @@ const AppointmentCalendar = () => {
             <Nav.Item>
               <Nav.Link eventKey="history-view">History</Nav.Link>
             </Nav.Item>
-            <Nav.Item>
+            {/* <Nav.Item>
               <Nav.Link eventKey="calendar-view">Calendar View</Nav.Link>
-            </Nav.Item>
+            </Nav.Item> */}
           </Nav>
 
           <Tab.Content className="appointment-calendar-content">
             {/* 1) Calendar View */}
-            <Tab.Pane eventKey="calendar-view">
+            {/* <Tab.Pane eventKey="calendar-view">
               <div
                 // initial={{ opacity: 0, scale: 0.95 }}
                 // animate={{ opacity: 1, scale: 1 }}
@@ -251,7 +212,7 @@ const AppointmentCalendar = () => {
                   initialView="timeGridWeek"
                   headerToolbar={{
                     left: "prev,next today",
-                    center: "title",
+                    center: "title", 
                     right: "dayGridMonth,timeGridWeek,timeGridDay",
                   }}
                   selectable={true}
@@ -273,7 +234,7 @@ const AppointmentCalendar = () => {
                   }}
                 />
               </div>
-            </Tab.Pane>
+            </Tab.Pane> */}
 
             {/* 2) List View */}
             <Tab.Pane eventKey="list-view" className="">
@@ -291,22 +252,24 @@ const AppointmentCalendar = () => {
                   />
                 </InputGroup>
               </div>
-              {filtered.length === 0 && (
+              {appointments.length === 0 && (
                 <div className="text-center">
                   <p>No Upcoming appointments found</p>
                 </div>
               )}
-              {filtered.map((appt) => (
+              {appointments.map((appointment) => (
                 <AppointmentCard
-                  key={appt.id}
-                  title={appt.title}
-                  datetimeISO={appt.start.toISOString()}
-                  description={appt.extendedProps.description}
-                  status={appt.extendedProps.status}
-                  role={appt.extendedProps.role}
-                  location={appt.extendedProps.location}
-                  onEdit={() => handleEditAppointment(appt)}
-                  onDelete={() => handleDeleteAppointment(appt.id)}
+                  key={appointment._id}
+                  professionalName={appointment.professionalName}
+                  title={appointment.title}
+                  dateTime={appointment.dateTime}
+                  description={appointment.description}
+                  status={appointment.status}
+                  role={appointment.role}
+                  location={appointment.location}
+                  petName={appointment.petName}
+                  onEdit={() => handleEditAppointment(appointment)}
+                  onDelete={() => handleDeleteAppointment(appointment._id)}
                 />
               ))}
             </Tab.Pane>
@@ -327,24 +290,26 @@ const AppointmentCalendar = () => {
                   />
                 </InputGroup>
               </div>
-              {filtered.length === 0 && (
+              {appointments.length === 0 && (
                 <div className="text-center">
                   <p>No Past appointments found</p>
                 </div>
               )}
-              {filtered
-                .filter((appt) => new Date(appt.datetimeISO) < new Date())
+              {appointments
+                .filter((appt) => new Date(appt.dateTime) < new Date())
                 .map((appt) => (
                   <AppointmentCard
-                    key={appt.id}
+                    key={appt._id}
+                    professionalName={appt.professionalName}
                     title={appt.title}
-                    datetimeISO={appt.start.toISOString()}
-                    description={appt.extendedProps.description}
-                    status={appt.extendedProps.status}
-                    role={appt.extendedProps.role}
-                    location={appt.extendedProps.location}
+                    dateTime={appt.dateTime}
+                    description={appt.description}
+                    status={appt.status}
+                    role={appt.role}
+                    location={appt.location}
+                    petName={appt.petName}
                     onEdit={() => handleEditAppointment(appt)}
-                    onDelete={() => handleDeleteAppointment(appt.id)}
+                    onDelete={() => handleDeleteAppointment(appt._id)}
                   />
                 ))}
             </Tab.Pane>

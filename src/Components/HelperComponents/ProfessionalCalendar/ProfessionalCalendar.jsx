@@ -58,7 +58,17 @@ const ProfessionalCalendar = ({ onBack, professional }) => {
   };
   // Handle slot selection to book an appointment
   const handleDateSelect = (selectInfo) => {
-    setEditingAppointment(null);
+    setEditingAppointment({
+      professionalId: professionalInfo._id,
+      professionalName: professionalInfo.name,
+      role: professionalInfo.role,
+      specialization: professionalInfo.specialization,
+      phoneNumber: professionalInfo.phoneNumber,
+      address: professionalInfo.address,
+      profileImage: professionalInfo.profileImage,
+      datetimeISO: selectInfo.startStr || selectInfo.start.toISOString(),
+      // add other fields as needed
+    });
     setShowAppointmentForm(true);
   };
 
@@ -230,6 +240,7 @@ const ProfessionalCalendar = ({ onBack, professional }) => {
                   phoneNumber: professionalInfo.phoneNumber,
                   address: professionalInfo.address,
                   profileImage: professionalInfo.profileImage,
+                  datetimeISO: new Date().toISOString(),
                 });
                 setShowAppointmentForm(true);
               }}
