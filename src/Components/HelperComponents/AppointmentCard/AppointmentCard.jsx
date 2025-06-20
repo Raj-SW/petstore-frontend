@@ -19,6 +19,7 @@ const AppointmentCard = ({
   role,
   location,
   petName,
+  appointmentType,
   icon,
   onEdit,
   onDelete,
@@ -89,7 +90,9 @@ const AppointmentCard = ({
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.1 }}
         >
-          <h3 className="appointment-title">{professionalName}</h3>
+          <h3 className="appointment-title">
+            {professionalName} - {appointmentType}
+          </h3>
           <div className="badge-group">
             {role && (
               <motion.span
@@ -172,8 +175,18 @@ const AppointmentCard = ({
                 variant="outline-danger"
                 onClick={onDelete}
                 className="action-button"
+                disabled={
+                  status?.toLowerCase() === "cancelled" ||
+                  status?.toLowerCase() === "rejected"
+                }
+                title={
+                  status?.toLowerCase() === "cancelled" ||
+                  status?.toLowerCase() === "rejected"
+                    ? "Cannot delete cancelled/rejected appointments"
+                    : "Delete appointment"
+                }
               >
-                <FaTrash /> Delete
+                <FaTrash /> Cancel
               </Button>
             </motion.div>
           </ButtonGroup>

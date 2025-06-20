@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 // CSS
 import "./appointmentCalendar.css";
 import "@/styles/calendarStyles.css";
@@ -11,8 +11,9 @@ import {
   Form,
   InputGroup,
   Modal,
+  Button,
 } from "react-bootstrap";
-import { FaSearch } from "react-icons/fa";
+import { FaSearch, FaSync } from "react-icons/fa";
 import AppointmentCard from "@/Components/HelperComponents/AppointmentCard/AppointmentCard";
 import AppointmentForm from "@/Components/HelperComponents/AppointmentForm/AppointmentForm";
 import AppointmentService from "../../../Services/localServices/appointmentService";
@@ -21,10 +22,13 @@ import { useAuth } from "../../../context/AuthContext";
 
 const AppointmentCalendar = () => {
   const { addToast } = useToast();
-  const { user, loading: authLoading } = useAuth();
+  const { loading: authLoading } = useAuth();
   const [activeKey, setActiveKey] = useState("list-view");
-  const [filter, setFilter] = useState("all");
-  const [searchQuery, setSearchQuery] = useState("");
+  const [filters, setFilters] = useState({
+    searchQuery: "",
+    statusFilter: "all",
+    sortOrder: "asc",
+  });
   const [showAppointmentForm, setShowAppointmentForm] = useState(false);
   const [editingAppointment, setEditingAppointment] = useState(null);
   const [appointments, setAppointments] = useState([]);
@@ -32,62 +36,103 @@ const AppointmentCalendar = () => {
   const [error, setError] = useState(null);
   const [showDetails, setShowDetails] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
+  const [actionLoading, setActionLoading] = useState(false);
 
-  // Fetch appointments on component mount
-  useEffect(() => {
-    if (!authLoading) {
-      fetchAppointments();
-    }
-  }, []);
-
-  const fetchAppointments = async () => {
+  // Memoized fetch function to avoid dependency issues
+  const fetchAppointments = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
-
-      let response;
-      if (filter === "all") {
-        response = await AppointmentService.getAllMyAppointments();
-        setAppointments(response);
-        console.log(response);
-      } else {
-        response = await AppointmentService.getByType(filter);
-        setAppointments(response);
-      }
+      const response = await AppointmentService.getAllMyAppointments();
+      setAppointments(response);
     } catch (err) {
       setError(err.message);
       addToast("Failed to fetch appointments", "error");
     } finally {
       setLoading(false);
     }
-  };
+  }, [addToast]);
 
-  const handleSelect = (eventKey) => {
-    setFilter(eventKey);
-  };
-
-  const handleAppointmentSubmit = async (appointmentData) => {
-    try {
-      if (editingAppointment) {
-        // Update existing appointment
-        const updated = await AppointmentService.update(
-          editingAppointment.id,
-          appointmentData
-        );
-        setAppointments((prev) =>
-          prev.map((appt) => (appt.id === updated.id ? updated : appt))
-        );
-      } else {
-        // Create new appointment
-        const newAppointment = await AppointmentService.create(appointmentData);
-        setAppointments((prev) => [...prev, newAppointment]);
-      }
-      setEditingAppointment(null);
-      setShowAppointmentForm(false);
-    } catch (err) {
-      // You might want to show an error message to the user here
+  // Fetch appointments on component mount
+  useEffect(() => {
+    if (!authLoading) {
+      fetchAppointments();
     }
-  };
+  }, [authLoading, fetchAppointments]);
+
+  // Helper function to get appointment ID consistently
+  const getAppointmentId = useCallback((appointment) => {
+    return appointment._id || appointment.id;
+  }, []);
+
+  // Filter and sort logic for appointments with search functionality
+  const getFilteredAndSortedAppointments = useCallback(
+    (view = "list-view") => {
+      return appointments
+        .filter((appointment) => {
+          // View-based filtering
+          if (view === "list-view") {
+            return (
+              appointment.status?.toLowerCase() === "confirmed" ||
+              appointment.status?.toLowerCase() === "pending"
+            );
+          } else if (view === "history-view") {
+            return (
+              appointment.status?.toLowerCase() === "cancelled" ||
+              appointment.status?.toLowerCase() === "completed" ||
+              appointment.status?.toLowerCase() === "rejected"
+            );
+          }
+          return false;
+        })
+        .filter((appointment) => {
+          // Status filtering
+          const statusMatch =
+            filters.statusFilter === "all" ||
+            appointment.status?.toLowerCase() === filters.statusFilter;
+
+          // Search filtering
+          const searchMatch =
+            !filters.searchQuery ||
+            appointment.title
+              ?.toLowerCase()
+              .includes(filters.searchQuery.toLowerCase()) ||
+            appointment.professionalName
+              ?.toLowerCase()
+              .includes(filters.searchQuery.toLowerCase()) ||
+            appointment.petName
+              ?.toLowerCase()
+              .includes(filters.searchQuery.toLowerCase()) ||
+            appointment.description
+              ?.toLowerCase()
+              .includes(filters.searchQuery.toLowerCase());
+
+          return statusMatch && searchMatch;
+        })
+        .sort((a, b) => {
+          const dateA = new Date(a.dateTime);
+          const dateB = new Date(b.dateTime);
+
+          if (filters.sortOrder === "asc") {
+            return dateA - dateB; // Earliest first
+          } else {
+            return dateB - dateA; // Latest first
+          }
+        });
+    },
+    [appointments, filters]
+  );
+
+  // Memoized filtered appointments for performance
+  const listViewAppointments = useMemo(
+    () => getFilteredAndSortedAppointments("list-view"),
+    [getFilteredAndSortedAppointments]
+  );
+
+  const historyViewAppointments = useMemo(
+    () => getFilteredAndSortedAppointments("history-view"),
+    [getFilteredAndSortedAppointments]
+  );
 
   const handleEditAppointment = (appointment) => {
     setEditingAppointment(appointment);
@@ -95,40 +140,29 @@ const AppointmentCalendar = () => {
   };
 
   const handleDeleteAppointment = async (appointmentId) => {
+    if (!window.confirm("Are you sure you want to delete this appointment?")) {
+      return;
+    }
+
     try {
+      setActionLoading(true);
       await AppointmentService.delete(appointmentId);
       setAppointments((prev) =>
-        prev.filter((appt) => appt.id !== appointmentId)
+        prev.filter((appt) => getAppointmentId(appt) !== appointmentId)
       );
-    } catch (err) {
-      // You might want to show an error message to the user here
+      addToast("Appointment deleted successfully", "success");
+    } catch (error) {
+      addToast(error.message || "Failed to delete appointment", "error");
+    } finally {
+      setActionLoading(false);
     }
   };
-
-  const handleDateSelect = (selectInfo) => {
-    setEditingAppointment(null);
-    setShowAppointmentForm(true);
-  };
-
-  const handleEventClick = (clickInfo) => {
-    const appointment = appointments.find(
-      (appt) => appt.id === parseInt(clickInfo.event.id)
-    );
-    if (appointment) {
-      handleEditAppointment(appointment);
-    }
-  };
-
-  const filterLabel = {
-    all: "All Appointments",
-    vet: "Vet Appointments",
-    grooming: "Grooming Appointments",
-  }[filter];
 
   const handleFormSubmit = async (formData) => {
     try {
-      if (selectedEvent?._id) {
-        await AppointmentService.update(selectedEvent._id, formData);
+      setActionLoading(true);
+      if (editingAppointment?._id) {
+        await AppointmentService.update(editingAppointment._id, formData);
         addToast("Appointment updated successfully", "success");
       } else {
         const newAppointment = await AppointmentService.create(formData);
@@ -136,32 +170,64 @@ const AppointmentCalendar = () => {
         addToast("Appointment created successfully", "success");
       }
       setShowAppointmentForm(false);
-      fetchAppointments();
-    } catch (err) {
-      addToast(err.message || "Failed to save appointment", "error");
+      setEditingAppointment(null);
+      await fetchAppointments();
+    } catch (error) {
+      addToast(error.message || "Failed to save appointment", "error");
+    } finally {
+      setActionLoading(false);
     }
+  };
+
+  const handleViewDetails = (appointment) => {
+    setSelectedEvent(appointment);
+    setShowDetails(true);
   };
 
   const handleDelete = async (id) => {
     try {
+      setActionLoading(true);
       await AppointmentService.delete(id);
       addToast("Appointment deleted successfully", "success");
       setShowDetails(false);
-      fetchAppointments();
-    } catch (err) {
-      addToast(err.message || "Failed to delete appointment", "error");
+      setSelectedEvent(null);
+      await fetchAppointments();
+    } catch (error) {
+      addToast(error.message || "Failed to delete appointment", "error");
+    } finally {
+      setActionLoading(false);
     }
   };
 
   const handleStatusUpdate = async (id, newStatus) => {
     try {
+      setActionLoading(true);
       await AppointmentService.updateStatus(id, newStatus);
       addToast("Appointment status updated successfully", "success");
       setShowDetails(false);
-      fetchAppointments();
-    } catch (err) {
-      addToast(err.message || "Failed to update appointment status", "error");
+      setSelectedEvent(null);
+      await fetchAppointments();
+    } catch (error) {
+      addToast(error.message || "Failed to update appointment status", "error");
+    } finally {
+      setActionLoading(false);
     }
+  };
+
+  const handleFilterChange = (filterType, value) => {
+    setFilters((prev) => ({
+      ...prev,
+      [filterType]: value,
+    }));
+  };
+
+  const handleRefresh = () => {
+    fetchAppointments();
+  };
+
+  const handleCloseDetails = () => {
+    setShowDetails(false);
+    setSelectedEvent(null);
   };
 
   if (loading) {
@@ -177,7 +243,12 @@ const AppointmentCalendar = () => {
   if (error) {
     return (
       <div className="alert alert-danger m-3" role="alert">
-        {error}
+        <div className="d-flex justify-content-between align-items-center">
+          <span>{error}</span>
+          <Button variant="outline-danger" size="sm" onClick={handleRefresh}>
+            <FaSync /> Retry
+          </Button>
+        </div>
       </div>
     );
   }
@@ -185,7 +256,7 @@ const AppointmentCalendar = () => {
   return (
     <Container>
       <Tab.Container activeKey={activeKey} onSelect={(k) => setActiveKey(k)}>
-        <Row className=" dashboard-header-row w-100">
+        <Row className="dashboard-header-row w-100">
           <Nav className="dashboardNavTabs poppins-medium">
             <Nav.Item>
               <Nav.Link eventKey="list-view">List View</Nav.Link>
@@ -193,73 +264,75 @@ const AppointmentCalendar = () => {
             <Nav.Item>
               <Nav.Link eventKey="history-view">History</Nav.Link>
             </Nav.Item>
-            {/* <Nav.Item>
-              <Nav.Link eventKey="calendar-view">Calendar View</Nav.Link>
-            </Nav.Item> */}
           </Nav>
 
           <Tab.Content className="appointment-calendar-content">
-            {/* 1) Calendar View */}
-            {/* <Tab.Pane eventKey="calendar-view">
-              <div
-                // initial={{ opacity: 0, scale: 0.95 }}
-                // animate={{ opacity: 1, scale: 1 }}
-                // transition={{ duration: 0.3 }}
-                className="calendar-container"
-              >
-                <FullCalendar
-                  plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-                  initialView="timeGridWeek"
-                  headerToolbar={{
-                    left: "prev,next today",
-                    center: "title", 
-                    right: "dayGridMonth,timeGridWeek,timeGridDay",
-                  }}
-                  selectable={true}
-                  selectMirror={true}
-                  dayMaxEvents={true}
-                  weekends={true}
-                  events={appointments}
-                  select={handleDateSelect}
-                  eventClick={handleEventClick}
-                  height="auto"
-                  slotMinTime="08:00:00"
-                  slotMaxTime="18:00:00"
-                  allDaySlot={false}
-                  slotDuration="00:30:00"
-                  eventTimeFormat={{
-                    hour: "numeric",
-                    minute: "2-digit",
-                    meridiem: "short",
-                  }}
-                />
-              </div>
-            </Tab.Pane> */}
-
-            {/* 2) List View */}
-            <Tab.Pane eventKey="list-view" className="">
+            {/* List View */}
+            <Tab.Pane eventKey="list-view" className="mt-3">
               <div className="appointment-list-header">
-                <h4>Upcoming Appointments</h4>
-                <InputGroup className="search-bar">
-                  <InputGroup.Text>
-                    <FaSearch />
-                  </InputGroup.Text>
-                  <Form.Control
-                    type="text"
-                    placeholder="Search appointments..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                  />
-                </InputGroup>
+                <div className="filter-controls mb-3">
+                  <div className="row">
+                    <div className="col-md-6">
+                      <InputGroup className="search-bar">
+                        <InputGroup.Text>
+                          <FaSearch />
+                        </InputGroup.Text>
+                        <Form.Control
+                          type="text"
+                          placeholder="Search appointments..."
+                          value={filters.searchQuery}
+                          onChange={(e) =>
+                            handleFilterChange("searchQuery", e.target.value)
+                          }
+                          aria-label="Search appointments"
+                        />
+                      </InputGroup>
+                    </div>
+                    <div className="col-md-3">
+                      <Form.Select
+                        value={filters.statusFilter}
+                        onChange={(e) =>
+                          handleFilterChange("statusFilter", e.target.value)
+                        }
+                        aria-label="Filter by status"
+                      >
+                        <option value="all">All Status</option>
+                        <option value="confirmed">Confirmed</option>
+                        <option value="pending">Pending</option>
+                      </Form.Select>
+                    </div>
+                    <div className="col-md-3">
+                      <Form.Select
+                        value={filters.sortOrder}
+                        onChange={(e) =>
+                          handleFilterChange("sortOrder", e.target.value)
+                        }
+                        aria-label="Sort appointments"
+                      >
+                        <option value="asc">Earliest First</option>
+                        <option value="desc">Latest First</option>
+                      </Form.Select>
+                    </div>
+                  </div>
+                </div>
+                <Button
+                  variant="outline-primary"
+                  size="sm"
+                  onClick={handleRefresh}
+                  disabled={actionLoading}
+                  aria-label="Refresh appointments"
+                >
+                  <FaSync /> Refresh
+                </Button>
               </div>
-              {appointments.length === 0 && (
+              {listViewAppointments.length === 0 && (
                 <div className="text-center">
-                  <p>No Upcoming appointments found</p>
+                  <p>No upcoming appointments found</p>
                 </div>
               )}
-              {appointments.map((appointment) => (
+              {listViewAppointments.map((appointment) => (
                 <AppointmentCard
-                  key={appointment._id}
+                  key={getAppointmentId(appointment)}
                   professionalName={appointment.professionalName}
                   title={appointment.title}
                   dateTime={appointment.dateTime}
@@ -268,50 +341,70 @@ const AppointmentCalendar = () => {
                   role={appointment.role}
                   location={appointment.location}
                   petName={appointment.petName}
+                  appointmentType={appointment.appointmentType}
                   onEdit={() => handleEditAppointment(appointment)}
-                  onDelete={() => handleDeleteAppointment(appointment._id)}
+                  onDelete={() =>
+                    handleDeleteAppointment(getAppointmentId(appointment))
+                  }
+                  onViewDetails={() => handleViewDetails(appointment)}
                 />
               ))}
             </Tab.Pane>
 
-            {/* 3) History View */}
+            {/* History View */}
             <Tab.Pane eventKey="history-view">
               <div className="appointment-list-header">
-                <h4>Past Appointments</h4>
-                <InputGroup className="search-bar">
-                  <InputGroup.Text>
-                    <FaSearch />
-                  </InputGroup.Text>
-                  <Form.Control
-                    type="text"
-                    placeholder="Search appointments..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                  />
-                </InputGroup>
+                <h4>Appointment History</h4>
+                <div className="d-flex gap-2">
+                  <InputGroup className="search-bar">
+                    <InputGroup.Text>
+                      <FaSearch />
+                    </InputGroup.Text>
+                    <Form.Control
+                      type="text"
+                      placeholder="Search appointments..."
+                      value={filters.searchQuery}
+                      onChange={(e) =>
+                        handleFilterChange("searchQuery", e.target.value)
+                      }
+                      aria-label="Search appointment history"
+                    />
+                  </InputGroup>
+                  <Button
+                    variant="outline-primary"
+                    size="sm"
+                    onClick={handleRefresh}
+                    disabled={actionLoading}
+                    aria-label="Refresh appointments"
+                  >
+                    <FaSync />
+                  </Button>
+                </div>
               </div>
-              {appointments.length === 0 && (
+              {historyViewAppointments.length === 0 && (
                 <div className="text-center">
-                  <p>No Past appointments found</p>
+                  <p>No past appointments found</p>
                 </div>
               )}
-              {appointments
-                .filter((appt) => new Date(appt.dateTime) < new Date())
-                .map((appt) => (
-                  <AppointmentCard
-                    key={appt._id}
-                    professionalName={appt.professionalName}
-                    title={appt.title}
-                    dateTime={appt.dateTime}
-                    description={appt.description}
-                    status={appt.status}
-                    role={appt.role}
-                    location={appt.location}
-                    petName={appt.petName}
-                    onEdit={() => handleEditAppointment(appt)}
-                    onDelete={() => handleDeleteAppointment(appt._id)}
-                  />
-                ))}
+              {historyViewAppointments.map((appointment) => (
+                <AppointmentCard
+                  key={getAppointmentId(appointment)}
+                  professionalName={appointment.professionalName}
+                  title={appointment.title}
+                  dateTime={appointment.dateTime}
+                  description={appointment.description}
+                  status={appointment.status}
+                  role={appointment.role}
+                  location={appointment.location}
+                  petName={appointment.petName}
+                  appointmentType={appointment.appointmentType}
+                  onEdit={() => handleEditAppointment(appointment)}
+                  onDelete={() =>
+                    handleDeleteAppointment(getAppointmentId(appointment))
+                  }
+                  onViewDetails={() => handleViewDetails(appointment)}
+                />
+              ))}
             </Tab.Pane>
           </Tab.Content>
         </Row>
@@ -328,18 +421,28 @@ const AppointmentCalendar = () => {
         initialData={editingAppointment}
       />
 
-      <Modal show={showDetails} onHide={() => setShowDetails(false)}>
+      {/* Appointment Details Modal */}
+      <Modal show={showDetails} onHide={handleCloseDetails} size="lg">
         <Modal.Header closeButton>
           <Modal.Title>Appointment Details</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {selectedEvent && (
             <AppointmentCard
-              appointment={selectedEvent}
-              onDelete={() => handleDelete(selectedEvent.id)}
+              professionalName={selectedEvent.professionalName}
+              title={selectedEvent.title}
+              dateTime={selectedEvent.dateTime}
+              description={selectedEvent.description}
+              status={selectedEvent.status}
+              role={selectedEvent.role}
+              location={selectedEvent.location}
+              petName={selectedEvent.petName}
+              appointmentType={selectedEvent.appointmentType}
+              onDelete={() => handleDelete(getAppointmentId(selectedEvent))}
               onStatusUpdate={(status) =>
-                handleStatusUpdate(selectedEvent.id, status)
+                handleStatusUpdate(getAppointmentId(selectedEvent), status)
               }
+              isDetailView={true}
             />
           )}
         </Modal.Body>
