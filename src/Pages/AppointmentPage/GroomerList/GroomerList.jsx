@@ -10,7 +10,15 @@ import "./GroomerList.css";
 
 const PAGE_SIZE = 10;
 
+/**
+ * @deprecated This component is deprecated. Use ProfessionalList with role="groomer" instead.
+ * This component will be removed in a future version.
+ */
 const GroomerList = () => {
+  console.warn(
+    "GroomerList is deprecated. Use ProfessionalList with role='groomer' instead."
+  );
+
   const [groomers, setGroomers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

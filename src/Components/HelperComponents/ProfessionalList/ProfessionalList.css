@@ -1,0 +1,269 @@
+/* Professional List Header Styles */
+.veterinarian-list-header,
+.groomer-list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    gap: 1rem;
+}
+
+.veterinarian-list-header h4,
+.groomer-list-header h4 {
+    margin: 0;
+    color: var(--primary1-color);
+    font-weight: 600;
+    font-size: 1.5rem;
+}
+
+/* Search Bar Styles */
+.search-bar {
+    width: 300px;
+    max-width: 100%;
+    border: 1px solid var(--secondary-color);
+    border-radius: 2rem;
+    overflow: hidden;
+    font-family: "Poppins", sans-serif;
+}
+
+.search-bar .input-group-text {
+    background-color: var(--white-color);
+    border: none;
+    color: var(--secondary-color);
+    padding: 0.5rem 0.75rem;
+    border-top-left-radius: 2rem;
+    border-bottom-left-radius: 2rem;
+}
+
+.search-bar .form-control {
+    border: none;
+    padding: 0.5rem 0.75rem;
+    background-color: var(--white-color);
+    border-top-right-radius: 2rem;
+    border-bottom-right-radius: 2rem;
+    font-family: "Poppins", sans-serif;
+    font-weight: 400;
+}
+
+.search-bar .form-control:focus {
+    box-shadow: none;
+    background-color: var(--white-color);
+}
+
+.search-bar:focus-within {
+    box-shadow: 0 0 0 0.2rem rgba(92, 141, 137, 0.25);
+}
+
+.search-bar .form-control::placeholder {
+    font-family: "Poppins", sans-serif;
+    font-weight: 300;
+    color: var(--neutral-color-60);
+}
+
+/* Results Summary */
+.results-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+}
+
+/* Professional List Grid */
+.veterinarian-list,
+.groomer-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.veterinarian-list .col,
+.groomer-list .col {
+    display: flex;
+    flex-direction: column;
+}
+
+.veterinarian-list .col>*,
+.groomer-list .col>* {
+    height: 100%;
+}
+
+/* Loading and Error States */
+.loading-container,
+.error-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    padding: 2rem;
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--tertiary-color-opacque);
+    border-top: 3px solid var(--secondary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.error-message {
+    color: var(--danger-color);
+    font-size: 1.1rem;
+    text-align: center;
+}
+
+/* No Results State */
+.no-results-container {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--neutral-color-60);
+}
+
+.no-results-container p {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+}
+
+/* Sort Controls */
+.sort-controls {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.sort-button {
+    background: none;
+    border: 1px solid var(--secondary-color);
+    border-radius: 0.5rem;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: "Poppins", sans-serif;
+    font-size: 0.9rem;
+}
+
+.sort-button:hover {
+    background-color: var(--tertiary-color-opacque);
+}
+
+.sort-button.active {
+    background-color: var(--secondary-color);
+    color: var(--white-color);
+}
+
+/* Filter Controls */
+.filter-controls {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.filter-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--secondary-color);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+
+    .veterinarian-list-header,
+    .groomer-list-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+    }
+
+    .search-bar {
+        width: 100%;
+    }
+
+    .filter-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .sort-controls {
+        justify-content: center;
+    }
+
+    .veterinarian-list,
+    .groomer-list {
+        gap: 1rem;
+    }
+
+    .results-summary {
+        flex-direction: column;
+        gap: 0.5rem;
+        text-align: center;
+    }
+}
+
+@media (max-width: 576px) {
+
+    .veterinarian-list-header h4,
+    .groomer-list-header h4 {
+        font-size: 1.25rem;
+    }
+
+    .search-bar {
+        font-size: 0.9rem;
+    }
+
+    .filter-controls {
+        gap: 0.5rem;
+    }
+}
+
+/* Focus and Accessibility */
+.search-bar .form-control:focus,
+.sort-button:focus,
+.filter-controls select:focus {
+    outline: 2px solid var(--secondary-color);
+    outline-offset: 2px;
+}
+
+/* Animation for smooth transitions */
+.professional-card-container {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.professional-card-container:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Screen reader only content */
+.visually-hidden {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}

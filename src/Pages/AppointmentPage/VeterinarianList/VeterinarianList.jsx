@@ -10,7 +10,15 @@ import "./VeterinarianList.css";
 
 const PAGE_SIZE = 10;
 
+/**
+ * @deprecated This component is deprecated. Use ProfessionalList with role="veterinarian" instead.
+ * This component will be removed in a future version.
+ */
 const VeterinarianList = () => {
+  console.warn(
+    "VeterinarianList is deprecated. Use ProfessionalList with role='veterinarian' instead."
+  );
+
   const [vets, setVets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
