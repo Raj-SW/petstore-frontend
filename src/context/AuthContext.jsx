@@ -39,8 +39,12 @@ export const AuthProvider = ({ children }) => {
   const checkAuthStatus = async () => {
     try {
       const response = await authApi.getCurrentUser();
-      if (response?.data) {
+      if (response?.success && response?.data) {
         setUser(response.data);
+      } else if (response?.data) {
+        setUser(response.data);
+      } else if (response && typeof response === "object" && response.id) {
+        setUser(response);
       } else {
         setUser(null);
       }

@@ -19,7 +19,7 @@ const authApi = {
 
   // Get current user
   getCurrentUser: async () => {
-    const response = await api.get("/auth/me");
+    const response = await api.get("users/me");
     return response.data;
   },
 
@@ -45,7 +45,7 @@ const authApi = {
 
   // User profile management
   getProfile: async () => {
-    const response = await api.get("/users/profile");
+    const response = await api.get("/users/me");
     return response.data;
   },
 

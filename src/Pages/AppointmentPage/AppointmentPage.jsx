@@ -70,7 +70,7 @@ const AppointmentPage = () => {
             >
               <div className="dashboard-navigation-desktop rounded-3 p-1">
                 <div className="">
-                  <div className="d-flex flex-row align-items-center justify-evenly mb-3">
+                  <div className="d-flex flex-row align-items-center justify-evenly">
                     <div className="user-info">
                       <div>
                         <p

@@ -16,7 +16,8 @@ import {
 import { FaSearch, FaSync } from "react-icons/fa";
 import AppointmentCard from "@/Components/HelperComponents/AppointmentCard/AppointmentCard";
 import AppointmentForm from "@/Components/HelperComponents/AppointmentForm/AppointmentForm";
-import AppointmentService from "../../../Services/localServices/appointmentService";
+// import AppointmentService from "../../../Services/localServices/appointmentService";
+import appointmentsApi from "@/Services/api/appointmentsApi";
 import { useToast } from "../../../context/ToastContext";
 import { useAuth } from "../../../context/AuthContext";
 
@@ -43,7 +44,7 @@ const AppointmentCalendar = () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await AppointmentService.getAllMyAppointments();
+      const response = await appointmentsApi.getMyAppointments();
       setAppointments(response);
     } catch (err) {
       setError(err.message);
@@ -245,7 +246,12 @@ const AppointmentCalendar = () => {
       <div className="alert alert-danger m-3" role="alert">
         <div className="d-flex justify-content-between align-items-center">
           <span>{error}</span>
-          <Button variant="outline-danger" size="sm" onClick={handleRefresh}>
+          <Button
+            variant="outline-danger"
+            size="sm"
+            onClick={handleRefresh}
+            className="p-1"
+          >
             <FaSync /> Retry
           </Button>
         </div>
@@ -315,15 +321,6 @@ const AppointmentCalendar = () => {
                     </div>
                   </div>
                 </div>
-                <Button
-                  variant="outline-primary"
-                  size="sm"
-                  onClick={handleRefresh}
-                  disabled={actionLoading}
-                  aria-label="Refresh appointments"
-                >
-                  <FaSync /> Refresh
-                </Button>
               </div>
               {listViewAppointments.length === 0 && (
                 <div className="text-center">
@@ -376,8 +373,9 @@ const AppointmentCalendar = () => {
                     onClick={handleRefresh}
                     disabled={actionLoading}
                     aria-label="Refresh appointments"
+                    className="p-2 rounded-4"
                   >
-                    <FaSync />
+                    <FaSync /> Refresh
                   </Button>
                 </div>
               </div>

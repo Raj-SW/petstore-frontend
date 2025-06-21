@@ -1,7 +1,7 @@
 import { api } from "../../core/api/apiClient";
 
 const professionalsApi = {
-  // Get all professionals with filters
+  // Get all professionals with filters (supports ?role=petTaxi query)
   getProfessionals: async (params = {}) => {
     const queryString = new URLSearchParams(params).toString();
     const response = await api.get(
@@ -10,13 +10,10 @@ const professionalsApi = {
     return response.data;
   },
 
-  // Get professionals by role
-  getProfessionalsByRole: async (role, params = {}) => {
-    const queryString = new URLSearchParams(params).toString();
-    const response = await api.get(
-      `/professionals/role/${role}${queryString ? `?${queryString}` : ""}`
-    );
-    return response.data;
+  // Get professionals by role using path parameter
+  getProfessionalsByRole: async (role) => {
+    const response = await api.get(`/professionals/role/${role}`);
+    return response.data.data;
   },
 
   // Get available professionals
@@ -34,15 +31,34 @@ const professionalsApi = {
     return response.data;
   },
 
-  // Update professional info
+  // Update professional profile (authenticated route)
   updateProfessional: async (id, professionalData) => {
-    const response = await api.put(`/professionals/${id}`, professionalData);
+    const response = await api.patch(
+      `/professionals/${id}/profile`,
+      professionalData
+    );
     return response.data;
   },
 
-  // Update professional rating
+  // Update professional availability (authenticated route)
+  updateAvailability: async (id, availability) => {
+    const response = await api.patch(`/professionals/${id}/availability`, {
+      availability,
+    });
+    return response.data;
+  },
+
+  // Toggle professional active status (authenticated route)
+  toggleProfessionalStatus: async (id, isActive) => {
+    const response = await api.patch(`/professionals/${id}/status`, {
+      isActive,
+    });
+    return response.data;
+  },
+
+  // Update professional rating (authenticated route)
   updateProfessionalRating: async (id, rating) => {
-    const response = await api.post(`/professionals/${id}/rating`, { rating });
+    const response = await api.patch(`/professionals/${id}/rating`, { rating });
     return response.data;
   },
 
@@ -52,22 +68,6 @@ const professionalsApi = {
     const response = await api.get(
       `/appointments/professional/${id}${queryString ? `?${queryString}` : ""}`
     );
-    return response.data;
-  },
-
-  // Update professional availability
-  updateAvailability: async (id, availability) => {
-    const response = await api.patch(`/professionals/${id}/availability`, {
-      availability,
-    });
-    return response.data;
-  },
-
-  // Toggle professional active status
-  toggleProfessionalStatus: async (id, isActive) => {
-    const response = await api.patch(`/professionals/${id}/status`, {
-      isActive,
-    });
     return response.data;
   },
 

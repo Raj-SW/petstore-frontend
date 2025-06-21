@@ -37,7 +37,7 @@
     font-weight: 500 !important;
     text-transform: capitalize !important;
     background-color: var(--primary-blue-color) !important;
-    border-color: var(--secondary-blue-color) !important;
+    border-color: var(--primary-blue-color) !important;
     font-family: "Poppins", sans-serif;
 }
 
@@ -153,7 +153,7 @@
 .search-bar {
     width: 300px;
     max-width: 100%;
-    border: 1rem solid var(--secondary-blue-color);
+    border: 0.05rem solid var(--primary-blue-color);
     border-radius: 2rem;
     overflow: hidden;
     font-family: "Poppins", sans-serif;
@@ -162,7 +162,6 @@
 .search-bar .input-group-text {
     background-color: var(--white-color);
     border: none;
-    color: var(--secondary-blue-color);
     padding: 0.5rem 0.75rem;
     border-top-left-radius: 2rem;
     border-bottom-left-radius: 2rem;
@@ -182,10 +181,6 @@
 .search-bar .form-control:focus {
     box-shadow: none;
     background-color: var(--tertiary-creme-color);
-}
-
-.search-bar:focus-within {
-    box-shadow: 0 0 0 0.2rem rgba(92, 141, 137, 0.25);
 }
 
 .search-bar .form-control::placeholder {

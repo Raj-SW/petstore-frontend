@@ -115,7 +115,6 @@
 .search-bar {
     width: 300px;
     max-width: 100%;
-    border: 0.05rem solid var(--secondary-blue-color);
     border-radius: 2rem;
     overflow: hidden;
     font-family: "Poppins", sans-serif;
@@ -141,9 +140,7 @@
     background-color: var(--white-color);
 }
 
-.search-bar:focus-within {
-    box-shadow: 0 0 0 0.09rem var(--tertiary-blue-color-opacque);
-}
+.search-bar:focus-within {}
 
 /* Appointment Card */
 .appointment-card {

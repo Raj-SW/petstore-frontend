@@ -9,11 +9,8 @@ const appointmentsApi = {
 
   // Get user's appointments
   getMyAppointments: async (params = {}) => {
-    const queryString = new URLSearchParams(params).toString();
-    const response = await api.get(
-      `/appointments${queryString ? `?${queryString}` : ""}`
-    );
-    return response.data;
+    const response = await api.get(`/appointments/my-appointments`);
+    return response.data.data;
   },
 
   // Get professional's appointments

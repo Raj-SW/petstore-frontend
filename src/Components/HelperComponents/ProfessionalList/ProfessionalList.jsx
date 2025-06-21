@@ -6,7 +6,7 @@ import ProfessionalCard from "@/Components/HelperComponents/ProfessionalCard/Pro
 import ProfessionalCalendar from "@/Components/HelperComponents/ProfessionalCalendar/ProfessionalCalendar";
 import PaginationBar from "@/Components/HelperComponents/PaginationBar/PaginationBar";
 import LoadingSpinner from "@/Components/HelperComponents/LoadingSpinner/LoadingSpinner";
-import ProfessionalService from "@/Services/localServices/professionalService";
+import professionalsApi from "@/Services/api/professionalsApi";
 import { useToast } from "@/context/ToastContext";
 import useDebounce from "@/hooks/useDebounce";
 import "./ProfessionalList.css";
@@ -88,7 +88,7 @@ const ProfessionalList = ({
     try {
       setLoading(true);
       setError(null);
-      const data = await ProfessionalService.getAll({ role });
+      const data = await professionalsApi.getProfessionalsByRole(role);
       setProfessionals(data);
     } catch (err) {
       const errorMessage = err.message || config.errorMessage;
@@ -261,11 +261,8 @@ const ProfessionalList = ({
     >
       <Container fluid>
         {/* Header with search and filtering */}
-        <div className={`${role}-list-header`}>
-          <h4
-            className="poppins-light"
-            style={{ color: "var(--primary-blue-color)" }}
-          >
+        <div className={`${role}-list-header d-flex justify-content-between`}>
+          <h4 className="" style={{ color: "var(--primary-blue-color)" }}>
             {config.title}
           </h4>
 
@@ -294,6 +291,7 @@ const ProfessionalList = ({
                 }}
                 style={{ width: "200px" }}
                 aria-label="Sort professionals"
+                className="p-2 rounded-5"
               >
                 <option value="name-asc">Name (A-Z)</option>
                 <option value="name-desc">Name (Z-A)</option>

@@ -8,7 +8,8 @@ class ProfessionalService {
       const response = await axios.get(`${this.API_URL}/professionals`, {
         params,
       });
-      return response.data.data;
+      console.log(response.data);
+      return response.data;
     } catch (error) {
       throw new Error(
         error.response?.data?.message || "Failed to fetch professionals"
@@ -22,7 +23,7 @@ class ProfessionalService {
       const response = await axios.get(`${this.API_URL}/professionals`, {
         params: { role },
       });
-      return response.data.data;
+      return response.data;
     } catch (error) {
       throw new Error(
         error.response?.data?.message || "Failed to fetch professionals"
@@ -34,7 +35,7 @@ class ProfessionalService {
   static async getById(id) {
     try {
       const response = await axios.get(`${this.API_URL}/professionals/${id}`);
-      return response.data.data;
+      return response.data;
     } catch (error) {
       throw new Error(
         error.response?.data?.message || "Failed to fetch professional"

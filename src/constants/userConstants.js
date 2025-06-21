@@ -4,6 +4,7 @@ export const USER_ROLES = {
   VETERINARIAN: "veterinarian",
   GROOMER: "groomer",
   TRAINER: "trainer",
+  PETTAXI: "petTaxi",
   ADMIN: "admin",
 };
 
@@ -12,6 +13,7 @@ export const PROFESSIONAL_ROLES = [
   USER_ROLES.VETERINARIAN,
   USER_ROLES.GROOMER,
   USER_ROLES.TRAINER,
+  USER_ROLES.PETTAXI,
 ];
 
 // Role display names for UI
@@ -20,6 +22,7 @@ export const ROLE_DISPLAY_NAMES = {
   [USER_ROLES.VETERINARIAN]: "Veterinarian",
   [USER_ROLES.GROOMER]: "Pet Groomer",
   [USER_ROLES.TRAINER]: "Pet Trainer",
+  [USER_ROLES.PETTAXI]: "Pet Taxi",
   [USER_ROLES.ADMIN]: "Administrator",
 };
 
