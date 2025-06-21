@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import PropTypes from "prop-types";
 import {
   Modal,
@@ -15,20 +15,15 @@ import {
   FaKey,
   FaEye,
   FaEyeSlash,
-  FaGoogle,
-  FaFacebook,
   FaExclamationCircle,
   FaUserPlus,
   FaTimes,
   FaPhone,
   FaMapMarkerAlt,
 } from "react-icons/fa";
-import { IconContext } from "react-icons";
-import brandLogoV2 from "../../../assets/Decoratives/BrandV2.png";
-import dogLogin from "../../../assets/Decoratives/DogPic.png";
+
 import { useAuth } from "../../../context/AuthContext";
 import { useToast } from "../../../context/ToastContext";
-import AuthService from "../../../Services/authService";
 import "./SignUpModal.css";
 
 const SignUpModal = ({
@@ -144,33 +139,6 @@ const SignUpModal = ({
     }
   };
 
-  const handleSocialSignup = async (provider) => {
-    setLoading(true);
-    setAlert(null);
-
-    try {
-      // Implement social signup logic here
-      const result = await AuthService.socialSignup(provider);
-      if (result.success) {
-        onHide();
-      } else {
-        setAlert({
-          type: "danger",
-          message:
-            result.error || `${provider} signup failed. Please try again.`,
-        });
-      }
-    } catch (error) {
-      setAlert({
-        type: "danger",
-        message:
-          error.message || `An error occurred during ${provider} signup.`,
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleClose = () => {
     setErrors({});
     setAlert(null);
@@ -182,35 +150,22 @@ const SignUpModal = ({
       show={show}
       onHide={handleClose}
       className="authModal signUpModal"
-      size="lg"
+      size="md"
+      centered
     >
-      <Modal.Header
-        className="border-0 position-relative m-2 p-0"
-        style={{ minHeight: 0 }}
-      >
+      <Modal.Header className="border-0 d-flex justify-content-end p-2">
         <Button
           variant="link"
-          className="position-absolute signup-close-button"
-          style={{ right: 10, top: 10, zIndex: 2 }}
-          onClick={handleClose}
-          aria-label="Close"
+          className="primary-color-font login-close-button"
+          onClick={onHide}
         >
-          <FaTimes size={22} />
+          <FaTimes className="" size={24} />
         </Button>
       </Modal.Header>
       <Modal.Body className="authModal-body d-flex">
         <Container className="d-flex p-0 m-0 loginContainer">
-          <Col className="signUpDecoWrapper d-none d-lg-flex flex-column align-items-center justify-content-center">
-            <div className="p-4 d-flex justify-content-center">
-              <img src={brandLogoV2} alt="Brand Logo" />
-            </div>
-            <div className="d-flex justify-content-center align-items-center">
-              <img src={dogLogin} alt="Login Dog" className="signup-dog-img" />
-            </div>
-          </Col>
-
-          <Col className="p-3 w-100 pt-5">
-            <h3 className="mb-4 text-center poppins-extrabold secondary-color-font">
+          <Col className="w-100 pt-2">
+            <h3 className="mb-2 text-center poppins-extrabold secondary-color-font">
               Create Your Account
             </h3>
             {alert && (
@@ -383,7 +338,7 @@ const SignUpModal = ({
               <div className="d-grid gap-2">
                 <Button
                   type="submit"
-                  className="btn-primary d-flex align-items-center justify-content-center gap-2 rounded-5 signup-btn"
+                  className="btn-primary d-flex align-items-center justify-content-center gap-2 rounded-5 signup-btn w-75 mx-auto"
                   disabled={loading}
                 >
                   <FaUserPlus className="mb-1" />
@@ -391,25 +346,6 @@ const SignUpModal = ({
                 </Button>
               </div>
             </Form>
-
-            <div className="d-flex align-items-center  poppins-regular">
-              <div className="flex-grow-1 border-bottom"></div>
-              <span className="mx-2 primary-color-font">Or Sign Up with</span>
-              <div className="flex-grow-1 border-bottom"></div>
-            </div>
-
-            <IconContext.Provider value={{ size: "1.5rem" }}>
-              <div className="d-flex justify-content-center gap-3 my-3  ">
-                <FaGoogle
-                  onClick={() => handleSocialSignup("google")}
-                  style={{ cursor: "pointer" }}
-                />
-                <FaFacebook
-                  onClick={() => handleSocialSignup("facebook")}
-                  style={{ cursor: "pointer" }}
-                />
-              </div>
-            </IconContext.Provider>
 
             <div className="text-center pb-4 poppins-regular">
               <p className="mt-4 login-link">

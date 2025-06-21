@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import PropTypes from "prop-types";
 import {
   Modal,
@@ -13,15 +13,11 @@ import {
   FaKey,
   FaEye,
   FaEyeSlash,
-  FaGoogle,
-  FaFacebook,
   FaTimes,
   FaSignInAlt,
   FaExclamationCircle,
   FaEnvelope,
 } from "react-icons/fa";
-import { IconContext } from "react-icons";
-import AuthService from "../../../Services/authService";
 import ForgotPasswordModal from "../../Auth/ForgotPasswordModal";
 import "./LoginModal.css";
 import { useAuth } from "../../../context/AuthContext";
@@ -95,30 +91,6 @@ const LoginModal = ({
       setAlert({
         type: "error",
         message: "An unexpected error occurred. Please try again.",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleSocialLogin = async (provider) => {
-    setLoading(true);
-    setAlert(null);
-    try {
-      const result = await AuthService.socialLogin(provider);
-      if (result.success) {
-        onHide();
-      } else {
-        setAlert({
-          type: "error",
-          message:
-            result.error || `${provider} login failed. Please try again.`,
-        });
-      }
-    } catch (error) {
-      setAlert({
-        type: "error",
-        message: "Social login failed. Please try again.",
       });
     } finally {
       setLoading(false);
@@ -260,22 +232,9 @@ const LoginModal = ({
               </div>
             </Form>
 
-            <div className="social-login-divider">
-              <span>Or Sign Up with</span>
-            </div>
-
-            <IconContext.Provider
-              value={{ color: "var(--primary-blue-color)", size: "1.5rem" }}
-            >
-              <div className="social-icons">
-                <FaGoogle onClick={() => handleSocialLogin("google")} />
-                <FaFacebook onClick={() => handleSocialLogin("facebook")} />
-              </div>
-            </IconContext.Provider>
-
             <div className="signup-link">
               <p className="mt-4 text-primary">
-                Don't have an account?{" "}
+                Don't have an account?
                 <a href="#" onClick={onSignUpClick}>
                   Sign up
                 </a>

@@ -8,16 +8,6 @@
     padding: 0;
 }
 
-.signUpDecoWrapper {
-    background-image: url("../../../assets/Decoratives/loginBackground.png");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    width: 100%;
-    height: auto;
-    border-radius: 1rem 0 0 1rem;
-}
-
 /* Form styles */
 .signup-form .form-control {
     border: 1px solid #ced4da;
@@ -36,7 +26,7 @@
     background-color: #fff;
 }
 
-.signup-form .input-group:focus-within .input-group-text {
+.signup-form .input-group .input-group-text {
     border-color: var(--primary-blue-color);
 }
 
