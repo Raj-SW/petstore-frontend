@@ -155,15 +155,6 @@
   }
 }
 
-.modal-content {
-  background: white;
-  padding: 2rem;
-  border-radius: 0.5rem;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-  max-width: 400px;
-  width: 90%;
-  animation: slideIn 0.3s ease;
-}
 
 @keyframes slideIn {
   from {
@@ -237,7 +228,7 @@
   }
 
   .modal-content {
-    margin: 1rem;
+    /* margin: 1rem; */
   }
 
   .modal-actions {

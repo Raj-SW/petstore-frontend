@@ -10,7 +10,6 @@ import {
   Alert,
 } from "react-bootstrap";
 import {
-  FaUser,
   FaKey,
   FaEye,
   FaEyeSlash,
@@ -22,13 +21,11 @@ import {
   FaEnvelope,
 } from "react-icons/fa";
 import { IconContext } from "react-icons";
-import brandLogoV2 from "../../../assets/Decoratives/BrandV2.png";
-import catLogin from "../../../assets/Decoratives/Cat with Log In.png";
-import { useAuth } from "../../../context/AuthContext";
-import { useToast } from "../../../context/ToastContext";
 import AuthService from "../../../Services/authService";
 import ForgotPasswordModal from "../../Auth/ForgotPasswordModal";
 import "./LoginModal.css";
+import { useAuth } from "../../../context/AuthContext";
+import { useToast } from "../../../context/ToastContext";
 
 const LoginModal = ({
   show,
@@ -133,15 +130,16 @@ const LoginModal = ({
       show={show}
       onHide={onHide}
       className="authModal loginModal"
-      size="lg"
+      size="md"
+      centered
     >
-      <Modal.Header className="border-0 position-relative m-2">
+      <Modal.Header className="border-0 d-flex justify-content-end p-2">
         <Button
           variant="link"
-          className="position-absolute primary-color-font login-close-button"
+          className="primary-color-font login-close-button"
           onClick={onHide}
         >
-          <FaTimes className="" size={22} />
+          <FaTimes className="" size={24} />
         </Button>
       </Modal.Header>
       <Modal.Body className="authModal-body d-flex">
@@ -283,17 +281,6 @@ const LoginModal = ({
                 </a>
               </p>
             </div>
-          </Col>
-
-          <Col className="loginDecoWrapper d-none d-lg-flex flex-column align-items-center justify-content-center">
-            <Col className="loginDecoWrapper">
-              <div className="p-4 d-flex justify-content-center">
-                <img src={brandLogoV2} alt="Brand Logo" />
-              </div>
-              <div className="d-flex justify-content-center">
-                <img src={catLogin} alt="Login Cat" />
-              </div>
-            </Col>
           </Col>
         </Container>
       </Modal.Body>

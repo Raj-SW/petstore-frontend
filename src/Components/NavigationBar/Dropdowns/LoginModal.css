@@ -1,28 +1,6 @@
-.authModal {
-    border-radius: 2rem;
-}
-
 .authModal-body {
     margin: 0;
     padding: 0;
-}
-
-.loginDecoWrapper {
-    background-image: url("../../../assets/Decoratives/loginBackground.png");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    width: 100%;
-    height: auto;
-    border-radius: 0 1rem 1rem 0;
-}
-
-.loginContainer {
-    min-height: 600px;
-}
-
-.login-close-button {
-    right: 0.625rem;
 }
 
 /* Form styles */
