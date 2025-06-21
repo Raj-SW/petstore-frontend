@@ -4,7 +4,7 @@ import { FiPlus } from "react-icons/fi";
 import DataTable from "../../../Components/Admin/DataTable/DataTable";
 import productsApi from "../../../Services/api/productsApi";
 import { useToast } from "../../../context/ToastContext";
-import "./AdminProducts.css";
+// import "./AdminProducts.css";
 
 const AdminProducts = () => {
   const [products, setProducts] = useState([]);

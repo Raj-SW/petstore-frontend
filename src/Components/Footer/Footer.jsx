@@ -21,7 +21,7 @@ const Footer = () => {
             <input
               type="email"
               name="emailInput"
-              id=""
+              id="emailInput"
               className="emailInput rounded-2"
             />
             <Button className="subscribeButton" variant="primary">

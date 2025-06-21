@@ -29,3 +29,222 @@
   --white-color: #FFFFFF;
   --light-color: #F9F8EB;
 }
+
+/* Admin Products Page Styles */
+.admin-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.add-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background-color: #e74c3c;
+  color: white;
+  text-decoration: none;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.add-button:hover {
+  background-color: #c0392b;
+}
+
+/* Product specific table styling */
+.product-image-cell {
+  display: flex;
+  align-items: center;
+}
+
+.product-thumbnail {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 0.375rem;
+  border: 1px solid #dee2e6;
+}
+
+.product-name {
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+.product-category {
+  padding: 0.25rem 0.75rem;
+  background-color: #f8f9fa;
+  border-radius: 1rem;
+  font-size: 0.8125rem;
+  color: #495057;
+}
+
+.product-price {
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+/* Stock Badges */
+.stock-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.stock-badge.in-stock {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.stock-badge.low-stock {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.stock-badge.out-of-stock {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+/* Status Badges */
+.status-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.status-badge.active {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.status-badge.inactive {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+/* Delete Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.modal-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  width: 90%;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modal-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 0 0 1rem 0;
+}
+
+.modal-message {
+  color: #495057;
+  margin: 0 0 1.5rem 0;
+  line-height: 1.5;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+}
+
+.modal-button {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.modal-button.cancel {
+  background-color: #f8f9fa;
+  color: #495057;
+  border: 1px solid #dee2e6;
+}
+
+.modal-button.cancel:hover {
+  background-color: #e9ecef;
+  border-color: #adb5bd;
+}
+
+.modal-button.confirm {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.modal-button.confirm:hover {
+  background-color: #c0392b;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .admin-page-header {
+    flex-direction: column;
+  }
+
+  .add-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .modal-content {
+    margin: 1rem;
+  }
+
+  .modal-actions {
+    flex-direction: column-reverse;
+  }
+
+  .modal-button {
+    width: 100%;
+  }
+}
