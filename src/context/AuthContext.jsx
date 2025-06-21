@@ -1,11 +1,18 @@
-import { createContext, useContext, useState, useEffect } from "react";
-import axios from "axios";
-
-const API_URL = import.meta.env.VITE_NODE_API_URL;
-
-// Configure axios to include credentials and handle CORS
-axios.defaults.withCredentials = true;
-axios.defaults.headers.common["Content-Type"] = "application/json";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+} from "react";
+import authApi from "../Services/api/authApi";
+import {
+  hasPermission,
+  hasRole,
+  hasAnyRole,
+  isProfessional,
+  isAdmin,
+} from "../constants/userConstants";
 
 const AuthContext = createContext(null);
 
@@ -14,31 +21,32 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Listen for logout events from API interceptor
   useEffect(() => {
-    // Check if user is logged in on initial load
+    const handleLogout = () => {
+      setUser(null);
+    };
+
+    window.addEventListener("auth:logout", handleLogout);
+    return () => window.removeEventListener("auth:logout", handleLogout);
+  }, []);
+
+  // Check authentication status on mount
+  useEffect(() => {
     checkAuthStatus();
   }, []);
 
-  // Robustly check authentication status and update user state
   const checkAuthStatus = async () => {
     try {
-      const response = await axios.get(`${API_URL}/users/me`, {
-        withCredentials: true,
-      });
-      // Accepts both status: 'success' and legacy success: true for flexibility
-      if (
-        (response.data &&
-          response.data.status === "success" &&
-          response.data.data) ||
-        (response.data?.success && response.data?.data)
-      ) {
-        setUser(response.data.data);
+      const response = await authApi.getCurrentUser();
+      if (response?.data) {
+        setUser(response.data);
       } else {
         setUser(null);
       }
     } catch (err) {
       setUser(null);
-      throw err;
+      // Don't set error for initial auth check
     } finally {
       setLoading(false);
     }
@@ -47,125 +55,202 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       setError(null);
-      const response = await axios.post(
-        `${API_URL}/auth/login`,
-        {
-          email,
-          password,
-        },
-        {
-          withCredentials: true,
-        }
-      );
+      const response = await authApi.login(email, password);
 
-      if (response.data.success) {
-        setUser(response.data.data);
-        return { success: true };
+      if (response?.success && response?.data) {
+        setUser(response.data);
+        return { success: true, user: response.data };
       }
+
+      throw new Error("Invalid response from server");
     } catch (err) {
-      setError(err.response?.data?.message || "Login failed");
-      return {
-        success: false,
-        error: err.response?.data?.message || "Login failed",
-      };
+      const errorMessage = err?.message || "Login failed";
+      setError(errorMessage);
+      return { success: false, error: errorMessage };
     }
   };
 
   const signup = async (userData) => {
     try {
       setError(null);
-      const response = await axios.post(`${API_URL}/auth/signup`, userData);
+      const response = await authApi.signup(userData);
 
-      if (response.data.success) {
-        return { success: true };
+      if (response?.success) {
+        return { success: true, message: "Account created successfully" };
       }
+
+      throw new Error("Invalid response from server");
     } catch (err) {
-      setError(err.response?.data?.message || "Signup failed");
-      return {
-        success: false,
-        error: err.response?.data?.message || "Signup failed",
-      };
+      const errorMessage = err?.message || "Signup failed";
+      setError(errorMessage);
+      return { success: false, error: errorMessage };
     }
   };
 
   const logout = async () => {
     try {
-      await axios.post(
-        `${API_URL}/auth/logout`,
-        {},
-        {
-          withCredentials: true,
-        }
-      );
-      setUser(null);
+      await authApi.logout();
     } catch (err) {
+      // Even if logout fails on server, clear local state
+      console.error("Logout error:", err);
+    } finally {
       setUser(null);
-      throw err;
+      setError(null);
+    }
+  };
+
+  const updateProfile = async (profileData) => {
+    try {
+      setError(null);
+      const response = await authApi.updateProfile(profileData);
+
+      if (response?.success && response?.data) {
+        setUser(response.data);
+        return { success: true, user: response.data };
+      }
+
+      throw new Error("Invalid response from server");
+    } catch (err) {
+      const errorMessage = err?.message || "Failed to update profile";
+      setError(errorMessage);
+      return { success: false, error: errorMessage };
+    }
+  };
+
+  const changePassword = async (currentPassword, newPassword) => {
+    try {
+      setError(null);
+      const response = await authApi.changePassword(
+        currentPassword,
+        newPassword
+      );
+
+      if (response?.success) {
+        return { success: true, message: "Password changed successfully" };
+      }
+
+      throw new Error("Invalid response from server");
+    } catch (err) {
+      const errorMessage = err?.message || "Failed to change password";
+      setError(errorMessage);
+      return { success: false, error: errorMessage };
     }
   };
 
   const requestPasswordReset = async (email) => {
     try {
       setError(null);
-      const response = await axios.post(`${API_URL}/auth/forgot-password`, {
-        email,
-      });
-      return { success: true, data: response.data };
+      const response = await authApi.forgotPassword(email);
+      return { success: true, data: response };
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to send reset email");
-      return {
-        success: false,
-        error: err.response?.data?.message || "Failed to send reset email",
-      };
+      const errorMessage = err?.message || "Failed to send reset email";
+      setError(errorMessage);
+      return { success: false, error: errorMessage };
     }
   };
 
   const resetPassword = async (token, newPassword) => {
     try {
       setError(null);
-      const response = await axios.post(`${API_URL}/auth/reset-password`, {
-        token,
-        password: newPassword,
-      });
-      return { success: true, data: response.data };
+      const response = await authApi.resetPassword(token, newPassword);
+      return { success: true, data: response };
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to reset password");
-      return {
-        success: false,
-        error: err.response?.data?.message || "Failed to reset password",
-      };
+      const errorMessage = err?.message || "Failed to reset password";
+      setError(errorMessage);
+      return { success: false, error: errorMessage };
     }
   };
 
   const resendVerificationEmail = async (email) => {
     try {
       setError(null);
-      const response = await axios.post(`${API_URL}/auth/resend-verification`, {
-        email,
-      });
-      return { success: true, data: response.data };
+      const response = await authApi.resendVerification(email);
+      return { success: true, data: response };
     } catch (err) {
-      setError(
-        err.response?.data?.message || "Failed to resend verification email"
-      );
-      return {
-        success: false,
-        error:
-          err.response?.data?.message || "Failed to resend verification email",
-      };
+      const errorMessage =
+        err?.message || "Failed to resend verification email";
+      setError(errorMessage);
+      return { success: false, error: errorMessage };
     }
   };
 
+  const deleteAccount = async () => {
+    try {
+      setError(null);
+      const response = await authApi.deleteAccount();
+
+      if (response?.success) {
+        setUser(null);
+        return { success: true, message: "Account deleted successfully" };
+      }
+
+      throw new Error("Invalid response from server");
+    } catch (err) {
+      const errorMessage = err?.message || "Failed to delete account";
+      setError(errorMessage);
+      return { success: false, error: errorMessage };
+    }
+  };
+
+  // Role and permission checks
+  const checkPermission = useCallback(
+    (permission) => {
+      return hasPermission(user, permission);
+    },
+    [user]
+  );
+
+  const checkRole = useCallback(
+    (role) => {
+      return hasRole(user, role);
+    },
+    [user]
+  );
+
+  const checkAnyRole = useCallback(
+    (roles) => {
+      return hasAnyRole(user, roles);
+    },
+    [user]
+  );
+
+  const isUserProfessional = useCallback(() => {
+    return isProfessional(user);
+  }, [user]);
+
+  const isUserAdmin = useCallback(() => {
+    return isAdmin(user);
+  }, [user]);
+
   const value = {
+    // State
     user,
     loading,
     error,
+    isAuthenticated: !!user,
+
+    // Auth methods
     login,
     signup,
     logout,
+    checkAuthStatus,
+
+    // Profile methods
+    updateProfile,
+    changePassword,
+    deleteAccount,
+
+    // Password reset
     requestPasswordReset,
     resetPassword,
     resendVerificationEmail,
+
+    // Role and permission checks
+    hasPermission: checkPermission,
+    hasRole: checkRole,
+    hasAnyRole: checkAnyRole,
+    isProfessional: isUserProfessional,
+    isAdmin: isUserAdmin,
   };
 
   return (

@@ -19,6 +19,7 @@ import {
   FaSignInAlt,
   FaStore,
   FaUsers,
+  FaTachometerAlt,
 } from "react-icons/fa";
 import pawsImg from "../../assets/NavigationBarAssets/Logo/paws.png";
 import pawsmobileImg from "../../assets/NavigationBarAssets/Logo/pawsMobile.png";
@@ -34,7 +35,7 @@ const NavigationBar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const mobileMenuRef = useRef(null);
-  const { user, logout } = useAuth();
+  const { user, logout, isAdmin } = useAuth();
 
   // Accessibility: trap focus in mobile menu
   useEffect(() => {
@@ -165,6 +166,14 @@ const NavigationBar = () => {
                   <Dropdown.Item href="/profile">
                     <FaUser className="me-2" /> Profile
                   </Dropdown.Item>
+                  {isAdmin() && (
+                    <>
+                      <Dropdown.Divider />
+                      <Dropdown.Item href="/admin">
+                        <FaTachometerAlt className="me-2" /> Admin Dashboard
+                      </Dropdown.Item>
+                    </>
+                  )}
                   <Dropdown.Divider />
                   <Dropdown.Item onClick={logout} style={{ color: "#d32f2f" }}>
                     <FaSignInAlt className="me-2" /> Log out
@@ -198,6 +207,14 @@ const NavigationBar = () => {
                   <Dropdown.Item href="/profile">
                     <FaUser className="me-2" /> Profile
                   </Dropdown.Item>
+                  {isAdmin() && (
+                    <>
+                      <Dropdown.Divider />
+                      <Dropdown.Item href="/admin">
+                        <FaTachometerAlt className="me-2" /> Admin Dashboard
+                      </Dropdown.Item>
+                    </>
+                  )}
                   <Dropdown.Divider />
                   <Dropdown.Item onClick={logout} style={{ color: "#d32f2f" }}>
                     <FaSignInAlt className="me-2" /> Log out
@@ -310,9 +327,16 @@ const NavigationBar = () => {
             </div>
 
             {user && (
-              <a href="/profile" className="mobile-menu-link">
-                <FaUserCircle className="me-2" /> Profile
-              </a>
+              <>
+                <a href="/profile" className="mobile-menu-link">
+                  <FaUserCircle className="me-2" /> Profile
+                </a>
+                {isAdmin() && (
+                  <a href="/admin" className="mobile-menu-link">
+                    <FaTachometerAlt className="me-2" /> Admin Dashboard
+                  </a>
+                )}
+              </>
             )}
             <a href="/checkout" className="mobile-menu-link">
               <FaShoppingCart className="me-2" /> Cart ({totalItems})
@@ -341,6 +365,11 @@ const NavigationBar = () => {
                   <a href="/profile" className="mobile-menu-account-link">
                     <FaUserCircle className="me-1" /> Profile
                   </a>
+                  {isAdmin() && (
+                    <a href="/admin" className="mobile-menu-account-link">
+                      <FaTachometerAlt className="me-1" /> Admin
+                    </a>
+                  )}
                   <a
                     href="#"
                     className="mobile-menu-account-link"

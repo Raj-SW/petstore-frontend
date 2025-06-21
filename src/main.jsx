@@ -13,7 +13,14 @@ import UserProfile from "./Pages/UserProfile.jsx";
 import ResetPassword from "./Components/Auth/ResetPassword.jsx";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import ProtectedRoute from "./Components/Auth/ProtectedRoute";
+import RoleBasedRoute from "./Components/Auth/RoleBasedRoute";
 import { GlobalToastProvider } from "./context/GlobalToastContext";
+import { USER_ROLES } from "./constants/userConstants";
+
+// Admin imports
+import AdminLayout from "./Components/Admin/AdminLayout";
+import AdminDashboard from "./Pages/Admin/Dashboard/AdminDashboard";
+import AdminProducts from "./Pages/Admin/Products/AdminProducts";
 
 const router = createBrowserRouter([
   {
@@ -70,7 +77,58 @@ const router = createBrowserRouter([
       },
     ],
   },
+  {
+    path: "/admin",
+    element: (
+      <RoleBasedRoute allowedRoles={[USER_ROLES.ADMIN]}>
+        <AdminLayout />
+      </RoleBasedRoute>
+    ),
+    children: [
+      {
+        index: true,
+        element: <AdminDashboard />,
+      },
+      {
+        path: "products",
+        element: <AdminProducts />,
+      },
+      {
+        path: "products/new",
+        element: <div>Product Form - To be implemented</div>,
+      },
+      {
+        path: "products/edit/:id",
+        element: <div>Edit Product Form - To be implemented</div>,
+      },
+      {
+        path: "users",
+        element: <div>Users Management - To be implemented</div>,
+      },
+      {
+        path: "professionals",
+        element: <div>Professionals Management - To be implemented</div>,
+      },
+      {
+        path: "orders",
+        element: <div>Orders Management - To be implemented</div>,
+      },
+      {
+        path: "appointments",
+        element: <div>Appointments Management - To be implemented</div>,
+      },
+      {
+        path: "analytics",
+        element: <div>Analytics - To be implemented</div>,
+      },
+      {
+        path: "settings",
+        element: <div>Settings - To be implemented</div>,
+      },
+    ],
+  },
 ]);
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <GlobalToastProvider>

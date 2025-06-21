@@ -1,0 +1,226 @@
+/* Admin Dashboard Styles */
+.stat-card-link {
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s;
+    display: block;
+}
+
+.stat-card-link:hover {
+    transform: translateY(-4px);
+}
+
+.stat-card-link:hover .stat-card {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Two column grid for recent activity */
+.admin-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+/* Card Header */
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.card-icon {
+    font-size: 1.125rem;
+    color: #e74c3c;
+}
+
+.view-all-link {
+    color: #e74c3c;
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.view-all-link:hover {
+    color: #c0392b;
+    text-decoration: underline;
+}
+
+/* Recent Items */
+.recent-items {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.recent-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 0.375rem;
+    transition: background-color 0.2s;
+}
+
+.recent-item:hover {
+    background-color: #e9ecef;
+}
+
+.item-info {
+    flex: 1;
+}
+
+.item-title {
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0 0 0.25rem 0;
+}
+
+.item-subtitle {
+    font-size: 0.875rem;
+    color: #6c757d;
+    margin: 0;
+}
+
+.item-status {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+}
+
+.item-amount {
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0;
+}
+
+/* Status Badges */
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.status-badge.pending {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.status-badge.confirmed,
+.status-badge.completed {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.status-badge.cancelled,
+.status-badge.rejected {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.status-badge.processing {
+    background-color: #d1ecf1;
+    color: #0c5460;
+}
+
+/* No Data */
+.no-data {
+    text-align: center;
+    color: #6c757d;
+    padding: 2rem;
+    margin: 0;
+}
+
+/* Quick Actions */
+.quick-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.action-button {
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.375rem;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.action-button.primary {
+    background-color: #e74c3c;
+    color: white;
+    border: 1px solid #e74c3c;
+}
+
+.action-button.primary:hover {
+    background-color: #c0392b;
+    border-color: #c0392b;
+}
+
+.action-button.secondary {
+    background-color: white;
+    color: #2c3e50;
+    border: 1px solid #dee2e6;
+}
+
+.action-button.secondary:hover {
+    background-color: #f8f9fa;
+    border-color: #2c3e50;
+}
+
+.action-button.success {
+    background-color: #2ecc71;
+    color: white;
+    border: 1px solid #2ecc71;
+}
+
+.action-button.success:hover {
+    background-color: #27ae60;
+    border-color: #27ae60;
+}
+
+.action-button.info {
+    background-color: #3498db;
+    color: white;
+    border: 1px solid #3498db;
+}
+
+.action-button.info:hover {
+    background-color: #2980b9;
+    border-color: #2980b9;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .admin-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .quick-actions {
+        flex-direction: column;
+    }
+
+    .action-button {
+        width: 100%;
+        justify-content: center;
+    }
+}
