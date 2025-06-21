@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { Container, InputGroup, Form, Alert, Button } from "react-bootstrap";
-import { FaSearch, FaSync, FaUserMd, FaCut } from "react-icons/fa";
+import { FaSearch, FaSync, FaUserMd, FaCut, FaCar } from "react-icons/fa";
 import { motion } from "framer-motion";
 import ProfessionalCard from "@/Components/HelperComponents/ProfessionalCard/ProfessionalCard";
 import ProfessionalCalendar from "@/Components/HelperComponents/ProfessionalCalendar/ProfessionalCalendar";
@@ -34,6 +34,26 @@ const PROFESSIONAL_CONFIGS = {
     noResultsMessage: "No groomers found",
     loadingMessage: "Loading groomers...",
     errorMessage: "Failed to fetch groomers",
+  },
+  trainer: {
+    title: "Our Trainers",
+    badgeIcon: <FaUserMd className="specialization-icon me-1" />,
+    badgeLabel: "Trainer",
+    searchPlaceholder: "Search trainers...",
+    specialtyField: "specialties",
+    noResultsMessage: "No trainer found",
+    loadingMessage: "Loading trainers...",
+    errorMessage: "Failed to fetch trainers",
+  },
+  petTaxi: {
+    title: "Our Pet Taxi",
+    badgeIcon: <FaCar className="specialization-icon me-1" />,
+    badgeLabel: "Pet Taxi",
+    searchPlaceholder: "Search pet taxi...",
+    specialtyField: "specialties",
+    noResultsMessage: "No pet taxi found",
+    loadingMessage: "Loading pet taxi...",
+    errorMessage: "Failed to fetch pet taxi",
   },
 };
 
