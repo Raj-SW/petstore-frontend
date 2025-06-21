@@ -189,7 +189,7 @@ const NavigationBar = () => {
           </div>
 
           {/* Desktop Navigation Items */}
-          <div className="ms-auto d-flex d-none d-md-flex d-card-dropdown">
+          <div className="ms-auto d-flex align-items-center d-none d-md-flex d-card-dropdown">
             <CardDropDown /> {/* Card dropdown menu */}
             {user ? (
               <Dropdown align="end" className="ms-3">
