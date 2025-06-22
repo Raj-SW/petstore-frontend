@@ -4,7 +4,7 @@
 
 /* Info Card Styles */
 .import-info-card {
-    background: var(--tertiary-color);
+    background: var(--tertiary-creme-color);
     color: #1a3d2f;
     border-radius: 12px;
     box-shadow: 0 2px 12px 0 rgba(110, 215, 162, 0.10), 0 1.5px 6px 0 rgba(0, 0, 0, 0.04);
@@ -102,6 +102,7 @@
     border-radius: 6px;
     box-shadow: none;
     transition: border-color 0.2s, outline-color 0.2s;
+    outline: 0.11rem solid #1a3d2f;
 }
 
 .import-form-container input:focus,

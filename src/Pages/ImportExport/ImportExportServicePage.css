@@ -56,7 +56,7 @@
 }
 
 .importexport-services-section {
-    background: linear-gradient(135deg, #e8fff3 0%, #f3fbf7 100%);
+    background: var(--tertiary-creme-color);
     position: relative;
     z-index: 1;
 }

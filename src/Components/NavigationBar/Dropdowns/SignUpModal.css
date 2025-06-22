@@ -10,9 +10,8 @@
 
 /* Form styles */
 .signup-form .form-control {
-    border: 1px solid #ced4da;
+    border: 1px solid var(--primary-blue-color);
     padding: 0.75rem;
-    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
 .signup-form .form-control:focus {
@@ -21,7 +20,7 @@
 }
 
 .signup-form .input-group-text {
-    border: 1px solid #ced4da;
+    border: 1px solid var(--primary-blue-color);
     padding: 0.75rem;
     background-color: #fff;
 }
