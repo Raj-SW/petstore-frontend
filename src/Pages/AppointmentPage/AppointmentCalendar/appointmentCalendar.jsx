@@ -38,6 +38,8 @@ const AppointmentCalendar = () => {
   const [showDetails, setShowDetails] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [actionLoading, setActionLoading] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [appointmentToDelete, setAppointmentToDelete] = useState(null);
 
   // Memoized fetch function to avoid dependency issues
   const fetchAppointments = useCallback(async () => {
@@ -141,13 +143,21 @@ const AppointmentCalendar = () => {
   };
 
   const handleDeleteAppointment = async (appointmentId) => {
-    if (!window.confirm("Are you sure you want to delete this appointment?")) {
-      return;
-    }
+    // Show confirmation modal instead of window.confirm
+    const appointment = appointments.find(
+      (appt) => getAppointmentId(appt) === appointmentId
+    );
+    setAppointmentToDelete(appointment);
+    setShowDeleteConfirm(true);
+  };
+
+  const confirmDeleteAppointment = async () => {
+    if (!appointmentToDelete) return;
 
     try {
       setActionLoading(true);
-      await AppointmentService.delete(appointmentId);
+      const appointmentId = getAppointmentId(appointmentToDelete);
+      await appointmentsApi.cancelAppointment(appointmentId);
       setAppointments((prev) =>
         prev.filter((appt) => getAppointmentId(appt) !== appointmentId)
       );
@@ -156,7 +166,14 @@ const AppointmentCalendar = () => {
       addToast(error.message || "Failed to delete appointment", "error");
     } finally {
       setActionLoading(false);
+      setShowDeleteConfirm(false);
+      setAppointmentToDelete(null);
     }
+  };
+
+  const cancelDeleteAppointment = () => {
+    setShowDeleteConfirm(false);
+    setAppointmentToDelete(null);
   };
 
   const handleFormSubmit = async (formData) => {
@@ -183,36 +200,6 @@ const AppointmentCalendar = () => {
   const handleViewDetails = (appointment) => {
     setSelectedEvent(appointment);
     setShowDetails(true);
-  };
-
-  const handleDelete = async (id) => {
-    try {
-      setActionLoading(true);
-      await AppointmentService.delete(id);
-      addToast("Appointment deleted successfully", "success");
-      setShowDetails(false);
-      setSelectedEvent(null);
-      await fetchAppointments();
-    } catch (error) {
-      addToast(error.message || "Failed to delete appointment", "error");
-    } finally {
-      setActionLoading(false);
-    }
-  };
-
-  const handleStatusUpdate = async (id, newStatus) => {
-    try {
-      setActionLoading(true);
-      await AppointmentService.updateStatus(id, newStatus);
-      addToast("Appointment status updated successfully", "success");
-      setShowDetails(false);
-      setSelectedEvent(null);
-      await fetchAppointments();
-    } catch (error) {
-      addToast(error.message || "Failed to update appointment status", "error");
-    } finally {
-      setActionLoading(false);
-    }
   };
 
   const handleFilterChange = (filterType, value) => {
@@ -436,7 +423,9 @@ const AppointmentCalendar = () => {
               location={selectedEvent.location}
               petName={selectedEvent.petName}
               appointmentType={selectedEvent.appointmentType}
-              onDelete={() => handleDelete(getAppointmentId(selectedEvent))}
+              onDelete={() =>
+                handleDeleteAppointment(getAppointmentId(selectedEvent))
+              }
               onStatusUpdate={(status) =>
                 handleStatusUpdate(getAppointmentId(selectedEvent), status)
               }
@@ -444,6 +433,58 @@ const AppointmentCalendar = () => {
             />
           )}
         </Modal.Body>
+      </Modal>
+
+      {/* Delete Confirmation Modal */}
+      <Modal show={showDeleteConfirm} onHide={cancelDeleteAppointment} centered>
+        <Modal.Header closeButton>
+          <Modal.Title className="text-danger">Confirm Deletion</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="text-center">
+            <div className="mb-3">
+              <i
+                className="fas fa-exclamation-triangle text-warning"
+                style={{ fontSize: "3rem" }}
+              ></i>
+            </div>
+            <h5>Are you sure you want to delete this appointment?</h5>
+            {appointmentToDelete && (
+              <div className="mt-3 p-3 bg-light rounded">
+                <strong>Appointment with:</strong>{" "}
+                {appointmentToDelete.professionalName}
+                <br />
+                <strong>Date:</strong>{" "}
+                {new Date(appointmentToDelete.dateTime).toLocaleDateString()}
+                <br />
+                <strong>Time:</strong>{" "}
+                {new Date(appointmentToDelete.dateTime).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+                <br />
+                <strong>Pet:</strong> {appointmentToDelete.petName}
+              </div>
+            )}
+            <p className="text-muted mt-3">This action cannot be undone.</p>
+          </div>
+        </Modal.Body>
+        <Modal.Footer className="justify-content-center">
+          <Button
+            variant="secondary"
+            onClick={cancelDeleteAppointment}
+            disabled={actionLoading}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="danger"
+            onClick={confirmDeleteAppointment}
+            disabled={actionLoading}
+          >
+            {actionLoading ? "Deleting..." : "Delete Appointment"}
+          </Button>
+        </Modal.Footer>
       </Modal>
     </Container>
   );
