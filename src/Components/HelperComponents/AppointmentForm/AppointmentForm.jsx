@@ -1,11 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
 import { Modal, Form, Button, Row, Col } from "react-bootstrap";
 import { motion } from "framer-motion";
-import { APPOINTMENT_DURATIONS } from "@/constants/appointmentConstants";
 import PropTypes from "prop-types";
 import "./AppointmentForm.css";
 import usersApi from "@/Services/api/usersApi";
 import appointmentsApi from "@/Services/api/appointmentsApi";
+import { useToast } from "@/context/ToastContext";
 
 const AppointmentForm = ({
   show,
@@ -14,15 +14,17 @@ const AppointmentForm = ({
   initialData,
   professionalInfo,
 }) => {
+  const { addToast } = useToast();
+
   const [formData, setFormData] = useState({
+    appointmentType: professionalInfo?.role,
     professionalName: professionalInfo?.name || "",
-    title: "",
-    datetimeISO: "",
+    professionalId: professionalInfo?.id || "",
+    petName: "",
+    petId: "",
     description: "",
-    type: professionalInfo?.role,
+    dateTime: "",
     address: "",
-    duration: APPOINTMENT_DURATIONS.DEFAULT,
-    notes: "",
   });
 
   const [errors, setErrors] = useState({});
@@ -33,14 +35,14 @@ const AppointmentForm = ({
   useEffect(() => {
     // Helper to map incoming data to form fields
     const mapToFormData = (data, profInfo) => ({
+      appointmentType: data?.role || profInfo?.role,
       professionalName: data?.professionalName || profInfo?.name || "",
-      title: data?.title || "",
-      datetimeISO: data?.datetimeISO || "",
+      professionalId: data?.professionalId || profInfo?.id || "",
+      petName: data?.petName || "",
+      petId: data?.petId || "",
       description: data?.description || "",
-      type: data?.role || profInfo?.role,
+      dateTime: data?.datetimeISO || "",
       address: data?.address || profInfo?.address || "",
-      duration: data?.duration || APPOINTMENT_DURATIONS.DEFAULT,
-      notes: data?.notes || "",
     });
 
     if (initialData) {
@@ -58,7 +60,6 @@ const AppointmentForm = ({
       usersApi
         .getUserPets()
         .then((res) => {
-          console.log(res);
           setPets(res || []);
           setPetsError(null);
           setPetsLoading(false);
@@ -73,18 +74,11 @@ const AppointmentForm = ({
 
   const validateForm = useCallback(() => {
     const newErrors = {};
-    if (!formData.title) newErrors.title = "Title is required";
-    if (!formData.datetimeISO)
-      newErrors.datetimeISO = "Date and time is required";
+    if (!formData.dateTime) newErrors.dateTime = "Date and time is required";
     if (!formData.description)
       newErrors.description = "Description is required";
     if (!formData.address) newErrors.address = "Location is required";
-    if (formData.duration < APPOINTMENT_DURATIONS.MIN) {
-      newErrors.duration = `Duration must be at least ${APPOINTMENT_DURATIONS.MIN} minutes`;
-    }
-    if (formData.duration > APPOINTMENT_DURATIONS.MAX) {
-      newErrors.duration = `Duration cannot exceed ${APPOINTMENT_DURATIONS.MAX} minutes`;
-    }
+    if (!formData.petId) newErrors.petId = "Please select a pet";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   }, [formData]);
@@ -107,14 +101,66 @@ const AppointmentForm = ({
     [errors]
   );
 
+  const handlePetSelection = useCallback(
+    (e) => {
+      const selectedPetId = e.target.value;
+      const selectedPet = pets.find(
+        (pet) => (pet.id || pet._id) === selectedPetId
+      );
+
+      setFormData((prev) => ({
+        ...prev,
+        petId: selectedPetId,
+        petName: selectedPet ? selectedPet.name : "",
+      }));
+
+      // Clear pet-related errors
+      if (errors.petName || errors.petId) {
+        setErrors((prev) => ({
+          ...prev,
+          petName: undefined,
+          petId: undefined,
+        }));
+      }
+    },
+    [pets, errors]
+  );
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validateForm()) return;
+
+    if (!validateForm()) {
+      return;
+    }
+
     try {
-      await AppointmentService.create(formData);
+      const response = await appointmentsApi.createAppointment(formData);
+      // Call the onSubmit prop if provided
+      if (onSubmit) {
+        onSubmit(response);
+      }
+      // Show success toast with appointment details
+      const appointmentDate = new Date(formData.dateTime).toLocaleDateString();
+      const appointmentTime = new Date(formData.dateTime).toLocaleTimeString(
+        [],
+        {
+          hour: "2-digit",
+          minute: "2-digit",
+        }
+      );
+
+      addToast(
+        `Appointment booked successfully with ${formData.professionalName} on ${appointmentDate} at ${appointmentTime}`,
+        "success"
+      );
+
       handleClose();
     } catch (error) {
-      setErrors({ submit: error.message });
+      setErrors({ submit: error.message || "Failed to create appointment" });
+      addToast(
+        error.message || "Failed to create appointment. Please try again.",
+        "error"
+      );
     }
   };
 
@@ -131,9 +177,7 @@ const AppointmentForm = ({
   return (
     <Modal show={show} onHide={handleClose} size="lg">
       <Modal.Header closeButton>
-        <Modal.Title>
-          {initialData ? "Edit Appointment" : "New Appointment"}
-        </Modal.Title>
+        <Modal.Title>New Appointment</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <motion.div
@@ -151,13 +195,13 @@ const AppointmentForm = ({
                     disabled={true}
                     type="text"
                     name="type"
-                    value={formData.type}
+                    value={formData.appointmentType}
                     onChange={handleChange}
                     isInvalid={!!errors.role}
                     required
                   />
                   <Form.Control.Feedback type="invalid">
-                    {errors.type}
+                    {errors.appointmentType}
                   </Form.Control.Feedback>
                 </Form.Group>
               </Col>
@@ -188,14 +232,14 @@ const AppointmentForm = ({
                   <Form.Control
                     className="appointment-input"
                     type="datetime-local"
-                    name="datetimeISO"
-                    value={formData.datetimeISO}
+                    name="dateTime"
+                    value={formData.dateTime}
                     onChange={handleChange}
-                    isInvalid={!!errors.datetimeISO}
+                    isInvalid={!!errors.dateTime}
                     required
                   />
                   <Form.Control.Feedback type="invalid">
-                    {errors.datetimeISO}
+                    {errors.dateTime}
                   </Form.Control.Feedback>
                 </Form.Group>
               </Col>
@@ -206,17 +250,29 @@ const AppointmentForm = ({
                     className="appointment-input"
                     name="petId"
                     value={formData.petId}
-                    onChange={handleChange}
+                    onChange={handlePetSelection}
                     required
                     disabled={petsLoading}
+                    isInvalid={!!errors.petId}
                   >
+                    <option value="">Select a pet...</option>
                     {pets.map((pet) => (
                       <option key={pet.id || pet._id} value={pet.id || pet._id}>
                         {pet.name} ({pet.type})
                       </option>
                     ))}
                   </Form.Select>
-                  {petsError && <div className="text-danger">{petsError}</div>}
+                  <Form.Control.Feedback type="invalid">
+                    {errors.petId}
+                  </Form.Control.Feedback>
+                  {formData.petName && (
+                    <div className="text-muted mt-1">
+                      <small>Selected: {formData.petName}</small>
+                    </div>
+                  )}
+                  {petsError && (
+                    <div className="text-danger mt-1">{petsError}</div>
+                  )}
                 </Form.Group>
               </Col>
             </Row>
