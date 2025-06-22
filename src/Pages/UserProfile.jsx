@@ -17,10 +17,14 @@ import ProfileForm from "../Components/UserProfile/ProfileForm";
 import PasswordChangeForm from "../Components/UserProfile/PasswordChangeForm";
 import { User, Pet } from "../models";
 import "./UserProfile.css";
+import { useAuth } from "@/context/AuthContext";
+import usersApi from "@/Services/api/usersApi";
 
 const UserProfile = () => {
+  const { user } = useAuth();
+
   // State for user details
-  const [userDetails, setUserDetails] = useState(new User());
+  const [userDetails, setUserDetails] = useState(user);
   const [pets, setPets] = useState([]);
 
   // Modal states
@@ -34,20 +38,10 @@ const UserProfile = () => {
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
-  // Fetch user profile and pets
-  const fetchUserProfile = async () => {
-    try {
-      const profileData = await UserProfileService.getUserProfile();
-      setUserDetails(new User(profileData.data));
-    } catch (err) {
-      setError(`Failed to load profile: ${err.message}`);
-    }
-  };
-
   const fetchUserPets = async () => {
     try {
-      const petsData = await UserProfileService.getUserPets();
-      setPets(petsData.data.map((pet) => new Pet(pet)));
+      const petsData = await usersApi.getUserPets();
+      setPets(petsData);
     } catch (err) {
       setError(`Failed to load pets: ${err.message}`);
       setPets([]);
@@ -61,7 +55,7 @@ const UserProfile = () => {
       setError("");
 
       try {
-        await Promise.all([fetchUserProfile(), fetchUserPets()]);
+        await Promise.all([fetchUserPets()]);
       } catch (error) {
         setError(`Failed to initialize data: ${error.message}`);
       } finally {
@@ -80,10 +74,7 @@ const UserProfile = () => {
     try {
       if (selectedPet) {
         // Update existing pet
-        const updatedPet = await UserProfileService.updatePet(
-          selectedPet.id,
-          petData
-        );
+        const updatedPet = await usersApi.updatePet(selectedPet.id, petData);
         setPets((prevPets) =>
           prevPets.map((pet) =>
             pet.id === selectedPet.id ? new Pet(updatedPet.data) : pet

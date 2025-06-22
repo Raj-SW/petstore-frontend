@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Modal, Form, Button, Spinner } from "react-bootstrap";
-import { Pet } from "../../models";
+import "./PetForm.css";
 
 const PetForm = ({ show, onHide, onSubmit, initialData, isLoading }) => {
   const [formData, setFormData] = useState({
@@ -14,6 +14,7 @@ const PetForm = ({ show, onHide, onSubmit, initialData, isLoading }) => {
   });
 
   useEffect(() => {
+    console.log(initialData);
     if (initialData) {
       setFormData({
         name: initialData.name || "",
@@ -69,6 +70,7 @@ const PetForm = ({ show, onHide, onSubmit, initialData, isLoading }) => {
             <Form.Label>Pet Name *</Form.Label>
             <Form.Control
               type="text"
+              className="petform-input"
               name="name"
               value={formData.name}
               onChange={handleChange}
@@ -98,6 +100,7 @@ const PetForm = ({ show, onHide, onSubmit, initialData, isLoading }) => {
             <Form.Label>Breed *</Form.Label>
             <Form.Control
               type="text"
+              className="petform-input"
               name="breed"
               value={formData.breed}
               onChange={handleChange}
@@ -109,6 +112,7 @@ const PetForm = ({ show, onHide, onSubmit, initialData, isLoading }) => {
             <Form.Label>Age *</Form.Label>
             <Form.Control
               type="number"
+              className="petform-input"
               name="age"
               value={formData.age}
               onChange={handleChange}
@@ -137,6 +141,7 @@ const PetForm = ({ show, onHide, onSubmit, initialData, isLoading }) => {
             <Form.Label>Color *</Form.Label>
             <Form.Control
               type="text"
+              className="petform-input"
               name="color"
               value={formData.color}
               onChange={handleChange}
@@ -148,6 +153,7 @@ const PetForm = ({ show, onHide, onSubmit, initialData, isLoading }) => {
             <Form.Label>Description</Form.Label>
             <Form.Control
               as="textarea"
+              className="petform-input"
               name="description"
               value={formData.description}
               onChange={handleChange}

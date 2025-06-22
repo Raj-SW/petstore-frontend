@@ -6,9 +6,9 @@ class Pet {
     this.breed = data.breed || "";
     this.age = data.age || 0;
     this.weight = data.weight || 0;
-    this.ownerId = data.ownerId || null;
-    this.medicalHistory = data.medicalHistory || [];
-    this.vaccinations = data.vaccinations || [];
+    this.owner = data.owner || null;
+    this.color = data.color || "";
+    this.description = data.description || "";
     this.createdAt = data.createdAt ? new Date(data.createdAt) : new Date();
     this.updatedAt = data.updatedAt ? new Date(data.updatedAt) : new Date();
   }
