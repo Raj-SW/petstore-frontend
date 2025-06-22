@@ -20,7 +20,7 @@
 .search-bar {
     width: 300px;
     max-width: 100%;
-    border: 1px solid var(--secondary-color);
+    outline: 0.01rem solid var(--primary-blue-color);
     border-radius: 2rem;
     overflow: hidden;
     font-family: "Poppins", sans-serif;

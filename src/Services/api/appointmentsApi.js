@@ -43,13 +43,11 @@ const appointmentsApi = {
   },
 
   // Get professional's public appointments
-  getProfessionalPublicAppointments: async (professionalId, params = {}) => {
-    const queryString = new URLSearchParams(params).toString();
+  getProfessionalPublicAppointments: async (professionalId) => {
     const response = await api.get(
-      `/appointments/professional/${professionalId}${
-        queryString ? `?${queryString}` : ""
-      }`
+      `/appointments/professional/${professionalId}`
     );
+    console.log(response.data);
     return response.data;
   },
 

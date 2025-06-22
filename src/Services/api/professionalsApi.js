@@ -28,7 +28,7 @@ const professionalsApi = {
   // Get single professional by ID
   getProfessionalById: async (id) => {
     const response = await api.get(`/professionals/${id}`);
-    return response.data;
+    return response.data.data;
   },
 
   // Update professional profile (authenticated route)

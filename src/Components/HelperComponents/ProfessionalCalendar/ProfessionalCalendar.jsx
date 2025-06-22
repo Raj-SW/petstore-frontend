@@ -1,18 +1,14 @@
 import { useState, useEffect } from "react";
 import { Container, Button, Row, Col } from "react-bootstrap";
 import { motion } from "framer-motion";
-import {
-  FaArrowLeft,
-  FaMapMarkerAlt,
-  FaPhone,
-  FaNotesMedical,
-} from "react-icons/fa";
+import { FaArrowLeft, FaMapMarkerAlt, FaPhone } from "react-icons/fa";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import AppointmentForm from "@/Components/HelperComponents/AppointmentForm/AppointmentForm";
-import AppointmentService from "@/Services/localServices/appointmentService";
+import appointmentsApi from "@/Services/api/appointmentsApi";
+import professionalsApi from "@/Services/api/professionalsApi";
 import "./ProfessionalCalendar.css";
 
 const ProfessionalCalendar = ({ onBack, professional }) => {
@@ -31,15 +27,16 @@ const ProfessionalCalendar = ({ onBack, professional }) => {
   const fetchAppointments = async () => {
     try {
       setLoading(true);
-      const professionalData = await AppointmentService.getByProfessionalId(
+      const professionalData = await professionalsApi.getProfessionalById(
         professional._id
       );
-
+      console.log(professionalData);
       setProfessionalInfo(professionalData);
 
-      const appointments = await AppointmentService.getProfessionalAppointments(
-        professional._id
-      );
+      const appointments =
+        await appointmentsApi.getProfessionalPublicAppointments(
+          professional._id
+        );
       setProfessionalAppointments(appointments);
 
       setCalendarEvents(professionalAppointments);
