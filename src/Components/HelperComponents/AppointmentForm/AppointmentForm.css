@@ -1,3 +1,7 @@
+.appointment-input {
+    outline: 1px solid var(--primary-blue-color);
+}
+
 .react-datepicker-wrapper {
     width: 100%;
 }

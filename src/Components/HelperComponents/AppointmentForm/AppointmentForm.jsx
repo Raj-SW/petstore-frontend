@@ -4,8 +4,8 @@ import { motion } from "framer-motion";
 import { APPOINTMENT_DURATIONS } from "@/constants/appointmentConstants";
 import PropTypes from "prop-types";
 import "./AppointmentForm.css";
-import UserProfileService from "@/Services/localServices/userProfileService";
-import AppointmentService from "@/Services/localServices/appointmentService";
+import usersApi from "@/Services/api/usersApi";
+import appointmentsApi from "@/Services/api/appointmentsApi";
 
 const AppointmentForm = ({
   show,
@@ -55,9 +55,11 @@ const AppointmentForm = ({
   useEffect(() => {
     if (show) {
       setPetsLoading(true);
-      UserProfileService.getUserPets()
+      usersApi
+        .getUserPets()
         .then((res) => {
-          setPets(res.data || []);
+          console.log(res);
+          setPets(res || []);
           setPetsError(null);
           setPetsLoading(false);
         })
@@ -142,9 +144,10 @@ const AppointmentForm = ({
           <Form onSubmit={handleSubmit}>
             <Row>
               <Col md={6}>
-                <Form.Group className="mb-3">
+                <Form.Group className="mb-3 ">
                   <Form.Label>Appointment Type</Form.Label>
                   <Form.Control
+                    className="appointment-input"
                     disabled={true}
                     type="text"
                     name="type"
@@ -162,6 +165,7 @@ const AppointmentForm = ({
                 <Form.Group className="mb-3">
                   <Form.Label>Provider</Form.Label>
                   <Form.Control
+                    className="appointment-input"
                     disabled={true}
                     type="text"
                     name="name"
@@ -182,6 +186,7 @@ const AppointmentForm = ({
                 <Form.Group className="mb-3">
                   <Form.Label>Date and Time</Form.Label>
                   <Form.Control
+                    className="appointment-input"
                     type="datetime-local"
                     name="datetimeISO"
                     value={formData.datetimeISO}
@@ -198,6 +203,7 @@ const AppointmentForm = ({
                 <Form.Group className="mb-3">
                   <Form.Label>Pet</Form.Label>
                   <Form.Select
+                    className="appointment-input"
                     name="petId"
                     value={formData.petId}
                     onChange={handleChange}
@@ -218,6 +224,7 @@ const AppointmentForm = ({
             <Form.Group className="mb-3">
               <Form.Label>Description</Form.Label>
               <Form.Control
+                className="appointment-input"
                 as="textarea"
                 rows={3}
                 name="description"
@@ -234,6 +241,7 @@ const AppointmentForm = ({
             <Form.Group className="mb-3">
               <Form.Label>Location</Form.Label>
               <Form.Control
+                className="appointment-input"
                 disabled={true}
                 type="text"
                 name="address"

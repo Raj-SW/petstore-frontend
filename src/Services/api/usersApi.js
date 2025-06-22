@@ -56,6 +56,10 @@ const usersApi = {
     const response = await api.get(`/users?${queryString}`);
     return response.data;
   },
+  getUserPets: async () => {
+    const response = await api.get(`/pets`);
+    return response.data.data;
+  },
 };
 
 export default usersApi;

@@ -41,7 +41,8 @@ class UserProfileService {
   async getUserPets() {
     try {
       const response = await axios.get(`${API_URL}/pets`);
-      return response.data;
+      console.log(response);
+      return response.data.data;
     } catch (error) {
       throw this.handleError(error);
     }
