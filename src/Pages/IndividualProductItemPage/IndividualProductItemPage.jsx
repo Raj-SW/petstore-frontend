@@ -25,6 +25,7 @@ import ProductCard from "@/Components/HelperComponents/ProductCard/ProductCard";
 import ReviewCarousel from "@/Components/HelperComponents/Carousel/ReviewCarousel";
 //service import
 import ProductService from "@/Services/localServices/ProductService";
+import { useToast } from "@/context/ToastContext";
 
 const IndividualProductItemPage = () => {
   const { id } = useParams();
@@ -36,6 +37,7 @@ const IndividualProductItemPage = () => {
   const [reviews, setReviews] = useState([]);
   const { addItem } = useCart();
   const [relatedProducts, setRelatedProducts] = useState([]);
+  const { showCartToast } = useToast();
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [reviewForm, setReviewForm] = useState({
     name: "",
@@ -123,6 +125,8 @@ const IndividualProductItemPage = () => {
 
       // Add item with quantity as a separate parameter
       addItem(itemToAdd, quantity);
+      //show toast
+      showCartToast("add", product.title);
     } catch (error) {
       setError(
         `Failed to add item to cart. Please try again. \n${error.message}`

@@ -166,7 +166,7 @@ export const ToastProvider = ({ children }) => {
             key={toast.id}
             onClose={() => removeToast(toast.id)}
             show={true}
-            delay={1000}
+            delay={2000}
             autohide
             className="toast-custom"
           >
@@ -179,7 +179,8 @@ export const ToastProvider = ({ children }) => {
             <Toast.Body
               style={{ position: "relative", paddingBottom: "1.5rem" }}
             >
-              {toast.message}
+              <strong>{toast.message}</strong>
+              
               {/* Progress Bar */}
               <ToastProgressBar key={toast.id} duration={4000} />
             </Toast.Body>
