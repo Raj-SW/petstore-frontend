@@ -8,14 +8,17 @@
     margin: 0;
     cursor: pointer;
     transition: color 0.3s ease;
+    color: var(--primary-blue-color) !important;
+    font-weight: 700;
 }
 
 .breadcrumb-text:hover {
-    color: var(--primary-color) !important;
+    color: var(--primary-dark) !important;
+    font-weight: 800;
 }
 
 .breadcrumb-text.active {
-    color: var(--secondary-color) !important;
+    color: var(--primary-blue-color) !important;
     /* Vibrant green */
     font-weight: 700;
 }

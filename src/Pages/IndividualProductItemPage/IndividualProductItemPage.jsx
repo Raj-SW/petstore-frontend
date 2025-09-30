@@ -7,9 +7,7 @@ import {
   Col,
   Button,
   Image,
-  Modal,
-  Form,
-  Alert,
+  Alert
 } from "react-bootstrap";
 import { FaFacebook, FaTwitter, FaInstagram } from "react-icons/fa";
 import { FiShare2 } from "react-icons/fi";
@@ -20,12 +18,16 @@ import "./IndividaulItemPage.css";
 import Breadcrumb from "@/Components/HelperComponents/Breadcrumb/Breadcrumb";
 import SearchBar from "@/Components/HelperComponents/SearchBar/SearchBar";
 import ReviewService from "../../Services/localServices/ReviewService";
+import LoginModal from "@/Components/NavigationBar/Dropdowns/LoginModal";
 //Asset Import
 import ProductCard from "@/Components/HelperComponents/ProductCard/ProductCard";
 import ReviewCarousel from "@/Components/HelperComponents/Carousel/ReviewCarousel";
+import ProductReviewFormModal from "@/Components/HelperComponents/ProductReviewFormModal/ProductReviewFormModal";
+import SignUpModal from "@/Components/NavigationBar/Dropdowns/SignUpModal";
 //service import
 import ProductService from "@/Services/localServices/ProductService";
 import { useToast } from "@/context/ToastContext";
+import { useAuth } from "@/context/AuthContext";
 
 const IndividualProductItemPage = () => {
   const { id } = useParams();
@@ -39,12 +41,9 @@ const IndividualProductItemPage = () => {
   const [relatedProducts, setRelatedProducts] = useState([]);
   const { showCartToast } = useToast();
   const [showReviewModal, setShowReviewModal] = useState(false);
-  const [reviewForm, setReviewForm] = useState({
-    name: "",
-    rating: 5,
-    comment: "",
-  });
-  const [submittingReview, setSubmittingReview] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showSignUpModal, setShowSignUpModal] = useState(false);
+  const { user } = useAuth();
 
   // Scroll to top when component mounts
   useEffect(() => {
@@ -61,7 +60,6 @@ const IndividualProductItemPage = () => {
         if (!id) {
           throw new Error("Product ID is missing");
         }
-        // Try to parse the ID if it's a string number
         const productId = isNaN(id) ? id : parseInt(id);
 
         // Fetch product data
@@ -72,7 +70,6 @@ const IndividualProductItemPage = () => {
         }
 
         setProduct(productData);
-        // Fetch related products if category exists
         if (productData.category) {
           const related = await ProductService.fetchRelatedProducts(
             productData.category,
@@ -134,30 +131,16 @@ const IndividualProductItemPage = () => {
     }
   };
 
-  // Review modal handlers
-  const handleOpenReviewModal = () => setShowReviewModal(true);
-  const handleCloseReviewModal = () => setShowReviewModal(false);
-  const handleReviewFormChange = (e) => {
-    const { name, value } = e.target;
-    setReviewForm((prev) => ({ ...prev, [name]: value }));
+  const handleShowReviewModal = () => {
+    if (!user) {
+      setShowLoginModal(true);
+      return;
+    }
+    setShowReviewModal(true);
   };
 
-  const handleSubmitReview = async (e) => {
-    e.preventDefault();
-    setSubmittingReview(true);
-    try {
-      const newReview = await ReviewService.submitReview({
-        productId: id,
-        ...reviewForm,
-      });
-      setReviews((prev) => [...prev, newReview]);
-      setReviewForm({ name: "", rating: 5, comment: "" });
-      setShowReviewModal(false);
-    } catch (error) {
-      setError(`Failed to submit review. Please try again. \n${error.message}`);
-    } finally {
-      setSubmittingReview(false);
-    }
+  const handleCloseReviewModal = () => {
+    setShowReviewModal(false);
   };
 
   if (isLoading) {
@@ -262,10 +245,10 @@ const IndividualProductItemPage = () => {
             </Col>
 
             <Col lg={6}>
-              <h2 className="mb-3 poppins-bold secondary-color-font">
+              <h2 className="mb-3 poppins-bold primary-color-font">
                 {product.title}
               </h2>
-              <h4 className="mb-4 poppins-semibold secondary-color-font">
+              <h4 className="mb-4 poppins-semibold primary-color-font">
                 $ {product.price}
               </h4>
 
@@ -324,7 +307,7 @@ const IndividualProductItemPage = () => {
 
         {relatedProducts.length > 0 && (
           <Row className="related-purchases-container border rounded-4 mt-5 mb-5">
-            <h2 className="secondary-color-font p-4">Related Products</h2>
+            <h2 className="primary-color-font p-4">Related Products</h2>
             <Row className="d-flex flex-wrap justify-content-center mt-3 related-purchases-product mb-5 gap-3">
               {relatedProducts.map((item) => (
                 <ProductCard
@@ -341,12 +324,12 @@ const IndividualProductItemPage = () => {
         )}
 
         <Container className="productReviewsContainer d-flex flex-column text-center mt-5 mb-5">
-          <h3 className="secondary-color-font">Product Reviews</h3>
+          <h3 className="primary-color-font">Product Reviews</h3>
           <Row className="productReviewCardsContainer d-flex flex-wrap justify-content-center">
             {reviews && reviews.length > 0 ? (
               <ReviewCarousel reviews={reviews} />
             ) : (
-              <p className="text-muted mt-3">
+              <p className="mt-3 primary-color-font fs-5 m-3">
                 No product reviews yet. Be the first to add one!
               </p>
             )}
@@ -355,7 +338,7 @@ const IndividualProductItemPage = () => {
             <Button
               type="button"
               className="pl-2 pr-2 rounded-5 review-btn"
-              onClick={handleOpenReviewModal}
+              onClick={() => handleShowReviewModal()}
             >
               Write a Review
             </Button>
@@ -364,54 +347,28 @@ const IndividualProductItemPage = () => {
       </Container>
 
       {/* Review Modal */}
-      <Modal show={showReviewModal} onHide={handleCloseReviewModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>Write a Review</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form onSubmit={handleSubmitReview}>
-            <Form.Group className="mb-3">
-              <Form.Label>Name</Form.Label>
-              <Form.Control
-                type="text"
-                name="name"
-                value={reviewForm.name}
-                onChange={handleReviewFormChange}
-                required
-              />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Rating</Form.Label>
-              <Form.Select
-                name="rating"
-                value={reviewForm.rating}
-                onChange={handleReviewFormChange}
-                required
-              >
-                {[5, 4, 3, 2, 1].map((rating) => (
-                  <option key={rating} value={rating}>
-                    {rating} Stars
-                  </option>
-                ))}
-              </Form.Select>
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Comment</Form.Label>
-              <Form.Control
-                as="textarea"
-                rows={3}
-                name="comment"
-                value={reviewForm.comment}
-                onChange={handleReviewFormChange}
-                required
-              />
-            </Form.Group>
-            <Button type="submit" className="w-100" disabled={submittingReview}>
-              {submittingReview ? "Submitting..." : "Submit Review"}
-            </Button>
-          </Form>
-        </Modal.Body>
-      </Modal>
+      <ProductReviewFormModal
+        showReviewModal={showReviewModal}
+        onClose={() => handleCloseReviewModal()}
+        productId={id}
+      />
+
+      <LoginModal
+        show={showLoginModal}
+        onHide={() => setShowLoginModal(false)}
+        onSignUpClick={() =>{
+          setShowLoginModal(false);
+          setShowSignUpModal(true);
+        }}
+      />
+      <SignUpModal
+        show={showSignUpModal}
+        onHide={() => setShowSignUpModal(false)}
+        onLoginClick={() => {
+          setShowSignUpModal(false);
+          setShowLoginModal(true);
+        }}
+      />
     </>
   );
 };
