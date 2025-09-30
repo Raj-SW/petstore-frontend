@@ -19,7 +19,7 @@ const Breadcrumb = ({ items }) => {
         <React.Fragment key={index}>
           <span onClick={() => handleClick(item.path)}>
             <p
-              className={`breadcrumb-text poppins-medium light-gray fs-6 ${
+              className={`breadcrumb-text poppins-medium fs-6 ${
                 location.pathname === item.path ? "active" : ""
               }`}
             >

@@ -6,7 +6,6 @@ import {
   FaInfoCircle,
   FaShoppingCart,
   FaCreditCard,
-  FaKey,
   FaBell,
   FaUserEdit,
   FaHeart,
@@ -52,6 +51,7 @@ export const ToastProvider = ({ children }) => {
   };
 
   // Predefined toast messages for common actions
+  
   const showCartToast = (action, productName) => {
     const message =
       action === "add"
@@ -59,24 +59,7 @@ export const ToastProvider = ({ children }) => {
         : `${productName} removed from cart`;
     addToast(message, "success", <FaShoppingCart className="text-success" />);
   };
-
-  const showCheckoutToast = (status) => {
-    if (status === "success") {
-      addToast(
-        "Order placed successfully! Thank you for your purchase.",
-        "success",
-        <FaCreditCard className="text-success" />
-      );
-    } else {
-      addToast(
-        "There was an error processing your order. Please try again.",
-        "error",
-        <FaCreditCard className="text-danger" />
-      );
-    }
-  };
-
-  const showAuthToast = (action, status) => {
+ const showAuthToast = (action, status) => {
     const messages = {
       login: {
         success: "Successfully logged in! Welcome back.",
@@ -98,12 +81,34 @@ export const ToastProvider = ({ children }) => {
         error: "Password reset failed. Please try again.",
       },
     };
-
+  };
+  const showCheckoutToast = (status) => {
+    if (status === "success") {
+      addToast(
+        "Order placed successfully! Thank you for your purchase.",
+        "success",
+        <FaCreditCard className="text-success" />
+      );
+    } else {
+      addToast(
+        "There was an error processing your order. Please try again.",
+        "error",
+        <FaCreditCard className="text-danger" />
+      );
+    }
+  };
+  const showReviewToast = (action, status, errorMessage) => {
+    const messages = {
+      submit: {
+        success: "Review submitted successfully. Thank You!",
+        error: errorMessage || "Review submission failed. Please try again.",
+      },
+    };
     const message = messages[action][status];
     addToast(
       message,
       status,
-      <FaKey
+      <FaUserEdit 
         className={`text-${status === "success" ? "success" : "danger"}`}
       />
     );
@@ -150,6 +155,7 @@ export const ToastProvider = ({ children }) => {
         showCartToast,
         showCheckoutToast,
         showAuthToast,
+        showReviewToast,
         showProfileToast,
         showWishlistToast,
         showNotificationToast,
@@ -166,7 +172,7 @@ export const ToastProvider = ({ children }) => {
             key={toast.id}
             onClose={() => removeToast(toast.id)}
             show={true}
-            delay={2000}
+            delay={4000}
             autohide
             className="toast-custom"
           >

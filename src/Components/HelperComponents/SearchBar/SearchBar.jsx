@@ -9,18 +9,15 @@ const SearchBar = ({ showInPages = ["/PetShop", "/product"] }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Sanitize and validate search input
   const sanitizeInput = (input) => {
     return input.replace(/[<>]/g, "").trim().slice(0, 100);
   };
 
-  // Debounced search handler
   const debouncedSearch = useCallback(
     (query) => {
       const sanitizedQuery = sanitizeInput(query);
       if (sanitizedQuery) {
         setIsLoading(true);
-        // Simulate API delay
         setTimeout(() => {
           navigate(`/PetShop?search=${encodeURIComponent(sanitizedQuery)}`);
           setIsLoading(false);
@@ -40,7 +37,6 @@ const SearchBar = ({ showInPages = ["/PetShop", "/product"] }) => {
     }
   };
 
-  // Check if current path is in showInPages array
   const shouldShow = showInPages.some((path) =>
     location.pathname.includes(path)
   );

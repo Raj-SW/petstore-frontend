@@ -15,7 +15,9 @@
 }
 
 .search-input:focus {
-    border-color: var(--primary-color);
+    border-color: none !important;
+    outline: none !important;
+    box-shadow: none !important;
 }
 
 .search-input:disabled {

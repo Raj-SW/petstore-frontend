@@ -21,7 +21,7 @@ const ProductCard = ({ id, title, price, rating, imageUrl }) => {
     e.stopPropagation();
 
     if (inCart(id)) {
-      showCartToast("add", title); // Optionally notify already in cart
+      showCartToast("add", title); 
       return;
     }
 
