@@ -9,14 +9,16 @@ import {
 } from "react-icons/fa";
 import { BsCheckCircleFill } from "react-icons/bs";
 import "./ImportPage.css";
-
+import { useToast } from "../../../context/ToastContext";
+import { useAuth } from "../../../context/AuthContext";
 const ExportImportForm = () => {
   const breadcrumbItems = [
     { label: "Home", path: "/" },
     { label: "Import/Export", path: "/import-export-service" },
     { label: "Apply" },
   ];
-
+  const { addToast } = useToast();
+  const { user } = useAuth();
   // Multi-step form state
   const [step, setStep] = useState(1);
   const [form, setForm] = useState({
@@ -40,6 +42,10 @@ const ExportImportForm = () => {
   const handlePrev = () => setStep((s) => s - 1);
   const handleSubmit = (e) => {
     e.preventDefault();
+    if(user==null){
+      addToast("You need to log in to apply for import/export service.", "warning");
+      return;
+    }
     setSubmitted(true);
   };
 

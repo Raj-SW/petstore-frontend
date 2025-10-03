@@ -3,13 +3,24 @@ import { useNavigate } from "react-router-dom";
 import Breadcrumb from "@/Components/HelperComponents/Breadcrumb/Breadcrumb";
 import "./ImportExportServicePage.css";
 import catflying from "../../assets/ExportImport/catflying.png";
-
+import { useToast } from "../../context/ToastContext";
+import { useAuth } from "../../context/AuthContext";
 const ImportExportServicePage = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const { addToast } = useToast();
   const breadcrumbItems = [
     { label: "Home", path: "/" },
     { label: "Import/Export" },
   ];
+
+  const handleApply = () => {
+    if(user==null){
+      addToast("You need to log in to apply for import/export service.", "warning");
+      return;
+    }
+    navigate("/import-page");
+  };
   return (
     <div className="min-vh-100 importexport-services-section">
       <Container className="pt-4 pb-2">
@@ -33,7 +44,7 @@ const ImportExportServicePage = () => {
             <div className="d-flex gap-2 justify-content-center justify-content-md-start w-100">
               <Button
                 className="px-4 py-2 poppins-medium importexport-btn rounded-5"
-                onClick={() => navigate("/import-page")}
+                onClick={handleApply}
               >
                 Apply
               </Button>
