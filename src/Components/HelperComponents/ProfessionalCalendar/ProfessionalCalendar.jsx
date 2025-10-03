@@ -10,9 +10,14 @@ import AppointmentForm from "@/Components/HelperComponents/AppointmentForm/Appoi
 import appointmentsApi from "@/Services/api/appointmentsApi";
 import professionalsApi from "@/Services/api/professionalsApi";
 import "./ProfessionalCalendar.css";
+import {useAuth} from "@/context/AuthContext";
+import { useToast } from "../../../context/ToastContext";
+
 
 const ProfessionalCalendar = ({ onBack, professional }) => {
   const [calendarEvents, setCalendarEvents] = useState([]);
+  const { user } = useAuth();
+  const { addToast } = useToast();
   const [showAppointmentForm, setShowAppointmentForm] = useState(false);
   const [editingAppointment, setEditingAppointment] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -53,8 +58,18 @@ const ProfessionalCalendar = ({ onBack, professional }) => {
       professionalInfo?.name ?? "N A"
     )}&background=${bgColor}&color=fff&size=128`;
   };
+
   // Handle slot selection to book an appointment
   const handleDateSelect = (selectInfo) => {
+    
+    if(user==null){
+      addToast("You need to log in to book an appointment.", "warning");
+      return;
+    }
+    if(user.pets.length==0){
+      addToast("You need to add a pet to your account to book an appointment.", "warning");
+      return;
+    }
     setEditingAppointment({
       professionalId: professionalInfo._id,
       professionalName: professionalInfo.name,
@@ -229,6 +244,14 @@ const ProfessionalCalendar = ({ onBack, professional }) => {
             <Button
               className="book-appointment-btn rounded-5"
               onClick={() => {
+                if(user==null){
+                  addToast("You need to log in to book an appointment.", "warning");
+                  return;
+                }
+                if(user.pets.length==0){
+                  addToast("You need to add a pet to your account to book an appointment.", "warning");
+                  return;
+                }
                 setEditingAppointment({
                   professionalId: professionalInfo._id,
                   professionalName: professionalInfo.name,

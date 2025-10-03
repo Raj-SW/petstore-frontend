@@ -80,6 +80,10 @@ export const ToastProvider = ({ children }) => {
           "Password reset successful. Please login with your new password.",
         error: "Password reset failed. Please try again.",
       },
+      loginRequired: {
+        success: "You need to log in to access this page.",
+        error: "You need to log in to access this page.",
+      },
     };
   };
   const showCheckoutToast = (status) => {
