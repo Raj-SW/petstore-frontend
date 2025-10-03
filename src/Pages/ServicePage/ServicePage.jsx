@@ -6,7 +6,10 @@ import "./ServicePage.css";
 //Component import
 import { Container, Row, Col, Button } from "react-bootstrap";
 import { SlBadge } from "react-icons/sl";
+import { useNavigate } from "react-router-dom";
 const ServicePage = () => {
+  const navigate = useNavigate();
+
   return (
     <Container className="ServicePageContainer d-flex flex-column justify-content-center align-items-center">
       <Row className="rounded-4 w-100 border p-3 text-center mt-5 mb-5">
@@ -138,14 +141,8 @@ const ServicePage = () => {
             <Button
               variant="success"
               type="submit"
-              className="rounded-pill"
-              style={{
-                backgroundColor: "#74B49B",
-                border: "none",
-                width: "fit-content",
-                paddingLeft: "2rem",
-                paddingRight: "2rem",
-              }}
+              className="rounded-pill book-appointment-btn"
+              onClick={() => navigate("/appointments")}
             >
               Book an Appointment
             </Button>

@@ -6,3 +6,15 @@
     width: 100%;
     height: 31.250rem;
 }
+
+.book-appointment-btn {
+    background-color: var(--primary-blue-color);
+    border: none;
+    width: fit-content;
+    padding-left: 2rem;
+    padding-right: 2rem;
+}
+
+.book-appointment-btn:hover {
+    background-color: var(--secondary-blue-color);
+}
