@@ -19,7 +19,7 @@ const authApi = {
 
   // Get current user
   getCurrentUser: async () => {
-    const response = await api.get("users/me");
+    const response = await api.get("/users/me");
     return response.data;
   },
 
