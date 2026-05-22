@@ -1,166 +1,112 @@
-import { Container, Accordion } from "react-bootstrap";
 import { useState, useRef, useEffect } from "react";
-import Navbar from "react-bootstrap/Navbar";
-import AddToCart from "./AddToCart";
-import { useCart } from "react-use-cart";
-import SnackBar from "./SnackBar";
-import CardDropDown from "./Dropdowns/CardDropdown";
-import SignUpDropdown from "./Dropdowns/SignUpDropdown";
+import { useLocation } from "react-router-dom";
 import {
-  FaTimes,
-  FaPaw,
   FaUserCircle,
-  FaShoppingCart,
-  FaDog,
-  FaCat,
-  FaFish,
-  FaHome,
   FaUser,
   FaSignInAlt,
-  FaStore,
-  FaUsers,
   FaTachometerAlt,
+  FaTimes,
+  FaBars,
 } from "react-icons/fa";
-import pawsImg from "../../assets/NavigationBarAssets/Logo/paws.png";
-import pawsmobileImg from "../../assets/NavigationBarAssets/Logo/pawsMobile.png";
-import vitalPawsLogo from "../../assets/NavigationBarAssets/Logo/vitalPawsLogo.png";
-import { useAuth } from "../../context/AuthContext";
 import { Dropdown } from "react-bootstrap";
+import vitalPawsLogo from "../../assets/NavBar Assets/Vital-paws-logo.png";
+import pawsImg from "../../assets/NavBar Assets/Paws.png";
+import { useAuth } from "../../context/AuthContext";
+import AddToCart from "./AddToCart";
+import SignUpDropdown from "./Dropdowns/SignUpDropdown";
 import "./NavigationBar.css";
 
-// This is the main navigation bar component for the website
+// Routes that exist in the app router
+const NAV_LINKS = [
+  { label: "Home", href: "/home" },
+  { label: "Services", href: "/services" },
+  { label: "Pet Store", href: "/petshop" },
+  { label: "Pet Care Tips", href: null },
+  { label: "Gallery", href: null },
+  { label: "Contact", href: null },
+];
+
 const NavigationBar = () => {
-  const { items, updateItemQuantity, removeItem, totalItems } = useCart();
-  const [showCartModal, setShowCartModal] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [showLogin, setShowLogin] = useState(false);
-  const mobileMenuRef = useRef(null);
   const { user, logout, isAdmin } = useAuth();
+  const [showLogin, setShowLogin] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const mobileMenuRef = useRef(null);
+  const location = useLocation();
 
-  // Accessibility: trap focus in mobile menu
-  useEffect(() => {
-    if (mobileMenuOpen && mobileMenuRef.current) {
-      mobileMenuRef.current.focus();
-    }
-  }, [mobileMenuOpen]);
-
-  const handleIncreaseQuantity = (id) => {
-    const item = items.find((item) => item.id === id);
-    if (item) {
-      updateItemQuantity(id, item.quantity + 1);
-    }
-  };
-
-  const handleDecreaseQuantity = (id) => {
-    const item = items.find((item) => item.id === id);
-    if (item && item.quantity > 1) {
-      updateItemQuantity(id, item.quantity - 1);
-    }
-  };
-
-  const handleRemoveItem = (id) => {
-    removeItem(id);
-  };
-
-  // Overlay click closes menu
-  const handleOverlayClick = (e) => {
-    if (e.target.classList.contains("mobile-menu-overlay")) {
-      setMobileMenuOpen(false);
-    }
-  };
-
-  // Keyboard accessibility: ESC closes menu
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.key === "Escape" && mobileMenuOpen) {
-        setMobileMenuOpen(false);
-      }
+      if (e.key === "Escape" && mobileMenuOpen) setMobileMenuOpen(false);
     };
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [mobileMenuOpen]);
 
+  useEffect(() => {
+    if (mobileMenuOpen && mobileMenuRef.current) mobileMenuRef.current.focus();
+  }, [mobileMenuOpen]);
+
+  const handleOverlayClick = (e) => {
+    if (e.target.classList.contains("mobile-menu-overlay"))
+      setMobileMenuOpen(false);
+  };
+
+  const isActive = (href) => {
+    if (!href) return false;
+    if (href === "/home") return location.pathname === "/" || location.pathname === "/home";
+    return location.pathname.startsWith(href);
+  };
+
   return (
     <>
-      {/* SnackBar component shown at the very top */}
-      <SnackBar />
-
-      {/* Main Navigation Bar */}
-      <Navbar
-        collapseOnSelect // Collapses on mobile when clicking outside
-        expand="lg" // Expands on large screens
-        className="sticky-top nav-bar" // Sticks to top while scrolling
-        variant="dark" // This changes the hamburger menu color to white
-      >
-        <Container fluid>
-          {/* Hamburger menu button for mobile */}
-          <div className="d-flex align-items-center">
-            <button
-              className="toggle-custom mobile-hamburger-btn"
-              aria-label="Open navigation menu"
-              onClick={() => setMobileMenuOpen(true)}
-              style={{
-                border: "none",
-                padding: "0.5rem 1rem",
-                margin: "0.5rem",
-                background: "none",
-                outline: "none",
-                boxShadow: "none",
-                fontSize: 28,
-                color: "#fff",
-                display: "block",
-              }}
-            >
-              <FaPaw />
-            </button>
-
-            {/* Brand Logo Section */}
-            <div href="#home" className="d-flex align-items-center brand">
-              {/* Logo Image */}
-              <a href="/home">
-                <img
-                  src={vitalPawsLogo}
-                  alt="Cat Logo"
-                  className=" vitalPawsLogo"
-                />
-              </a>
-
-              {/* Brand Name */}
-              <a href="/home">
-                <div className="brand-Name pl-1 pr-1 ">
-                  <div className="m-0 p-1">
-                    <p className="caveat-Heading fs-1">Vital</p>
-                  </div>
-                  <div className="m-0 p-1 ">
-                    <p className="caveat-Heading fs-2">Paws</p>
-                  </div>
-                </div>
-              </a>
-
-              {/* Decorative Paws Image in desktop version */}
-              <div className="paws-img-container d-none d-lg-block">
-                <img src={pawsImg} alt="" className="pawsImg" />
-              </div>
-
-              {/* Decorative Paws Image in mobile version */}
-              <div className="paws-mobile-img-container d-block d-lg-none">
-                <img src={pawsmobileImg} alt="" className="" />
-              </div>
+      <nav className="vitalpaws-nav sticky-top">
+        <div className="nav-inner">
+          {/* Logo */}
+          <a href="/home" className="nav-brand">
+            <img src={vitalPawsLogo} alt="VitalPaws" className="nav-logo-img" />
+            <div className="nav-brand-text">
+              <span className="nav-brand-name">
+                <span className="nav-brand-vital">Vital</span>
+                <span className="nav-brand-paws">Paws</span>
+              </span>
+              <span className="nav-brand-sub">VETERINARY CARE</span>
             </div>
-          </div>
+          </a>
 
-          {/* Mobile Sign Up Button */}
-          <div className="d-flex d-lg-none align-items-center">
+          {/* Decorative paws — large desktop only */}
+          <img
+            src={pawsImg}
+            alt=""
+            className="nav-paws d-none d-xl-block"
+            aria-hidden="true"
+          />
+
+          {/* Desktop nav links */}
+          <ul className="nav-links d-none d-lg-flex">
+            {NAV_LINKS.map(({ label, href }) => (
+              <li key={label}>
+                {href ? (
+                  <a
+                    href={href}
+                    className={`nav-link-item${isActive(href) ? " active" : ""}`}
+                  >
+                    {label}
+                  </a>
+                ) : (
+                  <span className="nav-link-item nav-link-disabled">{label}</span>
+                )}
+              </li>
+            ))}
+          </ul>
+
+          {/* Right-side actions */}
+          <div className="nav-actions">
             {user ? (
-              <Dropdown align="end" className="ms-3">
-                <Dropdown.Toggle
-                  variant="link"
-                  className="d-flex align-items-center text-white text-decoration-none p-0 border-0"
-                  style={{ boxShadow: "none", height: "100%" }}
-                >
-                  <div className="d-flex align-items-center">
-                    <FaUserCircle size={28} className="me-2" />
-                  </div>
+              <Dropdown align="end">
+                <Dropdown.Toggle variant="link" className="nav-user-btn">
+                  <FaUserCircle size={24} />
+                  <span className="nav-user-name d-none d-lg-inline">
+                    {user.name}
+                  </span>
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
                   <Dropdown.Item href="/profile">
@@ -175,48 +121,7 @@ const NavigationBar = () => {
                     </>
                   )}
                   <Dropdown.Divider />
-                  <Dropdown.Item onClick={logout} style={{ color: "#d32f2f" }}>
-                    <FaSignInAlt className="me-2" /> Log out
-                  </Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown>
-            ) : (
-              <SignUpDropdown
-                showLogin={showLogin}
-                setShowLogin={setShowLogin}
-              />
-            )}{" "}
-          </div>
-
-          {/* Desktop Navigation Items */}
-          <div className="ms-auto d-flex align-items-center d-none d-md-flex d-card-dropdown">
-            <CardDropDown /> {/* Card dropdown menu */}
-            {user ? (
-              <Dropdown align="end" className="ms-3">
-                <Dropdown.Toggle
-                  variant="link"
-                  className="d-flex align-items-center text-white text-decoration-none p-0 border-0"
-                  style={{ boxShadow: "none", height: "100%" }}
-                >
-                  <div className="d-flex align-items-center">
-                    <FaUserCircle size={28} className="me-2" />
-                    <span className="fw-bold">{user.name}</span>
-                  </div>
-                </Dropdown.Toggle>
-                <Dropdown.Menu>
-                  <Dropdown.Item href="/profile">
-                    <FaUser className="me-2" /> Profile
-                  </Dropdown.Item>
-                  {isAdmin() && (
-                    <>
-                      <Dropdown.Divider />
-                      <Dropdown.Item href="/admin">
-                        <FaTachometerAlt className="me-2" /> Admin Dashboard
-                      </Dropdown.Item>
-                    </>
-                  )}
-                  <Dropdown.Divider />
-                  <Dropdown.Item onClick={logout} style={{ color: "#d32f2f" }}>
+                  <Dropdown.Item onClick={logout} className="text-danger">
                     <FaSignInAlt className="me-2" /> Log out
                   </Dropdown.Item>
                 </Dropdown.Menu>
@@ -227,176 +132,112 @@ const NavigationBar = () => {
                 setShowLogin={setShowLogin}
               />
             )}
-            <AddToCart
-              itemCount={totalItems}
-              cartItems={items}
-              onIncreaseQuantity={handleIncreaseQuantity}
-              onDecreaseQuantity={handleDecreaseQuantity}
-              onRemoveItem={handleRemoveItem}
-              showCartModal={showCartModal}
-              setShowCartModal={setShowCartModal}
-            />
-          </div>
-        </Container>
-      </Navbar>
 
-      {/* Mobile Fullscreen Slide-in Menu & Overlay */}
+            <AddToCart />
+
+            {/* Mobile hamburger */}
+            <button
+              className="nav-hamburger d-lg-none"
+              aria-label="Open menu"
+              onClick={() => setMobileMenuOpen(true)}
+            >
+              <FaBars size={20} />
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      {/* Mobile slide-in menu */}
       <div
         className={`mobile-menu-overlay${mobileMenuOpen ? " open" : ""}`}
         onClick={handleOverlayClick}
         aria-hidden={!mobileMenuOpen}
-        tabIndex={-1}
       >
         <nav
           className={`mobile-slide-menu${mobileMenuOpen ? " open" : ""}`}
           ref={mobileMenuRef}
           tabIndex={mobileMenuOpen ? 0 : -1}
-          aria-label="Mobile navigation menu"
+          aria-label="Mobile navigation"
         >
-          <div className="mobile-menu-header d-flex align-items-center justify-content-between px-3 py-3">
+          <div className="mobile-menu-header">
             <div className="d-flex align-items-center gap-2">
-              <FaUserCircle size={28} className="mobile-user-icon" />
+              <FaUserCircle size={24} className="mobile-user-icon" />
               <span className="mobile-user-greeting">
                 {user ? `Hi, ${user.name}` : "Welcome!"}
               </span>
             </div>
             <button
               className="mobile-menu-close-btn"
-              aria-label="Close navigation menu"
+              aria-label="Close menu"
               onClick={() => setMobileMenuOpen(false)}
             >
-              <FaTimes size={24} />
+              <FaTimes size={20} />
             </button>
           </div>
-          <div className="mobile-menu-content px-3">
-            <a href="/home" className="mobile-menu-link">
-              <FaHome className="me-2" /> Home
-            </a>
-            <a href="/petshop" className="mobile-menu-link">
-              <FaStore className="me-2" /> Pet Shop
-            </a>
 
-            <Accordion className="mobile-menu-accordion">
-              <Accordion.Item eventKey="0">
-                <Accordion.Header className="mobile-menu-link">
-                  <FaPaw className="me-2" /> Services
-                </Accordion.Header>
-                <Accordion.Body className="ps-4">
-                  <a href="/services" className="mobile-menu-link d-block mb-2">
-                    All Services
-                  </a>
-                  <a
-                    href="/import-export-service"
-                    className="mobile-menu-link d-block"
-                  >
-                    Import/Export
-                  </a>
-                </Accordion.Body>
-              </Accordion.Item>
+          <div className="mobile-menu-content">
+            {NAV_LINKS.map(({ label, href }) =>
+              href ? (
+                <a
+                  key={label}
+                  href={href}
+                  className={`mobile-menu-link${isActive(href) ? " active" : ""}`}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {label}
+                </a>
+              ) : (
+                <span key={label} className="mobile-menu-link mobile-link-disabled">
+                  {label}
+                </span>
+              )
+            )}
 
-              <Accordion.Item eventKey="1">
-                <Accordion.Header className="mobile-menu-link">
-                  <FaUser className="me-2" /> Appointments
-                </Accordion.Header>
-                <Accordion.Body className="ps-4">
-                  <a
-                    href="/appointments"
-                    className="mobile-menu-link d-block mb-2"
-                  >
-                    Vet Appointment
-                  </a>
-                  <a
-                    href="/appointments"
-                    className="mobile-menu-link d-block mb-2"
-                  >
-                    Groomer Appointment
-                  </a>
-                  <a href="/appointments" className="mobile-menu-link d-block">
-                    Pet Taxi
-                  </a>
-                </Accordion.Body>
-              </Accordion.Item>
-            </Accordion>
+            <div className="mobile-menu-divider" />
 
-            <div
-              className="mobile-menu-link coming-soon"
-              style={{ opacity: 0.6, cursor: "not-allowed" }}
-            >
-              <FaUsers className="me-2" /> Community
-              <span className="ms-2 badge bg-secondary">Coming Soon</span>
-            </div>
-
-            {user && (
+            {user ? (
               <>
-                <a href="/profile" className="mobile-menu-link">
-                  <FaUserCircle className="me-2" /> Profile
+                <a
+                  href="/profile"
+                  className="mobile-menu-link"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <FaUser className="me-2" /> Profile
                 </a>
                 {isAdmin() && (
-                  <a href="/admin" className="mobile-menu-link">
+                  <a
+                    href="/admin"
+                    className="mobile-menu-link"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
                     <FaTachometerAlt className="me-2" /> Admin Dashboard
                   </a>
                 )}
-              </>
-            )}
-            <a href="/checkout" className="mobile-menu-link">
-              <FaShoppingCart className="me-2" /> Cart ({totalItems})
-            </a>
-            <div className="mobile-menu-divider my-3"></div>
-            <div className="mobile-menu-section-title mb-2">Pet Boutique</div>
-            <div className="mobile-menu-boutique d-flex gap-3 mb-3">
-              <a href="/petshop?type=dog" className="mobile-menu-boutique-link">
-                <FaDog className="me-1" /> Dogs
-              </a>
-              <a href="/petshop?type=cat" className="mobile-menu-boutique-link">
-                <FaCat className="me-1" /> Cats
-              </a>
-              <a
-                href="/petshop?type=fish"
-                className="mobile-menu-boutique-link"
-              >
-                <FaFish className="me-1" /> Fish
-              </a>
-            </div>
-            <div className="mobile-menu-divider my-3"></div>
-            <div className="mobile-menu-section-title mb-2">Account</div>
-            <div className="mobile-menu-account d-flex gap-3 mb-3">
-              {user ? (
-                <>
-                  <a href="/profile" className="mobile-menu-account-link">
-                    <FaUserCircle className="me-1" /> Profile
-                  </a>
-                  {isAdmin() && (
-                    <a href="/admin" className="mobile-menu-account-link">
-                      <FaTachometerAlt className="me-1" /> Admin
-                    </a>
-                  )}
-                  <a
-                    href="#"
-                    className="mobile-menu-account-link"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      logout();
-                      setMobileMenuOpen(false);
-                    }}
-                    style={{ color: "#d32f2f" }}
-                  >
-                    <FaSignInAlt className="me-1" /> Logout
-                  </a>
-                </>
-              ) : (
                 <a
                   href="#"
-                  className="mobile-menu-account-link"
+                  className="mobile-menu-link logout-link"
                   onClick={(e) => {
                     e.preventDefault();
+                    logout();
                     setMobileMenuOpen(false);
-                    setShowLogin(true);
                   }}
                 >
-                  <FaSignInAlt className="me-1" /> Login
+                  <FaSignInAlt className="me-2" /> Logout
                 </a>
-              )}
-            </div>
+              </>
+            ) : (
+              <a
+                href="#"
+                className="mobile-menu-link"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setMobileMenuOpen(false);
+                  setShowLogin(true);
+                }}
+              >
+                <FaSignInAlt className="me-2" /> Login
+              </a>
+            )}
           </div>
         </nav>
       </div>
