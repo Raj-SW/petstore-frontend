@@ -1,193 +1,280 @@
-.hero-wrapper {
-    border-radius: 0 0 2.5rem 2.5rem;
-}
+/* ================================================
+   Hero Section
+   Two bg images + content overlay
+   ================================================ */
 
-.dog-mg-wrapper img {
-    max-height: 24rem;
-}
-
-.heroHeaderWrapper {
-    display: flex;
-    flex-direction: column;
-    align-content: flex-start;
-    justify-content: flex-start;
-}
-
-.hero-section-message {
-    font-size: 3rem;
-    color: var(--secondary-color);
-    padding: 1rem;
-}
-
-.heroMiniSloganHeader {
-    margin-top: 4rem;
-}
-
-.heroDescription {
-    margin-top: 4rem;
-}
-
-.background-image-container {
-    background-image: url('../../../assets/HeroSectionAssets/HeroBannerBackground2.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-}
-
-.cat-banner-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 0rem 0rem 2rem 2rem;
-    font-size: 5rem;
-}
-
-.cat-banner-container>img {
-    max-width: 75%;
-    min-width: 15rem;
-    object-fit: cover;
-    display: block;
-    margin: 0 auto;
-}
-
-.animal-banner-carousel {
+.hero-section {
     position: relative;
-    width: 100%;
-    max-width: 100%;
-    padding-top: 7%;
+    min-height: 580px;
+    overflow: hidden;
+    background-color: var(--color-bg-warm-ivory);
 }
 
-.animal-on-banner-image {
-    max-width: 50vw;
-    width: 100%;
-    object-fit: contain;
+/* ── Background image layers ── */
+
+.hero-bg-img {
     position: absolute;
-    z-index: 10;
-    transform: translate(50%, -64%);
+    top: 0;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
 }
 
-.info-wrapper {
-    /* padding-right: 2rem; */
+.hero-bg-left {
+    left: 0;
+    width: 30%;
 }
 
-.app-links-wrapper {
+.hero-bg-right {
+    right: 0;
+    width: 52%;
+    object-position: 30% center;
+}
+
+/* ── Gradient fade on left edge of right image ── */
+
+.hero-right-fade {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 52%;
+    height: 100%;
+    background: linear-gradient(
+        to right,
+        var(--color-bg-warm-ivory) 0%,
+        rgba(246, 236, 227, 0.55) 18%,
+        transparent 40%
+    );
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* ── Content overlay ── */
+
+.hero-overlay {
+    position: relative;
+    z-index: 2;
     display: flex;
-    justify-content: center;
-    padding: 2rem;
+    align-items: center;
+    min-height: 580px;
+    width: 100%;
 }
 
-.app-links-icon-container {
+/* Left column — logo over left bg */
+.hero-logo-col {
+    width: 24%;
+    flex-shrink: 0;
     display: flex;
+    align-items: center;
     justify-content: center;
-    padding: 0rem 0rem 0rem 2rem;
+    padding: 1.5rem;
 }
 
-.app-links-icon-container img {
-    width: 4.5rem;
+.hero-logo-badge {
+    width: 270px;
+    height: 270px;
+    object-fit: contain;
+    filter: drop-shadow(0 8px 28px rgba(0, 0, 0, 0.28));
 }
 
-.main-page-qr-wrapper {
-    display: flex;
-    justify-content: center;
-}
-
-.quick-links-wrapper {
-    display: flex;
-    justify-content: center;
-    padding-bottom: 2.5rem;
-    flex-wrap: wrap;
-    gap: 1.5rem;
-}
-
-.quicklink {
+/* Center — text content */
+.hero-content {
+    flex: 1;
+    padding: 3rem 2rem 3rem 2rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
-    margin: 0.5rem;
-    text-decoration: none;
-    transition: transform 0.3s ease;
 }
 
-.quicklink:hover {
-    transform: translateY(-5px);
+/* Right spacer — transparent, pet photo shows through */
+.hero-right-col {
+    width: 30%;
+    flex-shrink: 0;
 }
 
-.quick-links-wrapper>div>a>img {
-    object-fit: cover;
-    max-width: 5.5rem;
-    width: 100%;
-    height: auto;
-    margin-bottom: 0.5rem;
+/* ── Typography ── */
+
+.hero-because {
+    font-family: var(--font-script) !important;
+    font-size: 2rem;
+    color: var(--color-accent-gold);
+    margin: 0 0 0.1rem 0;
+    line-height: 1.1;
 }
 
-.quick-links-wrapper>div>a>p {
-    font-size: 1.1rem;
-    font-weight: 500;
-    color: var(--secondary-color);
+.hero-headline {
+    font-family: var(--font-display) !important;
+    font-size: 4.2rem;
+    line-height: 1.05;
+    margin-bottom: 0.9rem;
+    letter-spacing: 0.02em;
+    font-weight: 400;
+}
+
+.hero-headline-dark {
+    color: var(--color-text-default);
+}
+
+.hero-headline-gold {
+    color: var(--color-accent-gold);
+}
+
+.hero-body {
+    font-family: var(--font-body);
+    font-size: 0.97rem;
+    color: var(--color-text-muted);
+    line-height: 1.65;
+    margin-bottom: 1.6rem;
+}
+
+/* ── Feature icons ── */
+
+.hero-features {
+    display: flex;
+    gap: 1.2rem;
+    margin-bottom: 2rem;
+    flex-wrap: nowrap;
+}
+
+.hero-feature-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.45rem;
+}
+
+.hero-feature-icon {
+    color: var(--color-accent-gold);
+    font-size: 1.9rem;
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+.hero-feature-label {
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-text-default);
     margin: 0;
+    line-height: 1.2;
+    white-space: nowrap;
 }
 
-.download-app-text {
-    font-weight: 700;
-    font-size: 2.5rem !important;
-    color: var(--secondary-color);
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+.hero-feature-sub {
+    font-family: var(--font-body);
+    font-size: 0.76rem;
+    color: var(--color-text-muted);
+    margin: 0;
+    line-height: 1.35;
 }
 
-/* Media query for medium to smaller screens */
-@media (max-width: 992px) {
-    .animal-banner-carousel {
-        padding-top: 10rem;
+/* ── CTA buttons ── */
+
+.hero-buttons {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.hero-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.72rem 1.8rem;
+    border-radius: 50px;
+    font-family: var(--font-body);
+    font-size: 0.93rem;
+    font-weight: 600;
+    text-decoration: none !important;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.hero-btn-primary {
+    background-color: var(--color-primary-forest);
+    color: var(--color-bg-cream) !important;
+    border: 2px solid var(--color-primary-forest);
+}
+
+.hero-btn-outline {
+    background: transparent;
+    color: var(--color-text-default) !important;
+    border: 2px solid var(--color-text-default);
+}
+
+/* ── Responsive ── */
+
+@media (max-width: 1199px) {
+    .hero-headline {
+        font-size: 3.2rem;
     }
 
-    .quick-links-wrapper>div>a>img {
-        max-width: 5rem;
-    }
-
-    .quick-links-wrapper>div>a>p {
-        font-size: 1rem;
-    }
-
-    .download-app-text {
-        font-size: 2rem !important;
+    .hero-logo-badge {
+        width: 210px;
+        height: 210px;
     }
 }
 
-@media (max-width: 768px) {
-    .animal-banner-carousel {
-        padding-top: 6rem;
+@media (max-width: 991px) {
+    .hero-section,
+    .hero-overlay {
+        min-height: unset;
     }
 
-    .quick-links-wrapper {
-        gap: 1rem;
+    .hero-overlay {
+        flex-direction: column;
+        padding: 2rem 1.5rem;
     }
 
-    .quick-links-wrapper>div>a>img {
-        max-width: 4.5rem;
+    .hero-bg-left {
+        width: 100%;
+        height: 220px;
+        position: relative;
+    }
+
+    .hero-bg-right {
+        width: 100%;
+        height: 280px;
+        object-position: 30% top;
+        position: relative;
+    }
+
+    .hero-right-fade {
+        display: none;
+    }
+
+    .hero-logo-col {
+        width: 100%;
+        padding: 1.5rem;
+    }
+
+    .hero-logo-badge {
+        width: 150px;
+        height: 150px;
+    }
+
+    .hero-content {
+        padding: 1.5rem 0;
+    }
+
+    .hero-right-col {
+        display: none;
+    }
+
+    .hero-headline {
+        font-size: 2.6rem;
     }
 }
 
-@media (max-width: 576px) {
-    .animal-banner-carousel {
-        padding-top: 4rem;
+@media (max-width: 575px) {
+    .hero-headline {
+        font-size: 2.1rem;
     }
 
-    .quick-links-wrapper {
-        gap: 0.5rem;
+    .hero-features {
+        gap: 0.85rem;
     }
 
-    .quick-links-wrapper>div>a>img {
-        max-width: 4rem;
-    }
-
-    .quick-links-wrapper>div>a>p {
-        font-size: 0.9rem;
-    }
-
-    .download-app-text {
-        font-size: 1.75rem !important;
+    .hero-btn {
+        padding: 0.65rem 1.3rem;
+        font-size: 0.87rem;
     }
 }

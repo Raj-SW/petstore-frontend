@@ -1,168 +1,74 @@
 import "./HeroSection.css";
-import "bootstrap/dist/css/bootstrap.min.css";
-import { Row, Col } from "react-bootstrap";
-import { motion } from "framer-motion";
+import { FaHome, FaWhatsapp, FaMapMarkerAlt } from "react-icons/fa";
+import heroLeftBg from "../../../assets/HeroSectionAssets/Hero-Image-left-background.png";
+import heroRight from "../../../assets/HeroSectionAssets/hero-image-right.png";
+import vitalPawsLogo from "../../../assets/HeroSectionAssets/VitalPaws Logo.png";
 
-//assets import
-import animalBannerHolder from "../../../assets/BannerSliderAssets/animalBannerHolder.png";
-import CarouselComponent from "./Carousels/CarouselComponent";
-import petClinicIcon from "../../../assets/HeroSectionAssets/veterinaryImgIcon.png";
-import petGroomingIconImg from "../../../assets/HeroSectionAssets/groomingImgIcon.png";
-import petHotelIconImg from "../../../assets/HeroSectionAssets/petHotelImgIcon.png";
-import petTrainingIconImg from "../../../assets/HeroSectionAssets/petTrainingImgIcon.png";
-import catDogWoman from "../../../assets/HeroSectionAssets/cat-dog-woman.png";
-import googleapplogo from "../../../assets/Decoratives/google-play-logo.png";
-import appstorelogo from "../../../assets/Decoratives/app-store-logo.png";
+const FEATURES = [
+  { label: "Evening Clinic", sub: "Perfect for busy owners" },
+  { label: "Weekend Care", sub: "We're open Saturdays" },
+  { label: "Home Visits", sub: "At your doorstep" },
+  { label: "Pet Relocation", sub: "Safe & stress-free" },
+];
 
-const HeroSection = () => {
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-      },
-    },
-  };
+const HeroSection = () => (
+  <section className="hero-section">
+    {/* Background layers */}
+    <img src={heroLeftBg} alt="" className="hero-bg-img hero-bg-left" aria-hidden="true" />
+    <img src={heroRight} alt="" className="hero-bg-img hero-bg-right" aria-hidden="true" />
 
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.5,
-      },
-    },
-  };
+    {/* Gradient fade — right image bleeds into center */}
+    <div className="hero-right-fade" aria-hidden="true" />
 
-  return (
-    <div className="background-image-container hero-wrapper">
-      <div className="animal-banner-carousel">
-        <img
-          src={animalBannerHolder}
-          alt=""
-          className="animal-on-banner-image"
-        />
-        <CarouselComponent />
+    {/* Content overlay */}
+    <div className="hero-overlay">
+      {/* Logo sits over the left background */}
+      <div className="hero-logo-col">
+        <img src={vitalPawsLogo} alt="VitalPaws" className="hero-logo-badge" />
       </div>
-      <h3 className="caveat-Heading hero-section-message text-center mt-5">
-        Welcome to Vital Paws
-      </h3>
-      <Row className="d-flex w-100">
-        <Col className="cat-banner-container">
-          <img src={catDogWoman} alt="" className="" />
-        </Col>
 
-        <Col className="info-wrapper align-content-center p-0">
-          <motion.div
-            className="quick-links-wrapper w-100 d-flex text-center"
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-          >
-            <motion.div
-              className="quick-link-item text-center"
-              variants={itemVariants}
-              whileHover={{ scale: 1.05 }}
-            >
-              <a href="" className="quicklink">
-                <motion.img
-                  src={petClinicIcon}
-                  alt="Pet Clinic"
-                  whileHover={{ scale: 1.1 }}
-                  transition={{ type: "spring", stiffness: 300 }}
-                />
-                <p className="poppins-regular fs-6">Pet Clinic</p>
-              </a>
-            </motion.div>
-            <motion.div
-              className="quick-link-item text-center"
-              variants={itemVariants}
-              whileHover={{ scale: 1.05 }}
-            >
-              <a href="" className="quicklink">
-                <motion.img
-                  src={petGroomingIconImg}
-                  alt="Pet Grooming"
-                  whileHover={{ scale: 1.1 }}
-                  transition={{ type: "spring", stiffness: 300 }}
-                />
-                <p className="poppins-regular fs-6">Pet Grooming</p>
-              </a>
-            </motion.div>
-            <motion.div
-              className="quick-link-item text-center justify-center"
-              variants={itemVariants}
-              whileHover={{ scale: 1.05 }}
-            >
-              <a href="" className="quicklink">
-                <motion.img
-                  src={petHotelIconImg}
-                  alt="Pet Hotel"
-                  whileHover={{ scale: 1.1 }}
-                  transition={{ type: "spring", stiffness: 300 }}
-                />
-                <p className="poppins-regular fs-6">Pet Hotel</p>
-              </a>
-            </motion.div>
-            <motion.div
-              className="quick-link-item text-center"
-              variants={itemVariants}
-              whileHover={{ scale: 1.05 }}
-            >
-              <a href="" className="quicklink">
-                <motion.img
-                  src={petTrainingIconImg}
-                  alt="Pet Training"
-                  whileHover={{ scale: 1.1 }}
-                  transition={{ type: "spring", stiffness: 300 }}
-                />
-                <p className="poppins-regular fs-6">Pet Training</p>
-              </a>
-            </motion.div>
-          </motion.div>
-          <div className="p-3 text-left">
-            <p className="poppins-regular fs-6">
-              Welcome to Vital Paws, your trusted partner in pet care. We offer
-              comprehensive services including veterinary care, grooming,
-              boarding, and training. Our team of experienced professionals is
-              dedicated to ensuring your pets receive the best care possible.
-              Join our community of happy pets and their owners today!
-            </p>
-          </div>
-          <motion.div
-            className="app-links-wrapper d-flex flex-wrap align-items-center justify-between p-4"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-          >
-            <div>
-              <p className="m-0 p-0 caveat-Heading download-app-text">
-                Download the App
-              </p>
+      {/* Center text */}
+      <div className="hero-content">
+        <p className="hero-because">Because</p>
+        <h1 className="hero-headline">
+          <span className="hero-headline-dark">They Can't Speak…</span>
+          <br />
+          <span className="hero-headline-gold">We Listen.</span>
+        </h1>
+        <p className="hero-body">
+          Compassionate veterinary care in Piton
+          <br />
+          for the pets you love the most.
+        </p>
+
+        <div className="hero-features">
+          {FEATURES.map((f, i) => (
+            <div key={i} className="hero-feature-item">
+              <FaHome className="hero-feature-icon" />
+              <div>
+                <p className="hero-feature-label">{f.label}</p>
+                <p className="hero-feature-sub">{f.sub}</p>
+              </div>
             </div>
-            <div className="app-links-icon-container gap-5">
-              <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
-                <img
-                  className="on-hover-pointer"
-                  src={googleapplogo}
-                  alt="Google Play"
-                />
-              </motion.div>
-              <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
-                <img
-                  src={appstorelogo}
-                  alt="App Store"
-                  className="on-hover-pointer"
-                />
-              </motion.div>
-            </div>
-          </motion.div>
-        </Col>
-      </Row>
+          ))}
+        </div>
+
+        <div className="hero-buttons">
+          <a href="https://wa.me/" className="hero-btn hero-btn-primary">
+            <FaWhatsapp size={22} className="me-2" />
+            Book On WhatsApp
+          </a>
+          <a href="#" className="hero-btn hero-btn-outline">
+            <FaMapMarkerAlt size={20} className="me-2" />
+            Find Us
+          </a>
+        </div>
+      </div>
+
+      {/* Transparent spacer — right bg shows through */}
+      <div className="hero-right-col" />
     </div>
-  );
-};
+  </section>
+);
 
 export default HeroSection;
