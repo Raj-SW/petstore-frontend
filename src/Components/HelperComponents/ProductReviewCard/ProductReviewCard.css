@@ -1,8 +1,8 @@
 .review-card {
-    background: white;
+    background: var(--color-bg-cream);
     border-radius: 12px;
     padding: 16px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 28, 16, 0.08);
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -38,7 +38,7 @@
     margin: 0;
     font-size: 0.9rem;
     font-weight: 600;
-    color: #333;
+    color: var(--color-text-default);
 }
 
 .review-meta {
@@ -51,7 +51,7 @@
 
 .review-date {
     font-size: 0.75rem;
-    color: #777;
+    color: var(--color-text-soft);
 }
 
 .verified-badge {
@@ -59,7 +59,7 @@
     align-items: center;
     gap: 4px;
     font-size: 0.7rem;
-    color: #2e7d32;
+    color: var(--color-success);
 }
 
 .verified-icon {
@@ -73,12 +73,12 @@
 }
 
 .star {
-    color: #ddd;
+    color: var(--color-border-taupe);
     font-size: 1rem;
 }
 
 .star.filled {
-    color: #ffc107;
+    color: var(--color-accent-gold);
 }
 
 .review-content {
@@ -90,14 +90,14 @@
     margin: 0 0 6px 0;
     font-size: 1rem;
     font-weight: 600;
-    color: #333;
+    color: var(--color-text-default);
 }
 
 .review-comment {
     margin: 0;
     font-size: 0.9rem;
     line-height: 1.4;
-    color: #555;
+    color: var(--color-text-muted);
     display: -webkit-box;
     -webkit-line-clamp: 4;
     -webkit-box-orient: vertical;
@@ -116,23 +116,23 @@
     align-items: center;
     gap: 4px;
     padding: 4px 10px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--color-border-taupe);
     border-radius: 16px;
-    background: white;
-    color: #555;
+    background: var(--color-bg-cream);
+    color: var(--color-text-muted);
     font-size: 0.8rem;
     cursor: pointer;
     transition: all 0.3s ease;
 }
 
 .like-button:hover:not(:disabled) {
-    background: #f5f5f5;
+    background: var(--color-bg-card-beige);
 }
 
 .like-button.liked {
-    background: #2e7d32;
-    color: white;
-    border-color: #2e7d32;
+    background: var(--color-success);
+    color: var(--color-bg-cream);
+    border-color: var(--color-success);
     cursor: default;
 }
 
@@ -145,12 +145,10 @@
     max-width: 380px;
     width: 100%;
     margin: 2rem 1.5rem;
-    /* vertical and horizontal margin for spacing */
 }
 
 .productCardReviewContainer {
-    background-color: #f0eeee;
+    background-color: var(--color-bg-warm-ivory);
     position: relative;
     padding: 2.5rem 2rem 2rem 2rem;
-    /* more padding for vertical and horizontal */
 }

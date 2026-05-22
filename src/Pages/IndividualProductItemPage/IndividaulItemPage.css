@@ -1,5 +1,5 @@
 .Product-Item-Container {
-    background-color: #FDFDFD;
+    background-color: var(--color-bg-cream);
 }
 
 .img-Thumbnail-Container {
@@ -15,79 +15,75 @@
 }
 
 .item-details-container p {
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid var(--color-border-taupe);
     padding: 0.40rem;
-    /* Add a light grey border */
 }
 
 .item-details-container p:last-child {
     border-bottom: none;
-    /* Remove border from the last item */
 }
 
 .guarantee-badge {
-    background-color: #FCEED5;
-
+    background-color: var(--color-bg-card-beige);
+    color: var(--color-text-muted);
 }
 
 .Supplier-Product-Detail-Container {
-    background-color: #F9F9F9;
+    background-color: var(--color-bg-warm-ivory);
 }
 
 .add-to-cart-btn {
-    color: white;
-    background-color: var(--primary-blue-color);
-
+    color: var(--color-bg-cream);
+    background-color: var(--color-primary);
 }
 
 .add-to-cart-btn:hover {
-    background-color: var(--secondary-blue-color);
-
+    background-color: var(--color-primary-soft);
+    color: var(--color-accent-gold);
 }
 
 .related-purchases-container {
-    background-color: var(--tertiary-creme-color);
+    background-color: var(--color-bg-card-beige);
 }
 
 .review-btn {
-    background-color: var(--primary-blue-color);
-
+    background-color: var(--color-primary);
+    color: var(--color-bg-cream);
 }
 
 .review-btn:hover {
-    background-color: var(--tertiary-creme-color);
-    color: var(--primary-blue-color);
+    background-color: var(--color-bg-card-beige);
+    color: var(--color-primary);
 }
 
 .cancel-review-btn {
-    background-color: var(--tertiary-creme-color);
-    color: var(--primary-blue-color);
+    background-color: var(--color-bg-card-beige);
+    color: var(--color-primary);
 }
 
 .cancel-review-btn:hover {
-    background-color: var(--secondary-blue-color);
-    color: var(--white-color);
+    background-color: var(--color-accent-gold);
+    color: var(--color-bg-cream);
 }
 
 .submit-review-btn {
-    background-color: var(--primary-blue-color);
-    color: var(--white-color);
+    background-color: var(--color-primary);
+    color: var(--color-bg-cream);
 }
 
 .submit-review-btn:hover {
-    background-color: var(--secondary-blue-color);
+    background-color: var(--color-primary-soft);
+    color: var(--color-accent-gold);
 }
 
 @media (max-width: 768px) {
     .loginContainer {
         flex-direction: column-reverse;
-        /* Stack images and details */
     }
 
     h2,
     h4 {
         font-size: 1.5rem;
-        /* Adjust font sizes for mobile */
     }
 
     .badge {
@@ -96,6 +92,5 @@
 
     .img-thumbnail {
         width: 60px;
-        /* Adjust thumbnail size */
     }
 }

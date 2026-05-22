@@ -1,6 +1,5 @@
 .avatar-padding {
     padding-right: 0;
-    /* Ensures no padding on smaller screens */
 }
 
 .authModal {
@@ -33,21 +32,16 @@
 }
 
 .border-bottom {
-    border-color: #ccc;
-    /* Customize the color */
+    border-color: var(--color-border-taupe);
     border-width: 1px;
-    /* Customize the thickness */
 }
 
 .custom-text-color {
-    color: #74B49B;
-    /* Customize the color */
+    color: var(--color-accent-copper);
 }
-
 
 @media (min-width: 992px) {
     .avatar-padding {
         padding: 0.25rem;
-        /* Applies padding on large screens (992px and above) */
     }
 }

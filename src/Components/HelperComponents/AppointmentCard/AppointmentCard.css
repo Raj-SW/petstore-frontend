@@ -2,24 +2,24 @@
     display: flex;
     align-items: flex-start;
     padding: 1rem;
-    border: 1px solid var(--tertiary-color-opacque);
+    border: 1px solid var(--color-border-taupe);
     border-radius: 0.75rem;
-    background: var(--white-color);
+    background: var(--color-bg-cream);
     width: 100%;
     box-sizing: border-box;
     gap: 1rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 2px 8px rgba(0, 28, 16, 0.06);
     margin-bottom: 1rem;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    font-family: "Poppins", sans-serif;
+    font-family: var(--font-body);
     position: relative;
     overflow: hidden;
 }
 
 .appointment-card:hover {
     transform: translateY(-3px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
-    border-color: var(--secondary-color);
+    box-shadow: 0 6px 12px rgba(0, 28, 16, 0.1);
+    border-color: var(--color-accent-gold);
 }
 
 .appointment-card::before {
@@ -29,7 +29,7 @@
     left: 0;
     width: 4px;
     height: 100%;
-    background-color: var(--secondary-color);
+    background-color: var(--color-accent-gold);
     opacity: 0;
     transition: opacity 0.3s ease;
 }
@@ -45,12 +45,12 @@
     height: 64px;
     border-radius: 50%;
     overflow: hidden;
-    border: 2px solid var(--tertiary-color-opacque);
+    border: 2px solid var(--color-border-taupe);
     transition: all 0.3s ease;
 }
 
 .appointment-card:hover .appointment-avatar {
-    border-color: var(--secondary-color);
+    border-color: var(--color-accent-gold);
     transform: scale(1.05);
 }
 
@@ -85,13 +85,13 @@
     margin: 0;
     font-size: 1.1rem;
     font-weight: 600;
-    color: var(--primary1-color);
-    font-family: "Poppins", sans-serif;
+    color: var(--color-text-default);
+    font-family: var(--font-body);
     transition: color 0.3s ease;
 }
 
 .appointment-card:hover .appointment-title {
-    color: var(--secondary-color);
+    color: var(--color-primary-forest);
 }
 
 /* Badge group */
@@ -106,45 +106,45 @@
     font-size: 0.75em;
     font-weight: 600;
     border-radius: 0.5rem;
-    font-family: "Poppins", sans-serif;
+    font-family: var(--font-body);
     transition: all 0.3s ease;
 }
 
 /* Role badges */
 .role-badge {
-    background-color: #e9ecef;
-    color: #495057;
+    background-color: var(--color-bg-card-beige);
+    color: var(--color-text-muted);
 }
 
 .role-veterinarian {
-    background-color: #cff4fc;
-    color: #055160;
+    background-color: var(--color-info-light);
+    color: var(--color-info);
 }
 
 .role-groomer {
-    background-color: #fff3cd;
-    color: #664d03;
+    background-color: var(--color-warning-light);
+    color: var(--color-warning);
 }
 
 /* Status badges */
 .status-badge {
-    background-color: #e9ecef;
-    color: #495057;
+    background-color: var(--color-bg-card-beige);
+    color: var(--color-text-muted);
 }
 
 .status-confirmed {
-    background-color: #d1e7dd;
-    color: #0f5132;
+    background-color: var(--color-success-light);
+    color: var(--color-success);
 }
 
 .status-pending {
-    background-color: #fff3cd;
-    color: #664d03;
+    background-color: var(--color-warning-light);
+    color: var(--color-warning);
 }
 
 .status-cancelled {
-    background-color: #f8d7da;
-    color: #842029;
+    background-color: var(--color-error-light);
+    color: var(--color-error);
 }
 
 /* Schedule & location */
@@ -153,10 +153,10 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    color: var(--neutral-color-60);
+    color: var(--color-text-soft);
     font-size: 0.9rem;
     margin-bottom: 0.25rem;
-    font-family: "Poppins", sans-serif;
+    font-family: var(--font-body);
     font-weight: 400;
     transition: color 0.3s ease;
 }
@@ -164,7 +164,7 @@
 .schedule-icon,
 .location-icon {
     font-size: 1rem;
-    color: var(--secondary-color);
+    color: var(--color-accent-gold);
     transition: transform 0.3s ease;
 }
 
@@ -175,22 +175,22 @@
 
 .appointment-card:hover .appointment-schedule,
 .appointment-card:hover .appointment-location {
-    color: var(--primary1-color);
+    color: var(--color-text-muted);
 }
 
 /* Description */
 .appointment-description {
     margin: 0.25rem 0 0;
     font-size: 0.9rem;
-    color: var(--neutral-color-60);
-    font-family: "Poppins", sans-serif;
+    color: var(--color-text-soft);
+    font-family: var(--font-body);
     font-weight: 400;
     line-height: 1.5;
     transition: color 0.3s ease;
 }
 
 .appointment-card:hover .appointment-description {
-    color: var(--primary1-color);
+    color: var(--color-text-muted);
 }
 
 /* Action buttons */
@@ -213,7 +213,7 @@
     gap: 0.5rem;
     padding: 0.35rem 0.75rem;
     font-size: 0.85rem;
-    font-family: "Poppins", sans-serif;
+    font-family: var(--font-body);
     font-weight: 500;
     transition: all 0.3s ease;
 }
@@ -229,14 +229,16 @@
 
 .btn-outline-primary:hover,
 .btn-outline-primary:focus {
-    background-color: #0d6efd;
-    color: #fff;
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    color: var(--color-bg-cream);
 }
 
 .btn-outline-danger:hover,
 .btn-outline-danger:focus {
-    background-color: #dc3545;
-    color: #fff;
+    background-color: var(--color-error);
+    border-color: var(--color-error);
+    color: var(--color-bg-cream);
 }
 
 /* Responsive adjustments */

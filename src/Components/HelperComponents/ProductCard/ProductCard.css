@@ -3,7 +3,7 @@
     max-width: 15rem;
     height: 20rem;
     border-radius: 15px;
-    box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 5px 5px 5px 5px rgba(0, 28, 16, 0.06);
     padding: 0.5rem;
     border: none;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -12,11 +12,12 @@
     will-change: transform;
     transform: translateZ(0);
     backface-visibility: hidden;
+    background-color: var(--color-bg-cream);
 }
 
 .product-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 16px rgba(0, 28, 16, 0.1);
 }
 
 /* Image Container Styles */
@@ -49,7 +50,7 @@
 .card-title {
     font-size: clamp(0.875rem, 2vw, 1.2rem);
     line-height: 1.4;
-    color: var(--secondary-color);
+    color: var(--color-text-default);
 }
 
 .card-title:hover {
@@ -58,12 +59,12 @@
 
 .price-text {
     font-size: clamp(1rem, 2.5vw, 1.2rem);
-    color: #AE7D00;
+    color: var(--color-accent-gold);
     transition: color 0.3s ease;
 }
 
 .product-card:hover .price-text {
-    color: #8B5A2B;
+    color: var(--color-accent-burnished);
 }
 
 /* Rating Stars Styles */
@@ -78,28 +79,29 @@
 }
 
 .star-filled {
-    color: #FFA500;
+    color: var(--color-accent-gold);
 }
 
 .star-empty {
-    color: #E0E0E0;
+    color: var(--color-border-taupe);
 }
 
 /* Cart Button Styles */
 .basket-btn {
-    color: var(--secondary-color);
+    color: var(--color-primary);
     cursor: pointer;
 }
 
 .basket-btn:hover {
     cursor: pointer;
+    color: var(--color-accent-gold);
 }
 
 /* Ripple effect */
 .ripple {
     position: absolute;
     border-radius: 50%;
-    background-color: rgba(255, 255, 255, 0.7);
+    background-color: rgba(217, 154, 43, 0.3);
     transform: scale(0);
     animation: ripple 0.6s linear;
     pointer-events: none;
@@ -118,37 +120,21 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%) scale(0);
-    color: var(--secondary-color);
+    color: var(--color-accent-gold);
     animation: success 0.5s ease forwards;
 }
 
 @keyframes success {
-    0% {
-        transform: translate(-50%, -50%) scale(0);
-    }
-
-    50% {
-        transform: translate(-50%, -50%) scale(1.2);
-    }
-
-    100% {
-        transform: translate(-50%, -50%) scale(1);
-    }
+    0% { transform: translate(-50%, -50%) scale(0); }
+    50% { transform: translate(-50%, -50%) scale(1.2); }
+    100% { transform: translate(-50%, -50%) scale(1); }
 }
 
 /* Button Pop Animation */
 @keyframes buttonPop {
-    0% {
-        transform: scale(1);
-    }
-
-    50% {
-        transform: scale(1.2);
-    }
-
-    100% {
-        transform: scale(1);
-    }
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
 }
 
 /* Loading Animation */
@@ -158,13 +144,8 @@
 }
 
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 /* Media Queries */
@@ -207,7 +188,6 @@
 
 /* Reduced Motion */
 @media (prefers-reduced-motion: reduce) {
-
     .product-card,
     .zoom-image,
     .basket-btn {
@@ -215,7 +195,7 @@
     }
 }
 
-/* Container Queries for Future Support */
+/* Container Queries */
 @container (max-width: 300px) {
     .product-card {
         max-width: 100%;
@@ -226,10 +206,8 @@
     }
 }
 
-/* Default gap for smaller screens */
 .featured-products-gap {
     gap: 1.5rem;
-    /* You can adjust this */
 }
 
 .bubbleImg {
