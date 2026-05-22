@@ -132,44 +132,59 @@ a:active {
   font-style: italic;
 }
 
-.caveat-Heading {
-  font-family: "Caveat", cursive;
-  font-optical-sizing: auto;
-  /* font-weight: 700; */
+/* ── Font utility classes ── */
+.font-display {
+  font-family: var(--font-display);
 }
 
-.primary-color-font {
-  color: var(--primary-blue-color)
+.font-serif {
+  font-family: var(--font-serif);
 }
 
-.secondary-color-font {
-  color: var(--secondary-blue-color);
+.font-script {
+  font-family: var(--font-script);
 }
 
-.tertiary-color-font {
-  color: var(--tertiary-blue-color);
+.font-body {
+  font-family: var(--font-body);
 }
 
-.pale--color-font {
-  color: var(--tertiary-blue-color-opacque);
+.font-ui {
+  font-family: var(--font-ui);
 }
 
-.light-gray {
-  color: #667479;
+/* ── Color utility classes ── */
+.text-primary {
+  color: var(--color-primary);
+}
+
+.text-accent {
+  color: var(--color-accent);
+}
+
+.text-muted {
+  color: var(--color-text-muted);
+}
+
+.text-soft {
+  color: var(--color-text-soft);
 }
 
 .on-hover-pointer {
   cursor: pointer;
 }
 
+/* ── Button primitives ── */
 .button-primary {
-  background-color: var(--primary-blue-color);
-  color: var(--white-color);
+  background-color: var(--color-primary);
+  color: var(--color-bg-cream);
+  font-family: var(--font-body);
+  font-weight: var(--fw-semibold);
 }
 
 .button-primary:hover {
-  background-color: var(--secondary-blue-color);
-  color: var(--white-color);
+  background-color: var(--color-primary-soft);
+  color: var(--color-accent-gold);
 }
 
 body {

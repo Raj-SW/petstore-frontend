@@ -1,18 +1,46 @@
 const plugin = require("tailwindcss/plugin");
-const { blackA, mauve, violet, indigo, purple } = require("@radix-ui/colors");
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
     darkMode: ["class"],
-    content: ["./App.jsx"],
+    content: ["./index.html", "./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
   	extend: {
+      fontFamily: {
+        display: ["'Bebas Neue'", "sans-serif"],
+        serif:   ["'Playfair Display'", "serif"],
+        script:  ["'Great Vibes'", "cursive"],
+        body:    ["'Poppins'", "sans-serif"],
+        ui:      ["'Inter'", "sans-serif"],
+      },
   		colors: {
-                ...blackA,
-                ...mauve,
-                ...violet,
-                ...purple,
-                ...indigo
+        primary: {
+          forest:  "#001C10",
+          dark:    "#00160C",
+          soft:    "#0B2016",
+          DEFAULT: "#001C10",
+        },
+        accent: {
+          gold:      "#D99A2B",
+          burnished: "#A1703D",
+          copper:    "#C99863",
+          DEFAULT:   "#D99A2B",
+        },
+        bg: {
+          cream:       "#FAF5F1",
+          "warm-ivory":"#F6ECE3",
+          "card-beige":"#F3E3D2",
+          DEFAULT:     "#FAF5F1",
+        },
+        border: {
+          taupe:   "#C9BAA8",
+          DEFAULT: "#C9BAA8",
+        },
+        content: {
+          default: "#0B2016",
+          muted:   "#62573C",
+          soft:    "#757060",
+        },
   		},
   		keyframes: {
   			enterFromRight: {

@@ -32,7 +32,7 @@ const AddToCart = ({ currentItem }) => {
 
   return (
     <>
-      <IconContext.Provider value={{ size: "2rem" }}>
+      <IconContext.Provider value={{ size: "1.6rem" }}>
         {/* Set icon size here */}
         <div className="cartWrapper" onClick={handleCartClick}>
           <FaCartShopping className="cartIcon" />

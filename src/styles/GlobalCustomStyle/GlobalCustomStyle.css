@@ -1,33 +1,147 @@
 :root {
-  --primary-green-color: #3B746A;
-  --secondary-green-color: #6DA28E;
-  --secondary-green-color-opacque: #6da28e6e;
-  --tertiary-green-color: #A7D7C5;
-  --tertiary-green-color-opacque: #b3e6d36e;
+  /* ── Colors: Primary ── */
+  --color-primary-forest: #001C10;
+  --color-primary-dark:   #00160C;
+  --color-primary-soft:   #0B2016;
 
-  --primary-blue-color: #013960;
-  --secondary-blue-color: #0055be;
-  --tertiary-blue-color: #4a7dbd;
-  --tertiary-blue-color-opacque: #0050ff;
+  /* ── Colors: Accent ── */
+  --color-accent-gold:      #D99A2B;
+  --color-accent-burnished: #A1703D;
+  --color-accent-copper:    #C99863;
 
-  --primary-creme-color: #FFB775;
-  --secondary-creme-color: #F7DBA7;
-  --tertiary-creme-color: #FCEED5;
+  /* ── Colors: Background ── */
+  --color-bg-cream:       #FAF5F1;
+  --color-bg-warm-ivory:  #F6ECE3;
+  --color-bg-card-beige:  #F3E3D2;
 
-  --error-solid: #D32F2F;
-  --error-light: #FFCDD2;
-  --warning-solid: #EF6C00;
-  --warning-light: #FFE0B2;
-  --info-solid: #0288D1;
-  --info-light: #E5F6FD;
-  --success-solid: #2E7D32;
-  --success-light: #EDF7ED;
+  /* ── Colors: Border ── */
+  --color-border-taupe: #C9BAA8;
 
-  --primary-dark: #112d21;
-  --grey-color: #333333;
+  /* ── Colors: Text ── */
+  --color-text-default: #0B2016;
+  --color-text-muted:   #62573C;
+  --color-text-soft:    #757060;
 
-  --white-color: #FFFFFF;
-  --light-color: #F9F8EB;
+  /* ── Semantic aliases (use these in components) ── */
+  --color-primary:  var(--color-primary-forest);
+  --color-bg:       var(--color-bg-cream);
+  --color-border:   var(--color-border-taupe);
+  --color-text:     var(--color-text-default);
+  --color-accent:   var(--color-accent-gold);
+
+  /* ── Status colors (kept neutral — not brand colors) ── */
+  --color-error:        #C0392B;
+  --color-error-light:  #FDECEA;
+  --color-warning:      #B7770D;
+  --color-warning-light:#FDF3DC;
+  --color-success:      #1A5C35;
+  --color-success-light:#E6F4EC;
+  --color-info:         #1A4A6B;
+  --color-info-light:   #E6EFF6;
+
+  /* ── Font Families ── */
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-serif:   'Playfair Display', serif;
+  --font-script:  'Great Vibes', cursive;
+  --font-body:    'Poppins', sans-serif;
+  --font-ui:      'Inter', sans-serif;
+
+  /* ── Font Sizes ── */
+  --fs-xs:      12px;
+  --fs-sm:      14px;
+  --fs-base:    16px;
+  --fs-lg:      18px;
+  --fs-xl:      24px;
+  --fs-2xl:     32px;
+  --fs-3xl:     48px;
+  --fs-hero:    72px;
+  --fs-hero-lg: 96px;
+
+  /* ── Font Weights ── */
+  --fw-regular:  400;
+  --fw-medium:   500;
+  --fw-semibold: 600;
+  --fw-bold:     700;
+
+  /* ── Line Heights ── */
+  --lh-tight:   1.0;
+  --lh-display: 0.95;
+  --lh-normal:  1.4;
+  --lh-relaxed: 1.5;
+
+  /* ── Letter Spacing ── */
+  --ls-tight:  -0.02em;
+  --ls-normal:  0em;
+  --ls-wide:    0.02em;
+
+  /* ── Neutral scale (warm-tinted) ── */
+  --neutral-color-10: #FAF5F1;
+  --neutral-color-20: #F3E3D2;
+  --neutral-color-30: #E8D5C0;
+  --neutral-color-40: #D8C4AB;
+  --neutral-color-60: #C9BAA8;
+  --neutral-color-80: #8A7A6A;
+
+  /* ── Status scale variants ── */
+  --success-color-20: var(--color-success-light);
+  --success-color-80: var(--color-success);
+  --error-color-20:   var(--color-error-light);
+  --error-color-80:   var(--color-error);
+  --warning-color-20: var(--color-warning-light);
+  --warning-color-80: var(--color-warning);
+  --info-color-20:    var(--color-info-light);
+  --info-color-80:    var(--color-info);
+  --text-color:       var(--color-text);
+  --background-light: var(--color-bg-cream);
+  --transition-speed: 0.2s;
+
+  /* ── Legacy aliases — map old variable names to new tokens ── */
+  --primary-green-color:           var(--color-primary);
+  --secondary-green-color:         var(--color-primary-soft);
+  --secondary-green-color-opacque: #0B201640;
+  --tertiary-green-color:          var(--color-bg-warm-ivory);
+  --tertiary-green-color-opacque:  #F6ECE340;
+
+  --primary-blue-color:            var(--color-primary);
+  --secondary-blue-color:          var(--color-accent-gold);
+  --tertiary-blue-color:           var(--color-accent-copper);
+  --tertiary-blue-color-opacque:   #C9986340;
+
+  --primary-creme-color:           var(--color-accent-copper);
+  --secondary-creme-color:         var(--color-bg-warm-ivory);
+  --tertiary-creme-color:          var(--color-bg-card-beige);
+
+  --error-solid:   var(--color-error);
+  --error-light:   var(--color-error-light);
+  --warning-solid: var(--color-warning);
+  --warning-light: var(--color-warning-light);
+  --info-solid:    var(--color-info);
+  --info-light:    var(--color-info-light);
+  --success-solid: var(--color-success);
+  --success-light: var(--color-success-light);
+
+  --primary-dark:  var(--color-primary-dark);
+  --grey-color:    var(--color-text-soft);
+  --white-color:   var(--color-bg-cream);
+  --light-color:   var(--color-bg-warm-ivory);
+
+  --secondary-color:         var(--color-primary-soft);
+  --primary-color:           var(--color-primary);
+  --tertiary-color:          var(--color-bg-warm-ivory);
+  --primary1-color:          var(--color-primary);
+  --danger-color:            var(--color-error);
+  --primary-green-80:        var(--color-primary-soft);
+  --primary-green-20-color:  var(--color-bg-warm-ivory);
+  --tertiary-color-opacque:  #F3E3D280;
+}
+
+html,
+body {
+  background-color: var(--color-bg-cream);
+  color: var(--color-text-default);
+  font-family: var(--font-body);
+  font-size: var(--fs-base);
+  line-height: var(--lh-relaxed);
 }
 
 /* Admin Products Page Styles */
@@ -44,8 +158,8 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1.5rem;
-  background-color: #e74c3c;
-  color: white;
+  background-color: var(--color-primary);
+  color: var(--color-bg-cream);
   text-decoration: none;
   border-radius: 0.375rem;
   font-weight: 500;
@@ -53,7 +167,7 @@
 }
 
 .add-button:hover {
-  background-color: #c0392b;
+  background-color: var(--color-primary-soft);
 }
 
 /* Product specific table styling */
@@ -72,20 +186,20 @@
 
 .product-name {
   font-weight: 500;
-  color: #2c3e50;
+  color: var(--color-text-default);
 }
 
 .product-category {
   padding: 0.25rem 0.75rem;
-  background-color: #f8f9fa;
+  background-color: var(--color-bg-card-beige);
   border-radius: 1rem;
   font-size: 0.8125rem;
-  color: #495057;
+  color: var(--color-text-muted);
 }
 
 .product-price {
   font-weight: 600;
-  color: #2c3e50;
+  color: var(--color-text-default);
 }
 
 /* Stock Badges */
@@ -97,18 +211,18 @@
 }
 
 .stock-badge.in-stock {
-  background-color: #d4edda;
-  color: #155724;
+  background-color: var(--color-success-light);
+  color: var(--color-success);
 }
 
 .stock-badge.low-stock {
-  background-color: #fff3cd;
-  color: #856404;
+  background-color: var(--color-warning-light);
+  color: var(--color-warning);
 }
 
 .stock-badge.out-of-stock {
-  background-color: #f8d7da;
-  color: #721c24;
+  background-color: var(--color-error-light);
+  color: var(--color-error);
 }
 
 /* Status Badges */
@@ -121,13 +235,13 @@
 }
 
 .status-badge.active {
-  background-color: #d4edda;
-  color: #155724;
+  background-color: var(--color-success-light);
+  color: var(--color-success);
 }
 
 .status-badge.inactive {
-  background-color: #f8d7da;
-  color: #721c24;
+  background-color: var(--color-error-light);
+  color: var(--color-error);
 }
 
 /* Delete Modal */
@@ -171,12 +285,12 @@
 .modal-title {
   font-size: 1.5rem;
   font-weight: 600;
-  color: #2c3e50;
+  color: var(--color-text-default);
   margin: 0 0 1rem 0;
 }
 
 .modal-message {
-  color: #495057;
+  color: var(--color-text-muted);
   margin: 0 0 1.5rem 0;
   line-height: 1.5;
 }
@@ -197,23 +311,24 @@
 }
 
 .modal-button.cancel {
-  background-color: #f8f9fa;
-  color: #495057;
-  border: 1px solid #dee2e6;
+  background-color: var(--color-bg-card-beige);
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border-taupe);
 }
 
 .modal-button.cancel:hover {
-  background-color: #e9ecef;
-  border-color: #adb5bd;
+  background-color: var(--neutral-color-30);
+  border-color: var(--neutral-color-60);
 }
 
 .modal-button.confirm {
-  background-color: #e74c3c;
-  color: white;
+  background-color: var(--color-error);
+  color: var(--color-bg-cream);
 }
 
 .modal-button.confirm:hover {
-  background-color: #c0392b;
+  background-color: var(--color-error-light);
+  color: var(--color-error);
 }
 
 /* Responsive Design */

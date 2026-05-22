@@ -13,42 +13,46 @@
 }
 
 .input-group-text {
-    border: 1px solid #ced4da;
+    border: 1px solid var(--color-border-taupe);
     padding: 0.75rem;
-    background-color: #fff;
+    background-color: var(--color-bg-cream);
 }
 
 .input-group:focus-within .input-group-text {
-    border-color: var(--primary-blue-color);
+    border-color: var(--color-primary);
 }
 
 .form-control {
-    border: 1px solid #ced4da;
+    border: 1px solid var(--color-border-taupe);
     padding: 0.75rem;
+    background-color: var(--color-bg-cream);
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
 .form-control:focus {
-    border-color: var(--primary-blue-color);
-    box-shadow: 0 0 0 0.2rem rgba(1, 57, 96, 0.25);
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 0.2rem rgba(0, 28, 16, 0.15);
+    background-color: var(--color-bg-cream);
 }
 
 .btn-primary {
-    background-color: var(--primary-blue-color);
-    border-color: var(--primary-blue-color);
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    color: var(--color-bg-cream);
     padding: 0.75rem;
     font-weight: 500;
     transition: all 0.2s ease-in-out;
 }
 
 .btn-primary:hover {
-    background-color: var(--secondary-blue-color);
-    border-color: var(--secondary-blue-color);
+    background-color: var(--color-primary-soft);
+    border-color: var(--color-primary-soft);
+    color: var(--color-accent-gold);
 }
 
 .btn-primary:disabled {
-    background-color: var(--primary-blue-color);
-    border-color: var(--primary-blue-color);
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
     opacity: 0.65;
 }
 
@@ -58,15 +62,15 @@
 }
 
 .alert-danger {
-    background-color: var(--error-light);
+    background-color: var(--color-error-light);
     border: none;
-    color: var(--error-dark);
+    color: var(--color-error);
 }
 
 .alert-success {
-    background-color: var(--success-light);
+    background-color: var(--color-success-light);
     border: none;
-    color: var(--success-dark);
+    color: var(--color-success);
 }
 
 /* Password strength indicator */
@@ -78,21 +82,21 @@
 }
 
 .password-strength.weak {
-    background-color: var(--error-color);
+    background-color: var(--color-error);
     width: 33.33%;
 }
 
 .password-strength.medium {
-    background-color: var(--warning-color);
+    background-color: var(--color-warning);
     width: 66.66%;
 }
 
 .password-strength.strong {
-    background-color: var(--success-color);
+    background-color: var(--color-success);
     width: 100%;
 }
 
-/* Social login buttons */
+/* Social login divider */
 .social-login-divider {
     display: flex;
     align-items: center;
@@ -104,12 +108,12 @@
 .social-login-divider::after {
     content: '';
     flex: 1;
-    border-bottom: 1px solid #dee2e6;
+    border-bottom: 1px solid var(--color-border-taupe);
 }
 
 .social-login-divider span {
     padding: 0 1rem;
-    color: #6c757d;
+    color: var(--color-text-muted);
     font-size: 0.875rem;
 }
 
@@ -124,8 +128,8 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    border: 1px solid #dee2e6;
-    background-color: #fff;
+    border: 1px solid var(--color-border-taupe);
+    background-color: var(--color-bg-cream);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -133,22 +137,22 @@
 }
 
 .social-icons button:hover {
-    background-color: #f8f9fa;
-    border-color: var(--primary-blue-color);
+    background-color: var(--color-bg-card-beige);
+    border-color: var(--color-primary);
 }
 
 /* Remember me checkbox */
 .form-check-input:checked {
-    background-color: var(--primary-blue-color);
-    border-color: var(--primary-blue-color);
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
 }
 
 /* Links */
 .text-primary {
-    color: var(--primary-blue-color) !important;
+    color: var(--color-primary) !important;
 }
 
 .text-primary:hover {
-    color: var(--secondary-blue-color) !important;
+    color: var(--color-accent-gold) !important;
     text-decoration: none;
 }

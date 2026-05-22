@@ -28,29 +28,24 @@
 }
 
 .filter-button-mobile {
-    background-color: white;
-    color: #5aa891;
+    background-color: var(--color-bg-cream);
+    color: var(--color-primary);
     border-radius: 20px;
-    border: 2px solid #5aa891;
-    /* Add a green border */
+    border: 2px solid var(--color-primary);
     font-size: 16px;
     font-weight: 500;
     transition: all 0.3s ease;
-    /* Smooth transition for hover effect */
 }
 
 .filter-button-mobile:hover {
-    background-color: #5aa891;
-    color: white;
-    border-color: #5aa891;
+    background-color: var(--color-primary);
+    color: var(--color-bg-cream);
+    border-color: var(--color-primary);
 }
 
 @media (max-width: 768px) {
-
-    /* Adjust the breakpoint as necessary */
     .petShopBody {
         grid-template-columns: 100%;
-        /* Change to single column */
     }
 }
 
@@ -80,8 +75,9 @@
 }
 
 .page-link {
-    background-color: white;
-    color: #5aa891;
+    background-color: var(--color-bg-cream);
+    color: var(--color-primary);
+    border-color: var(--color-border-taupe);
 }
 
 .page-link:focus {
@@ -96,11 +92,10 @@
 .pagination>.active>span:hover,
 .pagination>.active>a:focus,
 .pagination>.active>span:focus {
-    color: white;
-    background-color: var(--secondary-blue-color);
+    color: var(--color-bg-cream);
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
 }
-
-.active {}
 
 .searchbarcontainer {
     display: flex;
@@ -111,51 +106,43 @@
     margin: 1.5rem 0rem;
 }
 
-.searchbarcontainer>p {}
-
 .search-wrapper {
     position: relative;
     width: 100%;
     max-width: 400px;
-
 }
 
 .search-wrapper input[type="text"] {
     width: 100%;
     padding: 10px 40px 10px 15px;
-    /* Space for the button */
     font-size: 16px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--color-border-taupe);
     border-radius: 25px;
     outline: none;
     box-sizing: border-box;
+    background-color: var(--color-bg-cream);
 }
 
 .search-wrapper button {
     position: absolute;
     top: 45%;
     right: 1.5rem;
-    /* Adjust as needed for spacing */
     transform: translateY(-50%);
     background: none;
     border: none;
     cursor: pointer;
     font-size: 16px;
-    color: #333;
-    /* Icon color */
+    color: var(--color-text-muted);
 }
 
 @media (max-width: 576px) {
     .paginationWrapper {
         flex-direction: column;
-        /* Stack items vertically on very small screens */
         align-items: center;
-        /* Center them */
     }
 
     .pagination {
         flex-wrap: wrap;
-        /* Allow wrapping for smaller pagination */
     }
 }
 

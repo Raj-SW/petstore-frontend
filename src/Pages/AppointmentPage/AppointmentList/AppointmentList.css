@@ -32,21 +32,21 @@
 
 /* Appointment Cards */
 .appointment-card {
-    border: 1px solid #e9ecef;
+    border: 1px solid var(--color-border-taupe);
     border-radius: 0.5rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2px 4px rgba(0, 28, 16, 0.04);
     transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
 
 .appointment-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px rgba(0, 28, 16, 0.08);
 }
 
 .appointment-title {
     font-size: 1.125rem;
     font-weight: 600;
-    color: #212529;
+    color: var(--color-text-default);
 }
 
 /* Badges */
@@ -69,12 +69,12 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    color: #6c757d;
+    color: var(--color-text-muted);
     font-size: 0.875rem;
 }
 
 .detail-icon {
-    color: #6c757d;
+    color: var(--color-text-soft);
     font-size: 1rem;
 }
 
@@ -122,26 +122,26 @@
 
 /* Status Badge Colors */
 .bg-success {
-    background-color: #d1e7dd !important;
-    color: #0f5132;
+    background-color: var(--color-success-light) !important;
+    color: var(--color-success);
 }
 
 .bg-warning {
-    background-color: #fff3cd !important;
-    color: #664d03;
+    background-color: var(--color-warning-light) !important;
+    color: var(--color-warning);
 }
 
 .bg-danger {
-    background-color: #f8d7da !important;
-    color: #842029;
+    background-color: var(--color-error-light) !important;
+    color: var(--color-error);
 }
 
 .bg-info {
-    background-color: #cff4fc !important;
-    color: #055160;
+    background-color: var(--color-info-light) !important;
+    color: var(--color-info);
 }
 
 .bg-primary {
-    background-color: #cfe2ff !important;
-    color: #084298;
+    background-color: rgba(0, 28, 16, 0.08) !important;
+    color: var(--color-primary);
 }

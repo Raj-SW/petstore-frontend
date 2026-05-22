@@ -1,5 +1,5 @@
 .importexport-hero-section {
-    background-color: var(--tertiary-color);
+    background-color: var(--color-bg-warm-ivory);
 }
 
 .importexport-title {
@@ -7,12 +7,21 @@
 }
 
 .importexport-desc {
-    color: #4b5c5e;
+    color: var(--color-text-muted);
     font-size: 1.1rem;
 }
 
 .importexport-btn {
     font-size: 1rem;
+    background-color: var(--color-primary);
+    color: var(--color-bg-cream);
+    outline: none;
+    border: none;
+}
+
+.importexport-btn:hover {
+    background-color: var(--color-primary-soft);
+    color: var(--color-accent-gold);
 }
 
 .importexport-img-container {
@@ -20,7 +29,7 @@
     min-width: 12rem;
     max-width: 22rem;
     aspect-ratio: 1/1;
-    background: #ededed;
+    background: var(--color-bg-card-beige);
     border-radius: 1rem;
     display: flex;
     align-items: center;
@@ -43,7 +52,7 @@
 .importexport-icon-heart,
 .importexport-icon-flag {
     font-size: 2.2rem;
-    color: #6ed7a2;
+    color: var(--color-accent-gold);
     margin-bottom: 0.2rem;
 }
 
@@ -56,25 +65,25 @@
 }
 
 .importexport-services-section {
-    background: var(--tertiary-creme-color);
+    background: var(--color-bg-card-beige);
     position: relative;
     z-index: 1;
 }
 
 /* Card enhancements */
 .importexport-card {
-    background: rgba(255, 255, 255, 0.95);
+    background: var(--color-bg-cream);
     border-radius: 1.5rem;
-    box-shadow: 0 2px 12px 0 rgba(110, 215, 162, 0.10), 0 1.5px 6px 0 rgba(0, 0, 0, 0.04);
-    border: 2px solid #e6f7ee;
+    box-shadow: 0 2px 12px 0 rgba(0, 28, 16, 0.06), 0 1.5px 6px 0 rgba(0, 0, 0, 0.04);
+    border: 2px solid var(--color-bg-warm-ivory);
     transition: box-shadow 0.3s, border-color 0.3s, transform 0.3s;
     overflow: hidden;
     position: relative;
 }
 
 .importexport-card:hover {
-    box-shadow: 0 8px 32px 0 rgba(110, 215, 162, 0.18), 0 3px 12px 0 rgba(0, 0, 0, 0.08);
-    border-color: #6ed7a2;
+    box-shadow: 0 8px 32px 0 rgba(0, 28, 16, 0.1), 0 3px 12px 0 rgba(0, 0, 0, 0.06);
+    border-color: var(--color-accent-gold);
     transform: translateY(-6px) scale(1.03);
     z-index: 2;
 }
@@ -83,13 +92,7 @@
 .importexport-card-icon-accent {
     width: 2.5rem;
     height: 0.25rem;
-    background: linear-gradient(90deg, #6ed7a2 0%, #b2f7cc 100%);
+    background: linear-gradient(90deg, var(--color-accent-gold) 0%, var(--color-accent-copper) 100%);
     border-radius: 1rem;
     margin: 0.5rem auto 1.2rem auto;
-}
-
-.importexport-btn {
-    background-color: var(--primary-blue-color);
-    outline: none;
-    border: none;
 }
