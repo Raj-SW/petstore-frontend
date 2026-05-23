@@ -2,7 +2,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import FeaturedProductSection from "./HomePageSections/FeaturedProductSection";
 import HeroSection from "./HomePageSections/HeroSection";
 import ServicesSection from "./HomePageSections/ServicesSection";
-import CommunitySection from "./HomePageSections/CommunitySection";
+import StatsSection from "./HomePageSections/StatsSection";
 import PromoBannerCarousel from "./HomePageSections/PromoBannerCarousel/PromoBannerCarousel";
 import "./HomePage.css";
 
@@ -13,7 +13,7 @@ const HomePage = () => {
       <ServicesSection />
       <PromoBannerCarousel />
       <FeaturedProductSection />
-      <CommunitySection />
+      <StatsSection />
     </>
   );
 };
