@@ -1,117 +1,185 @@
-.appointment-page-left-col {}
+/* ================================================
+   Appointment Page
+   ================================================ */
 
-.appointment-page-right-col {}
-
-.dashboard-navigation-desktop {
-    color: var(--secondary-blue-color);
-    background-color: var(--secondary-creme-color);
+.ap-page {
+  max-width: 1380px;
+  margin: 0 auto;
+  padding: 2rem 5% 4rem;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  min-height: 80vh;
 }
 
-.appointment-page-left-col .nav-pills .nav-link.active {
-    border-radius: 0.25rem;
+.ap-breadcrumb {
+  padding: 0.5rem 0;
 }
 
-.appointment-page-left-col .nav-pills .nav-link {
-    color: #fff;
-    margin-bottom: 0.5rem;
-    transition: all 0.3s ease;
+/* ── Grid ── */
+
+.ap-grid {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 2rem;
+  align-items: flex-start;
 }
 
-.appointment-page-left-col .nav-pills .nav-link:hover {
-    background-color: var(--tertiary-color-opacque);
+/* ── Sidebar ── */
+
+.ap-sidebar {
+  background: #fff;
+  border-radius: 20px;
+  border: 1px solid #f0f0f0;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.3rem;
+  position: sticky;
+  top: 90px;
 }
 
-.dashboard-container {
-    min-height: calc(100vh - 100px);
+.ap-sidebar-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #f0f0f0;
 }
 
-.dashboard-row {
-    min-height: 100%;
+.ap-sidebar-title {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--color-primary-forest, #001c10);
+  margin: 0;
 }
 
-.user-info {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 1rem;
-    color: white;
+.ap-sidebar-subtitle {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  color: #888;
+  margin: 0;
 }
 
-.appointmentNavTabWrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+/* ── Tabs ── */
+
+.ap-tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
 }
 
-.appointmentProductsNavTab .nav-link.active {
-    color: #fff;
-    background-color: var(--secondary-color);
+.ap-tab {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.65rem 0.85rem;
+  background: none;
+  border: none;
+  border-radius: 10px;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: #555;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s, color 0.15s;
 }
 
-.breadcrumb-container {
-    background-color: white;
-    border-bottom: 1px solid #e0e0e0;
+.ap-tab:hover { background: #f7f7f7; color: #222; }
+
+.ap-tab--active {
+  background: var(--color-primary-forest, #001c10);
+  color: #fff;
+}
+.ap-tab--active:hover {
+  background: var(--color-primary-forest, #001c10);
+  color: #fff;
 }
 
-.breadcrumb-row {
-    margin-bottom: 0;
-    padding: 1rem 0;
+/* ── User card ── */
+
+.ap-user-card {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding-top: 1rem;
+  border-top: 1px solid #f0f0f0;
 }
 
-/* Calendar container styling */
-.calendar-container {
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin-top: 1rem;
+.ap-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--color-accent-gold, #d99a2b);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 1rem;
+  flex-shrink: 0;
 }
 
-/* Right column styling */
+.ap-user-info { min-width: 0; }
 
-
-/* Responsive adjustments */
-@media (max-width: 992px) {
-    .appointment-page-left-col {
-        min-height: auto;
-        margin-bottom: 1rem;
-    }
-
-    .dashboard-navigation-desktop {
-        margin-bottom: 1rem;
-    }
-
-    .appointment-page-right-col {
-        padding: 1rem;
-    }
+.ap-user-name {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: var(--color-primary-forest, #001c10);
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.appointmentNavTabs {
-    background-color: var(--tertiary-color-opacque);
-    border-radius: 0.5rem;
-    padding: 1rem;
-    gap: 0.5rem;
+.ap-user-meta {
+  font-family: var(--font-body);
+  font-size: 0.76rem;
+  color: #888;
+  margin: 0.1rem 0 0;
+  line-height: 1.4;
 }
 
-.appointmentNavTabs .nav-link {
-    color: var(--secondary-blue-color);
-    font-size: medium;
-    font-weight: 400;
-    transition: all 0.3s ease;
-    padding: 0.75rem 1rem;
-    border-radius: 0.5rem;
-    margin-bottom: 0.5rem;
-    position: relative;
-    overflow: hidden;
+/* ── Content ── */
+
+.ap-content {
+  background: #fff;
+  border-radius: 20px;
+  border: 1px solid #f0f0f0;
+  padding: 1.8rem;
+  min-height: 60vh;
 }
 
-.appointmentNavTabs .nav-link:hover {
-    background-color: var(--primary-creme-color);
+/* ── Responsive ── */
+
+@media (max-width: 991px) {
+  .ap-grid {
+    grid-template-columns: 1fr;
+  }
+  .ap-sidebar {
+    position: static;
+  }
+  .ap-tabs {
+    flex-direction: row;
+    overflow-x: auto;
+    padding-bottom: 0.25rem;
+  }
+  .ap-tab {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+  .ap-user-card {
+    border-top: 1px solid #f0f0f0;
+  }
 }
 
-.appointmentNavTabs .nav-link.active {
-    background-color: var(--secondary-blue-color);
-    color: var(--white-color);
-    font-weight: 600;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+@media (max-width: 575px) {
+  .ap-page { padding: 1.5rem 1rem 3rem; }
+  .ap-sidebar { padding: 1.2rem; }
+  .ap-content { padding: 1.3rem; border-radius: 16px; }
 }

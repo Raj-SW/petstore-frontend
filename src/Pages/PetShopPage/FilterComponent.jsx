@@ -1,6 +1,9 @@
 import { useState } from "react";
-import { Container, Form, Row, Col, Button } from "react-bootstrap";
+import { FaStar, FaFilter } from "react-icons/fa";
 import "./FilterComponent.css";
+
+const CATEGORIES = ["Dog", "Cat", "Bird", "Fish", "Small Pets", "General"];
+const RATINGS = [5, 4, 3, 2, 1];
 
 const FilterComponent = ({ onApplyFilters }) => {
   const [minPrice, setMinPrice] = useState("");
@@ -8,122 +11,106 @@ const FilterComponent = ({ onApplyFilters }) => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [rating, setRating] = useState("");
 
-  const categories = ["Dog", "Cat", "Bird", "Fish", "Small Pets", "General"];
+  const toggleCategory = (cat) =>
+    setSelectedCategory((c) => (c === cat ? "" : cat));
 
-  const handleCategoryChange = (category) => {
-    setSelectedCategory(category === selectedCategory ? "" : category);
-  };
-
-  const handleApplyFilters = () => {
-    const filters = {
-      minPrice: minPrice || 0,
-      maxPrice: maxPrice || Infinity,
-      categories: selectedCategory ? [selectedCategory] : [],
-      rating: rating || 0,
-    };
-    onApplyFilters(filters);
-  };
-
-  const handleClearFilters = () => {
-    // Reset all filter states
-    setMinPrice("");
-    setMaxPrice("");
-    setSelectedCategory("");
-    setRating("");
-
-    // Apply empty filters to reset the product list
+  const apply = () => {
     onApplyFilters({
-      minPrice: 0,
-      maxPrice: Infinity,
-      categories: [],
-      rating: 0,
+      minPrice: minPrice ? Number(minPrice) : 0,
+      maxPrice: maxPrice ? Number(maxPrice) : Infinity,
+      categories: selectedCategory ? [selectedCategory] : [],
+      rating: rating ? Number(rating) : 0,
     });
   };
 
+  const clear = () => {
+    setMinPrice(""); setMaxPrice(""); setSelectedCategory(""); setRating("");
+    onApplyFilters({ minPrice: 0, maxPrice: Infinity, categories: [], rating: 0 });
+  };
+
   return (
-    <Container className="filter-container">
-      <h5 className="poppins-medium fs-5 secondary-color-font">
-        Filter Products
-      </h5>
+    <aside className="filter-card">
+      <div className="filter-card-header">
+        <FaFilter size={14} />
+        <h3 className="filter-card-title">Filter Products</h3>
+      </div>
 
-      {/* Category Filter */}
-      <div className="filter-section mb-4">
-        <h6 className="poppins-medium secondary-color-font">Category</h6>
-        <Form>
-          {categories.map((category) => (
-            <Form.Check
-              key={category}
-              type="radio"
-              id={`category-${category}`}
-              name="category"
-              label={category}
-              checked={selectedCategory === category}
-              onChange={() => handleCategoryChange(category)}
-              className="poppins-medium secondary-color-font"
-            />
+      {/* Category */}
+      <section className="filter-section">
+        <h4 className="filter-label">Category</h4>
+        <div className="filter-chip-row">
+          {CATEGORIES.map((cat) => (
+            <button
+              key={cat}
+              type="button"
+              className={`filter-chip${selectedCategory === cat ? " filter-chip--active" : ""}`}
+              onClick={() => toggleCategory(cat)}
+            >
+              {cat}
+            </button>
           ))}
-        </Form>
-      </div>
+        </div>
+      </section>
 
-      {/* Price Filter */}
-      <div className="filter-section mb-4">
-        <h6 className="poppins-medium secondary-color-font">Price</h6>
-        <Row>
-          <Col>
-            <Form.Control
-              min={0}
-              max={maxPrice}
-              type="number"
-              placeholder="Min"
-              value={minPrice}
-              onChange={(e) => setMinPrice(e.target.value)}
-              className="poppins-regular secondary-color-font"
-              style={{ outline: `1px solid var(--secondary-color)` }}
-            />
-          </Col>
-          <Col>
-            <Form.Control
-              min={minPrice}
-              type="number"
-              placeholder="Max"
-              value={maxPrice}
-              onChange={(e) => setMaxPrice(e.target.value)}
-              className="poppins-regular secondary-color-font"
-              style={{ outline: `1px solid var(--secondary-color)` }}
-            />
-          </Col>
-        </Row>
-      </div>
+      {/* Price */}
+      <section className="filter-section">
+        <h4 className="filter-label">Price Range</h4>
+        <div className="filter-price-row">
+          <input
+            type="number"
+            min={0}
+            placeholder="Min"
+            value={minPrice}
+            onChange={(e) => setMinPrice(e.target.value)}
+            className="filter-price-input"
+          />
+          <span className="filter-price-divider">—</span>
+          <input
+            type="number"
+            min={0}
+            placeholder="Max"
+            value={maxPrice}
+            onChange={(e) => setMaxPrice(e.target.value)}
+            className="filter-price-input"
+          />
+        </div>
+      </section>
 
-      {/* Rating Filter */}
-      <div className="filter-section mb-4">
-        <h6 className="poppins-medium secondary-color-font">Rating</h6>
-        <Form>
-          {[5, 4, 3, 2, 1].map((value) => (
-            <Form.Check
-              key={value}
-              type="radio"
-              label={`${value} stars & up`}
-              name="rating"
-              value={value}
-              checked={rating === `${value}`}
-              onChange={(e) => setRating(e.target.value)}
-              className="poppins-regular secondary-color-font"
-            />
+      {/* Rating */}
+      <section className="filter-section">
+        <h4 className="filter-label">Rating</h4>
+        <div className="filter-rating-list">
+          {RATINGS.map((v) => (
+            <button
+              key={v}
+              type="button"
+              className={`filter-rating-row${rating === String(v) ? " filter-rating-row--active" : ""}`}
+              onClick={() => setRating(rating === String(v) ? "" : String(v))}
+            >
+              <span className="filter-rating-stars">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <FaStar
+                    key={i}
+                    size={12}
+                    className={i < v ? "filter-star filter-star--on" : "filter-star"}
+                  />
+                ))}
+              </span>
+              <span className="filter-rating-label">&amp; up</span>
+            </button>
           ))}
-        </Form>
-      </div>
+        </div>
+      </section>
 
-      <Button onClick={handleApplyFilters} className="rounded-5 filter-btn">
-        Apply Filters
-      </Button>
-      <Button
-        onClick={handleClearFilters}
-        className="rounded-5 filter-btn mx-2 mt-2"
-      >
-        Clear Filters
-      </Button>
-    </Container>
+      <div className="filter-actions">
+        <button type="button" className="filter-btn filter-btn--primary" onClick={apply}>
+          Apply Filters
+        </button>
+        <button type="button" className="filter-btn filter-btn--secondary" onClick={clear}>
+          Clear
+        </button>
+      </div>
+    </aside>
   );
 };
 

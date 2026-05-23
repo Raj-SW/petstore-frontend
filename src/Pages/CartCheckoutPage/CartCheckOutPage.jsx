@@ -1,138 +1,156 @@
-import { useEffect } from "react";
-import { Container, Row, Col, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { CartItem } from "../../Components/HelperComponents/CartItem/CartItem";
-import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
-import { useToast } from "../../context/ToastContext";
 import { useCart } from "react-use-cart";
+import { motion } from "framer-motion";
+import {
+  FaArrowLeft, FaArrowRight, FaShoppingBag,
+  FaTruck, FaShieldAlt, FaCheckCircle,
+} from "react-icons/fa";
+import { CartItem } from "../../Components/HelperComponents/CartItem/CartItem";
+import { useToast } from "../../context/ToastContext";
 import "./CartCheckOutPage.css";
+
+const SHIPPING_FEE = 20;
 
 const CartCheckoutPage = () => {
   const navigate = useNavigate();
   const { showCartToast, showCheckoutToast } = useToast();
-  const {
-    items,
-    cartTotal,
-    totalItems,
-    updateItemQuantity,
-    removeItem,
-    emptyCart,
-  } = useCart();
+  const { items, cartTotal, totalItems, updateItemQuantity, removeItem, emptyCart } = useCart();
 
-  const handleQuantityChange = (itemId, newQuantity) => {
-    updateItemQuantity(itemId, newQuantity);
-  };
+  const handleQuantityChange = (id, newQty) => updateItemQuantity(id, newQty);
 
-  const handleRemoveItem = (itemId) => {
-    const item = items.find((i) => i.id === itemId);
+  const handleRemoveItem = (id) => {
+    const item = items.find((i) => i.id === id);
     if (item) {
       showCartToast("remove", item.title);
-      removeItem(itemId);
+      removeItem(id);
     }
   };
 
   const handleCheckout = () => {
     showCheckoutToast("success");
     emptyCart();
-    navigate("/checkout");
+    navigate("/");
   };
 
+  // ── Empty state ──
   if (items.length === 0) {
     return (
-      <Container className="empty-cart-message">
-        <h2>Your cart is empty</h2>
-        <Button
-          variant="primary"
-          className="continue-shopping-btn rounded-5"
-          onClick={() => navigate("/")}
+      <div className="cart-page">
+        <motion.div
+          className="cart-empty"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
         >
-          Continue Shopping
-        </Button>
-      </Container>
+          <div className="cart-empty-icon">
+            <FaShoppingBag size={48} />
+          </div>
+          <h2 className="cart-empty-title">Your cart is empty</h2>
+          <p className="cart-empty-text">
+            Looks like you haven't added any items yet. Let's fix that.
+          </p>
+          <button
+            type="button"
+            className="cart-btn cart-btn--primary"
+            onClick={() => navigate("/petshop")}
+          >
+            Continue Shopping
+          </button>
+        </motion.div>
+      </div>
     );
   }
 
-  return (
-    <div className="cart-checkout-bg">
-      <Container className="cart-checkout-main rounded-4 p-4">
-        <Row>
-          {/* Left: Cart Items */}
-          <Col lg={8} className="cart-items-col">
-            <div
-              className="d-flex align-items-center mb-3 gap-2 continue-shopping-link"
-              style={{ cursor: "pointer" }}
-              onClick={() => navigate("/")}
-            >
-              <FaArrowLeft size={20} />
-              <span className="poppins-medium fs-6">Continue Shopping</span>
-            </div>
-            <div className="cart-items-section">
-              <div className="d-flex align-items-end justify-content-between mb-2">
-                <div>
-                  <h4 className="mb-0">Shopping Cart</h4>
-                  <span className="cart-subtitle text-muted">
-                    You have {totalItems} item
-                    {totalItems > 1 ? "s" : ""} in your cart
-                  </span>
-                </div>
-              </div>
-              <hr className="my-3" />
-              <div className="cart-items-list">
-                {items.map((item) => (
-                  <CartItem
-                    key={item.id}
-                    item={{
-                      ...item,
-                      name: item.title,
-                      image: item.image,
-                      quantity: item.quantity || 1,
-                      price: item.price,
-                    }}
-                    onIncreaseQuantity={(id) =>
-                      handleQuantityChange(id, item.quantity + 1)
-                    }
-                    onDecreaseQuantity={(id) =>
-                      handleQuantityChange(id, item.quantity - 1)
-                    }
-                    onRemoveItem={handleRemoveItem}
-                  />
-                ))}
-              </div>
-            </div>
-          </Col>
+  const total = cartTotal + SHIPPING_FEE;
 
-          {/* Right: Card Details */}
-          <Col lg={4} className="card-details-col">
-            <div className="card-details-wrapper p-4">
-              <h5 className="card-details-title mb-4">Order Summary</h5>
-              <div className="card-summary mt-4 primary-color-font ">
-                <div className="d-flex justify-content-between mb-2">
-                  <span>Sub Total</span>
-                  <span>${cartTotal.toFixed(2)}</span>
-                </div>
-                <div className="d-flex justify-content-between mb-2">
-                  <span>Shipping</span>
-                  <span>${(cartTotal > 0 ? 20 : 0).toFixed(2)}</span>
-                </div>
-                <div className="d-flex justify-content-between fw-bold mb-3">
-                  <span>Total</span>
-                  <span>
-                    ${(cartTotal + (cartTotal > 0 ? 20 : 0)).toFixed(2)}
-                  </span>
-                </div>
-                <Button
-                  variant="success"
-                  className="checkout-btn d-flex align-items-center justify-content-center w-100"
-                  style={{ gap: "0.5rem" }}
-                  onClick={handleCheckout}
-                >
-                  Check Out <FaArrowRight />
-                </Button>
-              </div>
+  return (
+    <div className="cart-page">
+      <motion.div
+        className="cart-back"
+        initial={{ opacity: 0, x: -10 }}
+        animate={{ opacity: 1, x: 0 }}
+        onClick={() => navigate("/petshop")}
+      >
+        <FaArrowLeft size={14} />
+        <span>Continue Shopping</span>
+      </motion.div>
+
+      <div className="cart-grid">
+
+        {/* Left — items */}
+        <motion.div
+          className="cart-items-card"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+        >
+          <div className="cart-items-header">
+            <h1 className="cart-items-title">Shopping Cart</h1>
+            <span className="cart-items-count">
+              {totalItems} item{totalItems > 1 ? "s" : ""}
+            </span>
+          </div>
+
+          <div className="cart-items-list">
+            {items.map((item) => (
+              <CartItem
+                key={item.id}
+                item={{
+                  ...item,
+                  name: item.title,
+                  image: item.image,
+                  quantity: item.quantity || 1,
+                  price: item.price,
+                }}
+                onIncreaseQuantity={(id) => handleQuantityChange(id, item.quantity + 1)}
+                onDecreaseQuantity={(id) => handleQuantityChange(id, item.quantity - 1)}
+                onRemoveItem={handleRemoveItem}
+              />
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Right — order summary */}
+        <motion.aside
+          className="cart-summary-card"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.08 }}
+        >
+          <h2 className="cart-summary-title">Order Summary</h2>
+
+          <div className="cart-summary-rows">
+            <div className="cart-summary-row">
+              <span>Subtotal</span>
+              <span>${cartTotal.toFixed(2)}</span>
             </div>
-          </Col>
-        </Row>
-      </Container>
+            <div className="cart-summary-row">
+              <span>Shipping</span>
+              <span>${SHIPPING_FEE.toFixed(2)}</span>
+            </div>
+            <div className="cart-summary-divider" />
+            <div className="cart-summary-row cart-summary-row--total">
+              <span>Total</span>
+              <span>${total.toFixed(2)}</span>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            className="cart-btn cart-btn--primary cart-btn--block"
+            onClick={handleCheckout}
+          >
+            Check Out
+            <FaArrowRight size={13} />
+          </button>
+
+          <ul className="cart-perks">
+            <li><FaTruck size={13} /> Free delivery on orders over $100</li>
+            <li><FaShieldAlt size={13} /> Secure encrypted checkout</li>
+            <li><FaCheckCircle size={13} /> 100% satisfaction guarantee</li>
+          </ul>
+        </motion.aside>
+      </div>
     </div>
   );
 };

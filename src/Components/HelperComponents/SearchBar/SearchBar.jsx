@@ -3,23 +3,21 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { FaSearch } from "react-icons/fa";
 import "./SearchBar.css";
 
-const SearchBar = ({ showInPages = ["/PetShop", "/product"] }) => {
+const SearchBar = ({ showInPages = ["/petshop", "/product"] }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
-  const sanitizeInput = (input) => {
-    return input.replace(/[<>]/g, "").trim().slice(0, 100);
-  };
+  const sanitizeInput = (input) => input.replace(/[<>]/g, "").trim().slice(0, 100);
 
   const debouncedSearch = useCallback(
     (query) => {
-      const sanitizedQuery = sanitizeInput(query);
-      if (sanitizedQuery) {
+      const sanitized = sanitizeInput(query);
+      if (sanitized) {
         setIsLoading(true);
         setTimeout(() => {
-          navigate(`/PetShop?search=${encodeURIComponent(sanitizedQuery)}`);
+          navigate(`/petshop?search=${encodeURIComponent(sanitized)}`);
           setIsLoading(false);
         }, 200);
       }
@@ -27,29 +25,20 @@ const SearchBar = ({ showInPages = ["/PetShop", "/product"] }) => {
     [navigate]
   );
 
-  const handleSearch = () => {
-    debouncedSearch(searchQuery);
-  };
-
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      handleSearch();
-    }
-  };
+  const handleSearch = () => debouncedSearch(searchQuery);
+  const handleKeyDown = (e) => { if (e.key === "Enter") handleSearch(); };
 
   const shouldShow = showInPages.some((path) =>
-    location.pathname.includes(path)
+    location.pathname.toLowerCase().includes(path.toLowerCase())
   );
-
-  if (!shouldShow) {
-    return null;
-  }
+  if (!shouldShow) return null;
 
   return (
     <div className="search-wrapper" role="search" aria-label="Search products">
+      <FaSearch className="search-leading-icon" aria-hidden />
       <input
         type="text"
-        placeholder="Search..."
+        placeholder="Search for products..."
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
         onKeyDown={handleKeyDown}
@@ -63,10 +52,10 @@ const SearchBar = ({ showInPages = ["/PetShop", "/product"] }) => {
         className="search-button"
         aria-label="Search"
         disabled={isLoading}
+        type="button"
       >
-        <FaSearch className="search-icon" />
+        {isLoading ? "..." : "Search"}
       </button>
-      {isLoading && <span className="visually-hidden">Searching...</span>}
     </div>
   );
 };

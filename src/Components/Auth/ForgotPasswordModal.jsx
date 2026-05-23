@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Modal, Button, Form, Alert } from "react-bootstrap";
-import { FaTimes, FaExclamationCircle, FaEnvelope } from "react-icons/fa";
-import "./AuthModals.css";
+import { FaExclamationCircle, FaEnvelope, FaCheckCircle } from "react-icons/fa";
+import AuthModal from "./AuthModal";
+import AuthField from "./AuthField";
 
 const ForgotPasswordModal = ({ show, onHide, onLoginClick }) => {
   const [email, setEmail] = useState("");
@@ -13,140 +13,86 @@ const ForgotPasswordModal = ({ show, onHide, onLoginClick }) => {
     e.preventDefault();
     setLoading(true);
     setAlert(null);
-
     try {
-      const response = await fetch("/api/auth/forgot-password", {
+      const res = await fetch("/api/auth/forgot-password", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
       });
-
-      const data = await response.json();
-
-      if (response.ok) {
+      const data = await res.json();
+      if (res.ok) {
         setSuccess(true);
       } else {
-        setAlert({
-          type: "danger",
-          message:
-            data.message || "Failed to send reset email. Please try again.",
-        });
+        setAlert(data.message || "Failed to send reset email. Please try again.");
       }
-    } catch (error) {
-      setAlert({
-        type: "danger",
-        message: `An error occurred. Please try again later. \n${error.message}`,
-      });
+    } catch (err) {
+      setAlert(`An error occurred. Please try again later. ${err.message}`);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <Modal show={show} onHide={onHide} className="authModal" size="md" centered>
-      <Modal.Header className="border-0 position-relative">
-        <Button
-          variant="link"
-          className="position-absolute primary-color-font close-button"
-          onClick={onHide}
-        >
-          <FaTimes size={22} />
-        </Button>
-      </Modal.Header>
-      <Modal.Body className="authModal-body">
-        <div className="text-center mb-4">
-          <h3 className="poppins-extrabold primary-color-font">
-            Reset Password
-          </h3>
-          <p className="text-muted">
-            Enter your email address and we'll send you instructions to reset
-            your password.
-          </p>
+    <AuthModal
+      show={show}
+      onHide={onHide}
+      title="Reset Password"
+      subtitle="Enter your email address and we'll send you instructions to reset your password."
+    >
+      {alert && (
+        <div className="auth-alert" role="alert">
+          <FaExclamationCircle size={16} style={{ flexShrink: 0 }} />
+          <span>{alert}</span>
         </div>
+      )}
 
-        {alert && (
-          <Alert
-            variant={alert.type}
-            className="mb-3 d-flex align-items-center gap-2"
-            style={{ background: "var(--error-light)", border: "none" }}
-          >
-            <FaExclamationCircle
-              className="flex-shrink-0"
-              size={22}
-              style={{ color: "#D32F2F" }}
-            />
-            <div className="flex-grow-1">{alert.message}</div>
-          </Alert>
-        )}
-
-        {success ? (
-          <div className="text-center">
-            <Alert variant="success">
-              Password reset instructions have been sent to your email.
-            </Alert>
-            <Button
-              variant="link"
-              className="text-primary"
-              onClick={onLoginClick}
-            >
-              Back to Login
-            </Button>
+      {success ? (
+        <>
+          <div className="auth-alert auth-alert--success" role="status">
+            <FaCheckCircle size={16} style={{ flexShrink: 0 }} />
+            <span>Password reset instructions have been sent to your email.</span>
           </div>
-        ) : (
-          <Form onSubmit={handleSubmit} className="p-4">
-            <Form.Group className="mb-4">
-              <Form.Label>Email Address</Form.Label>
-              <div className="input-group">
-                <span className="input-group-text bg-white">
-                  <FaEnvelope className="text-primary" />
-                </span>
-                <Form.Control
-                  type="email"
-                  placeholder="Enter your email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-              </div>
-            </Form.Group>
+          <button type="button" className="auth-link" onClick={onLoginClick} style={{ alignSelf: "center" }}>
+            Back to Login
+          </button>
+        </>
+      ) : (
+        <>
+          <form className="auth-form" onSubmit={handleSubmit}>
+            <AuthField
+              label="Email Address"
+              name="email"
+              type="email"
+              icon={FaEnvelope}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@example.com"
+              required
+            />
 
-            <div className="d-grid gap-2">
-              <Button
-                variant="primary"
-                type="submit"
-                className="btn-primary"
-                disabled={loading}
-              >
-                {loading ? (
-                  <>
-                    <span
-                      className="spinner-border spinner-border-sm me-2"
-                      role="status"
-                      aria-hidden="true"
-                    ></span>
-                    Sending...
-                  </>
-                ) : (
-                  "Send Reset Instructions"
-                )}
-              </Button>
-            </div>
+            <button type="submit" className="auth-submit" disabled={loading}>
+              {loading ? (
+                <>
+                  <span className="auth-spinner" />
+                  Sending...
+                </>
+              ) : (
+                "Send Reset Instructions"
+              )}
+            </button>
+          </form>
 
-            <div className="text-center mt-3">
-              <Button
-                variant="link"
-                className="text-primary"
-                onClick={onLoginClick}
-              >
-                Back to Login
-              </Button>
-            </div>
-          </Form>
-        )}
-      </Modal.Body>
-    </Modal>
+          <button
+            type="button"
+            className="auth-link"
+            onClick={onLoginClick}
+            style={{ alignSelf: "center" }}
+          >
+            Back to Login
+          </button>
+        </>
+      )}
+    </AuthModal>
   );
 };
 

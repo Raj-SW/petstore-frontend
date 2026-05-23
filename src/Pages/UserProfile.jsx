@@ -1,14 +1,10 @@
 import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
-  Container,
-  Row,
-  Col,
-  Card,
-  Button,
-  Alert,
-  Spinner,
-} from "react-bootstrap";
-import { FaPlus, FaPencilAlt, FaKey } from "react-icons/fa";
+  FaPlus, FaPencilAlt, FaKey, FaUser, FaEnvelope,
+  FaPhone, FaMapMarkerAlt, FaExclamationCircle, FaCheckCircle, FaTimes,
+} from "react-icons/fa";
+
 import Breadcrumb from "../Components/HelperComponents/Breadcrumb/Breadcrumb";
 import UserProfileService from "../Services/localServices/userProfileService";
 import PetForm from "../Components/UserProfile/PetForm";
@@ -16,78 +12,66 @@ import PetList from "../Components/UserProfile/PetList";
 import ProfileForm from "../Components/UserProfile/ProfileForm";
 import PasswordChangeForm from "../Components/UserProfile/PasswordChangeForm";
 import { User, Pet } from "../models";
-import "./UserProfile.css";
 import { useAuth } from "@/context/AuthContext";
 import usersApi from "@/Services/api/usersApi";
+import "./UserProfile.css";
 
 const UserProfile = () => {
   const { user } = useAuth();
 
-  // State for user details
   const [userDetails, setUserDetails] = useState(user);
   const [pets, setPets] = useState([]);
 
-  // Modal states
   const [showPetModal, setShowPetModal] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [selectedPet, setSelectedPet] = useState(null);
 
-  // Loading and error states
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
   const fetchUserPets = async () => {
     try {
-      const petsData = await usersApi.getUserPets();
-      setPets(petsData);
+      const data = await usersApi.getUserPets();
+      setPets(data);
     } catch (err) {
       setError(`Failed to load pets: ${err.message}`);
       setPets([]);
     }
   };
 
-  // Initial data fetch
   useEffect(() => {
-    const initializeData = async () => {
+    const init = async () => {
       setIsLoading(true);
       setError("");
-
-      try {
-        await Promise.all([fetchUserPets()]);
-      } catch (error) {
-        setError(`Failed to initialize data: ${error.message}`);
-      } finally {
-        setIsLoading(false);
-      }
+      try { await fetchUserPets(); }
+      catch (err) { setError(`Failed to load data: ${err.message}`); }
+      finally { setIsLoading(false); }
     };
-
-    initializeData();
+    init();
   }, []);
 
-  // Handle pet form submission
+  // Auto-dismiss banners
+  useEffect(() => {
+    if (!error && !successMessage) return;
+    const t = setTimeout(() => { setError(""); setSuccessMessage(""); }, 5000);
+    return () => clearTimeout(t);
+  }, [error, successMessage]);
+
   const handlePetSubmit = async (petData) => {
     setIsLoading(true);
     setError("");
-
     try {
       if (selectedPet) {
-        // Update existing pet
-        const updatedPet = await usersApi.updatePet(selectedPet.id, petData);
-        setPets((prevPets) =>
-          prevPets.map((pet) =>
-            pet.id === selectedPet.id ? new Pet(updatedPet.data) : pet
-          )
-        );
+        const updated = await usersApi.updatePet(selectedPet.id, petData);
+        setPets((prev) => prev.map((p) => p.id === selectedPet.id ? new Pet(updated.data) : p));
         setSuccessMessage("Pet updated successfully!");
       } else {
-        // Add new pet
-        const newPet = await UserProfileService.addPet(petData);
-        setPets((prevPets) => [...prevPets, new Pet(newPet.data)]);
+        const created = await UserProfileService.addPet(petData);
+        setPets((prev) => [...prev, new Pet(created.data)]);
         setSuccessMessage("Pet added successfully!");
       }
-
       setShowPetModal(false);
       setSelectedPet(null);
     } catch (err) {
@@ -97,23 +81,16 @@ const UserProfile = () => {
     }
   };
 
-  // Handle profile update
   const handleProfileUpdate = async (profileData) => {
     setIsLoading(true);
     setError("");
     try {
-      // Only send the fields that can be updated
-      const updateData = {
+      const response = await UserProfileService.updateUserProfile({
         name: profileData.name,
         email: profileData.email,
         phoneNumber: profileData.phoneNumber,
         address: profileData.address,
-      };
-
-      // Send the update request
-      const response = await UserProfileService.updateUserProfile(updateData);
-
-      // Update the state with the response data
+      });
       setUserDetails(new User(response.data));
       setShowProfileModal(false);
       setSuccessMessage("Profile updated successfully!");
@@ -124,7 +101,6 @@ const UserProfile = () => {
     }
   };
 
-  // Handle password change
   const handlePasswordChange = async (passwordData) => {
     setIsLoading(true);
     setError("");
@@ -139,18 +115,13 @@ const UserProfile = () => {
     }
   };
 
-  // Handle pet deletion
   const handleDeletePet = async (petId) => {
-    if (!window.confirm("Are you sure you want to delete this pet?")) {
-      return;
-    }
-
+    if (!window.confirm("Are you sure you want to delete this pet?")) return;
     setIsLoading(true);
     setError("");
-
     try {
       await UserProfileService.deletePet(petId);
-      setPets((prevPets) => prevPets.filter((pet) => pet.id !== petId));
+      setPets((prev) => prev.filter((p) => p.id !== petId));
       setSuccessMessage("Pet deleted successfully!");
     } catch (err) {
       setError(err.message);
@@ -159,126 +130,141 @@ const UserProfile = () => {
     }
   };
 
-  if (isLoading && !userDetails.id) {
+  if (isLoading && !userDetails?.id) {
     return (
-      <div className="text-center py-5">
-        <Spinner animation="border" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </Spinner>
+      <div className="up-page">
+        <div className="up-loader"><div className="up-spinner" /></div>
       </div>
     );
   }
 
   return (
-    <Container className="py-4">
-      <Breadcrumb
-        items={[
-          { label: "Home", path: "/" },
-          { label: "Profile", path: "/profile" },
-        ]}
-      />
+    <div className="up-page">
+      <div className="up-breadcrumb">
+        <Breadcrumb items={[{ label: "Home", path: "/" }, { label: "Profile", path: "/profile" }]} />
+      </div>
 
-      {error && (
-        <Alert variant="danger" onClose={() => setError("")} dismissible>
-          {error}
-        </Alert>
-      )}
+      {/* Alerts */}
+      <AnimatePresence>
+        {error && (
+          <motion.div
+            className="up-alert up-alert--error"
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+          >
+            <FaExclamationCircle />
+            <span>{error}</span>
+            <button type="button" onClick={() => setError("")} aria-label="Dismiss"><FaTimes size={14} /></button>
+          </motion.div>
+        )}
+        {successMessage && (
+          <motion.div
+            className="up-alert up-alert--success"
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+          >
+            <FaCheckCircle />
+            <span>{successMessage}</span>
+            <button type="button" onClick={() => setSuccessMessage("")} aria-label="Dismiss"><FaTimes size={14} /></button>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      {successMessage && (
-        <Alert
-          variant="success"
-          onClose={() => setSuccessMessage("")}
-          dismissible
+      <div className="up-grid">
+
+        {/* Profile column */}
+        <motion.aside
+          className="up-profile-card"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
         >
-          {successMessage}
-        </Alert>
-      )}
+          <div className="up-avatar-wrap">
+            <img
+              src={userDetails?.profileImage || "https://placehold.co/150x150?text=Profile"}
+              alt={userDetails?.name || "Profile"}
+              className="up-avatar"
+            />
+          </div>
 
-      <Row>
-        <Col md={4}>
-          <Card className="mb-4">
-            <Card.Body className="text-center">
-              <img
-                src={
-                  userDetails.profileImage ||
-                  "https://placehold.co/150x150?text=Profile"
-                }
-                alt="Profile"
-                className="rounded-circle mb-3"
-                style={{ width: "150px", height: "150px", objectFit: "cover" }}
-              />
-              <h4>{userDetails.name}</h4>
-              <p className="text-muted">{userDetails.email}</p>
-              <br />
-              {userDetails.phoneNumber && (
-                <p className="text-muted mb-2">{userDetails.phoneNumber}</p>
-              )}
-              <br />
+          <h2 className="up-name">{userDetails?.name}</h2>
+          <p className="up-role">Member since {new Date(userDetails?.createdAt || Date.now()).getFullYear()}</p>
 
-              {userDetails.address && (
-                <p className="text-muted mb-3">{userDetails.address}</p>
-              )}
-              <div className="d-grid gap-2">
-                <Button
-                  variant="outline-primary"
-                  onClick={() => setShowProfileModal(true)}
-                >
-                  <FaPencilAlt className="me-2" />
-                  Edit Profile
-                </Button>
-                <Button
-                  variant="outline-secondary"
-                  onClick={() => setShowPasswordModal(true)}
-                >
-                  <FaKey className="me-2" />
-                  Change Password
-                </Button>
+          <div className="up-meta">
+            <div className="up-meta-row">
+              <FaEnvelope size={13} />
+              <span>{userDetails?.email}</span>
+            </div>
+            {userDetails?.phoneNumber && (
+              <div className="up-meta-row">
+                <FaPhone size={13} />
+                <span>{userDetails.phoneNumber}</span>
               </div>
-            </Card.Body>
-          </Card>
-        </Col>
+            )}
+            {userDetails?.address && (
+              <div className="up-meta-row">
+                <FaMapMarkerAlt size={13} />
+                <span>{userDetails.address}</span>
+              </div>
+            )}
+          </div>
 
-        <Col md={8}>
-          <Card>
-            <Card.Header className="d-flex justify-content-between align-items-center">
-              <h5 className="mb-0">My Pets</h5>
-              <Button
-                variant="primary"
-                size="sm"
-                onClick={() => {
-                  setSelectedPet(null);
-                  setShowPetModal(true);
-                }}
-              >
-                <FaPlus className="me-2" />
-                Add Pet
-              </Button>
-            </Card.Header>
-            <Card.Body>
-              <PetList
-                pets={pets}
-                onEdit={(pet) => {
-                  setSelectedPet(pet);
-                  setShowPetModal(true);
-                }}
-                onDelete={handleDeletePet}
-              />
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
+          <div className="up-actions">
+            <button type="button" className="up-btn up-btn--secondary" onClick={() => setShowProfileModal(true)}>
+              <FaPencilAlt size={12} />
+              <span>Edit Profile</span>
+            </button>
+            <button type="button" className="up-btn up-btn--ghost" onClick={() => setShowPasswordModal(true)}>
+              <FaKey size={12} />
+              <span>Change Password</span>
+            </button>
+          </div>
+        </motion.aside>
+
+        {/* Pets column */}
+        <motion.div
+          className="up-pets-card"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.08 }}
+        >
+          <div className="up-pets-header">
+            <h2 className="up-pets-title">My Pets</h2>
+            <button
+              type="button"
+              className="up-btn up-btn--primary"
+              onClick={() => { setSelectedPet(null); setShowPetModal(true); }}
+            >
+              <FaPlus size={12} />
+              <span>Add Pet</span>
+            </button>
+          </div>
+
+          {pets.length === 0 ? (
+            <div className="up-pets-empty">
+              <FaUser size={36} />
+              <h3>No pets added yet</h3>
+              <p>Add your furry friends to start managing their care.</p>
+            </div>
+          ) : (
+            <PetList
+              pets={pets}
+              onEdit={(pet) => { setSelectedPet(pet); setShowPetModal(true); }}
+              onDelete={handleDeletePet}
+            />
+          )}
+        </motion.div>
+      </div>
 
       <PetForm
         show={showPetModal}
-        onHide={() => {
-          setShowPetModal(false);
-          setSelectedPet(null);
-        }}
+        onHide={() => { setShowPetModal(false); setSelectedPet(null); }}
         onSubmit={handlePetSubmit}
         initialData={selectedPet}
         isLoading={isLoading}
       />
-
       <ProfileForm
         show={showProfileModal}
         onHide={() => setShowProfileModal(false)}
@@ -286,14 +272,13 @@ const UserProfile = () => {
         initialData={userDetails}
         isLoading={isLoading}
       />
-
       <PasswordChangeForm
         show={showPasswordModal}
         onHide={() => setShowPasswordModal(false)}
         onSubmit={handlePasswordChange}
         isLoading={isLoading}
       />
-    </Container>
+    </div>
   );
 };
 

@@ -117,6 +117,10 @@
   padding-bottom: 0.5rem;
 }
 
+.fp-grid .pcv2-card {
+  flex: 0 0 360px;
+}
+
 /* ── Skeleton ── */
 
 .fp-skeleton {
@@ -166,6 +170,10 @@
     justify-content: center;
   }
 
+  .fp-grid .pcv2-card {
+    flex: 0 0 300px;
+  }
+
   .fp-skeleton {
     width: 300px;
     height: 360px;
@@ -204,6 +212,12 @@
     align-items: center;
     flex-wrap: nowrap;
     gap: 1.2rem;
+  }
+
+  .fp-grid .pcv2-card {
+    flex: 0 0 auto;
+    max-width: 420px;
+    width: 100%;
   }
 
   .fp-grid-wrapper {

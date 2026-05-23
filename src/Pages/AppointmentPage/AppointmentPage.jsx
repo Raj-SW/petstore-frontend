@@ -1,264 +1,138 @@
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import "./AppointmentPage.css";
-//Component Imports
-import { Container, Col, Row, Tab, Nav } from "react-bootstrap";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  FaCalendarAlt, FaStethoscope, FaCut, FaDog, FaTaxi,
+} from "react-icons/fa";
+
 import Breadcrumb from "@/Components/HelperComponents/Breadcrumb/Breadcrumb";
 import AppointmentCalendar from "./AppointmentCalendar/appointmentCalendar";
 import ProfessionalList from "@/Components/HelperComponents/ProfessionalList/ProfessionalList";
 import { useAuth } from "@/context/AuthContext";
+import "./AppointmentPage.css";
+
+const TABS = [
+  { key: "dashboard",     label: "Dashboard",     icon: FaCalendarAlt, authOnly: true },
+  { key: "veterinarians", label: "Veterinarians", icon: FaStethoscope },
+  { key: "groomers",      label: "Groomers",      icon: FaCut },
+  { key: "trainers",      label: "Trainers",      icon: FaDog },
+  { key: "petTaxi",       label: "Pet Taxi",      icon: FaTaxi },
+];
+
+const VALID_TABS = TABS.map((t) => t.key);
 
 const AppointmentPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { user } = useAuth();
 
-  // Get initial tab from URL or default to veterinarians
   const initialTab = searchParams.get("tab") || "veterinarians";
-  const [key, setKey] = useState(initialTab);
+  const [activeTab, setActiveTab] = useState(initialTab);
 
-  // Effect to handle tab changes when user logs out
+  // Keep tab in sync with URL + auth
   useEffect(() => {
-    if (!user && key === "dashboard") {
-      setKey("veterinarians");
+    if (!user && activeTab === "dashboard") {
+      setActiveTab("veterinarians");
       setSearchParams({ tab: "veterinarians" });
     }
-  }, [user, key, setSearchParams]);
+  }, [user, activeTab, setSearchParams]);
 
-  // Update URL when tab changes
-  const handleTabChange = (tabKey) => {
-    setKey(tabKey);
-    setSearchParams({ tab: tabKey });
-  };
-
-  // Sync tab with URL changes
   useEffect(() => {
     const urlTab = searchParams.get("tab");
-    if (urlTab && urlTab !== key) {
-      // Validate tab exists
-      const validTabs = ["dashboard", "veterinarians", "groomers"];
-      if (validTabs.includes(urlTab)) {
-        // Only allow dashboard for authenticated users
-        if (urlTab === "dashboard" && !user) {
-          setKey("veterinarians");
-          setSearchParams({ tab: "veterinarians" });
-        } else {
-          setKey(urlTab);
-        }
+    if (urlTab && urlTab !== activeTab && VALID_TABS.includes(urlTab)) {
+      if (urlTab === "dashboard" && !user) {
+        setActiveTab("veterinarians");
+        setSearchParams({ tab: "veterinarians" });
+      } else {
+        setActiveTab(urlTab);
       }
     }
-  }, [searchParams, key, user, setSearchParams]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams, user]);
 
-  const breadcrumbItems = [
-    { label: "Home", path: "/" },
-    { label: "Appointments Dashboard", path: "/appointments" },
-  ];
+  const handleTabChange = (key) => {
+    setActiveTab(key);
+    setSearchParams({ tab: key });
+  };
+
+  const visibleTabs = TABS.filter((t) => !t.authOnly || user);
+
+  const renderPanel = () => {
+    switch (activeTab) {
+      case "dashboard":     return user ? <AppointmentCalendar /> : null;
+      case "veterinarians": return <ProfessionalList role="veterinarian" />;
+      case "groomers":      return <ProfessionalList role="groomer" />;
+      case "trainers":      return <ProfessionalList role="trainer" />;
+      case "petTaxi":       return <ProfessionalList role="petTaxi" />;
+      default:              return null;
+    }
+  };
 
   return (
-    <>
-      <Container className="pt-5 breadcrumb-container mb-5">
-        <Row className="breadcrumb-row">
-          <Breadcrumb items={breadcrumbItems} />
-        </Row>
-      </Container>
-      <Container className="dashboard-container d-flex ">
-        <Tab.Container activeKey={key} onSelect={handleTabChange}>
-          <Row className="dashboard-row ">
-            <Col
-              xs={12}
-              lg={3}
-              className="appointment-page-left-col poppins-regular"
+    <div className="ap-page">
+      <div className="ap-breadcrumb">
+        <Breadcrumb
+          items={[
+            { label: "Home", path: "/" },
+            { label: "Appointments", path: "/appointments" },
+          ]}
+        />
+      </div>
+
+      <div className="ap-grid">
+        {/* Sidebar */}
+        <aside className="ap-sidebar">
+          <div className="ap-sidebar-header">
+            <h2 className="ap-sidebar-title">Appointment Manager</h2>
+            <p className="ap-sidebar-subtitle">Manage your pet care schedule</p>
+          </div>
+
+          <nav className="ap-tabs" role="tablist">
+            {visibleTabs.map(({ key, label, icon: Icon }) => (
+              <button
+                key={key}
+                type="button"
+                role="tab"
+                aria-selected={activeTab === key}
+                className={`ap-tab${activeTab === key ? " ap-tab--active" : ""}`}
+                onClick={() => handleTabChange(key)}
+              >
+                <Icon size={15} />
+                <span>{label}</span>
+              </button>
+            ))}
+          </nav>
+
+          <div className="ap-user-card">
+            <div className="ap-avatar">
+              {user ? user.name?.charAt(0).toUpperCase() : "G"}
+            </div>
+            <div className="ap-user-info">
+              <p className="ap-user-name">{user ? user.name : "Guest User"}</p>
+              <p className="ap-user-meta">
+                {user
+                  ? user.address || "Address not provided"
+                  : "Please log in to access your dashboard"}
+              </p>
+            </div>
+          </div>
+        </aside>
+
+        {/* Content */}
+        <main className="ap-content" role="tabpanel">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTab}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
             >
-              <div className="dashboard-navigation-desktop rounded-3 p-1">
-                <div className="">
-                  <div className="d-flex flex-row align-items-center justify-evenly">
-                    <div className="user-info">
-                      <div>
-                        <p
-                          className="secondary-color-font"
-                          style={{ fontSize: "1rem" }}
-                        >
-                          Appointment Manager
-                        </p>
-                        <br />{" "}
-                        <p
-                          className=" secondary-color-font"
-                          style={{ fontSize: "0.8rem" }}
-                        >
-                          Manage your petcare schedule
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <Nav
-                    className="flex-column appointmentNavTabs"
-                    role="tablist"
-                    aria-label="Appointment navigation"
-                  >
-                    {user && (
-                      <Nav.Item role="presentation">
-                        <Nav.Link
-                          eventKey="dashboard"
-                          className={key === "dashboard" ? "active" : ""}
-                          role="tab"
-                          aria-selected={key === "dashboard"}
-                          aria-controls="dashboard-panel"
-                        >
-                          Dashboard
-                        </Nav.Link>
-                      </Nav.Item>
-                    )}
-                    <Nav.Item role="presentation">
-                      <Nav.Link
-                        eventKey="veterinarians"
-                        className={key === "veterinarians" ? "active" : ""}
-                        role="tab"
-                        aria-selected={key === "veterinarians"}
-                        aria-controls="veterinarians-panel"
-                      >
-                        Veterinarians
-                      </Nav.Link>
-                    </Nav.Item>
-                    <Nav.Item role="presentation">
-                      <Nav.Link
-                        eventKey="groomers"
-                        className={key === "groomers" ? "active" : ""}
-                        role="tab"
-                        aria-selected={key === "groomers"}
-                        aria-controls="groomers-panel"
-                      >
-                        Groomers
-                      </Nav.Link>
-                    </Nav.Item>
-                    <Nav.Item role="presentation">
-                      <Nav.Link
-                        eventKey="trainers"
-                        className={key === "trainer" ? "active" : ""}
-                        role="tab"
-                        aria-selected={key === "trainer"}
-                        aria-controls="trainer-panel"
-                      >
-                        Trainers
-                      </Nav.Link>
-                    </Nav.Item>
-                    <Nav.Item role="presentation">
-                      <Nav.Link
-                        eventKey="petTaxi"
-                        className={key === "petTaxi" ? "active" : ""}
-                        role="tab"
-                        aria-selected={key === "petTaxi"}
-                        aria-controls="petTaxi-panel"
-                      >
-                        Pet Taxi
-                      </Nav.Link>
-                    </Nav.Item>
-                  </Nav>
-                </div>
-                <hr />
-                <div className="user-info">
-                  <div
-                    className="user-avatar"
-                    style={{
-                      width: "3rem",
-                      height: "3rem",
-                      backgroundColor: "#ffffff",
-                      borderRadius: "50%",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: "1.2rem",
-                      fontWeight: "bold",
-                      color: "var(--secondary-color)",
-                    }}
-                  >
-                    {user ? user.name?.charAt(0).toUpperCase() : "G"}
-                  </div>
-                  <div>
-                    <p
-                      className="secondary-color-font "
-                      style={{ fontSize: "1rem" }}
-                    >
-                      {user ? user.name : "Guest User"}
-                    </p>
-                    <br />{" "}
-                    <p
-                      className="secondary-color-font"
-                      style={{ fontSize: "0.8rem" }}
-                    >
-                      {user
-                        ? user.address || "Address not provided"
-                        : "Please login to view your address"}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </Col>
-            <Col
-              className="appointment-page-right-col"
-              style={{
-                minHeight: "100vh",
-              }}
-            >
-              <Tab.Content>
-                {user && (
-                  <Tab.Pane
-                    eventKey="dashboard"
-                    id="dashboard-panel"
-                    role="tabpanel"
-                    aria-labelledby="dashboard-tab"
-                  >
-                    <AppointmentCalendar />
-                  </Tab.Pane>
-                )}
-                <Tab.Pane
-                  eventKey="veterinarians"
-                  id="veterinarians-panel"
-                  role="tabpanel"
-                  aria-labelledby="veterinarians-tab"
-                >
-                  <ProfessionalList
-                    role="veterinarian"
-                    className="veterinarian-list-container"
-                  />
-                </Tab.Pane>
-                <Tab.Pane
-                  eventKey="groomers"
-                  id="groomers-panel"
-                  role="tabpanel"
-                  aria-labelledby="groomers-tab"
-                >
-                  <ProfessionalList
-                    role="groomer"
-                    className="groomer-list-container"
-                  />
-                </Tab.Pane>
-                <Tab.Pane
-                  eventKey="trainers"
-                  id="trainers-panel"
-                  role="tabpanel"
-                  aria-labelledby="trainers-tab"
-                >
-                  <ProfessionalList
-                    role="trainer"
-                    className="trainer-list-container"
-                  />
-                </Tab.Pane>
-                <Tab.Pane
-                  eventKey="petTaxi"
-                  id="petTaxi-panel"
-                  role="tabpanel"
-                  aria-labelledby="petTaxi-tab"
-                >
-                  <ProfessionalList
-                    role="petTaxi"
-                    className="petTaxi-list-container"
-                  />
-                </Tab.Pane>
-              </Tab.Content>
-            </Col>
-          </Row>
-        </Tab.Container>
-      </Container>
-    </>
+              {renderPanel()}
+            </motion.div>
+          </AnimatePresence>
+        </main>
+      </div>
+    </div>
   );
 };
 

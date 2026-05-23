@@ -1,9 +1,7 @@
 import { useState } from "react";
-import { IconContext } from "react-icons";
 import { RxAvatar } from "react-icons/rx";
 import LoginModal from "./LoginModal";
 import SignUpModal from "./SignUpModal";
-import "./SignUpDropdown.css";
 
 const SignUpDropdown = ({ showLogin, setShowLogin }) => {
   const [showSignUp, setShowSignUp] = useState(false);
@@ -19,19 +17,15 @@ const SignUpDropdown = ({ showLogin, setShowLogin }) => {
   };
   const handleCloseLogin = () => setShowLogin(false);
   const handleCloseSignUp = () => setShowSignUp(false);
-  const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
+  const togglePasswordVisibility = () => setShowPassword((p) => !p);
 
   return (
     <>
-      <button
-        className="d-flex align-items-center nav-user-btn"
-        onClick={handleOpenLogin}
-      >
-        <IconContext.Provider value={{ color: "inherit", size: "1.6rem" }}>
-          <RxAvatar style={{ marginRight: 5, verticalAlign: "middle" }} />
-        </IconContext.Provider>
-        <span className="d-none d-lg-inline" style={{ fontSize: "0.9rem" }}>Login</span>
+      <button className="nav-user-btn" onClick={handleOpenLogin}>
+        <RxAvatar size={22} />
+        <span className="nav-user-name">Login</span>
       </button>
+
       <LoginModal
         show={showLogin}
         onHide={handleCloseLogin}
