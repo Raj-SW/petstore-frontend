@@ -1,108 +1,132 @@
-import { Container, Row, Col, Button } from "react-bootstrap";
-import { FaFacebook, FaInstagram, FaYoutube } from "react-icons/fa";
+import { useState } from "react";
+import { FaFacebook, FaInstagram, FaYoutube, FaPaw } from "react-icons/fa";
 import { IoLogoWhatsapp } from "react-icons/io";
-import { IconContext } from "react-icons";
-
+import pawImg from "../../assets/Decoratives/paw.png";
 import "./Footer.css";
-import "./Footer2.css";
-import qrCode from "../../assets/Decoratives/QRCode.png";
-import googlePlayStoreImg from "../../assets/Decoratives/googleplay1.png";
-import appStoreImg from "../../assets/Decoratives/app-store.png";
+
+const LINKS = [
+  {
+    heading: "Shop",
+    items: [
+      { label: "Dogs",       href: "/petshop?category=dog" },
+      { label: "Cats",       href: "/petshop?category=cat" },
+      { label: "Fish",       href: "/petshop?category=fish" },
+      { label: "Small Pets", href: "/petshop?category=general" },
+      { label: "New Arrivals", href: "/petshop" },
+    ],
+  },
+  {
+    heading: "Services",
+    items: [
+      { label: "Veterinary Care", href: "/appointments" },
+      { label: "Grooming",        href: "/appointments" },
+      { label: "Boarding",        href: "/appointments" },
+      { label: "Pet Training",    href: "/appointments" },
+      { label: "Adoption",        href: "/services" },
+    ],
+  },
+  {
+    heading: "Company",
+    items: [
+      { label: "About Us",  href: "/about" },
+      { label: "Our Team",  href: "/about" },
+      { label: "Blog",      href: "/" },
+      { label: "Careers",   href: "/" },
+      { label: "Community", href: "/" },
+    ],
+  },
+  {
+    heading: "Support",
+    items: [
+      { label: "Contact Us",       href: "/" },
+      { label: "FAQ",              href: "/" },
+      { label: "Terms of Service", href: "/" },
+      { label: "Privacy Policy",   href: "/" },
+      { label: "Refund Policy",    href: "/" },
+    ],
+  },
+];
 
 const Footer = () => {
+  const [email, setEmail] = useState("");
+
+  const handleSubscribe = (e) => {
+    e.preventDefault();
+    setEmail("");
+  };
+
   return (
-    <footer className="footerWrapper">
-      <Container className="footerContainer">
-        <Row className="registerSection d-flex flex-row justify-content-around align-items-center p-4 mt-5 rounded-4 ml-1 mr-1">
-          <h3 className="text-wrap text-white caveat-Heading subscribe-heading">
-            Register Now So You Don&apos;t Miss Our Programs
-          </h3>
-          <Row className="d-flex subscribeInputContainer flex-rowp-2 rounded-3 gap-2 justify-content-around p-2">
-            <input
-              type="email"
-              name="emailInput"
-              id="emailInput"
-              className="emailInput rounded-2"
-            />
-            <Button className="subscribeButton" variant="primary">
-              Subscribe Now
-            </Button>
-          </Row>
-        </Row>
-        <Row className="footerContentSection mt-5 d-flex flex-wrap justify-content-center justify-content-lg-between primary-color-font">
-          <div className="footerContents d-flex gap-5 fs-6 flex-wrap justify-content-center">
-            <Col className="fs-6">
-              <h5 className="fs-6">Shopping Categories</h5>
-              <ul>
-                <li>Dog</li>
-                <li>Cats</li>
-                <li>Small Pets</li>
-                <li>Birds</li>
-              </ul>
-            </Col>
-            <Col className="fs-6">
-              <h5 className="fs-6">Shopping Categories</h5>
-              <ul>
-                <li>Dog</li>
-                <li>Cats</li>
-                <li>Small Pets</li>
-                <li>Birds</li>
-              </ul>
-            </Col>
-            <Col className="fs-6">
-              <h5 className="fs-6">Shopping Categories</h5>
-              <ul>
-                <li>Dog</li>
-                <li>Cats</li>
-                <li>Small Pets</li>
-                <li>Birds</li>
-              </ul>
-            </Col>
-            <Col className="fs-6">
-              <h5 className="fs-6">Shopping Categories</h5>
-              <ul>
-                <li>Dog</li>
-                <li>Cats</li>
-                <li>Small Pets</li>
-                <li>Birds</li>
-              </ul>
-            </Col>
-          </div>
-          <Col className="linksWrapper d-flex flex-column gap-4 mt-4 mt-lg-0 justify-content-center align-items-center align-items-lg-end">
-            <div className="d-flex gap-4">
-              <IconContext.Provider value={{ size: "1.5rem" }}>
-                <FaFacebook />
-                <IoLogoWhatsapp />
-                <FaInstagram />
-                <FaYoutube />
-              </IconContext.Provider>
+    <footer className="ft-root">
+      <div className="ft-container">
+
+        {/* ── Top: brand + links ── */}
+        <div className="ft-top">
+          {/* Brand col */}
+          <div className="ft-brand-col">
+            <div className="ft-brand">
+              <FaPaw className="ft-brand-paw" />
+              <span className="ft-brand-name">VitalPaws</span>
             </div>
-            <Row className="downloadLinksWrapper d-flex justify-content-center justify-content-lg-end">
-              <Col className="qrWrapper d-flex justify-content-center justify-content-lg-end">
-                <img src={qrCode} alt="QR Code" />
-              </Col>
-              <Col className="storeContainer d-flex flex-column gap-2 align-items-center align-items-lg-end">
-                <img src={appStoreImg} alt="App Store" />
-                <img src={googlePlayStoreImg} alt="Google Play Store" />
-              </Col>
-            </Row>
-          </Col>
-        </Row>
-        <Row className="footerBrandSection mt-4 d-flex justify-content-between align-items-center p-3 border-top flex-column flex-md-row text-center text-md-start secondary-color-font">
-          <div className="text-muted rightsReserved">
-            © 2022 VitalPaws. All rights reserved.
+            <p className="ft-tagline">
+              Where every pet gets the love and care they deserve.
+            </p>
+
+            {/* Newsletter */}
+            <form className="ft-subscribe" onSubmit={handleSubscribe}>
+              <p className="ft-subscribe-label">Stay updated — join our newsletter</p>
+              <div className="ft-subscribe-row">
+                <input
+                  type="email"
+                  className="ft-subscribe-input"
+                  placeholder="Your email address"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+                <button className="ft-subscribe-btn" type="submit">
+                  Subscribe
+                </button>
+              </div>
+            </form>
           </div>
-          <h5 className="footerBrandName m-0 font-italic">VitalPaws</h5>
-          <div className="d-flex gap-3 footerTermsOfService justify-content-center justify-content-md-end">
-            <a href="#" className="text-dark text-decoration-none">
-              Terms of Service
-            </a>
-            <a href="#" className="text-dark text-decoration-none">
-              Privacy Policy
-            </a>
+
+          {/* Link columns */}
+          <div className="ft-links">
+            {LINKS.map(({ heading, items }) => (
+              <div key={heading} className="ft-link-col">
+                <h5 className="ft-link-heading">{heading}</h5>
+                <ul className="ft-link-list">
+                  {items.map(({ label, href }) => (
+                    <li key={label}>
+                      <a href={href} className="ft-link">{label}</a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
-        </Row>
-      </Container>
+        </div>
+
+        {/* ── Bottom bar ── */}
+        <div className="ft-bottom">
+          <span className="ft-copy">© 2024 VitalPaws. All rights reserved.</span>
+
+          <div className="ft-legal">
+            <a href="/" className="ft-legal-link">Terms of Service</a>
+            <a href="/" className="ft-legal-link">Privacy Policy</a>
+          </div>
+
+          <div className="ft-socials">
+            <a href="#" aria-label="Facebook"  className="ft-social-btn"><FaFacebook  size={18} /></a>
+            <a href="#" aria-label="WhatsApp"  className="ft-social-btn"><IoLogoWhatsapp size={18} /></a>
+            <a href="#" aria-label="Instagram" className="ft-social-btn"><FaInstagram size={18} /></a>
+            <a href="#" aria-label="YouTube"   className="ft-social-btn"><FaYoutube   size={18} /></a>
+          </div>
+        </div>
+      </div>
+
+      {/* Decorative paw */}
+      <img src={pawImg} alt="" className="ft-deco-paw" aria-hidden="true" />
     </footer>
   );
 };
