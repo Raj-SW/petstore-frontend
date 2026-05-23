@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { CaretDownIcon } from "@radix-ui/react-icons";
+import { FaChevronRight } from "react-icons/fa";
 import "./Breadcrumb.css";
 
 const Breadcrumb = ({ items }) => {
@@ -8,39 +8,29 @@ const Breadcrumb = ({ items }) => {
   const location = useLocation();
 
   const handleClick = (path) => {
-    if (path) {
-      navigate(path);
-    }
+    if (path) navigate(path);
   };
 
+  const isActive = (path) =>
+    location.pathname.toLowerCase() === (path || "").toLowerCase();
+
   return (
-    <div className="breadcrumb">
+    <nav className="breadcrumb" aria-label="Breadcrumb">
       {items.map((item, index) => (
         <React.Fragment key={index}>
-          <span onClick={() => handleClick(item.path)}>
-            <p
-              className={`breadcrumb-text poppins-medium fs-6 ${
-                location.pathname === item.path ? "active" : ""
-              }`}
-            >
-              {item.label}
-            </p>
-          </span>
+          <button
+            type="button"
+            className={`breadcrumb-text${isActive(item.path) ? " active" : ""}`}
+            onClick={() => handleClick(item.path)}
+          >
+            {item.label}
+          </button>
           {index < items.length - 1 && (
-            <CaretDownIcon
-              className="CaretDownBreadCrumb"
-              aria-hidden
-              style={{
-                width: "1.5rem",
-                height: "1.5rem",
-                color: "var(--neutral-color-60)",
-                transform: "rotate(-90deg)",
-              }}
-            />
+            <FaChevronRight className="breadcrumb-sep" aria-hidden />
           )}
         </React.Fragment>
       ))}
-    </div>
+    </nav>
   );
 };
 

@@ -1,79 +1,99 @@
-import { Modal, Button, Row, Col } from "react-bootstrap";
+import { useEffect } from "react";
+import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "react-use-cart";
+import { AnimatePresence, motion } from "framer-motion";
+import { FaTimes, FaShoppingBag, FaArrowRight } from "react-icons/fa";
 import { useToast } from "../../context/ToastContext";
 import { CartItem } from "../HelperComponents/CartItem/CartItem";
-import { BsCreditCard, BsArrowLeft } from "react-icons/bs";
 import "./CartModal.css";
+
+const SHIPPING_FEE = 20;
 
 const CartModal = ({ show, onHide }) => {
   const navigate = useNavigate();
-  const { items, cartTotal, totalItems, updateItemQuantity, removeItem } =
-    useCart();
-  const { showCartToast, showCheckoutToast } = useToast();
+  const { items, cartTotal, totalItems, updateItemQuantity, removeItem } = useCart();
+  const { showCartToast } = useToast();
 
-  const handleCheckout = () => {
-    if (items.length === 0) {
-      return;
-    }
+  useEffect(() => {
+    if (!show) return;
+    const original = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKey = (e) => { if (e.key === "Escape") onHide(); };
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = original;
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [show, onHide]);
 
-    sessionStorage.setItem("cartItems", JSON.stringify(items));
-    sessionStorage.setItem("cartTotal", cartTotal.toString());
-    showCheckoutToast("success");
-    onHide();
-    navigate("/checkout");
-  };
+  const handleViewCart = () => { onHide(); navigate("/checkout"); };
 
-  const handleRemoveItem = (itemId) => {
-    const item = items.find((i) => i.id === itemId);
+  const handleRemoveItem = (id) => {
+    const item = items.find((i) => i.id === id);
     if (item) {
       showCartToast("remove", item.title);
-      removeItem(itemId);
+      removeItem(id);
     }
   };
 
-  const handleQuantityChange = (itemId, newQuantity) => {
-    updateItemQuantity(itemId, newQuantity);
-  };
+  const total = cartTotal + (cartTotal > 0 ? SHIPPING_FEE : 0);
 
-  return (
-    <Modal
-      show={show}
-      onHide={onHide}
-      size="xl"
-      centered
-      className="cart-modal shadow-lg"
-    >
-      <Modal.Header className="border-0 pb-0">
-        <Modal.Title className="cart-modal-title poppins-semibold d-flex align-items-center">
-          <div className="d-flex align-items-center"></div>
-          Shopping Cart ({totalItems} items)
-        </Modal.Title>
-        <Button variant="link" className="p-0 ms-auto" onClick={onHide}>
-          <BsArrowLeft size={32} className="primary-color-font " />
-        </Button>
-      </Modal.Header>
-      <Modal.Body className="px-4">
-        {items.length === 0 ? (
-          <div className="empty-cart d-flex flex-column align-items-center justify-content-center p-5">
-            <div className="empty-cart-icon mb-4">
-              <i className="bi bi-cart-x display-1 primary-color-font opacity-50"></i>
-            </div>
-            <h4 className="poppins-medium primary-color-font mb-3">
-              Your cart is empty
-            </h4>
-            <p className="text-muted text-center mb-4 poppins-regular">
-              Looks like you haven&apos;t added anything to your cart yet.
-              <br />
-              Browse our products and start shopping!
-            </p>
-          </div>
-        ) : (
-          <Row>
-            <Col className="">
-              <div className="cart-items-container bg-white rounded-3 ">
-                <h5 className="mb-4 poppins-semibold">Cart Items</h5>
-                <div className="cart-items">
+  return createPortal(
+    <AnimatePresence>
+      {show && (
+        <>
+          <motion.div
+            className="cm-backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            onClick={onHide}
+          />
+          <motion.aside
+            className="cm-drawer"
+            initial={{ x: "100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "100%" }}
+            transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Shopping cart"
+          >
+            <header className="cm-header">
+              <div className="cm-header-title">
+                <h3>Shopping Cart</h3>
+                <span className="cm-count">{totalItems} item{totalItems !== 1 ? "s" : ""}</span>
+              </div>
+              <button
+                type="button"
+                className="cm-close"
+                onClick={onHide}
+                aria-label="Close cart"
+              >
+                <FaTimes size={16} />
+              </button>
+            </header>
+
+            {items.length === 0 ? (
+              <div className="cm-empty">
+                <div className="cm-empty-icon">
+                  <FaShoppingBag size={36} />
+                </div>
+                <h4>Your cart is empty</h4>
+                <p>Browse our products and start adding items.</p>
+                <button
+                  type="button"
+                  className="cm-btn cm-btn--primary"
+                  onClick={() => { onHide(); navigate("/petshop"); }}
+                >
+                  Continue Shopping
+                </button>
+              </div>
+            ) : (
+              <>
+                <div className="cm-body">
                   {items.map((item) => (
                     <CartItem
                       key={item.id}
@@ -81,76 +101,48 @@ const CartModal = ({ show, onHide }) => {
                         ...item,
                         name: item.title,
                         image: item.image,
-                        quantity: item.quantity,
+                        quantity: item.quantity || 1,
                         price: item.price,
                       }}
-                      onIncreaseQuantity={(id) =>
-                        handleQuantityChange(id, item.quantity + 1)
-                      }
-                      onDecreaseQuantity={(id) =>
-                        handleQuantityChange(id, item.quantity - 1)
-                      }
+                      onIncreaseQuantity={(id) => updateItemQuantity(id, item.quantity + 1)}
+                      onDecreaseQuantity={(id) => updateItemQuantity(id, item.quantity - 1)}
                       onRemoveItem={handleRemoveItem}
                     />
                   ))}
                 </div>
-              </div>
-            </Col>
-            <Col lg={4}>
-              <div className="order-summary rounded-3 shadow-sm p-3">
-                <h5 className="mb-4 poppins-semibold">Order Summary</h5>
-                <div className="summary-row poppins-regular">
-                  <span>Subtotal:</span>
-                  <span className="text-secondary">
-                    ${cartTotal.toFixed(2)}
-                  </span>
-                </div>
-                <div className="summary-row poppins-regular">
-                  <span>Shipping:</span>
-                  <span className="text-secondary">
-                    ${(cartTotal > 0 ? 20 : 0).toFixed(2)}
-                  </span>
-                </div>
-                <div className="summary-row total poppins-semibold">
-                  <span>Total:</span>
-                  <span className="primary-color-font">
-                    ${(cartTotal + (cartTotal > 0 ? 20 : 0)).toFixed(2)}
-                  </span>
-                </div>
-              </div>
-            </Col>
-          </Row>
-        )}
-      </Modal.Body>
-      <Modal.Footer className="border-0">
-        {items.length === 0 ? (
-          <Button
-            className="rounded-pill px-4 py-2 button-primary shadow-sm"
-            onClick={onHide}
-          >
-            <i className="bi bi-arrow-left me-2"></i>
-            Continue Shopping
-          </Button>
-        ) : (
-          <>
-            <Button
-              className="rounded-pill px-4 py-2 shadow-sm"
-              onClick={onHide}
-            >
-              <BsArrowLeft className="me-2" />
-              Continue Shopping
-            </Button>
-            <Button
-              className="rounded-pill px-4 py-2 button-primary shadow-sm"
-              onClick={handleCheckout}
-            >
-              <BsCreditCard className="me-2" />
-              Proceed to Checkout
-            </Button>
-          </>
-        )}
-      </Modal.Footer>
-    </Modal>
+
+                <footer className="cm-footer">
+                  <div className="cm-summary">
+                    <div className="cm-summary-row">
+                      <span>Subtotal</span>
+                      <span>${cartTotal.toFixed(2)}</span>
+                    </div>
+                    <div className="cm-summary-row">
+                      <span>Shipping</span>
+                      <span>${(cartTotal > 0 ? SHIPPING_FEE : 0).toFixed(2)}</span>
+                    </div>
+                    <div className="cm-summary-row cm-summary-row--total">
+                      <span>Total</span>
+                      <span>${total.toFixed(2)}</span>
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    className="cm-btn cm-btn--primary cm-btn--block"
+                    onClick={handleViewCart}
+                  >
+                    View Cart &amp; Checkout
+                    <FaArrowRight size={13} />
+                  </button>
+                </footer>
+              </>
+            )}
+          </motion.aside>
+        </>
+      )}
+    </AnimatePresence>,
+    document.body
   );
 };
 

@@ -1,24 +1,42 @@
+/* ================================================
+   Breadcrumb
+   ================================================ */
+
 .breadcrumb {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  background: transparent;
+  padding: 0;
+  margin: 0;
 }
 
 .breadcrumb-text {
-    margin: 0;
-    cursor: pointer;
-    transition: color 0.3s ease;
-    color: var(--primary-blue-color) !important;
-    font-weight: 700;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #777;
+  cursor: pointer;
+  transition: color 0.15s;
 }
 
 .breadcrumb-text:hover {
-    color: var(--primary-dark) !important;
-    font-weight: 800;
+  color: var(--color-accent-gold, #d99a2b);
 }
 
 .breadcrumb-text.active {
-    color: var(--primary-blue-color) !important;
-    /* Vibrant green */
-    font-weight: 700;
+  color: var(--color-primary-forest, #001c10);
+  font-weight: 600;
+  cursor: default;
+}
+
+.breadcrumb-sep {
+  font-size: 0.65rem;
+  color: #ccc;
+  flex-shrink: 0;
 }

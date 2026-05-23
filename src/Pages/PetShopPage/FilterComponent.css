@@ -1,13 +1,200 @@
-.filter-btn {
-    background-color: var(--secondary-blue-color);
-    color: #fff;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
+/* ================================================
+   Filter Component
+   ================================================ */
+
+.filter-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #f0f0f0;
 }
 
-.filter-btn:hover {
-    background-color: var(--primary-creme-color);
-    color: var(--primary-blue-color);
+.filter-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--color-primary-forest, #001c10);
+}
+
+.filter-card-title {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 1.05rem;
+  margin: 0;
+  color: inherit;
+}
+
+/* ── Section ── */
+
+.filter-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.filter-label {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #222;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* ── Category chips ── */
+
+.filter-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.filter-chip {
+  background: #f5f5f5;
+  border: 1.5px solid transparent;
+  border-radius: 50px;
+  padding: 0.4rem 0.85rem;
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: #444;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.filter-chip:hover {
+  border-color: #ddd;
+}
+
+.filter-chip--active {
+  background: var(--color-primary-forest, #001c10);
+  color: #fff;
+  border-color: var(--color-primary-forest, #001c10);
+}
+
+/* ── Price ── */
+
+.filter-price-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.filter-price-input {
+  flex: 1;
+  background: #f5f5f5;
+  border: 1.5px solid transparent;
+  border-radius: 10px;
+  padding: 0.6rem 0.8rem;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: #333;
+  outline: none;
+  min-width: 0;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.filter-price-input:focus {
+  border-color: var(--color-accent-gold, #d99a2b);
+  background: #fff;
+}
+
+.filter-price-input::-webkit-outer-spin-button,
+.filter-price-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.filter-price-input { -moz-appearance: textfield; }
+
+.filter-price-divider {
+  color: #ccc;
+  font-weight: 600;
+}
+
+/* ── Rating ── */
+
+.filter-rating-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.filter-rating-row {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  background: none;
+  border: none;
+  padding: 0.4rem 0.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s;
+  text-align: left;
+}
+
+.filter-rating-row:hover {
+  background: #f5f5f5;
+}
+
+.filter-rating-row--active {
+  background: rgba(217, 154, 43, 0.1);
+}
+
+.filter-rating-stars {
+  display: flex;
+  gap: 1px;
+}
+
+.filter-star { color: #ddd; }
+.filter-star--on { color: var(--color-accent-gold, #d99a2b); }
+
+.filter-rating-label {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: #666;
+}
+
+/* ── Actions ── */
+
+.filter-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.filter-btn {
+  border: none;
+  border-radius: 50px;
+  padding: 0.7rem;
+  font-family: var(--font-body);
+  font-size: 0.86rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s, background 0.2s;
+}
+
+.filter-btn--primary {
+  background: var(--color-primary-forest, #001c10);
+  color: #fff;
+}
+
+.filter-btn--primary:hover { opacity: 0.88; }
+
+.filter-btn--secondary {
+  background: transparent;
+  color: #666;
+  border: 1.5px solid #e0e0e0;
+}
+
+.filter-btn--secondary:hover {
+  border-color: var(--color-accent-gold, #d99a2b);
+  color: var(--color-accent-gold, #d99a2b);
 }

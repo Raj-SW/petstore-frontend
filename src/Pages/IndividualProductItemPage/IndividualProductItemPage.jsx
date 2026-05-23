@@ -1,30 +1,21 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useCart } from "react-use-cart";
+import { motion } from "framer-motion";
 import {
-  Container,
-  Row,
-  Col,
-  Button,
-  Image,
-  Alert
-} from "react-bootstrap";
-import { FaFacebook, FaTwitter, FaInstagram } from "react-icons/fa";
+  FaFacebook, FaTwitter, FaInstagram, FaPlus, FaMinus,
+  FaShoppingCart, FaShieldAlt, FaCheckCircle, FaExclamationTriangle,
+} from "react-icons/fa";
 import { FiShare2 } from "react-icons/fi";
-import { LuArrowLeft } from "react-icons/lu";
-import { IconContext } from "react-icons";
 
 import "./IndividaulItemPage.css";
 import Breadcrumb from "@/Components/HelperComponents/Breadcrumb/Breadcrumb";
-import SearchBar from "@/Components/HelperComponents/SearchBar/SearchBar";
 import ReviewService from "../../Services/localServices/ReviewService";
 import LoginModal from "@/Components/NavigationBar/Dropdowns/LoginModal";
-//Asset Import
-import ProductCard from "@/Components/HelperComponents/ProductCard/ProductCard";
+import SignUpModal from "@/Components/NavigationBar/Dropdowns/SignUpModal";
+import ProductCard from "@/Components/HelperComponents/ProductCard/ProductCardV2";
 import ReviewCarousel from "@/Components/HelperComponents/Carousel/ReviewCarousel";
 import ProductReviewFormModal from "@/Components/HelperComponents/ProductReviewFormModal/ProductReviewFormModal";
-import SignUpModal from "@/Components/NavigationBar/Dropdowns/SignUpModal";
-//service import
 import ProductService from "@/Services/localServices/ProductService";
 import { useToast } from "@/context/ToastContext";
 import { useAuth } from "@/context/AuthContext";
@@ -32,106 +23,84 @@ import { useAuth } from "@/context/AuthContext";
 const IndividualProductItemPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { addItem } = useCart();
+  const { showCartToast } = useToast();
+  const { user } = useAuth();
+
   const [product, setProduct] = useState(null);
+  const [reviews, setReviews] = useState([]);
+  const [relatedProducts, setRelatedProducts] = useState([]);
+  const [activeImage, setActiveImage] = useState(0);
+  const [quantity, setQuantity] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [quantity, setQuantity] = useState(1);
-  const [reviews, setReviews] = useState([]);
-  const { addItem } = useCart();
-  const [relatedProducts, setRelatedProducts] = useState([]);
-  const { showCartToast } = useToast();
+
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showSignUpModal, setShowSignUpModal] = useState(false);
-  const { user } = useAuth();
+  const [showPassword, setShowPassword] = useState(false);
 
-  // Scroll to top when component mounts
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+  useEffect(() => { window.scrollTo(0, 0); }, [id]);
 
   useEffect(() => {
-    const fetchProductData = async () => {
+    let active = true;
+    const fetchData = async () => {
       try {
         setIsLoading(true);
         setError(null);
-
-        // Validate and parse the product ID
-        if (!id) {
-          throw new Error("Product ID is missing");
-        }
+        if (!id) throw new Error("Product ID is missing");
         const productId = isNaN(id) ? id : parseInt(id);
 
-        // Fetch product data
         const productData = await ProductService.fetchProductById(productId);
-
-        if (!productData) {
-          throw new Error("Product not found");
-        }
+        if (!active) return;
+        if (!productData) throw new Error("Product not found");
 
         setProduct(productData);
+        setActiveImage(0);
+        setQuantity(1);
+
         if (productData.category) {
           const related = await ProductService.fetchRelatedProducts(
             productData.category,
             productData.id
           );
-          setRelatedProducts(related);
+          if (active) setRelatedProducts(related);
         }
 
-        // Fetch reviews
-        const productReviews = await ReviewService.fetchProductReviews(
-          productId
-        );
-        setReviews(productReviews);
+        const productReviews = await ReviewService.fetchProductReviews(productId);
+        if (active) setReviews(productReviews);
       } catch (err) {
-        setError(err.message || "Failed to load product details");
+        if (active) setError(err.message || "Failed to load product details");
       } finally {
-        setIsLoading(false);
+        if (active) setIsLoading(false);
       }
     };
-
-    fetchProductData();
+    fetchData();
+    return () => { active = false; };
   }, [id]);
 
-  const handleDecrement = () => {
-    setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
-  };
-
-  const handleIncrement = () => {
-    setQuantity((prev) => prev + 1);
-  };
-
   const handleAddToCart = () => {
-    if (!product) {
-      return;
-    }
-
-    // Ensure we have a valid ID
+    if (!product) return;
     const productId = product._id || product.id;
-    if (!productId) {
-      return;
-    }
+    if (!productId) return;
 
     try {
-      const itemToAdd = {
-        id: productId.toString(), // Ensure ID is a string
-        title: product.title?.trim() || "Untitled Product",
-        price: parseFloat(product.price) || 0,
-        image: product.images?.[0] || product.imageUrl || "",
-      };
-
-      // Add item with quantity as a separate parameter
-      addItem(itemToAdd, quantity);
-      //show toast
-      showCartToast("add", product.title);
-    } catch (error) {
-      setError(
-        `Failed to add item to cart. Please try again. \n${error.message}`
+      addItem(
+        {
+          id: String(productId),
+          title: product.title?.trim() || "Untitled Product",
+          price: parseFloat(product.price) || 0,
+          image: product.images?.[0] || product.imageUrl || "",
+        },
+        quantity
       );
+      showCartToast("add", product.title);
+    } catch (err) {
+      setError(`Failed to add to cart: ${err.message}`);
     }
   };
 
-  const handleShowReviewModal = () => {
+  const handleOpenReviewModal = () => {
     if (!user) {
       setShowLoginModal(true);
       return;
@@ -139,58 +108,60 @@ const IndividualProductItemPage = () => {
     setShowReviewModal(true);
   };
 
-  const handleCloseReviewModal = () => {
-    setShowReviewModal(false);
-  };
-
+  // ── Loading state ──
   if (isLoading) {
     return (
-      <Container
-        className="d-flex justify-content-center align-items-center"
-        style={{ minHeight: "60vh" }}
-      >
-        <div className="spinner-border text-primary" role="status">
-          <span className="visually-hidden">Loading...</span>
+      <div className="ip-page">
+        <div className="ip-skeleton-row">
+          <div className="ip-skeleton ip-skeleton--image" />
+          <div className="ip-skeleton-col">
+            <div className="ip-skeleton ip-skeleton--line" />
+            <div className="ip-skeleton ip-skeleton--line ip-skeleton--short" />
+            <div className="ip-skeleton ip-skeleton--block" />
+          </div>
         </div>
-      </Container>
+      </div>
     );
   }
 
+  // ── Error state ──
   if (error) {
     return (
-      <Container className="mt-5">
-        <Alert variant="danger">
-          <Alert.Heading>Error Loading Product</Alert.Heading>
+      <div className="ip-page">
+        <div className="ip-state">
+          <FaExclamationTriangle size={40} />
+          <h2>Error Loading Product</h2>
           <p>{error}</p>
-          <Button variant="primary" onClick={() => navigate("/petshop")}>
+          <button className="ip-btn ip-btn--primary" onClick={() => navigate("/petshop")}>
             Return to Shop
-          </Button>
-        </Alert>
-      </Container>
+          </button>
+        </div>
+      </div>
     );
   }
 
   if (!product) {
     return (
-      <Container className="mt-5">
-        <Alert variant="warning">
-          <Alert.Heading>Product Not Found</Alert.Heading>
-          <p>
-            The product you&apos;re looking for doesn&apos;t exist or has been
-            removed.
-          </p>
-          <Button variant="primary" onClick={() => navigate("/petshop")}>
+      <div className="ip-page">
+        <div className="ip-state">
+          <FaExclamationTriangle size={40} />
+          <h2>Product Not Found</h2>
+          <p>The product you're looking for doesn't exist or has been removed.</p>
+          <button className="ip-btn ip-btn--primary" onClick={() => navigate("/petshop")}>
             Return to Shop
-          </Button>
-        </Alert>
-      </Container>
+          </button>
+        </div>
+      </div>
     );
   }
 
+  const images = product.images?.length ? product.images : [product.imageUrl].filter(Boolean);
+
   return (
     <>
-      <Container className="d-flex flex-column w-100 ">
-        <div className="searchbarcontainer">
+      <div className="ip-page">
+        {/* Breadcrumb */}
+        <div className="ip-breadcrumb-row">
           <Breadcrumb
             items={[
               { label: "Home", path: "/" },
@@ -198,176 +169,179 @@ const IndividualProductItemPage = () => {
               { label: product.title, path: null },
             ]}
           />
-          <SearchBar />
         </div>
-        <Container
-          fluid
-          className="p-4 Product-Item-Container border mt-2 rounded-4"
+
+        {/* Main product card */}
+        <motion.div
+          className="ip-main-card"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
         >
-          <Row className="g-4">
-            <Col lg={6} className="d-flex flex-column align-items-center">
-              <Image
-                src={product.images?.[0] || product.imageUrl}
+          {/* Left — gallery */}
+          <div className="ip-gallery">
+            <div className="ip-gallery-main">
+              <img
+                src={images[activeImage]}
                 alt={product.title}
-                className="img-fluid rounded mb-3 w-100"
+                className="ip-gallery-img"
               />
-              <div className="d-flex justify-content-center img-Thumbnail-Container">
-                {product.images?.map((image, index) => (
-                  <Image
-                    key={index}
-                    src={image}
-                    alt={`${product.title} - Image ${index + 1}`}
-                    className="mx-1 flex-grow-1"
-                  />
+            </div>
+
+            {images.length > 1 && (
+              <div className="ip-gallery-thumbs">
+                {images.map((img, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    className={`ip-thumb${i === activeImage ? " ip-thumb--active" : ""}`}
+                    onClick={() => setActiveImage(i)}
+                  >
+                    <img src={img} alt={`${product.title} ${i + 1}`} />
+                  </button>
                 ))}
               </div>
+            )}
 
-              <div className="d-flex justify-content-center mt-3 guarantee-badge p-2 w-100 rounded-3 poppins-regular flex-wrap">
-                <div className="p-1">
-                  <p>100% Health guarantee</p>
-                </div>
-                <div className="p-1">
-                  <p>100% Guarantee of pet identification</p>
-                </div>
+            <div className="ip-guarantees">
+              <div className="ip-guarantee">
+                <FaShieldAlt /> 100% Health Guarantee
               </div>
+              <div className="ip-guarantee">
+                <FaCheckCircle /> Verified Identification
+              </div>
+            </div>
 
-              <div className="d-flex w-100 justify-content-start p-3 poppins-semibold align-items-center">
-                <IconContext.Provider
-                  value={{ size: "1.3rem", color: "#002A48" }}
+            <div className="ip-share">
+              <FiShare2 size={16} />
+              <span>Share:</span>
+              <a href="#" aria-label="Facebook"><FaFacebook /></a>
+              <a href="#" aria-label="Twitter"><FaTwitter /></a>
+              <a href="#" aria-label="Instagram"><FaInstagram /></a>
+            </div>
+          </div>
+
+          {/* Right — info */}
+          <div className="ip-info">
+            <h1 className="ip-title">{product.title}</h1>
+            <p className="ip-price">${product.price}</p>
+
+            <div className="ip-specs">
+              {product.specifications &&
+                Object.entries(product.specifications).map(([key, value]) => (
+                  <div key={key} className="ip-spec-row">
+                    <span className="ip-spec-key">{key}</span>
+                    <span className="ip-spec-value">{value}</span>
+                  </div>
+                ))}
+              {product.description && (
+                <div className="ip-spec-row">
+                  <span className="ip-spec-key">Description</span>
+                  <span className="ip-spec-value">{product.description}</span>
+                </div>
+              )}
+            </div>
+
+            <div className="ip-actions">
+              <div className="ip-qty">
+                <button
+                  type="button"
+                  onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                  aria-label="Decrease quantity"
                 >
-                  <FiShare2 className="mx-2" />
-                  <span className="me-2 secondary-color-font">Share:</span>
-                  <FaFacebook className="mx-2" />
-                  <FaTwitter className="mx-2" />
-                  <FaInstagram className="mx-2" />
-                </IconContext.Provider>
-              </div>
-            </Col>
-
-            <Col lg={6}>
-              <h2 className="mb-3 poppins-bold primary-color-font">
-                {product.title}
-              </h2>
-              <h4 className="mb-4 poppins-semibold primary-color-font">
-                $ {product.price}
-              </h4>
-
-              <div className="mb-4 d-flex flex-column item-details-container poppins-medium">
-                {product.specifications &&
-                  Object.entries(product.specifications).map(([key, value]) => (
-                    <p key={key}>
-                      <strong>{key}:</strong> {value}
-                    </p>
-                  ))}
-                <p>
-                  <strong>Additional Information:</strong> {product.description}
-                </p>
-              </div>
-
-              <div className="d-flex align-items-center mb-4 w-100 justify-content-start poppins-regular gap-3">
-                <span className="me-3">
-                  <strong>Quantity</strong>
-                </span>
-                <div className="d-flex align-items-center">
-                  <IconContext.Provider
-                    value={{ size: "2rem", color: "black" }}
-                  >
-                    <LuArrowLeft
-                      onClick={handleDecrement}
-                      style={{ cursor: "pointer" }}
-                    />
-                    <span className="mx-3">{quantity}</span>
-                    <LuArrowLeft
-                      style={{ transform: "rotate(180deg)", cursor: "pointer" }}
-                      onClick={handleIncrement}
-                    />
-                  </IconContext.Provider>
-                </div>
-                <Button
-                  onClick={handleAddToCart}
-                  className="rounded-5 add-to-cart-btn"
+                  <FaMinus size={12} />
+                </button>
+                <span>{quantity}</span>
+                <button
+                  type="button"
+                  onClick={() => setQuantity((q) => q + 1)}
+                  aria-label="Increase quantity"
                 >
-                  Add to Cart
-                </Button>
+                  <FaPlus size={12} />
+                </button>
               </div>
-            </Col>
-          </Row>
 
-          {product.supplierDetails && (
-            <Row className="mt-5 Supplier-Product-Detail-Container rounded-4 border p-2">
-              <Col>
-                <h4 className="secondary-color-font">
-                  Supplier Product Details
-                </h4>
+              <button
+                type="button"
+                className="ip-btn ip-btn--primary ip-btn--cart"
+                onClick={handleAddToCart}
+              >
+                <FaShoppingCart size={15} />
+                Add to Cart
+              </button>
+            </div>
+
+            {product.supplierDetails && (
+              <div className="ip-supplier">
+                <h3>Supplier Details</h3>
                 <p>{product.supplierDetails}</p>
-              </Col>
-            </Row>
-          )}
-        </Container>
+              </div>
+            )}
+          </div>
+        </motion.div>
 
+        {/* Related products */}
         {relatedProducts.length > 0 && (
-          <Row className="related-purchases-container border rounded-4 mt-5 mb-5">
-            <h2 className="primary-color-font p-4">Related Products</h2>
-            <Row className="d-flex flex-wrap justify-content-center mt-3 related-purchases-product mb-5 gap-3">
+          <section className="ip-section">
+            <h2 className="ip-section-title">You may also like</h2>
+            <div className="ip-related-grid">
               {relatedProducts.map((item) => (
                 <ProductCard
-                  key={item._id}
-                  id={item.id}
+                  key={item._id || item.id}
+                  id={item._id || item.id}
                   imageUrl={item.images?.[0] || item.imageUrl}
                   title={item.title}
                   price={item.price}
-                  rating={item.rating}
+                  description={item.description}
                 />
               ))}
-            </Row>
-          </Row>
+            </div>
+          </section>
         )}
 
-        <Container className="productReviewsContainer d-flex flex-column text-center mt-5 mb-5">
-          <h3 className="primary-color-font">Product Reviews</h3>
-          <Row className="productReviewCardsContainer d-flex flex-wrap justify-content-center">
-            {reviews && reviews.length > 0 ? (
-              <ReviewCarousel reviews={reviews} />
-            ) : (
-              <p className="mt-3 primary-color-font fs-5 m-3">
-                No product reviews yet. Be the first to add one!
-              </p>
-            )}
-          </Row>
-          <div className="text-center">
-            <Button
+        {/* Reviews */}
+        <section className="ip-section">
+          <div className="ip-section-header">
+            <h2 className="ip-section-title">Product Reviews</h2>
+            <button
               type="button"
-              className="pl-2 pr-2 rounded-5 review-btn"
-              onClick={() => handleShowReviewModal()}
+              className="ip-btn ip-btn--secondary"
+              onClick={handleOpenReviewModal}
             >
               Write a Review
-            </Button>
+            </button>
           </div>
-        </Container>
-      </Container>
 
-      {/* Review Modal */}
+          {reviews && reviews.length > 0 ? (
+            <ReviewCarousel reviews={reviews} />
+          ) : (
+            <div className="ip-empty-reviews">
+              <p>No reviews yet. Be the first to share your thoughts!</p>
+            </div>
+          )}
+        </section>
+      </div>
+
+      {/* Modals */}
       <ProductReviewFormModal
         showReviewModal={showReviewModal}
-        onClose={() => handleCloseReviewModal()}
+        onClose={() => setShowReviewModal(false)}
         productId={id}
       />
 
       <LoginModal
         show={showLoginModal}
         onHide={() => setShowLoginModal(false)}
-        onSignUpClick={() =>{
-          setShowLoginModal(false);
-          setShowSignUpModal(true);
-        }}
+        showPassword={showPassword}
+        togglePasswordVisibility={() => setShowPassword((p) => !p)}
+        onSignUpClick={() => { setShowLoginModal(false); setShowSignUpModal(true); }}
       />
       <SignUpModal
         show={showSignUpModal}
         onHide={() => setShowSignUpModal(false)}
-        onLoginClick={() => {
-          setShowSignUpModal(false);
-          setShowLoginModal(true);
-        }}
+        showPassword={showPassword}
+        togglePasswordVisibility={() => setShowPassword((p) => !p)}
+        onLoginClick={() => { setShowSignUpModal(false); setShowLoginModal(true); }}
       />
     </>
   );
