@@ -1,0 +1,125 @@
+/* ================================================
+   Product Card V2
+   ================================================ */
+
+.pcv2-card {
+  width: 360px;
+  background: #fff;
+  border-radius: 16px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: transform 0.25s ease;
+}
+
+.pcv2-card:hover {
+  transform: translateY(-4px);
+}
+
+/* ── Image ── */
+
+.pcv2-img-wrap {
+  padding: 10px 10px 0;
+}
+
+.pcv2-img {
+  width: 100%;
+  height: 260px;
+  object-fit: cover;
+  border-radius: 10px;
+  display: block;
+  background: #e5e5e5;
+  transition: transform 0.35s ease;
+}
+
+.pcv2-card:hover .pcv2-img {
+  transform: scale(1.03);
+}
+
+/* ── Info ── */
+
+.pcv2-info {
+  padding: 0.8rem 0.9rem 0.9rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.28rem;
+}
+
+.pcv2-name {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 1rem;
+  color: #111;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pcv2-desc {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: #999;
+  margin: 0;
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ── Bottom row ── */
+
+.pcv2-bottom-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+}
+
+.pcv2-price {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: #c0392b;
+}
+
+/* Cart icon — no background, green, turns gold on hover */
+.pcv2-cart-btn {
+  background: transparent;
+  border: none;
+  color: var(--color-primary-forest, #001c10);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.22s ease, transform 0.2s ease;
+}
+
+.pcv2-cart-btn:hover {
+  color: var(--color-accent-gold, #d99a2b);
+  transform: scale(1.15);
+}
+
+/* ── Responsive ── */
+
+@media (max-width: 991px) {
+  .pcv2-card {
+    width: 300px;
+  }
+
+  .pcv2-img {
+    height: 220px;
+  }
+}
+
+@media (max-width: 575px) {
+  .pcv2-card {
+    width: 100%;
+    max-width: 420px;
+  }
+
+  .pcv2-img {
+    height: 200px;
+  }
+}

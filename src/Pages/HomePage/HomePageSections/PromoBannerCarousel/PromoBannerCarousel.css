@@ -1,0 +1,129 @@
+/* ================================================
+   Promo Banner Carousel
+   ================================================ */
+
+.pbc-root {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  background: #f0ebe5;
+  /* height driven by image aspect ratio */
+}
+
+/* ── Track clips the sliding panels ── */
+
+.pbc-track {
+  position: relative;
+  width: 100%;
+  height: 340px;
+  overflow: hidden;
+}
+
+.pbc-slide {
+  position: absolute;
+  inset: 0;
+}
+
+/* ── Responsive images — only one visible at a time ── */
+
+.pbc-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: none;
+}
+
+/* Desktop ≥ 992px */
+@media (min-width: 992px) {
+  .pbc-img--desktop { display: block; }
+}
+
+/* Tablet 576px – 991px */
+@media (min-width: 576px) and (max-width: 991px) {
+  .pbc-track { height: 260px; }
+  .pbc-img--tablet { display: block; }
+}
+
+/* Mobile < 576px */
+@media (max-width: 575px) {
+  .pbc-track { height: 190px; }
+  .pbc-img--mobile { display: block; }
+}
+
+/* ── Arrows ── */
+
+.pbc-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(6px);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 1.6rem;
+  line-height: 1;
+  color: #222;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, transform 0.2s;
+  opacity: 0;
+}
+
+.pbc-root:hover .pbc-arrow {
+  opacity: 1;
+}
+
+.pbc-arrow:hover {
+  background: rgba(255, 255, 255, 0.95);
+  transform: translateY(-50%) scale(1.08);
+}
+
+.pbc-arrow--prev { left: 1rem; }
+.pbc-arrow--next { right: 1rem; }
+
+/* ── Dots ── */
+
+.pbc-dots {
+  position: absolute;
+  bottom: 0.75rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  z-index: 10;
+}
+
+.pbc-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.55);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.2s, transform 0.2s, width 0.3s;
+}
+
+.pbc-dot--active {
+  background: #fff;
+  width: 22px;
+  border-radius: 4px;
+}
+
+/* ── Progress bar ── */
+
+.pbc-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.7);
+  transform-origin: left;
+  z-index: 10;
+}
