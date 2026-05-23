@@ -1,190 +1,261 @@
+/* ================================================
+   Services Section
+   Asymmetric 3-col grid with hover overlay cards
+   ================================================ */
+
+.services-section {
+  background-color: var(--color-bg-cream);
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+  overflow-x: hidden;
+}
+
+/* ── Section Header ── */
+
 .services-header {
-    width: 100%;
-    text-align: center;
-    padding: 1.5rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 1rem;
+  text-align: center;
+  margin-bottom: 2.8rem;
+  padding: 0 1rem;
 }
 
-.services-header h1 {
-    color: var(--secondary-color);
+.services-header-deco {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 0.55rem;
 }
 
-.services-header img {
-    object-fit: cover;
-    max-width: 1.5rem;
+.deco-line {
+  display: block;
+  width: 72px;
+  height: 1.5px;
+  background-color: var(--color-accent-gold);
+  border-radius: 2px;
+  opacity: 0.7;
 }
 
-.ServicesContainer {
-    padding: 1.5rem;
-    display: grid;
-    grid-template-columns: 33% 33% 33%;
-    grid-template-rows: 50% 50%;
-    gap: 1rem;
-    justify-content: center;
-    max-height: 90vh;
-    max-width: 90vw;
-    margin: 0 auto;
+.deco-paw {
+  color: var(--color-accent-gold);
+  font-size: 1.1rem;
 }
 
-.ServicesContainer>div>img {
-    border-radius: 2.5rem;
-    opacity: 0.9;
+.services-title {
+  font-family: var(--font-display) !important;
+  font-size: 3.5rem;
+  color: var(--color-accent-gold);
+  letter-spacing: 0.1em;
+  margin: 0 0 0.4rem;
+  line-height: 1;
 }
 
-.groomingCard {
-    grid-column: 1/2;
-    grid-row: 1 /2;
+.services-subtitle {
+  font-family: var(--font-body);
+  font-size: 1.2rem;
+  color: var(--color-text-muted);
+  margin: 0;
+  line-height: 1.6;
 }
 
-
-.veterinaryCard {
-    grid-column: 2 / 3;
-    grid-row: 1 / 2;
+.services-subtitle-script {
+  font-family: var(--font-script) !important;
+  font-size: 2.2rem;
+  color: var(--color-text-default);
+  vertical-align: middle;
 }
 
-.boardingCard {
-    grid-column: 1 / 2;
-    grid-row: 2 / 3;
+/* ── Grid Layout ── */
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: 310px 310px;
+  gap: 1rem;
+  width: min(1200px, 100%);
+  margin: 0 auto;
+  padding: 0 2rem;
+  box-sizing: border-box;
 }
 
-
-.trainingCard {
-    grid-column: 2 / 3;
-    grid-row: 2 / 3;
+.sc-grid-item {
+  min-height: 0;
+  min-width: 0;
+  height: 100%;
 }
 
-.adoptionCard {
-    grid-column: 3 / 4;
-    grid-row: 1 / 3;
+/* Explicit placement */
+.sc-vet      { grid-column: 1; grid-row: 1; }
+.sc-grooming { grid-column: 2; grid-row: 1; }
+.sc-adoption { grid-column: 3; grid-row: 1 / 3; }
+.sc-boarding { grid-column: 1; grid-row: 2; }
+.sc-training { grid-column: 2; grid-row: 2; }
+
+/* ── Service Card ── */
+
+.service-card {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 14px;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0, 28, 16, 0.12);
+  display: block;
 }
 
-.image-overlay-container {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    border-radius: 2.5rem;
+.sc-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  display: block;
 }
 
-.overlay {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-    border-radius: 2.5rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
-    padding: 2.5rem;
+/* Shift adoption crop right so the puppy lands center-frame */
+.sc-adoption .sc-image {
+  object-position: 72% center;
 }
 
-.image-overlay-container:hover .overlay {
-    height: 100%;
-    padding: 2.5rem;
-    display: flex;
-    flex-direction: column;
+.sc-bottom-gradient {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 65%;
+  background: linear-gradient(
+    to top right,
+    rgba(0, 28, 16, 0.92) 0%,
+    rgba(0, 28, 16, 0.55) 38%,
+    transparent 68%
+  );
+  pointer-events: none;
+  z-index: 1;
 }
 
-.mobile-popup-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.7);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    padding: 1rem;
+.sc-label-row {
+  position: absolute;
+  bottom: 1.1rem;
+  left: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.4rem;
+  z-index: 2;
 }
 
-.mobile-popup-content {
-    position: relative;
-    width: 90%;
-    max-width: 400px;
-    padding: 2rem;
-    border-radius: 1rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    text-align: center;
+.sc-icon-badge {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--color-accent-gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
-.close-button {
-    position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
-    background: none;
-    border: none;
-    color: white;
-    font-size: 2rem;
-    cursor: pointer;
-    padding: 0.5rem;
-    line-height: 1;
+.sc-title {
+  font-family: var(--font-display) !important;
+  font-size: 1.95rem;
+  color: #fff;
+  letter-spacing: 0.06em;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
+  line-height: 1.05;
 }
 
-.view-more-button {
-    background: rgba(255, 255, 255, 0.2);
-    border: 2px solid white;
-    padding: 0.75rem 1.5rem;
-    border-radius: 2rem;
-    margin-top: 1rem;
-    cursor: pointer;
-    color: white !important;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
+/* ── Hover overlay ── */
+
+.sc-hover-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 28, 16, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
 }
 
-.view-more-button:hover {
-    color: white !important;
-    text-decoration: none;
+.sc-view-btn {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-primary-forest);
+  background-color: var(--color-accent-gold);
+  border: none;
+  border-radius: 50px;
+  padding: 0.7rem 2rem;
+  cursor: pointer;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
 }
 
-/* Mobile Responsive Styles */
-@media screen and (max-width: 768px) {
-    .ServicesContainer {
-        gap: 0.5rem;
-        padding: 0.75rem;
-    }
+/* ── Responsive ── */
 
-    .ServicesContainer>div>img {
-        border-radius: 1rem;
-    }
+@media (max-width: 1199px) {
+  .services-grid {
+    grid-template-rows: 270px 270px;
+  }
 
-    .overlay {
-        border-radius: 1rem;
-        padding: 1.5rem;
-        gap: 0.5rem;
-    }
+  .sc-title {
+    font-size: 1.7rem;
+  }
+}
 
-    .image-overlay-container {
-        border-radius: 1rem;
-    }
+@media (max-width: 991px) {
+  .services-grid {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: 250px 250px 340px;
+    padding: 0 1.5rem;
+  }
 
-    .overlay h3 {
-        font-size: 1.5rem !important;
-    }
+  .sc-vet      { grid-column: 1; grid-row: 1; }
+  .sc-grooming { grid-column: 2; grid-row: 1; }
+  .sc-boarding { grid-column: 1; grid-row: 2; }
+  .sc-training { grid-column: 2; grid-row: 2; }
+  .sc-adoption { grid-column: 1 / 3; grid-row: 3; }
+}
 
-    .overlay p {
-        font-size: 0.875rem !important;
-    }
+@media (max-width: 575px) {
+  .services-section {
+    padding-top: 2.5rem;
+    padding-bottom: 2.5rem;
+  }
 
-    .mobile-popup-content h3 {
-        font-size: 2rem;
-        margin-bottom: 0.5rem;
-    }
+  .services-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(5, 240px);
+    gap: 0.85rem;
+    padding: 0 1rem;
+  }
 
-    .mobile-popup-content p {
-        font-size: 1rem;
-        line-height: 1.5;
-    }
+  .sc-vet,
+  .sc-grooming,
+  .sc-adoption,
+  .sc-boarding,
+  .sc-training {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  .sc-vet      { order: 1; }
+  .sc-grooming { order: 2; }
+  .sc-boarding { order: 3; }
+  .sc-training { order: 4; }
+  .sc-adoption { order: 5; }
+
+  .services-title {
+    font-size: 2.6rem;
+  }
+
+  .services-subtitle-script {
+    font-size: 1.55rem;
+  }
+
+  .sc-title {
+    font-size: 1.5rem;
+  }
 }
