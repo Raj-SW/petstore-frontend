@@ -1,0 +1,259 @@
+/* ================================================
+   Contact Section
+   ================================================ */
+
+.cs-section {
+  width: 100%;
+  background: #fff;
+  padding: 3rem 5%;
+  box-sizing: border-box;
+}
+
+.cs-container {
+  max-width: 900px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: center;
+}
+
+/* ════════════════════════════════
+   Left — form
+════════════════════════════════ */
+
+.cs-left {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.cs-heading {
+  font-family: var(--font-body);
+  font-weight: 800;
+  font-size: 1.7rem;
+  color: #111;
+  line-height: 1.25;
+  margin: 0;
+}
+
+.cs-subheading {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: #777;
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* ── Form ── */
+
+.cs-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  margin-top: 0.25rem;
+}
+
+.cs-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.cs-label {
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #222;
+}
+
+.cs-input {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  color: #333;
+  background: #f5f5f5;
+  border: 1.5px solid transparent;
+  border-radius: 10px;
+  padding: 0.65rem 0.9rem;
+  outline: none;
+  transition: border-color 0.2s;
+  resize: none;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.cs-input::placeholder {
+  color: #aaa;
+}
+
+.cs-input:focus {
+  border-color: #f5a623;
+  background: #fff;
+}
+
+.cs-textarea {
+  height: 100px;
+}
+
+.cs-submit {
+  width: 100%;
+  background: #f5a623;
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  padding: 0.75rem;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 0.25rem;
+  transition: opacity 0.2s, transform 0.15s;
+}
+
+.cs-submit:hover {
+  opacity: 0.88;
+  transform: translateY(-1px);
+}
+
+.cs-submit:active {
+  transform: translateY(0);
+}
+
+/* ════════════════════════════════
+   Right — promo card
+════════════════════════════════ */
+
+.cs-right {
+  height: 100%;
+  min-height: 360px;
+}
+
+.cs-promo-card {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 360px;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.cs-promo-slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Badge */
+.cs-promo-badge {
+  position: absolute;
+  top: 1.2rem;
+  right: 1.2rem;
+  z-index: 3;
+  background: #fff;
+  color: #111;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 600;
+  border-radius: 50px;
+  padding: 0.38rem 1rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  white-space: nowrap;
+}
+
+/* Image placeholder fills the card */
+.cs-promo-img {
+  position: absolute;
+  inset: 0;
+  background: #c8c8c8;
+  z-index: 1;
+}
+
+/* Dark gradient overlay at bottom */
+.cs-promo-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  background: linear-gradient(to top, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.3) 60%, transparent 100%);
+  padding: 2rem 1.8rem 1.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.cs-promo-title {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: #fff;
+  margin: 0;
+  line-height: 1.35;
+}
+
+.cs-promo-desc {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0;
+  line-height: 1.55;
+}
+
+/* Dots */
+.cs-promo-dots {
+  display: flex;
+  gap: 6px;
+  margin-top: 0.75rem;
+}
+
+.cs-promo-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.6);
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.cs-promo-dot--active {
+  background: #fff;
+  border-color: #fff;
+}
+
+/* ── Responsive ── */
+
+@media (max-width: 900px) {
+  .cs-container {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  .cs-right {
+    min-height: 380px;
+  }
+
+  .cs-promo-card {
+    min-height: 380px;
+  }
+}
+
+@media (max-width: 575px) {
+  .cs-section {
+    padding: 4rem 1.2rem;
+  }
+
+  .cs-heading {
+    font-size: 1.8rem;
+  }
+
+  .cs-right {
+    min-height: 320px;
+  }
+
+  .cs-promo-card {
+    min-height: 320px;
+  }
+}
