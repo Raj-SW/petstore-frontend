@@ -1,23 +1,25 @@
+// frontend/src/Services/api/authApi.js
 import { api } from "../../core/api/apiClient";
 
 const authApi = {
-  // Authentication endpoints
+  // Returns { success, data: { user, accessToken } }
   login: async (email, password) => {
     const response = await api.post("/auth/login", { email, password });
     return response.data;
   },
 
+  // Returns { success, message } — user must login separately after signup
   signup: async (userData) => {
     const response = await api.post("/auth/signup", userData);
     return response.data;
   },
 
+  // No-op on server — token is cleared client-side in AuthContext
   logout: async () => {
-    const response = await api.post("/auth/logout", {});
-    return response.data;
+    return { success: true };
   },
 
-  // Get current user
+  // Get current user (used as background sync, not for initial auth check)
   getCurrentUser: async () => {
     const response = await api.get("/users/me");
     return response.data;
@@ -30,10 +32,7 @@ const authApi = {
   },
 
   resetPassword: async (token, password) => {
-    const response = await api.post("/auth/reset-password", {
-      token,
-      password,
-    });
+    const response = await api.post("/auth/reset-password", { token, password });
     return response.data;
   },
 
@@ -43,19 +42,19 @@ const authApi = {
     return response.data;
   },
 
-  // User profile management
+  // Profile management
   getProfile: async () => {
     const response = await api.get("/users/me");
     return response.data;
   },
 
   updateProfile: async (profileData) => {
-    const response = await api.put("/users/profile", profileData);
+    const response = await api.patch("/users/update-profile", profileData);
     return response.data;
   },
 
   changePassword: async (currentPassword, newPassword) => {
-    const response = await api.post("/users/change-password", {
+    const response = await api.patch("/users/change-password", {
       currentPassword,
       newPassword,
     });
@@ -63,7 +62,7 @@ const authApi = {
   },
 
   deleteAccount: async () => {
-    const response = await api.delete("/users/account");
+    const response = await api.delete("/users/delete-account");
     return response.data;
   },
 };
