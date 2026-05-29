@@ -1,40 +1,42 @@
+// frontend/src/core/api/apiClient.js
 import axios from "axios";
 
 const API_URL = import.meta.env.DEV
   ? "/api"
   : import.meta.env.VITE_NODE_API_URL || "http://localhost:5000/api";
 
-// Create axios instance with default config
 const apiClient = axios.create({
   baseURL: API_URL,
-  withCredentials: true, // Always send cookies
   headers: {
     "Content-Type": "application/json",
   },
-  timeout: 30000, // 30 seconds timeout
+  timeout: 30000,
 });
 
-// Request interceptor
+// Attach JWT token to every request
 apiClient.interceptors.request.use(
-  (config) => config,
+  (config) => {
+    const token = localStorage.getItem("vp_token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
   (error) => Promise.reject(error)
 );
 
-// Response interceptor
+// Handle auth errors globally
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
-    // Handle common error scenarios
     if (error.response) {
       const { status, data } = error.response;
 
-      // Handle authentication errors
       if (status === 401) {
-        // Redirect to login or handle session expiry
+        // Token expired or invalid — trigger logout across the app
         window.dispatchEvent(new CustomEvent("auth:logout"));
       }
 
-      // Return a consistent error format
       return Promise.reject({
         status,
         message: data?.message || data?.error || "An error occurred",
@@ -43,7 +45,6 @@ apiClient.interceptors.response.use(
       });
     }
 
-    // Handle network errors
     if (error.request) {
       return Promise.reject({
         status: 0,
@@ -52,7 +53,6 @@ apiClient.interceptors.response.use(
       });
     }
 
-    // Handle other errors
     return Promise.reject({
       status: -1,
       message: error.message || "An unexpected error occurred",
@@ -63,7 +63,6 @@ apiClient.interceptors.response.use(
 
 export default apiClient;
 
-// Helper methods for common HTTP operations
 export const api = {
   get: (url, config) => apiClient.get(url, config),
   post: (url, data, config) => apiClient.post(url, data, config),
