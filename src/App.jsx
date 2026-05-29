@@ -15,7 +15,9 @@ function App() {
       <CartContext>
         <ToastProvider>
           <NavigationBar />
-          <Outlet />
+          <main className="app-main">
+            <Outlet />
+          </main>
           <Footer />
         </ToastProvider>
       </CartContext>

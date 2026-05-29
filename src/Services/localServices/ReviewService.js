@@ -8,7 +8,7 @@ const ReviewService = {
       return response.data;
     } catch (error) {
       console.error("Error fetching product reviews:", error);
-      throw error;
+      return []; // non-fatal — product page must still render
     }
   },
 
@@ -16,7 +16,6 @@ const ReviewService = {
   async addReview(review) {
     try {
       const response = await api.post("/reviews", review);
-      console.log("response:", response);
       return response.data;
     } catch (error) {
       console.error("Error adding review:", error);

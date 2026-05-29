@@ -21,6 +21,12 @@ import { USER_ROLES } from "./constants/userConstants";
 import AdminLayout from "./Components/Admin/AdminLayout";
 import AdminDashboard from "./Pages/Admin/Dashboard/AdminDashboard";
 import AdminProducts from "./Pages/Admin/Products/AdminProducts";
+import AdminProductForm from "./Pages/Admin/Products/AdminProductForm";
+import AdminUsers from "./Pages/Admin/Users/AdminUsers";
+import AdminOrders from "./Pages/Admin/Orders/AdminOrders";
+import AdminAppointments from "./Pages/Admin/Appointments/AdminAppointments";
+import AdminAnalytics from "./Pages/Admin/Analytics/AdminAnalytics";
+import AdminSettings from "./Pages/Admin/Settings/AdminSettings";
 
 const router = createBrowserRouter([
   {
@@ -95,15 +101,15 @@ const router = createBrowserRouter([
       },
       {
         path: "products/new",
-        element: <div>Product Form - To be implemented</div>,
+        element: <AdminProductForm />,
       },
       {
         path: "products/edit/:id",
-        element: <div>Edit Product Form - To be implemented</div>,
+        element: <AdminProductForm />,
       },
       {
         path: "users",
-        element: <div>Users Management - To be implemented</div>,
+        element: <AdminUsers />,
       },
       {
         path: "professionals",
@@ -111,19 +117,19 @@ const router = createBrowserRouter([
       },
       {
         path: "orders",
-        element: <div>Orders Management - To be implemented</div>,
+        element: <AdminOrders />,
       },
       {
         path: "appointments",
-        element: <div>Appointments Management - To be implemented</div>,
+        element: <AdminAppointments />,
       },
       {
         path: "analytics",
-        element: <div>Analytics - To be implemented</div>,
+        element: <AdminAnalytics />,
       },
       {
         path: "settings",
-        element: <div>Settings - To be implemented</div>,
+        element: <AdminSettings />,
       },
     ],
   },

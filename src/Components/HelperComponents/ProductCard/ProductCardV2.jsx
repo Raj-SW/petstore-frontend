@@ -1,22 +1,22 @@
 import { useNavigate } from "react-router-dom";
 import { useCart } from "react-use-cart";
 import { FaShoppingCart } from "react-icons/fa";
-import { useGlobalToast } from "@/context/GlobalToastContext";
+import { useToast } from "@/context/ToastContext";
 import "./ProductCardV2.css";
 
 const ProductCardV2 = ({ id, imageUrl, title, price, description }) => {
   const navigate = useNavigate();
   const { addItem } = useCart();
-  const { showToast } = useGlobalToast();
+  const { showCartToast } = useToast();
 
   const handleAddToCart = (e) => {
     e.stopPropagation();
     addItem({ id, name: title, price, image: imageUrl });
-    showToast(`${title} added to cart!`, "success");
+    showCartToast("add", title);
   };
 
   return (
-    <div className="pcv2-card" onClick={() => navigate(`/petshop/${id}`)}>
+    <div className="pcv2-card" onClick={() => navigate(`/product/${id}`)}>
       <div className="pcv2-img-wrap">
         <img src={imageUrl} alt={title} className="pcv2-img" />
       </div>

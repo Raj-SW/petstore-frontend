@@ -1,6 +1,16 @@
 import { useState, useRef } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+import vetWithDogImg from "../../../assets/StatsSection/vet-with-dog.jpg";
+import slide1a from "../../../assets/StatsSection/slide-1-a.jpg";
+import slide1b from "../../../assets/StatsSection/slide-1-b.jpg";
+import slide1c from "../../../assets/StatsSection/slide-1-c.jpg";
+import slide2a from "../../../assets/StatsSection/slide-2-a.jpg";
+import slide2b from "../../../assets/StatsSection/slide-2-b.jpg";
+import slide2c from "../../../assets/StatsSection/slide-2-c.png";
+import slide3a from "../../../assets/StatsSection/slide-3-a.jpg";
+import slide3b from "../../../assets/StatsSection/slide-3-b.jpg";
+import slide3c from "../../../assets/StatsSection/slide-3-c.png";
 import "./StatsSection.css";
 
 const STATS = [
@@ -37,6 +47,15 @@ const TESTIMONIALS = [
   },
 ];
 
+// Per-slide image sets: [tall-left, top-right, bottom-right]
+const SLIDE_IMAGES = [
+  [slide1a, slide1b, slide1c], // slide 1
+  [slide2a, slide2b, slide2c], // slide 2
+  [slide3a, slide3b, slide3c], // slide 3 (a reused for bottom-right)
+  null,                         // slide 4 – placeholder
+  null,                         // slide 5 – placeholder
+];
+
 const slideVariants = {
   enter: (d) => ({ x: d > 0 ? 80 : -80, opacity: 0 }),
   center: { x: 0, opacity: 1 },
@@ -70,7 +89,9 @@ const StatsSection = () => {
             animate={aboutInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
           >
-            <div className="ss-placeholder--about" />
+            <div className="ss-about-img-clip">
+              <img src={vetWithDogImg} alt="Vet with dog" className="ss-about-img" />
+            </div>
           </motion.div>
 
           <motion.div
@@ -175,9 +196,19 @@ const StatsSection = () => {
                   transition={{ duration: 0.38, ease: [0.4, 0, 0.2, 1] }}
                   className="ss-imgs-grid"
                 >
-                  <div className="ss-img-placeholder ss-img-placeholder--tall" />
-                  <div className="ss-img-placeholder" />
-                  <div className="ss-img-placeholder" />
+                  {SLIDE_IMAGES[activeIdx] ? (
+                    <>
+                      <img src={SLIDE_IMAGES[activeIdx][0]} alt="" className="ss-slide-img ss-slide-img--tall" />
+                      <img src={SLIDE_IMAGES[activeIdx][1]} alt="" className="ss-slide-img" />
+                      <img src={SLIDE_IMAGES[activeIdx][2]} alt="" className="ss-slide-img" />
+                    </>
+                  ) : (
+                    <>
+                      <div className="ss-img-placeholder ss-img-placeholder--tall" />
+                      <div className="ss-img-placeholder" />
+                      <div className="ss-img-placeholder" />
+                    </>
+                  )}
                 </motion.div>
               </AnimatePresence>
             </motion.div>
