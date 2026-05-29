@@ -79,6 +79,7 @@ export const AuthProvider = ({ children }) => {
 
       if (response?.success && response?.data) {
         const { user: userData, accessToken } = response.data;
+        if (!accessToken) throw new Error("No access token in server response");
         setUser(userData);
         localStorage.setItem("vp_token", accessToken);
         localStorage.setItem("vp_user", JSON.stringify(userData));
