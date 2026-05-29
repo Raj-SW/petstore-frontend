@@ -4,24 +4,16 @@ import "./styles/GlobalCustomStyle/GlobalCustomStyle.css";
 import { Outlet } from "react-router-dom";
 import NavigationBar from "./Components/NavigationBar/NavigationBar";
 import Footer from "./Components/Footer/Footer";
-import { AuthProvider } from "./context/AuthContext";
-import CartContext from "./context/CartContext";
-import { ToastProvider } from "./context/ToastContext";
-import "./context/ToastContext.css";
 
 function App() {
   return (
-    <AuthProvider>
-      <CartContext>
-        <ToastProvider>
-          <NavigationBar />
-          <main className="app-main">
-            <Outlet />
-          </main>
-          <Footer />
-        </ToastProvider>
-      </CartContext>
-    </AuthProvider>
+    <>
+      <NavigationBar />
+      <main className="app-main">
+        <Outlet />
+      </main>
+      <Footer />
+    </>
   );
 }
 
