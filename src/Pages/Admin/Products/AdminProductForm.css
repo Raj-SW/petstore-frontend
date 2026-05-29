@@ -1,0 +1,364 @@
+/* AdminProductForm.css */
+
+/* Back button */
+.admin-pf-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  padding: 0;
+  transition: color 0.2s;
+}
+
+.admin-pf-back-btn:hover {
+  color: var(--color-primary-forest);
+}
+
+.admin-pf-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+/* Two-column form layout */
+.admin-pf-grid {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.admin-pf-col {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Section titles inside cards */
+.admin-pf-section-title {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text-default);
+  margin: 0 0 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(0, 28, 16, 0.07);
+}
+
+/* Three-col row for category / price / stock */
+.admin-pf-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0 1rem;
+}
+
+/* Required asterisk */
+.admin-required {
+  color: #c62828;
+  margin-left: 2px;
+}
+
+/* Shared field / input / label (mirrors AdminSettings) */
+.admin-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 1.2rem;
+}
+
+.admin-label {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--color-text-default);
+}
+
+.admin-input,
+.admin-select,
+.admin-textarea {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  padding: 0.65rem 0.9rem;
+  border: 1.5px solid #ddd;
+  border-radius: 10px;
+  outline: none;
+  transition: border-color 0.2s;
+  background: #fff;
+  color: var(--color-text-default);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.admin-input:focus,
+.admin-select:focus,
+.admin-textarea:focus {
+  border-color: var(--color-accent-gold);
+}
+
+.admin-textarea {
+  resize: vertical;
+  min-height: 110px;
+}
+
+/* Image URL list */
+.image-url-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.image-url-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.image-url-input {
+  flex: 1;
+  margin-bottom: 0 !important;
+}
+
+.image-url-remove {
+  background: #fee2e2;
+  color: #dc2626;
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 0.7rem;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+
+.image-url-remove:hover {
+  background: #fca5a5;
+}
+
+.image-url-add {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  background: transparent;
+  border: 1.5px dashed var(--color-accent-gold);
+  color: var(--color-accent-gold);
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 0.25rem;
+  width: 100%;
+  transition: background 0.2s, color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+}
+
+.image-url-add:hover {
+  background: rgba(217, 154, 43, 0.08);
+}
+
+/* Image preview */
+.admin-pf-img-preview {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1.5px solid rgba(0, 28, 16, 0.08);
+  background: var(--color-bg-warm-ivory);
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.admin-pf-img-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 0.5rem;
+}
+
+.admin-pf-img-preview-label {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 700;
+  background: rgba(0, 28, 16, 0.7);
+  color: #fff;
+  padding: 0.2rem 0.55rem;
+  border-radius: 20px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* Toggle rows (visibility) */
+.admin-pf-toggle-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid rgba(0, 28, 16, 0.06);
+}
+
+.admin-pf-toggle-row:last-of-type {
+  border-bottom: none;
+}
+
+.admin-notification-label {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-text-default);
+  margin: 0 0 0.2rem;
+}
+
+.admin-notification-desc {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+/* Toggle switch */
+.admin-toggle {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.toggle-input {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 44px;
+  height: 24px;
+  background: #ddd;
+  border-radius: 50px;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+
+.toggle-input:checked {
+  background: var(--color-primary-forest);
+}
+
+.toggle-input::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  background: #fff;
+  border-radius: 50%;
+  transition: left 0.2s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-input:checked::after {
+  left: 22px;
+}
+
+/* Submit row */
+.admin-pf-submit-row {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(0, 28, 16, 0.07);
+}
+
+/* Buttons */
+.admin-save-btn {
+  font-family: var(--font-body);
+  font-weight: 600;
+  padding: 0.7rem 2rem;
+  background: var(--color-primary-forest);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  font-size: 0.95rem;
+}
+
+.admin-save-btn:hover:not(:disabled) {
+  background: var(--color-accent-gold);
+  color: var(--color-primary-forest);
+}
+
+.admin-save-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.admin-pf-submit-btn {
+  min-width: 140px;
+}
+
+.admin-outline-btn {
+  font-family: var(--font-body);
+  font-weight: 600;
+  padding: 0.7rem 1.5rem;
+  background: transparent;
+  color: var(--color-text-default);
+  border: 1.5px solid #ddd;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  font-size: 0.95rem;
+}
+
+.admin-outline-btn:hover:not(:disabled) {
+  border-color: var(--color-primary-forest);
+  background: rgba(0, 28, 16, 0.04);
+}
+
+.admin-outline-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Loading state */
+.admin-pf-loading {
+  text-align: center;
+  padding: 4rem 2rem;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--color-text-muted);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .admin-pf-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .admin-pf-row {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-pf-submit-row {
+    flex-direction: column-reverse;
+  }
+
+  .admin-save-btn,
+  .admin-outline-btn {
+    width: 100%;
+    text-align: center;
+  }
+}

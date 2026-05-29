@@ -144,9 +144,9 @@ const ServicesSection = () => {
       </motion.div>
 
       <div className="services-grid">
-        {SERVICES.map((s) => (
-          <div key={s.key} className={`sc-grid-item ${s.gridClass}`}>
-            <ServiceCard {...s} />
+        {SERVICES.map(({ key, ...serviceProps }) => (
+          <div key={key} className={`sc-grid-item ${serviceProps.gridClass}`}>
+            <ServiceCard {...serviceProps} />
           </div>
         ))}
       </div>

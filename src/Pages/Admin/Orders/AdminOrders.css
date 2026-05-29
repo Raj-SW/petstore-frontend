@@ -1,0 +1,319 @@
+/* ── Admin Orders Page ── */
+
+/* Stat row */
+.admin-stats-row {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.admin-stat-pill {
+  background: var(--color-bg-cream);
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  box-shadow: 0 1px 3px rgba(0, 28, 16, 0.08);
+  min-width: 120px;
+}
+
+.admin-stat-pill-val {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 1.6rem;
+  color: var(--color-primary-forest);
+}
+
+.admin-stat-pill-lbl {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+/* Table cell styles */
+.admin-order-id {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: var(--color-primary-forest);
+  letter-spacing: 0.04em;
+}
+
+.admin-order-customer {
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  color: var(--color-text-default);
+}
+
+.admin-order-items-count {
+  font-family: var(--font-body);
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.admin-order-total {
+  font-family: var(--font-body);
+  font-weight: 700;
+  color: var(--color-text-default);
+}
+
+/* Status badge */
+.admin-order-status {
+  display: inline-block;
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  letter-spacing: 0.02em;
+}
+
+.admin-order-status--pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.admin-order-status--processing {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.admin-order-status--shipped {
+  background: #ede9fe;
+  color: #6d28d9;
+}
+
+.admin-order-status--delivered {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.admin-order-status--cancelled {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* Action row */
+.admin-order-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.admin-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s, opacity 0.18s;
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.35rem 0.75rem;
+  flex-shrink: 0;
+}
+
+.admin-action-btn--view {
+  background: rgba(0, 28, 16, 0.08);
+  color: var(--color-primary-forest);
+}
+
+.admin-action-btn--view:hover {
+  background: rgba(0, 28, 16, 0.15);
+}
+
+/* Status select */
+.admin-status-select {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: var(--color-text-default);
+  background: var(--color-bg-warm-ivory);
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 0.3rem 0.5rem;
+  cursor: pointer;
+  transition: border-color 0.18s;
+  max-width: 130px;
+}
+
+.admin-status-select:focus {
+  outline: none;
+  border-color: var(--color-accent-gold);
+}
+
+.admin-status-select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Drawer backdrop */
+.admin-drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  z-index: 8000;
+}
+
+/* Slide-in drawer */
+.admin-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 420px;
+  max-width: 95vw;
+  background: var(--color-bg-cream);
+  z-index: 8001;
+  display: flex;
+  flex-direction: column;
+  box-shadow: -8px 0 40px rgba(0, 28, 16, 0.16);
+}
+
+.admin-drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 1.75rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.admin-drawer-title {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: var(--color-text-default);
+  margin: 0;
+}
+
+.admin-drawer-close {
+  background: #f3f4f6;
+  border: none;
+  border-radius: 8px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--color-text-muted);
+  transition: background 0.18s;
+}
+
+.admin-drawer-close:hover {
+  background: #e5e7eb;
+  color: var(--color-text-default);
+}
+
+.admin-drawer-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem 1.75rem;
+}
+
+.admin-drawer-section {
+  margin-bottom: 1.25rem;
+}
+
+.admin-drawer-label {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-muted);
+  margin: 0 0 0.3rem;
+}
+
+.admin-drawer-value {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--color-text-default);
+  margin: 0;
+}
+
+.admin-drawer-value--bold {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.admin-drawer-divider {
+  border: none;
+  border-top: 1px solid #e5e7eb;
+  margin: 1.25rem 0;
+}
+
+/* Items list */
+.admin-drawer-items {
+  list-style: none;
+  padding: 0;
+  margin: 0.75rem 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.admin-drawer-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--color-bg-warm-ivory);
+  border-radius: 10px;
+  padding: 0.65rem 0.9rem;
+}
+
+.admin-drawer-item-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.admin-drawer-item-name {
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text-default);
+}
+
+.admin-drawer-item-qty {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+.admin-drawer-item-price {
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--color-primary-forest);
+}
+
+.admin-drawer-empty {
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  margin: 0.75rem 0 0;
+}
+
+@media (max-width: 768px) {
+  .admin-stats-row {
+    gap: 0.75rem;
+  }
+
+  .admin-stat-pill {
+    min-width: 100px;
+    padding: 0.75rem 1rem;
+  }
+
+  .admin-drawer {
+    width: 100vw;
+  }
+
+  .admin-order-actions {
+    flex-wrap: wrap;
+  }
+}

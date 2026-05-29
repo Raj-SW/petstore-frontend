@@ -16,38 +16,17 @@ const apiClient = axios.create({
 
 // Request interceptor
 apiClient.interceptors.request.use(
-  (config) => {
-    // Log requests in development
-    if (import.meta.env.DEV) {
-      console.log(
-        `[API Request] ${config.method?.toUpperCase()} ${config.url}`
-      );
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (config) => config,
+  (error) => Promise.reject(error)
 );
 
 // Response interceptor
 apiClient.interceptors.response.use(
-  (response) => {
-    // Log responses in development
-    if (import.meta.env.DEV) {
-      console.log(`[API Response] ${response.status} ${response.config.url}`);
-    }
-    return response;
-  },
+  (response) => response,
   (error) => {
     // Handle common error scenarios
     if (error.response) {
       const { status, data } = error.response;
-
-      // Log errors in development
-      if (import.meta.env.DEV) {
-        console.error(`[API Error] ${status} ${error.config.url}`, data);
-      }
 
       // Handle authentication errors
       if (status === 401) {

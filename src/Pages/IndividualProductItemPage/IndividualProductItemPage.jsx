@@ -67,8 +67,10 @@ const IndividualProductItemPage = () => {
           if (active) setRelatedProducts(related);
         }
 
-        const productReviews = await ReviewService.fetchProductReviews(productId);
-        if (active) setReviews(productReviews);
+        // Reviews are non-critical — a 500 here must not kill the product page
+        ReviewService.fetchProductReviews(productId)
+          .then((productReviews) => { if (active) setReviews(productReviews ?? []); })
+          .catch(() => { if (active) setReviews([]); });
       } catch (err) {
         if (active) setError(err.message || "Failed to load product details");
       } finally {
@@ -327,6 +329,10 @@ const IndividualProductItemPage = () => {
         showReviewModal={showReviewModal}
         onClose={() => setShowReviewModal(false)}
         productId={id}
+        onReviewSubmitted={(newReview) => {
+          setReviews((prev) => [newReview, ...prev]);
+          setShowReviewModal(false);
+        }}
       />
 
       <LoginModal

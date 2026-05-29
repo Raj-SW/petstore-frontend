@@ -24,9 +24,11 @@ const FeaturedProductSection = () => {
     TABS.forEach(({ key }) => {
       ProductService.fetchProductsByCategory(key)
         .then((data) => {
+          // Prefer featured-flagged products; fall back to first 3 if none are flagged
+          const featured = data.filter((p) => p.featured || p.isFeatured);
           setProducts((prev) => ({
             ...prev,
-            [key]: data.filter((p) => p.featured || p.isFeatured).slice(0, 3),
+            [key]: (featured.length > 0 ? featured : data).slice(0, 3),
           }));
         })
         .catch((err) => console.error(`Error fetching ${key}:`, err))
@@ -100,12 +102,12 @@ const FeaturedProductSection = () => {
             ) : (
               currentProducts.map((product) => (
                 <ProductCard
-                  key={product._id}
-                  id={product._id}
-                  imageUrl={product.imageUrl}
+                  key={product._id || product.id}
+                  id={product._id || product.id}
+                  imageUrl={product.images?.[0] || product.imageUrl}
                   title={product.title}
                   price={product.price}
-                  rating={product.rating}
+                  description={product.description}
                 />
               ))
             )}

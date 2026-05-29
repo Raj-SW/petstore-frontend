@@ -379,13 +379,11 @@ class ProductService {
         }
       }
 
-      console.log("Query Parameters:", Object.fromEntries(queryParams));
       const response = await this.handleRequest(
         `${this.API_URL}/products?${queryParams}`
       );
 
       if (response.data.success) {
-        console.log("Response Data:", response.data);
         return {
           products: response.data.data,
           pagination: response.data.pagination,

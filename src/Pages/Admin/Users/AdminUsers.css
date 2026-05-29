@@ -1,0 +1,286 @@
+/* ── Admin Users Page ── */
+
+/* Stat row */
+.admin-stats-row {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.admin-stat-pill {
+  background: var(--color-bg-cream);
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  box-shadow: 0 1px 3px rgba(0, 28, 16, 0.08);
+  min-width: 120px;
+}
+
+.admin-stat-pill-val {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 1.6rem;
+  color: var(--color-primary-forest);
+}
+
+.admin-stat-pill-lbl {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+/* Avatar circle */
+.admin-user-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--color-primary-forest);
+  color: var(--color-accent-gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+  flex-shrink: 0;
+}
+
+/* Name / Email */
+.admin-user-name {
+  font-family: var(--font-body);
+  font-weight: 600;
+  color: var(--color-text-default);
+}
+
+.admin-user-email {
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+}
+
+/* Role badges */
+.admin-role-badge {
+  display: inline-block;
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  letter-spacing: 0.02em;
+}
+
+.admin-role-badge--admin {
+  background: rgba(217, 154, 43, 0.18);
+  color: #8a6010;
+  border: 1px solid rgba(217, 154, 43, 0.4);
+}
+
+.admin-role-badge--professional {
+  background: rgba(0, 28, 16, 0.1);
+  color: var(--color-primary-forest);
+  border: 1px solid rgba(0, 28, 16, 0.2);
+}
+
+.admin-role-badge--default {
+  background: #f0efed;
+  color: var(--color-text-muted);
+  border: 1px solid #ddd;
+}
+
+/* Status badges */
+.admin-status-badge {
+  display: inline-block;
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.admin-status-badge--active {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.admin-status-badge--inactive {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* Custom action row */
+.admin-user-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.admin-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s;
+  flex-shrink: 0;
+}
+
+.admin-action-btn--toggle {
+  background: #f3f4f6;
+  color: var(--color-text-muted);
+}
+
+.admin-action-btn--activate {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.admin-action-btn--deactivate {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.admin-action-btn--toggle:hover {
+  background: #e5e7eb;
+}
+
+.admin-action-btn--delete {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.admin-action-btn--delete:hover {
+  background: #fca5a5;
+}
+
+.admin-action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Role select dropdown */
+.admin-role-select {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: var(--color-text-default);
+  background: var(--color-bg-warm-ivory);
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 0.3rem 0.5rem;
+  cursor: pointer;
+  transition: border-color 0.18s;
+  max-width: 130px;
+}
+
+.admin-role-select:focus {
+  outline: none;
+  border-color: var(--color-accent-gold);
+}
+
+.admin-role-select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Modal */
+.admin-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9000;
+}
+
+.admin-modal {
+  background: var(--color-bg-cream);
+  border-radius: 16px;
+  padding: 2rem;
+  min-width: 340px;
+  max-width: 480px;
+  width: 90%;
+  box-shadow: 0 20px 60px rgba(0, 28, 16, 0.2);
+}
+
+.admin-modal-title {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: var(--color-text-default);
+  margin: 0 0 0.75rem;
+}
+
+.admin-modal-msg {
+  font-family: var(--font-body);
+  color: var(--color-text-muted);
+  margin: 0 0 1.5rem;
+  line-height: 1.6;
+}
+
+.admin-modal-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+}
+
+.admin-modal-btn {
+  font-family: var(--font-body);
+  font-weight: 600;
+  padding: 0.6rem 1.4rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.18s;
+}
+
+.admin-modal-btn:hover {
+  opacity: 0.85;
+}
+
+.admin-modal-btn.cancel {
+  background: #f2f2f2;
+  color: var(--color-text-default);
+}
+
+.admin-modal-btn.confirm {
+  background: #dc2626;
+  color: #fff;
+}
+
+@media (max-width: 768px) {
+  .admin-stats-row {
+    gap: 0.75rem;
+  }
+
+  .admin-stat-pill {
+    min-width: 100px;
+    padding: 0.75rem 1rem;
+  }
+
+  .admin-user-actions {
+    flex-wrap: wrap;
+  }
+
+  .admin-role-select {
+    max-width: 110px;
+  }
+
+  .admin-modal-actions {
+    flex-direction: column-reverse;
+  }
+
+  .admin-modal-btn {
+    width: 100%;
+    text-align: center;
+  }
+}
