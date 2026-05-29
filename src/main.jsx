@@ -15,6 +15,10 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import ProtectedRoute from "./Components/Auth/ProtectedRoute";
 import RoleBasedRoute from "./Components/Auth/RoleBasedRoute";
 import { GlobalToastProvider } from "./context/GlobalToastContext";
+import { AuthProvider } from "./context/AuthContext";
+import CartContext from "./context/CartContext";
+import { ToastProvider } from "./context/ToastContext";
+import "./context/ToastContext.css";
 import { USER_ROLES } from "./constants/userConstants";
 
 // Admin imports
@@ -138,6 +142,12 @@ const router = createBrowserRouter([
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <GlobalToastProvider>
-    <RouterProvider router={router} />
+    <AuthProvider>
+      <CartContext>
+        <ToastProvider>
+          <RouterProvider router={router} />
+        </ToastProvider>
+      </CartContext>
+    </AuthProvider>
   </GlobalToastProvider>
 );
