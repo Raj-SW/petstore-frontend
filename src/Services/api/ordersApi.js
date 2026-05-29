@@ -16,11 +16,11 @@ const ordersApi = {
     return response.data;
   },
 
-  // Get all orders (Admin only)
+  // Get all orders (Admin only) — GET /orders with isAdmin middleware
   getAllOrders: async (params = {}) => {
     const queryString = new URLSearchParams(params).toString();
     const response = await api.get(
-      `/orders/all${queryString ? `?${queryString}` : ""}`
+      `/orders${queryString ? `?${queryString}` : ""}`
     );
     return response.data;
   },

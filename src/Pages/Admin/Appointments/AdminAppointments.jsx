@@ -42,7 +42,7 @@ const AdminAppointments = () => {
   const fetchAppointments = async () => {
     try {
       setLoading(true);
-      const response = await appointmentsApi.getProfessionalAppointments({ limit: 1000 });
+      const response = await appointmentsApi.getAllAppointments({ limit: 1000 });
       setAppointments(response.data || response || []);
     } catch (error) {
       addToast("Failed to fetch appointments", "error");

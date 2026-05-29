@@ -61,11 +61,11 @@ const AdminProducts = () => {
       render: (value, item) => (
         <div className="product-image-cell">
           <img
-            src={value || "/api/placeholder/50/50"}
+            src={value || "https://placehold.co/50x50"}
             alt={item.name}
             className="product-thumbnail"
             onError={(e) => {
-              e.target.src = "/api/placeholder/50/50";
+              e.target.src = "https://placehold.co/50x50";
             }}
           />
         </div>

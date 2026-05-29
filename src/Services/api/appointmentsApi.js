@@ -76,6 +76,15 @@ const appointmentsApi = {
     return response.data;
   },
 
+  // Get ALL appointments (Admin only)
+  getAllAppointments: async (params = {}) => {
+    const queryString = new URLSearchParams(params).toString();
+    const response = await api.get(
+      `/admin/appointments${queryString ? `?${queryString}` : ""}`
+    );
+    return response.data;
+  },
+
   // Get appointment statistics (Admin/Professional)
   getAppointmentStats: async (params = {}) => {
     const queryString = new URLSearchParams(params).toString();

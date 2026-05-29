@@ -1,11 +1,11 @@
 import { api } from "../../core/api/apiClient";
 
 const usersApi = {
-  // Get all users with pagination and filters
+  // Get all users with pagination and filters (Admin only — uses /admin/users)
   getUsers: async (params = {}) => {
     const queryString = new URLSearchParams(params).toString();
     const response = await api.get(
-      `/users${queryString ? `?${queryString}` : ""}`
+      `/admin/users${queryString ? `?${queryString}` : ""}`
     );
     return response.data;
   },
