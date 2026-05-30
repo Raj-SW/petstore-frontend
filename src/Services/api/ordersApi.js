@@ -1,22 +1,22 @@
 import { api } from "../../core/api/apiClient";
 
 const ordersApi = {
-  // Create a new order
+  // Create a new order (customer)
   createOrder: async (orderData) => {
     const response = await api.post("/orders", orderData);
     return response.data;
   },
 
-  // Get user's orders
+  // Get the logged-in user's own orders (customer)
   getMyOrders: async (params = {}) => {
     const queryString = new URLSearchParams(params).toString();
     const response = await api.get(
-      `/orders${queryString ? `?${queryString}` : ""}`
+      `/orders/my-orders${queryString ? `?${queryString}` : ""}`
     );
     return response.data;
   },
 
-  // Get all orders (Admin only) — GET /orders with isAdmin middleware
+  // Get ALL orders (Admin only)
   getAllOrders: async (params = {}) => {
     const queryString = new URLSearchParams(params).toString();
     const response = await api.get(
@@ -31,33 +31,15 @@ const ordersApi = {
     return response.data;
   },
 
-  // Update order status (Admin only)
+  // Update order status (Admin only) — PATCH not PUT
   updateOrderStatus: async (id, status) => {
-    const response = await api.put(`/orders/${id}/status`, { status });
+    const response = await api.patch(`/orders/${id}/status`, { status });
     return response.data;
   },
 
-  // Cancel order
+  // Cancel order — PATCH /orders/:id/cancel, not DELETE /orders/:id
   cancelOrder: async (id) => {
-    const response = await api.delete(`/orders/${id}`);
-    return response.data;
-  },
-
-  // Get order statistics (Admin only)
-  getOrderStats: async (params = {}) => {
-    const queryString = new URLSearchParams(params).toString();
-    const response = await api.get(
-      `/orders/stats${queryString ? `?${queryString}` : ""}`
-    );
-    return response.data;
-  },
-
-  // Export orders (Admin only)
-  exportOrders: async (params = {}) => {
-    const queryString = new URLSearchParams(params).toString();
-    const response = await api.get(
-      `/orders/export${queryString ? `?${queryString}` : ""}`
-    );
+    const response = await api.patch(`/orders/${id}/cancel`);
     return response.data;
   },
 };

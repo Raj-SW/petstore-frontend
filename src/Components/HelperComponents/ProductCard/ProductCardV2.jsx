@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useCart } from "react-use-cart";
+import { useCart } from "@/context/CartContext";
 import { FaShoppingCart } from "react-icons/fa";
 import { useToast } from "@/context/ToastContext";
 import "./ProductCardV2.css";

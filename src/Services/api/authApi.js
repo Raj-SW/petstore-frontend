@@ -32,7 +32,7 @@ const authApi = {
   },
 
   resetPassword: async (token, password) => {
-    const response = await api.post("/auth/reset-password", { token, password });
+    const response = await api.patch("/auth/reset-password", { token, password });
     return response.data;
   },
 

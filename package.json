@@ -33,6 +33,8 @@
     "@schedule-x/react": "^2.6.0",
     "@schedule-x/resize": "^2.8.0",
     "@schedule-x/theme-default": "^2.8.0",
+    "@stripe/react-stripe-js": "^6.5.0",
+    "@stripe/stripe-js": "^9.7.0",
     "@tabler/icons-react": "^3.14.0",
     "antd": "^5.22.2",
     "axios": "^1.7.7",

@@ -11,6 +11,8 @@ import ImportExportServicePage from "./Pages/ImportExport/ImportExportServicePag
 import ExportImportForm from "./Pages/ImportExport/Import/ImportPage.jsx";
 import UserProfile from "./Pages/UserProfile.jsx";
 import ResetPassword from "./Components/Auth/ResetPassword.jsx";
+import PaymentPage from "./Pages/Payment/PaymentPage.jsx";
+import MyOrdersPage from "./Pages/MyOrders/MyOrdersPage.jsx";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import ProtectedRoute from "./Components/Auth/ProtectedRoute";
 import RoleBasedRoute from "./Components/Auth/RoleBasedRoute";
@@ -63,7 +65,27 @@ const router = createBrowserRouter([
       },
       {
         path: "checkout",
-        element: <CartCheckOutPage />,
+        element: (
+          <ProtectedRoute>
+            <CartCheckOutPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "payment/:orderId",
+        element: (
+          <ProtectedRoute>
+            <PaymentPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "my-orders",
+        element: (
+          <ProtectedRoute>
+            <MyOrdersPage />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "import-export-service",

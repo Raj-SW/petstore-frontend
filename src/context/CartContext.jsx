@@ -1,17 +1,148 @@
-import { CartProvider as UseCartProvider } from "react-use-cart";
+// frontend/src/context/CartContext.jsx
+import { createContext, useContext, useEffect, useCallback } from "react";
+import { CartProvider as RUCProvider, useCart as useRUCCart } from "react-use-cart";
+import { useAuth } from "./AuthContext";
+import cartApi from "../Services/api/cartApi";
 
-const CartContext = ({ children }) => {
-  return (
-    <UseCartProvider
-      defaultItems={[]}
-      defaultQuantity={1}
-      defaultTotalItems={0}
-      defaultTotalUniqueItems={0}
-      defaultCartTotal={0}
-    >
-      {children}
-    </UseCartProvider>
+const CartSyncCtx = createContext(null);
+
+/**
+ * Inner layer — has access to both useAuth and react-use-cart.
+ * Intercepts every mutation to also sync with the backend cart.
+ */
+function CartSyncLayer({ children }) {
+  const { user } = useAuth();
+  const ruc = useRUCCart();
+
+  // On login: fetch backend cart and populate local state.
+  // On logout: clear local cart.
+  useEffect(() => {
+    if (!user) {
+      ruc.emptyCart();
+      return;
+    }
+
+    cartApi
+      .getCart()
+      .then((backendCart) => {
+        if (backendCart?.items?.length) {
+          // Backend has items → restore into local cart
+          const converted = backendCart.items.map((item) => ({
+            id: item.product?._id || item.product,
+            name: item.product?.name || "Product",
+            price: item.price,
+            image: item.product?.images?.[0] || "",
+            quantity: item.quantity,
+          }));
+          ruc.setItems(converted);
+        } else if (ruc.items?.length) {
+          // Backend is empty but local cart has items (added before login) → push up
+          ruc.items.forEach((item) => {
+            cartApi.addToCart(item.id, item.quantity).catch(() => {});
+          });
+        }
+      })
+      .catch(() => {
+        // Backend cart unavailable — local cart stays as-is
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.id]);
+
+  // Optimistic add: update UI immediately, sync to backend in background
+  const addItem = useCallback(
+    async (item, quantity = 1) => {
+      ruc.addItem(item, quantity);
+      if (user) {
+        try {
+          await cartApi.addToCart(item.id, quantity);
+        } catch {
+          /* silent — UI already updated */
+        }
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [user?.id]
   );
-};
+
+  const removeItem = useCallback(
+    async (id) => {
+      ruc.removeItem(id);
+      if (user) {
+        try {
+          await cartApi.removeItem(id);
+        } catch {
+          /* silent */
+        }
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [user?.id]
+  );
+
+  const updateItemQuantity = useCallback(
+    async (id, quantity) => {
+      if (quantity <= 0) {
+        return removeItem(id);
+      }
+      ruc.updateItemQuantity(id, quantity);
+      if (user) {
+        try {
+          await cartApi.updateItem(id, quantity);
+        } catch {
+          /* silent */
+        }
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [user?.id, removeItem]
+  );
+
+  const emptyCart = useCallback(
+    async () => {
+      ruc.emptyCart();
+      if (user) {
+        try {
+          await cartApi.clearCart();
+        } catch {
+          /* silent */
+        }
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [user?.id]
+  );
+
+  const value = {
+    ...ruc,
+    addItem,
+    removeItem,
+    updateItemQuantity,
+    emptyCart,
+  };
+
+  return <CartSyncCtx.Provider value={value}>{children}</CartSyncCtx.Provider>;
+}
+
+/**
+ * Drop-in replacement for react-use-cart's useCart hook.
+ * Import this instead of importing from "react-use-cart".
+ */
+export function useCart() {
+  const ctx = useContext(CartSyncCtx);
+  if (!ctx) throw new Error("useCart must be used within CartContext");
+  return ctx;
+}
+
+/**
+ * Provider component — wraps react-use-cart's CartProvider + sync layer.
+ * Used in main.jsx as <CartContext>...</CartContext>.
+ */
+function CartContext({ children }) {
+  return (
+    <RUCProvider>
+      <CartSyncLayer>{children}</CartSyncLayer>
+    </RUCProvider>
+  );
+}
 
 export default CartContext;

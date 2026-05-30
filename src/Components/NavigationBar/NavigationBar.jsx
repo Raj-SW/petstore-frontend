@@ -9,17 +9,27 @@ import {
   FaTimes,
   FaBars,
   FaChevronDown,
+  FaThLarge,
+  FaStethoscope,
+  FaPlane,
 } from "react-icons/fa";
 import vitalPawsLogo from "../../assets/NavBar Assets/Vital-paws-logo.png";
 import pawsImg from "../../assets/NavBar Assets/Paws.png";
 import { useAuth } from "../../context/AuthContext";
 import AddToCart from "./AddToCart";
 import SignUpDropdown from "./Dropdowns/SignUpDropdown";
+import ServicesDropdown from "./Dropdowns/ServicesDropdown";
 import "./NavigationBar.css";
+
+const MOBILE_SERVICE_ITEMS = [
+  { label: "All Services", href: "/services", icon: FaThLarge },
+  { label: "Book Appointment", href: "/appointments", icon: FaStethoscope },
+  { label: "Import & Export", href: "/import-export-service", icon: FaPlane },
+];
 
 const NAV_LINKS = [
   { label: "Home", href: "/home" },
-  { label: "Services", href: "/services" },
+  { label: "Services", href: "/services", hasDropdown: true },
   { label: "Pet Store", href: "/petshop" },
   { label: "Pet Care Tips", href: null },
   { label: "Gallery", href: null },
@@ -34,36 +44,48 @@ const NavigationBar = () => {
   const [showLogin, setShowLogin] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [servicesOpen, setServicesOpen] = useState(false);
+  const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
 
   const mobileMenuRef = useRef(null);
   const userMenuRef = useRef(null);
+  const servicesWrapRef = useRef(null);
 
-  // Esc closes mobile + user menu
+  // Esc closes all menus
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === "Escape") {
-        if (mobileMenuOpen) setMobileMenuOpen(false);
-        if (userMenuOpen) setUserMenuOpen(false);
+        setMobileMenuOpen(false);
+        setUserMenuOpen(false);
+        setServicesOpen(false);
       }
     };
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [mobileMenuOpen, userMenuOpen]);
+  }, []);
 
-  // Click-outside closes user menu
+  // Click-outside closes user menu + services dropdown
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (userMenuOpen && userMenuRef.current && !userMenuRef.current.contains(e.target)) {
         setUserMenuOpen(false);
       }
+      if (servicesOpen && servicesWrapRef.current && !servicesWrapRef.current.contains(e.target)) {
+        setServicesOpen(false);
+      }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [userMenuOpen]);
+  }, [userMenuOpen, servicesOpen]);
 
   // Focus mobile menu when opened
   useEffect(() => {
     if (mobileMenuOpen && mobileMenuRef.current) mobileMenuRef.current.focus();
+  }, [mobileMenuOpen]);
+
+  // Close mobile services accordion when menu closes
+  useEffect(() => {
+    if (!mobileMenuOpen) setMobileServicesOpen(false);
   }, [mobileMenuOpen]);
 
   const handleOverlayClick = (e) => {
@@ -76,11 +98,17 @@ const NavigationBar = () => {
     return location.pathname.startsWith(href);
   };
 
+  const isServicesActive = () =>
+    ["/services", "/appointments", "/import-export-service"].some((p) =>
+      location.pathname.startsWith(p)
+    );
+
   const handleNav = (href) => (e) => {
     e.preventDefault();
     navigate(href);
     setMobileMenuOpen(false);
     setUserMenuOpen(false);
+    setServicesOpen(false);
   };
 
   return (
@@ -104,9 +132,29 @@ const NavigationBar = () => {
 
           {/* Desktop nav links */}
           <ul className="nav-links">
-            {NAV_LINKS.map(({ label, href }) => (
-              <li key={label}>
-                {href ? (
+            {NAV_LINKS.map(({ label, href, hasDropdown }) => (
+              <li key={label} className={hasDropdown ? "nav-link-services-wrap" : ""}>
+                {hasDropdown ? (
+                  <div className="nav-services-trigger-wrap" ref={servicesWrapRef}>
+                    <button
+                      type="button"
+                      className={`nav-link-item nav-services-trigger${isServicesActive() ? " active" : ""}`}
+                      onClick={() => setServicesOpen((s) => !s)}
+                      aria-expanded={servicesOpen}
+                      aria-haspopup="menu"
+                    >
+                      {label}
+                      <FaChevronDown
+                        size={10}
+                        className={`nav-services-chev${servicesOpen ? " open" : ""}`}
+                      />
+                    </button>
+                    <ServicesDropdown
+                      open={servicesOpen}
+                      onClose={() => setServicesOpen(false)}
+                    />
+                  </div>
+                ) : href ? (
                   <a
                     href={href}
                     onClick={handleNav(href)}
@@ -149,6 +197,10 @@ const NavigationBar = () => {
                       <a href="/profile" onClick={handleNav("/profile")} className="nav-menu-item">
                         <FaUser size={14} />
                         <span>Profile</span>
+                      </a>
+                      <a href="/my-orders" onClick={handleNav("/my-orders")} className="nav-menu-item">
+                        <span style={{ fontSize: "14px" }}>📦</span>
+                        <span>My Orders</span>
                       </a>
                       {isAdmin() && (
                         <>
@@ -219,20 +271,68 @@ const NavigationBar = () => {
           </div>
 
           <div className="mobile-menu-content">
-            {NAV_LINKS.map(({ label, href }) =>
-              href ? (
-                <a
-                  key={label}
-                  href={href}
-                  className={`mobile-menu-link${isActive(href) ? " active" : ""}`}
-                  onClick={handleNav(href)}
-                >
-                  {label}
-                </a>
-              ) : (
-                <span key={label} className="mobile-menu-link mobile-link-disabled">{label}</span>
-              )
-            )}
+            {/* Home */}
+            <a
+              href="/home"
+              className={`mobile-menu-link${isActive("/home") ? " active" : ""}`}
+              onClick={handleNav("/home")}
+            >
+              Home
+            </a>
+
+            {/* Services accordion */}
+            <div className="mobile-services-group">
+              <button
+                type="button"
+                className={`mobile-menu-link mobile-services-trigger${isServicesActive() ? " active" : ""}`}
+                onClick={() => setMobileServicesOpen((s) => !s)}
+                aria-expanded={mobileServicesOpen}
+              >
+                <span>Services</span>
+                <FaChevronDown
+                  size={12}
+                  className={`mobile-services-chev${mobileServicesOpen ? " open" : ""}`}
+                />
+              </button>
+
+              <AnimatePresence>
+                {mobileServicesOpen && (
+                  <motion.div
+                    className="mobile-services-sub"
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
+                  >
+                    {MOBILE_SERVICE_ITEMS.map(({ label, href, icon: Icon }) => (
+                      <a
+                        key={href}
+                        href={href}
+                        className={`mobile-sub-link${location.pathname.startsWith(href) ? " active" : ""}`}
+                        onClick={handleNav(href)}
+                      >
+                        <Icon size={13} className="mobile-sub-icon" />
+                        {label}
+                      </a>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* Pet Store */}
+            <a
+              href="/petshop"
+              className={`mobile-menu-link${isActive("/petshop") ? " active" : ""}`}
+              onClick={handleNav("/petshop")}
+            >
+              Pet Store
+            </a>
+
+            {/* Disabled links */}
+            <span className="mobile-menu-link mobile-link-disabled">Pet Care Tips</span>
+            <span className="mobile-menu-link mobile-link-disabled">Gallery</span>
+            <span className="mobile-menu-link mobile-link-disabled">Contact</span>
 
             <div className="mobile-menu-divider" />
 
@@ -240,6 +340,9 @@ const NavigationBar = () => {
               <>
                 <a href="/profile" className="mobile-menu-link" onClick={handleNav("/profile")}>
                   <FaUser size={14} /><span>Profile</span>
+                </a>
+                <a href="/my-orders" className="mobile-menu-link" onClick={handleNav("/my-orders")}>
+                  <span style={{ fontSize: "14px" }}>📦</span><span>My Orders</span>
                 </a>
                 {isAdmin() && (
                   <a href="/admin" className="mobile-menu-link" onClick={handleNav("/admin")}>

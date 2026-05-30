@@ -4,7 +4,7 @@ import "./AddToCart.css";
 import { FaCartShopping } from "react-icons/fa6";
 import { IconContext } from "react-icons";
 import { useToast } from "../../context/ToastContext";
-import { useCart } from "react-use-cart";
+import { useCart } from "@/context/CartContext";
 import CartModal from "./CartModal";
 
 const AddToCart = ({ currentItem }) => {

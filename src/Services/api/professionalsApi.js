@@ -71,11 +71,6 @@ const professionalsApi = {
     return response.data;
   },
 
-  // Get professional statistics
-  getProfessionalStats: async (id) => {
-    const response = await api.get(`/professionals/${id}/stats`);
-    return response.data;
-  },
 };
 
 export default professionalsApi;

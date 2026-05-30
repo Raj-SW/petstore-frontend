@@ -10,7 +10,7 @@ const ROLE_OPTIONS = ["customer", "veterinarian", "groomer", "trainer", "petTaxi
 
 const getRoleBadgeClass = (role) => {
   if (role === "admin") return "admin-role-badge admin-role-badge--admin";
-  if (role === "professional" || role === "veterinarian" || role === "petSitter")
+  if (["veterinarian", "groomer", "trainer", "petTaxi"].includes(role))
     return "admin-role-badge admin-role-badge--professional";
   return "admin-role-badge admin-role-badge--default";
 };
@@ -103,7 +103,7 @@ const AdminUsers = () => {
   const totalUsers = users.length;
   const adminsCount = users.filter((u) => u.role === "admin").length;
   const professionalsCount = users.filter((u) =>
-    ["professional", "veterinarian", "petSitter"].includes(u.role)
+    ["veterinarian", "groomer", "trainer", "petTaxi"].includes(u.role)
   ).length;
   const activeCount = users.filter((u) => u.isActive !== false).length;
 

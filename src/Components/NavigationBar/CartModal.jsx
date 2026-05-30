@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
-import { useCart } from "react-use-cart";
+import { useCart } from "@/context/CartContext";
 import { AnimatePresence, motion } from "framer-motion";
 import { FaTimes, FaShoppingBag, FaArrowRight } from "react-icons/fa";
 import { useToast } from "../../context/ToastContext";

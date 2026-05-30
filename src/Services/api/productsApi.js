@@ -24,33 +24,13 @@ const productsApi = {
 
   // Update product (Admin only)
   updateProduct: async (id, productData) => {
-    const response = await api.put(`/products/${id}`, productData);
+    const response = await api.patch(`/products/${id}`, productData);
     return response.data;
   },
 
   // Delete product (Admin only)
   deleteProduct: async (id) => {
     const response = await api.delete(`/products/${id}`);
-    return response.data;
-  },
-
-  // Upload product image
-  uploadProductImage: async (file) => {
-    const formData = new FormData();
-    formData.append("image", file);
-
-    const response = await api.post("/products/upload-image", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
-
-    return response.data;
-  },
-
-  // Get product categories
-  getCategories: async () => {
-    const response = await api.get("/products/categories");
     return response.data;
   },
 
