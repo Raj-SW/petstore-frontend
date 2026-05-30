@@ -6,7 +6,7 @@ import usersApi from "../../../Services/api/usersApi";
 import { useToast } from "../../../context/ToastContext";
 import "./AdminUsers.css";
 
-const ROLE_OPTIONS = ["user", "admin", "professional", "petOwner", "petSitter", "veterinarian"];
+const ROLE_OPTIONS = ["customer", "veterinarian", "groomer", "trainer", "petTaxi", "admin"];
 
 const getRoleBadgeClass = (role) => {
   if (role === "admin") return "admin-role-badge admin-role-badge--admin";

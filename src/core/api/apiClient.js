@@ -37,6 +37,11 @@ apiClient.interceptors.response.use(
         window.dispatchEvent(new CustomEvent("auth:logout"));
       }
 
+      if (status === 403 && data?.message?.includes('deactivated')) {
+        // Account deactivated by admin — force logout
+        window.dispatchEvent(new CustomEvent("auth:logout"));
+      }
+
       return Promise.reject({
         status,
         message: data?.message || data?.error || "An error occurred",
