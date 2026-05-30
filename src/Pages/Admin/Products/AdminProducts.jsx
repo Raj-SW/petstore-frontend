@@ -23,7 +23,10 @@ const AdminProducts = () => {
     try {
       setLoading(true);
       const response = await productsApi.getProducts({ limit: 1000 });
-      setProducts(response.data || []);
+      const raw = response.data || [];
+      // Normalize: ensure `name` is always populated so DataTable search works
+      const normalized = raw.map((p) => ({ ...p, name: p.name || p.title || "" }));
+      setProducts(normalized);
     } catch (error) {
       addToast("Failed to fetch products", "error");
       console.error("Error fetching products:", error);
@@ -74,7 +77,9 @@ const AdminProducts = () => {
     {
       header: "Name",
       accessor: "name",
-      render: (value) => <span className="product-name">{value}</span>,
+      render: (value, item) => (
+        <span className="product-name">{value || item.title || "—"}</span>
+      ),
     },
     {
       header: "Category",

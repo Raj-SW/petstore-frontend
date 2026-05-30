@@ -16,20 +16,22 @@
   align-items: center;
   gap: 0.5rem;
   font-family: var(--font-body);
-  font-weight: 600;
+  font-weight: 700;
   font-size: 0.9rem;
   padding: 0.65rem 1.4rem;
-  background: var(--color-primary-forest);
-  color: #fff;
+  background: var(--color-accent-gold);
+  color: var(--color-primary-forest) !important;
   border-radius: 10px;
-  text-decoration: none;
-  transition: background 0.2s;
+  text-decoration: none !important;
+  transition: background 0.2s, box-shadow 0.2s;
   white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(217, 154, 43, 0.35);
 }
 
 .add-button:hover {
-  background: var(--color-accent-gold);
+  background: #c48a24;
   color: var(--color-primary-forest) !important;
+  box-shadow: 0 4px 14px rgba(217, 154, 43, 0.45);
 }
 
 /* ── Product cell helpers ── */

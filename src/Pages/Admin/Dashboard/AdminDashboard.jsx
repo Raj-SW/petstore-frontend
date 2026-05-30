@@ -38,10 +38,10 @@ const AdminDashboard = () => {
       // For now, we'll simulate with multiple API calls
       const [usersRes, productsRes, ordersRes, appointmentsRes] =
         await Promise.all([
-          api.get("/users?limit=5"),
+          api.get("/admin/users?limit=5"),
           api.get("/products?limit=5"),
           api.get("/orders?limit=5&sortBy=createdAt&sortOrder=desc"),
-          api.get("/appointments?limit=5&sortBy=createdAt&sortOrder=desc"),
+          api.get("/admin/appointments?limit=5&sortBy=createdAt&sortOrder=desc"),
         ]);
 
       setStats({

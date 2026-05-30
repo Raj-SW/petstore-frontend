@@ -8,11 +8,12 @@ import SortDropDown from "@/Components/HelperComponents/SortDropDown/SortDropDow
 import Breadcrumb from "@/Components/HelperComponents/Breadcrumb/Breadcrumb";
 import SearchBar from "@/Components/HelperComponents/SearchBar/SearchBar";
 import FilterComponent from "./FilterComponent";
-
 import ProductService from "@/Services/localServices/ProductService";
+import petshopBanner from "@/assets/PetShopPageAssets/PetshopBannerBackgroundImg.png";
 import "./PetShopPage.css";
 
 const PRODUCTS_PER_PAGE = 12;
+const QUICK_CATS = ["All", "Dog", "Cat", "Bird", "Fish", "Small Pets", "General"];
 
 const PetShopPage = () => {
   const [searchParams] = useSearchParams();
@@ -21,11 +22,10 @@ const PetShopPage = () => {
   const [displayedProducts, setDisplayedProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [activeCat, setActiveCat] = useState("All");
 
   // ── Data loading ──
   useEffect(() => {
@@ -100,6 +100,15 @@ const PetShopPage = () => {
       .catch((err) => setError(err.message));
   };
 
+  const handleCategoryClick = (cat) => {
+    setActiveCat(cat);
+    if (cat === "All") {
+      handleApplyFilters({ minPrice: 0, maxPrice: Infinity, categories: [], rating: 0 });
+    } else {
+      handleApplyFilters({ minPrice: 0, maxPrice: Infinity, categories: [cat.toLowerCase()], rating: 0 });
+    }
+  };
+
   const handleSort = (sortType) => {
     const sortMap = {
       priceAsc: "price",
@@ -108,7 +117,6 @@ const PetShopPage = () => {
       alphabeticalDesc: "-title",
     };
     const sortParam = sortMap[sortType] || "-createdAt";
-
     ProductService.fetchProductsWithFilters(
       {},
       { page: currentPage, limit: PRODUCTS_PER_PAGE, sort: sortParam }
@@ -135,7 +143,7 @@ const PetShopPage = () => {
     if (isLoading) {
       return (
         <div className="ps-grid">
-          {Array.from({ length: 6 }).map((_, i) => (
+          {Array.from({ length: 8 }).map((_, i) => (
             <div key={i} className="ps-skeleton" />
           ))}
         </div>
@@ -168,14 +176,14 @@ const PetShopPage = () => {
         className="ps-grid"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 0.4 }}
+        transition={{ duration: 0.35 }}
       >
         {displayedProducts.map((p, i) => (
           <motion.div
             key={p.id || i}
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.35, delay: Math.min(i * 0.04, 0.4) }}
+            transition={{ duration: 0.38, delay: Math.min(i * 0.05, 0.5) }}
           >
             <ProductCard
               id={p.id}
@@ -192,8 +200,12 @@ const PetShopPage = () => {
 
   return (
     <>
-      {/* Top banner */}
-      <section className="ps-hero">
+      {/* ── Hero ── */}
+      <section
+        className="ps-hero"
+        style={{ backgroundImage: `url(${petshopBanner})` }}
+      >
+        <div className="ps-hero-overlay" />
         <div className="ps-hero-inner">
           <Breadcrumb
             items={[
@@ -201,15 +213,50 @@ const PetShopPage = () => {
               { label: "Pet Shop", path: "/petshop" },
             ]}
           />
-          <h1 className="ps-hero-title">Everything for your beloved pet</h1>
-          <p className="ps-hero-subtitle">
+          <motion.h1
+            className="ps-hero-title"
+            initial={{ opacity: 0, y: 32 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            Everything for your{" "}
+            <span className="ps-hero-accent">beloved pet</span>
+          </motion.h1>
+          <motion.p
+            className="ps-hero-subtitle"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.55, delay: 0.18 }}
+          >
             Curated essentials, premium nutrition, and unique finds — all in one place.
-          </p>
-          <SearchBar showInPages={["/petshop"]} />
+          </motion.p>
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          >
+            <SearchBar showInPages={["/petshop"]} />
+          </motion.div>
         </div>
       </section>
 
-      {/* Main body */}
+      {/* ── Category quick-filter strip ── */}
+      <div className="ps-cat-strip">
+        <div className="ps-cat-strip-inner">
+          {QUICK_CATS.map((cat) => (
+            <button
+              key={cat}
+              type="button"
+              className={`ps-cat-chip${activeCat === cat ? " ps-cat-chip--active" : ""}`}
+              onClick={() => handleCategoryClick(cat)}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Main body ── */}
       <section className="ps-body">
         <div className="ps-body-inner">
 
@@ -222,9 +269,11 @@ const PetShopPage = () => {
           <div className="ps-main">
             <div className="ps-toolbar">
               <div className="ps-toolbar-left">
-                <h2 className="ps-section-title">Products</h2>
+                <h2 className="ps-section-title">
+                  {activeCat === "All" ? "All Products" : activeCat}
+                </h2>
                 <span className="ps-result-count">
-                  {isLoading ? "Loading..." : `${displayedProducts.length} items`}
+                  {isLoading ? "Loading…" : `${displayedProducts.length} items`}
                 </span>
               </div>
               <div className="ps-toolbar-right">
@@ -286,7 +335,7 @@ const PetShopPage = () => {
         </div>
       </section>
 
-      {/* Mobile filter drawer */}
+      {/* ── Mobile filter drawer ── */}
       <AnimatePresence>
         {drawerOpen && (
           <>

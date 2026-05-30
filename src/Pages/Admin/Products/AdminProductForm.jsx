@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { FiArrowLeft, FiPlus, FiX } from "react-icons/fi";
+import { FiArrowLeft, FiX, FiUpload, FiLink } from "react-icons/fi";
 import { api } from "../../../core/api/apiClient";
 import { useToast } from "../../../context/ToastContext";
 import "./AdminProductForm.css";
@@ -9,12 +9,11 @@ import "./AdminProductForm.css";
 const CATEGORIES = ["dogs", "cats", "fish", "birds", "general", "apparel"];
 
 const EMPTY_FORM = {
-  title: "",
+  name: "",
   description: "",
   price: "",
-  category: "general",
-  stock: "",
-  imageUrls: [""],
+  categories: ["general"],
+  quantity: "",
   isActive: true,
   isFeatured: false,
 };
@@ -23,12 +22,18 @@ const AdminProductForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { addToast } = useToast();
+  const fileInputRef = useRef(null);
 
   const isEditMode = Boolean(id);
 
   const [form, setForm] = useState(EMPTY_FORM);
   const [loading, setLoading] = useState(isEditMode);
   const [submitting, setSubmitting] = useState(false);
+
+  // File upload state
+  const [imageFiles, setImageFiles] = useState([]);           // new files to upload
+  const [existingImages, setExistingImages] = useState([]);   // URLs from DB (edit mode)
+  const [imagePreviews, setImagePreviews] = useState([]);     // blob preview URLs
 
   // Fetch product in edit mode
   useEffect(() => {
@@ -41,20 +46,28 @@ const AdminProductForm = () => {
         const p = res?.data?.data ?? res?.data ?? {};
 
         setForm({
-          title: p.title ?? p.name ?? "",
+          name: p.name ?? p.title ?? "",
           description: p.description ?? "",
           price: p.price ?? "",
-          category: p.category ?? "general",
-          stock: p.stock ?? p.quantity ?? "",
-          imageUrls:
-            Array.isArray(p.imageUrls) && p.imageUrls.length > 0
-              ? p.imageUrls
-              : Array.isArray(p.images) && p.images.length > 0
-              ? p.images
-              : [p.imageUrl ?? ""],
+          categories: Array.isArray(p.categories) && p.categories.length > 0
+            ? p.categories
+            : p.category
+            ? [p.category]
+            : ["general"],
+          quantity: p.quantity ?? p.stock ?? "",
           isActive: p.isActive ?? true,
           isFeatured: p.isFeatured ?? false,
         });
+
+        // Store existing image URLs for preview
+        const imgs = Array.isArray(p.imageUrls) && p.imageUrls.length > 0
+          ? p.imageUrls
+          : Array.isArray(p.images) && p.images.length > 0
+          ? p.images
+          : p.imageUrl
+          ? [p.imageUrl]
+          : [];
+        setExistingImages(imgs);
       } catch (err) {
         addToast("Failed to load product data.", "error");
         console.error("Product fetch error:", err);
@@ -66,87 +79,121 @@ const AdminProductForm = () => {
     fetchProduct();
   }, [id]);
 
-  // Field helpers
+  // Clean up blob URLs when component unmounts or previews change
+  useEffect(() => {
+    return () => imagePreviews.forEach((url) => URL.revokeObjectURL(url));
+  }, [imagePreviews]);
+
   const setField = (key, value) => setForm((f) => ({ ...f, [key]: value }));
 
-  const handleImageChange = (index, value) => {
-    const updated = [...form.imageUrls];
-    updated[index] = value;
-    setField("imageUrls", updated);
+  // ── Category handling ──
+  const toggleCategory = (cat) => {
+    setForm((f) => {
+      const cats = f.categories;
+      return {
+        ...f,
+        categories: cats.includes(cat)
+          ? cats.filter((c) => c !== cat)
+          : [...cats, cat],
+      };
+    });
   };
 
-  const addImageUrl = () => {
-    setField("imageUrls", [...form.imageUrls, ""]);
+  // ── File handling ──
+  const handleFileChange = (e) => {
+    const files = Array.from(e.target.files);
+    if (!files.length) return;
+
+    const newPreviews = files.map((f) => URL.createObjectURL(f));
+    setImageFiles((prev) => [...prev, ...files]);
+    setImagePreviews((prev) => [...prev, ...newPreviews]);
+
+    // Reset the input so the same file can be re-added after removal
+    e.target.value = "";
   };
 
-  const removeImageUrl = (index) => {
-    if (form.imageUrls.length === 1) {
-      setField("imageUrls", [""]);
-      return;
-    }
-    setField(
-      "imageUrls",
-      form.imageUrls.filter((_, i) => i !== index)
-    );
+  const removeNewFile = (index) => {
+    URL.revokeObjectURL(imagePreviews[index]);
+    setImageFiles((prev) => prev.filter((_, i) => i !== index));
+    setImagePreviews((prev) => prev.filter((_, i) => i !== index));
   };
 
-  // Validation
+  const removeExistingImage = (index) => {
+    setExistingImages((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  // ── Validation ──
   const validate = () => {
-    if (!form.title.trim()) {
-      addToast("Product title is required.", "error");
+    if (!form.name.trim()) {
+      addToast("Product name is required.", "error");
       return false;
     }
-    if (!form.description.trim()) {
-      addToast("Product description is required.", "error");
+    if (form.name.trim().length < 2) {
+      addToast("Product name must be at least 2 characters.", "error");
+      return false;
+    }
+    if (!form.description.trim() || form.description.trim().length < 10) {
+      addToast("Description must be at least 10 characters.", "error");
       return false;
     }
     if (form.price === "" || isNaN(Number(form.price)) || Number(form.price) < 0) {
       addToast("Please enter a valid price.", "error");
       return false;
     }
+    if (form.categories.length === 0) {
+      addToast("Select at least one category.", "error");
+      return false;
+    }
     return true;
   };
 
+  // ── Submit ──
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
 
-    const payload = {
-      title: form.title.trim(),
-      name: form.title.trim(),
-      description: form.description.trim(),
-      price: Number(form.price),
-      category: form.category,
-      stock: form.stock !== "" ? Number(form.stock) : 0,
-      imageUrls: form.imageUrls.filter((u) => u.trim() !== ""),
-      isActive: form.isActive,
-      isFeatured: form.isFeatured,
-    };
+    const formData = new FormData();
+    formData.append("name", form.name.trim());
+    formData.append("description", form.description.trim());
+    formData.append("price", Number(form.price));
+    formData.append("quantity", form.quantity !== "" ? Number(form.quantity) : 0);
+    form.categories.forEach((cat) => formData.append("categories", cat));
+    formData.append("isActive", form.isActive);
+    formData.append("isFeatured", form.isFeatured);
+
+    // Attach image files
+    imageFiles.forEach((file) => formData.append("images", file));
+
+    // For edit: signal whether images changed
+    if (isEditMode) {
+      formData.append("imagesChanged", imageFiles.length > 0 ? "true" : "false");
+    }
 
     try {
       setSubmitting(true);
       if (isEditMode) {
-        await api.put(`/products/${id}`, payload);
+        await api.patch(`/products/${id}`, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
         addToast("Product updated successfully.", "success");
       } else {
-        await api.post("/products", payload);
+        await api.post("/products", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
         addToast("Product created successfully.", "success");
       }
       navigate("/admin/products");
     } catch (err) {
-      addToast(
-        err?.message || (isEditMode ? "Failed to update product." : "Failed to create product."),
-        "error"
-      );
+      const msg =
+        err?.response?.data?.message ||
+        err?.message ||
+        (isEditMode ? "Failed to update product." : "Failed to create product.");
+      addToast(msg, "error");
       console.error("Product submit error:", err);
     } finally {
       setSubmitting(false);
     }
   };
-
-  const firstValidImage = form.imageUrls.find(
-    (u) => u.trim() !== "" && (u.startsWith("http") || u.startsWith("/"))
-  );
 
   if (loading) {
     return (
@@ -155,6 +202,8 @@ const AdminProductForm = () => {
       </div>
     );
   }
+
+  const hasAnyImage = existingImages.length > 0 || imagePreviews.length > 0;
 
   return (
     <motion.div
@@ -185,28 +234,31 @@ const AdminProductForm = () => {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} noValidate>
+      <form onSubmit={handleSubmit} noValidate encType="multipart/form-data">
         <div className="admin-pf-grid">
-          {/* ── Left column ── */}
+
+          {/* ── Left column: Product details ── */}
           <div className="admin-pf-col">
             <div className="admin-card">
               <h2 className="admin-pf-section-title">Product Details</h2>
 
+              {/* Name */}
               <div className="admin-field">
-                <label className="admin-label" htmlFor="pf-title">
-                  Title <span className="admin-required">*</span>
+                <label className="admin-label" htmlFor="pf-name">
+                  Name <span className="admin-required">*</span>
                 </label>
                 <input
-                  id="pf-title"
+                  id="pf-name"
                   className="admin-input"
                   type="text"
                   placeholder="e.g. Premium Dog Harness"
-                  value={form.title}
-                  onChange={(e) => setField("title", e.target.value)}
+                  value={form.name}
+                  onChange={(e) => setField("name", e.target.value)}
                   required
                 />
               </div>
 
+              {/* Description */}
               <div className="admin-field">
                 <label className="admin-label" htmlFor="pf-description">
                   Description <span className="admin-required">*</span>
@@ -215,32 +267,15 @@ const AdminProductForm = () => {
                   id="pf-description"
                   className="admin-textarea"
                   rows={5}
-                  placeholder="Describe the product in detail…"
+                  placeholder="Describe the product in detail… (min 10 characters)"
                   value={form.description}
                   onChange={(e) => setField("description", e.target.value)}
                   required
                 />
               </div>
 
+              {/* Price + Quantity row */}
               <div className="admin-pf-row">
-                <div className="admin-field">
-                  <label className="admin-label" htmlFor="pf-category">
-                    Category
-                  </label>
-                  <select
-                    id="pf-category"
-                    className="admin-select"
-                    value={form.category}
-                    onChange={(e) => setField("category", e.target.value)}
-                  >
-                    {CATEGORIES.map((c) => (
-                      <option key={c} value={c}>
-                        {c.charAt(0).toUpperCase() + c.slice(1)}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
                 <div className="admin-field">
                   <label className="admin-label" htmlFor="pf-price">
                     Price ($) <span className="admin-required">*</span>
@@ -259,90 +294,135 @@ const AdminProductForm = () => {
                 </div>
 
                 <div className="admin-field">
-                  <label className="admin-label" htmlFor="pf-stock">
-                    Stock Quantity
+                  <label className="admin-label" htmlFor="pf-quantity">
+                    Stock Quantity <span className="admin-required">*</span>
                   </label>
                   <input
-                    id="pf-stock"
+                    id="pf-quantity"
                     className="admin-input"
                     type="number"
                     min="0"
                     step="1"
                     placeholder="0"
-                    value={form.stock}
-                    onChange={(e) => setField("stock", e.target.value)}
+                    value={form.quantity}
+                    onChange={(e) => setField("quantity", e.target.value)}
+                    required
                   />
                 </div>
+              </div>
+
+              {/* Categories */}
+              <div className="admin-field">
+                <span className="admin-label">
+                  Categories <span className="admin-required">*</span>
+                </span>
+                <div className="admin-pf-cats">
+                  {CATEGORIES.map((cat) => (
+                    <button
+                      key={cat}
+                      type="button"
+                      className={`admin-pf-cat-chip${
+                        form.categories.includes(cat) ? " selected" : ""
+                      }`}
+                      onClick={() => toggleCategory(cat)}
+                    >
+                      {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                    </button>
+                  ))}
+                </div>
+                {form.categories.length === 0 && (
+                  <p className="admin-pf-cats-hint">Select at least one category</p>
+                )}
               </div>
             </div>
           </div>
 
-          {/* ── Right column ── */}
+          {/* ── Right column: Images + Visibility ── */}
           <div className="admin-pf-col">
-            {/* Image URLs */}
+
+            {/* Images */}
             <div className="admin-card">
               <h2 className="admin-pf-section-title">Images</h2>
 
-              {/* Preview */}
-              {firstValidImage && (
-                <div className="admin-pf-img-preview">
-                  <img
-                    src={firstValidImage}
-                    alt="Product preview"
-                    onError={(e) => {
-                      e.target.style.display = "none";
-                    }}
-                  />
-                  <span className="admin-pf-img-preview-label">Preview</span>
-                </div>
-              )}
-
-              <div className="admin-field" style={{ marginTop: firstValidImage ? "1rem" : 0 }}>
-                <span className="admin-label">Image URLs</span>
-                <div className="image-url-list">
-                  {form.imageUrls.map((url, idx) => (
-                    <div key={idx} className="image-url-row">
-                      <input
-                        className="admin-input image-url-input"
-                        type="url"
-                        placeholder="https://example.com/image.jpg"
-                        value={url}
-                        onChange={(e) => handleImageChange(idx, e.target.value)}
-                        aria-label={`Image URL ${idx + 1}`}
-                      />
+              {/* Existing images (edit mode) */}
+              {existingImages.length > 0 && (
+                <div className="admin-pf-img-grid">
+                  {existingImages.map((url, i) => (
+                    <div key={i} className="admin-pf-img-thumb">
+                      <img src={url} alt={`Image ${i + 1}`} />
                       <button
                         type="button"
-                        className="image-url-remove"
-                        onClick={() => removeImageUrl(idx)}
-                        aria-label={`Remove image ${idx + 1}`}
-                        title="Remove"
+                        className="admin-pf-img-remove"
+                        onClick={() => removeExistingImage(i)}
+                        aria-label="Remove image"
                       >
-                        <FiX />
+                        <FiX size={12} />
                       </button>
                     </div>
                   ))}
                 </div>
-                <button
-                  type="button"
-                  className="image-url-add"
-                  onClick={addImageUrl}
-                >
-                  <FiPlus style={{ verticalAlign: "middle", marginRight: 4 }} />
-                  Add Image URL
-                </button>
+              )}
+
+              {/* New file previews */}
+              {imagePreviews.length > 0 && (
+                <div className="admin-pf-img-grid" style={{ marginTop: existingImages.length > 0 ? "0.75rem" : 0 }}>
+                  {imagePreviews.map((url, i) => (
+                    <div key={i} className="admin-pf-img-thumb admin-pf-img-thumb--new">
+                      <img src={url} alt={`New ${i + 1}`} />
+                      <button
+                        type="button"
+                        className="admin-pf-img-remove"
+                        onClick={() => removeNewFile(i)}
+                        aria-label="Remove image"
+                      >
+                        <FiX size={12} />
+                      </button>
+                      <span className="admin-pf-img-new-badge">New</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Drop zone / upload button */}
+              <div
+                className="admin-pf-dropzone"
+                onClick={() => fileInputRef.current?.click()}
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  const dt = e.dataTransfer;
+                  if (dt.files.length) {
+                    const synth = { target: { files: dt.files, value: "" } };
+                    handleFileChange(synth);
+                  }
+                }}
+                style={{ marginTop: hasAnyImage ? "0.85rem" : 0 }}
+              >
+                <FiUpload size={22} className="admin-pf-dropzone-icon" />
+                <p className="admin-pf-dropzone-text">
+                  <strong>Click to upload</strong> or drag &amp; drop
+                </p>
+                <p className="admin-pf-dropzone-hint">PNG, JPG, WEBP — up to 10 files</p>
               </div>
+
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                multiple
+                style={{ display: "none" }}
+                onChange={handleFileChange}
+              />
             </div>
 
-            {/* Toggles & Publish */}
+            {/* Visibility toggles + submit */}
             <div className="admin-card">
               <h2 className="admin-pf-section-title">Visibility</h2>
 
               <div className="admin-pf-toggle-row">
                 <div>
                   <p className="admin-notification-label">Active</p>
-                  <p className="admin-notification-desc">
-                    Show this product in the store.
-                  </p>
+                  <p className="admin-notification-desc">Show this product in the store.</p>
                 </div>
                 <label className="admin-toggle" aria-label="Active toggle">
                   <input
@@ -357,9 +437,7 @@ const AdminProductForm = () => {
               <div className="admin-pf-toggle-row">
                 <div>
                   <p className="admin-notification-label">Featured</p>
-                  <p className="admin-notification-desc">
-                    Highlight this product on the homepage.
-                  </p>
+                  <p className="admin-notification-desc">Highlight this product on the homepage.</p>
                 </div>
                 <label className="admin-toggle" aria-label="Featured toggle">
                   <input
@@ -387,12 +465,8 @@ const AdminProductForm = () => {
                   disabled={submitting}
                 >
                   {submitting
-                    ? isEditMode
-                      ? "Saving…"
-                      : "Creating…"
-                    : isEditMode
-                    ? "Save Changes"
-                    : "Create Product"}
+                    ? isEditMode ? "Saving…" : "Creating…"
+                    : isEditMode ? "Save Changes" : "Create Product"}
                 </button>
               </div>
             </div>

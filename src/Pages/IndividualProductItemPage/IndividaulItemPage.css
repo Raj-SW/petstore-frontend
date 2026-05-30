@@ -5,7 +5,7 @@
 .ip-page {
   max-width: 1380px;
   margin: 0 auto;
-  padding: 2rem 5% 4rem;
+  padding: 2rem 5% 5rem;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -21,11 +21,12 @@
 .ip-main-card {
   background: #fff;
   border-radius: 24px;
-  border: 1px solid #f0f0f0;
+  border: 1px solid rgba(0, 28, 16, 0.07);
   padding: 2.5rem;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 3rem;
+  box-shadow: 0 4px 24px rgba(0, 28, 16, 0.05);
 }
 
 /* ── Gallery ── */
@@ -41,7 +42,8 @@
   aspect-ratio: 1 / 1;
   border-radius: 20px;
   overflow: hidden;
-  background: #f5f5f5;
+  background: var(--color-bg-warm-ivory, #f6ece3);
+  position: relative;
 }
 
 .ip-gallery-img {
@@ -49,6 +51,8 @@
   height: 100%;
   object-fit: cover;
   display: block;
+  position: absolute;
+  inset: 0;
 }
 
 .ip-gallery-thumbs {
@@ -60,13 +64,13 @@
 .ip-thumb {
   width: 70px;
   height: 70px;
-  border-radius: 10px;
+  border-radius: 12px;
   border: 2px solid transparent;
   overflow: hidden;
   cursor: pointer;
   padding: 0;
-  background: none;
-  transition: border-color 0.2s, transform 0.15s;
+  background: #f5f5f5;
+  transition: border-color 0.2s, transform 0.15s, box-shadow 0.2s;
 }
 
 .ip-thumb img {
@@ -78,10 +82,12 @@
 
 .ip-thumb:hover {
   transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .ip-thumb--active {
   border-color: var(--color-accent-gold, #d99a2b);
+  box-shadow: 0 0 0 2px rgba(217, 154, 43, 0.25);
 }
 
 /* Guarantees */
@@ -89,7 +95,7 @@
   display: flex;
   gap: 0.6rem;
   flex-wrap: wrap;
-  margin-top: 0.5rem;
+  margin-top: 0.25rem;
 }
 
 .ip-guarantee {
@@ -105,9 +111,7 @@
   font-weight: 500;
 }
 
-.ip-guarantee svg {
-  color: var(--color-accent-gold, #d99a2b);
-}
+.ip-guarantee svg { color: var(--color-accent-gold, #d99a2b); }
 
 /* Share */
 .ip-share {
@@ -116,7 +120,7 @@
   gap: 0.65rem;
   font-family: var(--font-body);
   font-size: 0.85rem;
-  color: #666;
+  color: #888;
   margin-top: 0.25rem;
 }
 
@@ -128,13 +132,14 @@
   height: 32px;
   border-radius: 50%;
   background: #f5f5f5;
-  color: #444;
-  transition: background 0.2s, color 0.2s;
+  color: #555;
+  transition: background 0.2s, color 0.2s, transform 0.15s;
 }
 
 .ip-share a:hover {
   background: var(--color-primary-forest, #001c10);
   color: #fff;
+  transform: translateY(-2px);
 }
 
 /* ── Info ── */
@@ -142,7 +147,41 @@
 .ip-info {
   display: flex;
   flex-direction: column;
-  gap: 1.2rem;
+  gap: 1.15rem;
+}
+
+/* Badges */
+.ip-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.ip-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-family: var(--font-body);
+  font-size: 0.77rem;
+  font-weight: 600;
+  padding: 0.28rem 0.75rem;
+  border-radius: 50px;
+  text-transform: capitalize;
+}
+
+.ip-badge--cat {
+  background: rgba(0, 28, 16, 0.07);
+  color: var(--color-primary-forest, #001c10);
+}
+
+.ip-badge--stock {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.ip-badge--out {
+  background: #fee2e2;
+  color: #dc2626;
 }
 
 .ip-title {
@@ -151,14 +190,23 @@
   font-size: 2rem;
   color: var(--color-primary-forest, #001c10);
   margin: 0;
-  line-height: 1.25;
+  line-height: 1.22;
 }
 
 .ip-price {
   font-family: var(--font-body);
   font-weight: 700;
-  font-size: 1.6rem;
-  color: #c0392b;
+  font-size: 1.75rem;
+  color: var(--color-accent-gold, #d99a2b);
+  margin: 0;
+}
+
+/* Description */
+.ip-description {
+  font-family: var(--font-body);
+  font-size: 0.93rem;
+  color: #555;
+  line-height: 1.7;
   margin: 0;
 }
 
@@ -167,8 +215,8 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  padding: 1.2rem;
-  background: #fafafa;
+  padding: 1.1rem 1.2rem;
+  background: var(--color-bg-warm-ivory, #f6ece3);
   border-radius: 14px;
 }
 
@@ -176,14 +224,14 @@
   display: flex;
   gap: 0.6rem;
   font-family: var(--font-body);
-  font-size: 0.88rem;
+  font-size: 0.87rem;
   color: #444;
   line-height: 1.6;
 }
 
 .ip-spec-key {
   font-weight: 600;
-  color: #222;
+  color: var(--color-primary-forest, #001c10);
   flex-shrink: 0;
   min-width: 110px;
 }
@@ -196,13 +244,13 @@
   align-items: center;
   gap: 1rem;
   flex-wrap: wrap;
-  margin-top: 0.5rem;
+  padding-top: 0.5rem;
 }
 
 .ip-qty {
   display: flex;
   align-items: center;
-  background: #f5f5f5;
+  background: var(--color-bg-warm-ivory, #f6ece3);
   border-radius: 50px;
   padding: 0.2rem;
   gap: 0.1rem;
@@ -219,20 +267,25 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.15s;
+  transition: background 0.15s, color 0.15s;
 }
 
-.ip-qty button:hover {
+.ip-qty button:hover:not(:disabled) {
   background: var(--color-accent-gold, #d99a2b);
   color: #fff;
 }
 
+.ip-qty button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
 .ip-qty span {
   font-family: var(--font-body);
-  font-weight: 600;
+  font-weight: 700;
   font-size: 0.95rem;
   color: var(--color-primary-forest, #001c10);
-  min-width: 30px;
+  min-width: 32px;
   text-align: center;
 }
 
@@ -245,9 +298,9 @@
   font-family: var(--font-body);
   font-weight: 600;
   border-radius: 50px;
-  padding: 0.7rem 1.4rem;
+  padding: 0.75rem 1.5rem;
   cursor: pointer;
-  transition: opacity 0.2s, transform 0.15s;
+  transition: background 0.2s, color 0.2s, transform 0.15s, opacity 0.2s;
   border: 1.5px solid transparent;
   font-size: 0.9rem;
 }
@@ -257,9 +310,16 @@
   color: #fff;
 }
 
-.ip-btn--primary:hover {
-  opacity: 0.9;
+.ip-btn--primary:hover:not(:disabled) {
+  background: var(--color-accent-gold, #d99a2b);
+  color: var(--color-primary-forest, #001c10);
   transform: translateY(-1px);
+}
+
+.ip-btn--primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
 }
 
 .ip-btn--cart {
@@ -276,26 +336,29 @@
 .ip-btn--secondary:hover {
   background: var(--color-primary-forest, #001c10);
   color: #fff;
+  transform: translateY(-1px);
 }
 
 /* Supplier */
 .ip-supplier {
-  margin-top: 1rem;
-  padding-top: 1.2rem;
-  border-top: 1px solid #eee;
+  margin-top: 0.5rem;
+  padding: 1.1rem 1.2rem;
+  background: var(--color-bg-warm-ivory, #f6ece3);
+  border-radius: 14px;
+  border-top: none;
 }
 
 .ip-supplier h3 {
   font-family: var(--font-body);
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 0.95rem;
   color: var(--color-primary-forest, #001c10);
-  margin: 0 0 0.5rem;
+  margin: 0 0 0.4rem;
 }
 
 .ip-supplier p {
   font-family: var(--font-body);
-  font-size: 0.88rem;
+  font-size: 0.87rem;
   color: #666;
   line-height: 1.65;
   margin: 0;
@@ -306,8 +369,9 @@
 .ip-section {
   background: #fff;
   border-radius: 24px;
-  border: 1px solid #f0f0f0;
+  border: 1px solid rgba(0, 28, 16, 0.07);
   padding: 2rem 2.5rem 2.5rem;
+  box-shadow: 0 2px 16px rgba(0, 28, 16, 0.04);
 }
 
 .ip-section-header {
@@ -322,27 +386,25 @@
 .ip-section-title {
   font-family: var(--font-body);
   font-weight: 700;
-  font-size: 1.5rem;
+  font-size: 1.45rem;
   color: var(--color-primary-forest, #001c10);
   margin: 0 0 1.5rem;
 }
 
-.ip-section-header .ip-section-title {
-  margin: 0;
-}
+.ip-section-header .ip-section-title { margin: 0; }
 
 /* Related grid */
 .ip-related-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: 1.5rem;
 }
 
 /* Empty reviews */
 .ip-empty-reviews {
   text-align: center;
-  padding: 3rem 1rem;
-  color: #888;
+  padding: 3.5rem 1rem;
+  color: #aaa;
 }
 
 .ip-empty-reviews p {
@@ -366,7 +428,7 @@
 }
 
 .ip-skeleton {
-  background: linear-gradient(90deg, #f0ebe5 25%, #f7f2ec 50%, #f0ebe5 75%);
+  background: linear-gradient(90deg, #ede8e2 25%, #f5f0ea 50%, #ede8e2 75%);
   background-size: 200% 100%;
   animation: ip-shimmer 1.4s infinite;
   border-radius: 12px;
@@ -391,7 +453,7 @@
   gap: 1rem;
   padding: 5rem 2rem;
   text-align: center;
-  color: #888;
+  color: #aaa;
 }
 
 .ip-state h2 {
@@ -409,11 +471,13 @@
   max-width: 400px;
 }
 
-.ip-state svg {
-  color: var(--color-accent-gold, #d99a2b);
-}
+.ip-state svg { color: var(--color-accent-gold, #d99a2b); }
 
 /* ── Responsive ── */
+
+@media (max-width: 1199px) {
+  .ip-main-card { gap: 2.5rem; }
+}
 
 @media (max-width: 991px) {
   .ip-main-card {
@@ -422,21 +486,31 @@
     padding: 1.5rem;
   }
 
-  .ip-skeleton-row {
-    grid-template-columns: 1fr;
-  }
+  .ip-skeleton-row { grid-template-columns: 1fr; }
 
-  .ip-section {
-    padding: 1.5rem 1.5rem 2rem;
-  }
+  .ip-section { padding: 1.5rem 1.5rem 2rem; }
+
+  .ip-gallery-main { max-width: 480px; margin: 0 auto; }
+}
+
+@media (max-width: 768px) {
+  .ip-page { padding: 1.5rem 1.2rem 4rem; }
+  .ip-related-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
 }
 
 @media (max-width: 575px) {
-  .ip-page { padding: 1rem 1rem 3rem; }
-  .ip-title { font-size: 1.5rem; }
-  .ip-price { font-size: 1.3rem; }
+  .ip-page { padding: 1rem 1rem 3rem; gap: 1.5rem; }
+  .ip-main-card { padding: 1.2rem; border-radius: 18px; }
+  .ip-title { font-size: 1.55rem; }
+  .ip-price { font-size: 1.35rem; }
   .ip-actions { flex-direction: column; align-items: stretch; }
   .ip-btn--cart { width: 100%; }
-  .ip-section-title { font-size: 1.25rem; }
+  .ip-section-title { font-size: 1.2rem; }
+  .ip-related-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+  .ip-section { padding: 1.2rem 1rem 1.5rem; }
+  .ip-thumb { width: 56px; height: 56px; }
+}
+
+@media (max-width: 380px) {
   .ip-related-grid { grid-template-columns: 1fr; }
 }
