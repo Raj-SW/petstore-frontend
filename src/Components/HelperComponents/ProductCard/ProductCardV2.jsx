@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import { useCart } from "@/context/CartContext";
 import { FaShoppingCart } from "react-icons/fa";
 import { useToast } from "@/context/ToastContext";
@@ -16,7 +17,11 @@ const ProductCardV2 = ({ id, imageUrl, title, price, description }) => {
   };
 
   return (
-    <div className="pcv2-card" onClick={() => navigate(`/product/${id}`)}>
+    <motion.div
+      className="pcv2-card"
+      onClick={() => navigate(`/product/${id}`)}
+      whileHover={{ y: -6, transition: { duration: 0.22, ease: "easeOut" } }}
+    >
       <div className="pcv2-img-wrap">
         <img src={imageUrl} alt={title} className="pcv2-img" />
       </div>
@@ -37,7 +42,7 @@ const ProductCardV2 = ({ id, imageUrl, title, price, description }) => {
           </button>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

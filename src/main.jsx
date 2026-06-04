@@ -13,6 +13,7 @@ import UserProfile from "./Pages/UserProfile.jsx";
 import ResetPassword from "./Components/Auth/ResetPassword.jsx";
 import PaymentPage from "./Pages/Payment/PaymentPage.jsx";
 import MyOrdersPage from "./Pages/MyOrders/MyOrdersPage.jsx";
+import OrderConfirmedPage from "./Pages/OrderConfirmed/OrderConfirmedPage.jsx";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import ProtectedRoute from "./Components/Auth/ProtectedRoute";
 import RoleBasedRoute from "./Components/Auth/RoleBasedRoute";
@@ -33,6 +34,9 @@ import AdminOrders from "./Pages/Admin/Orders/AdminOrders";
 import AdminAppointments from "./Pages/Admin/Appointments/AdminAppointments";
 import AdminAnalytics from "./Pages/Admin/Analytics/AdminAnalytics";
 import AdminSettings from "./Pages/Admin/Settings/AdminSettings";
+import AdminInventory     from "./Pages/Admin/Inventory/AdminInventory.jsx";
+import AdminInvoices     from "./Pages/Admin/Invoices/AdminInvoices.jsx";
+import AdminTransactions from "./Pages/Admin/Transactions/AdminTransactions.jsx";
 
 const router = createBrowserRouter([
   {
@@ -88,6 +92,14 @@ const router = createBrowserRouter([
         ),
       },
       {
+        path: "order-confirmed/:orderId",
+        element: (
+          <ProtectedRoute>
+            <OrderConfirmedPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
         path: "import-export-service",
         element: <ImportExportServicePage />,
       },
@@ -132,6 +144,18 @@ const router = createBrowserRouter([
       {
         path: "products/edit/:id",
         element: <AdminProductForm />,
+      },
+      {
+        path: "inventory",
+        element: <AdminInventory />,
+      },
+      {
+        path: "invoices",
+        element: <AdminInvoices />,
+      },
+      {
+        path: "transactions",
+        element: <AdminTransactions />,
       },
       {
         path: "users",

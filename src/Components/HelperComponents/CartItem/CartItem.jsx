@@ -1,5 +1,8 @@
+import { motion } from "framer-motion";
 import { FaTrash, FaPlus, FaMinus } from "react-icons/fa";
 import "./CartItem.css";
+
+const btnSpring = { type: "spring", stiffness: 500, damping: 18 };
 
 export const CartItem = ({
   item,
@@ -9,8 +12,21 @@ export const CartItem = ({
   showQuantityControls = true,
   showRemoveButton = true,
 }) => (
-  <div className="cart-item">
-    <img src={item.image} alt={item.name} className="cart-item-image" />
+  <motion.div
+    className="cart-item"
+    layout
+    initial={{ opacity: 0, y: 14 }}
+    animate={{ opacity: 1, y: 0 }}
+    exit={{ x: -90, opacity: 0, transition: { duration: 0.22, ease: "easeIn" } }}
+    transition={{ type: "spring", stiffness: 320, damping: 26 }}
+    whileHover={{ y: -2, transition: { type: "spring", stiffness: 400, damping: 18 } }}
+  >
+    <img
+      src={item.image}
+      alt={item.name}
+      className="cart-item-image"
+      onError={(e) => { e.target.src = "https://placehold.co/80x80"; }}
+    />
 
     <div className="cart-item-info">
       <h4 className="cart-item-name">{item.name}</h4>
@@ -19,22 +35,26 @@ export const CartItem = ({
 
     {showQuantityControls && (
       <div className="cart-item-qty">
-        <button
+        <motion.button
           type="button"
           onClick={() => onDecreaseQuantity(item.id)}
           disabled={item.quantity <= 1}
           aria-label="Decrease quantity"
+          whileTap={{ scale: 0.80 }}
+          transition={btnSpring}
         >
-          <FaMinus size={11} />
-        </button>
+          <FaMinus size={10} />
+        </motion.button>
         <span>{item.quantity}</span>
-        <button
+        <motion.button
           type="button"
           onClick={() => onIncreaseQuantity(item.id)}
           aria-label="Increase quantity"
+          whileTap={{ scale: 0.80 }}
+          transition={btnSpring}
         >
-          <FaPlus size={11} />
-        </button>
+          <FaPlus size={10} />
+        </motion.button>
       </div>
     )}
 
@@ -43,14 +63,17 @@ export const CartItem = ({
     </div>
 
     {showRemoveButton && (
-      <button
+      <motion.button
         type="button"
         className="cart-item-remove"
         onClick={() => onRemoveItem(item.id)}
         aria-label={`Remove ${item.name}`}
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.85 }}
+        transition={btnSpring}
       >
-        <FaTrash size={14} />
-      </button>
+        <FaTrash size={13} />
+      </motion.button>
     )}
-  </div>
+  </motion.div>
 );

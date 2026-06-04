@@ -1,0 +1,262 @@
+/* ================================================
+   Order Confirmed Page
+   ================================================ */
+
+.oc-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 5%;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+  background: var(--color-bg-warm-ivory, #f6ece3);
+}
+
+/* Subtle warm radial glow */
+.oc-page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(217, 154, 43, 0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* ── Floating decorations (very subtle) ── */
+
+.oc-deco {
+  position: absolute;
+  pointer-events: none;
+  opacity: 0.06;
+}
+
+.oc-deco--tl  { top:  -10px; left:  2%;  width: 80px;  transform: rotate(-15deg); animation: oc-float 6s ease-in-out infinite; }
+.oc-deco--tr  { top:   15px; right: 3%;  width: 50px;  transform: rotate(20deg);  animation: oc-float 5s ease-in-out infinite 0.8s; }
+.oc-deco--bl  { bottom: -5px; left:  7%; width: 65px;  transform: rotate(10deg);  animation: oc-float 7s ease-in-out infinite 1.5s; }
+.oc-deco--br  { bottom: 10px; right: 5%; width: 42px;  transform: rotate(-22deg); animation: oc-float 5.5s ease-in-out infinite 0.4s; }
+.oc-deco--mid { top: 38%; left: 1%;     width: 55px;  transform: rotate(5deg);   animation: oc-float 8s ease-in-out infinite 2s; }
+
+@keyframes oc-float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-10px); }
+}
+
+/* ── Inner content ── */
+
+.oc-inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  max-width: 540px;
+  width: 100%;
+  text-align: center;
+}
+
+/* ── Animated checkmark ── */
+
+.oc-check-wrap { will-change: transform; }
+
+.oc-check-svg {
+  width: 100px;
+  height: 100px;
+  filter: drop-shadow(0 6px 18px rgba(0, 28, 16, 0.15));
+}
+
+/* ── Headline ── */
+
+.oc-title {
+  font-family: var(--font-display, 'Bebas Neue', sans-serif);
+  font-size: clamp(2.4rem, 6vw, 4rem);
+  letter-spacing: 0.04em;
+  color: var(--color-primary-forest, #001c10);
+  margin: 0;
+  line-height: 1.0;
+}
+
+.oc-subtitle {
+  font-family: var(--font-body);
+  font-size: 0.97rem;
+  color: var(--color-text-muted, #62573c);
+  margin: 0;
+  max-width: 400px;
+  line-height: 1.65;
+}
+
+/* ── Order card ── */
+
+.oc-card {
+  background: #fff;
+  border: 1px solid rgba(0, 28, 16, 0.09);
+  border-radius: 24px;
+  box-shadow: 0 6px 28px rgba(0, 28, 16, 0.08);
+  padding: 1.5rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.oc-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(0, 28, 16, 0.07);
+}
+
+.oc-order-label {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #aaa;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.oc-order-id {
+  font-family: monospace;
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: var(--color-primary-forest, #001c10);
+  background: var(--color-bg-warm-ivory, #f6ece3);
+  padding: 0.2rem 0.75rem;
+  border-radius: 8px;
+  letter-spacing: 0.06em;
+}
+
+/* ── Items ── */
+
+.oc-items {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.oc-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.oc-item-img {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  object-fit: cover;
+  border: 1px solid #f0f0f0;
+  flex-shrink: 0;
+  background: var(--color-bg-warm-ivory, #f6ece3);
+}
+
+.oc-item-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+  text-align: left;
+}
+
+.oc-item-name {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--color-primary-forest, #001c10);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.oc-item-qty {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  color: #aaa;
+}
+
+.oc-item-price {
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--color-primary-forest, #001c10);
+  white-space: nowrap;
+}
+
+/* ── Total row ── */
+
+.oc-total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(0, 28, 16, 0.07);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.oc-total-row strong {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--color-primary-forest, #001c10);
+}
+
+/* ── CTAs ── */
+
+.oc-ctas {
+  display: flex;
+  gap: 0.9rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.oc-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.92rem;
+  border-radius: 50px;
+  padding: 0.8rem 1.8rem;
+  cursor: pointer;
+  will-change: transform;
+  transition: background 0.2s, color 0.2s, opacity 0.2s, transform 0.18s;
+}
+
+.oc-btn--primary {
+  background: var(--color-primary-forest, #001c10);
+  color: #fff;
+  border: none;
+}
+
+.oc-btn--primary:hover {
+  background: var(--color-accent-gold, #d99a2b);
+  color: var(--color-primary-forest, #001c10);
+}
+
+.oc-btn--outline {
+  background: transparent;
+  color: var(--color-primary-forest, #001c10);
+  border: 1.5px solid rgba(0, 28, 16, 0.35);
+}
+
+.oc-btn--outline:hover {
+  background: rgba(0, 28, 16, 0.05);
+  border-color: rgba(0, 28, 16, 0.55);
+}
+
+/* ── Responsive ── */
+
+@media (max-width: 575px) {
+  .oc-page { padding: 3rem 1.2rem; }
+  .oc-check-svg { width: 82px; height: 82px; }
+  .oc-ctas { flex-direction: column; }
+  .oc-btn { width: 100%; }
+  .oc-card { padding: 1.2rem; border-radius: 18px; }
+}

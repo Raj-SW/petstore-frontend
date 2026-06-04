@@ -1,0 +1,21 @@
+/* CartoonTheme.css — intentionally empty.
+   Cartoon overrides removed; project follows its original warm/premium design system.
+   Color tokens below are kept for internal use but no visual overrides are applied. */
+
+:root {
+  /* Fun accent palette (available if needed for specific badges/highlights) */
+  --cartoon-coral:    #FF6370;
+  --cartoon-teal:     #00BFA5;
+  --cartoon-sunny:    #FFD32D;
+  --cartoon-mint:     #88D8B0;
+  --cartoon-sky:      #74C6E8;
+  --cartoon-blush:    #FFAEB3;
+  --cartoon-lavender: #C3B1E1;
+
+  /* Shadow / border helpers used by checkout components */
+  --cshadow-sm: 0 2px 10px rgba(0, 28, 16, 0.08);
+  --cshadow:    0 4px 20px rgba(0, 28, 16, 0.10);
+  --cshadow-lg: 0 8px 32px rgba(0, 28, 16, 0.12);
+  --cborder:    1px solid rgba(0, 28, 16, 0.10);
+  --cborder-sm: 1px solid rgba(0, 28, 16, 0.08);
+}
