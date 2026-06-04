@@ -10,13 +10,14 @@
   cursor: pointer;
   flex-shrink: 0;
   border: 1px solid rgba(0, 28, 16, 0.07);
-  box-shadow: 0 2px 12px rgba(0, 28, 16, 0.05);
-  transition: transform 0.28s ease, box-shadow 0.28s ease;
+  box-shadow: 0 2px 12px rgba(0, 28, 16, 0.06);
+  will-change: transform;
+  overflow: hidden;
 }
 
+/* Hover shadow grows — y-lift handled by Framer Motion */
 .pcv2-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 12px 32px rgba(0, 28, 16, 0.13);
+  box-shadow: 0 10px 28px rgba(0, 28, 16, 0.12);
 }
 
 /* ── Image ── */
@@ -27,32 +28,32 @@
 
 .pcv2-img {
   width: 100%;
-  height: 260px;
+  height: 240px;
   object-fit: cover;
   border-radius: 10px;
   display: block;
-  background: #e5e5e5;
+  background: var(--color-bg-warm-ivory, #f6ece3);
   transition: transform 0.35s ease;
 }
 
 .pcv2-card:hover .pcv2-img {
-  transform: scale(1.03);
+  transform: scale(1.04);
 }
 
 /* ── Info ── */
 
 .pcv2-info {
-  padding: 0.8rem 0.9rem 0.9rem;
+  padding: 0.85rem 1rem 1rem;
   display: flex;
   flex-direction: column;
-  gap: 0.28rem;
+  gap: 0.3rem;
 }
 
 .pcv2-name {
   font-family: var(--font-body);
-  font-weight: 500;
-  font-size: 1rem;
-  color: #111;
+  font-weight: 600;
+  font-size: 0.97rem;
+  color: var(--color-text-default, #0b2016);
   margin: 0;
   white-space: nowrap;
   overflow: hidden;
@@ -61,7 +62,7 @@
 
 .pcv2-desc {
   font-family: var(--font-body);
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   color: #999;
   margin: 0;
   line-height: 1.45;
@@ -77,53 +78,42 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 0.5rem;
+  margin-top: 0.55rem;
 }
 
 .pcv2-price {
   font-family: var(--font-body);
-  font-weight: 600;
+  font-weight: 700;
   font-size: 1.05rem;
-  color: #c0392b;
+  color: var(--color-primary-forest, #001c10);
 }
 
-/* Cart icon — no background, green, turns gold on hover */
+/* Cart icon */
 .pcv2-cart-btn {
   background: transparent;
   border: none;
   color: var(--color-primary-forest, #001c10);
   cursor: pointer;
-  padding: 4px;
+  padding: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: color 0.22s ease, transform 0.2s ease;
+  border-radius: 50%;
+  will-change: transform;
+  transition: color 0.2s;
 }
 
 .pcv2-cart-btn:hover {
   color: var(--color-accent-gold, #d99a2b);
-  transform: scale(1.15);
 }
 
 /* ── Responsive ── */
 
 @media (max-width: 991px) {
-  .pcv2-card {
-    width: 300px;
-  }
-
-  .pcv2-img {
-    height: 220px;
-  }
+  .pcv2-img { height: 210px; }
 }
 
 @media (max-width: 575px) {
-  .pcv2-card {
-    width: 100%;
-    max-width: 420px;
-  }
-
-  .pcv2-img {
-    height: 200px;
-  }
+  .pcv2-card { width: 100%; max-width: 420px; }
+  .pcv2-img  { height: 190px; }
 }

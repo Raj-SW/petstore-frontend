@@ -14,6 +14,9 @@ import {
   FiX,
   FiLogOut,
   FiUserCheck,
+  FiBox,
+  FiFileText,
+  FiCreditCard,
 } from "react-icons/fi";
 
 const AdminLayout = () => {
@@ -46,6 +49,21 @@ const AdminLayout = () => {
       title: "Products",
       path: "/admin/products",
       icon: <FiPackage className="menu-icon" />,
+    },
+    {
+      title: "Inventory",
+      path: "/admin/inventory",
+      icon: <FiBox className="menu-icon" />,
+    },
+    {
+      title: "Invoices",
+      path: "/admin/invoices",
+      icon: <FiFileText className="menu-icon" />,
+    },
+    {
+      title: "Transactions",
+      path: "/admin/transactions",
+      icon: <FiCreditCard className="menu-icon" />,
     },
     {
       title: "Orders",
