@@ -1,6 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
+import axios from "axios";
 import "./ContactSection.css";
+
+const API_URL = import.meta.env.VITE_NODE_API_URL;
 
 const PROMO_SLIDES = [
   {
@@ -34,6 +37,7 @@ const slideVariants = {
 const ContactSection = () => {
   const [[activeSlide, dir], setSlide] = useState([0, 1]);
   const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [status, setStatus] = useState("idle"); // idle | loading | success | error
 
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, amount: 0.2 });
@@ -53,11 +57,16 @@ const ContactSection = () => {
   const handleChange = (e) =>
     setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // wire to backend later
-    alert("Message sent! We'll get back to you shortly.");
-    setForm({ name: "", email: "", message: "" });
+    setStatus("loading");
+    try {
+      await axios.post(`${API_URL}/contact`, form);
+      setStatus("success");
+      setForm({ name: "", email: "", message: "" });
+    } catch {
+      setStatus("error");
+    }
   };
 
   return (
@@ -117,9 +126,29 @@ const ContactSection = () => {
               />
             </div>
 
-            <button className="cs-submit" type="submit">
-              Send Message
+            <button
+              className="cs-submit"
+              type="submit"
+              disabled={status === "loading"}
+            >
+              {status === "loading" ? (
+                <>
+                  <span className="cs-spinner" />
+                  Sending…
+                </>
+              ) : "Send Message"}
             </button>
+
+            {status === "success" && (
+              <p className="cs-feedback cs-feedback--success">
+                ✓ Message sent! We'll get back to you shortly.
+              </p>
+            )}
+            {status === "error" && (
+              <p className="cs-feedback cs-feedback--error">
+                Something went wrong. Please try again.
+              </p>
+            )}
           </form>
         </motion.div>
 

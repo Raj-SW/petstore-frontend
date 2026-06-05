@@ -119,6 +119,53 @@
   transform: translateY(0);
 }
 
+.cs-submit:disabled {
+  opacity: 0.75;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.cs-submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.cs-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: cs-spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes cs-spin {
+  to { transform: rotate(360deg); }
+}
+
+.cs-feedback {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 500;
+  margin: 0;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.cs-feedback--success {
+  background: #f0faf5;
+  color: #2c7a4b;
+}
+
+.cs-feedback--error {
+  background: #fff5f5;
+  color: #c0392b;
+}
+
 /* ════════════════════════════════
    Right — promo card
 ════════════════════════════════ */
