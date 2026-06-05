@@ -104,8 +104,8 @@ const FeaturedProductSection = () => {
                 <ProductCard
                   key={product._id || product.id}
                   id={product._id || product.id}
-                  imageUrl={product.images?.[0] || product.imageUrl}
-                  title={product.title}
+                  imageUrl={product.images?.[0]?.url || product.images?.[0] || product.imageUrl}
+                  title={product.name || product.title}
                   price={product.price}
                   description={product.description}
                 />

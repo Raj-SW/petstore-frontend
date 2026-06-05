@@ -60,7 +60,7 @@ class ProductService {
         page: params.page || 1,
         limit: params.limit || 10,
         sort: params.sort || "-createdAt",
-        ...(params.category && { category: params.category }),
+        ...(params.category && { categories: params.category }),
         ...(params.minPrice && { minPrice: params.minPrice }),
         ...(params.maxPrice && { maxPrice: params.maxPrice }),
         ...(params.minRating && { minRating: params.minRating }),
@@ -199,7 +199,7 @@ class ProductService {
   static transformProductData(product) {
     return {
       id: product._id || product.id,
-      title: product.title,
+      title: product.name || product.title,
       description: product.description,
       price: product.price,
       category: product.category,
@@ -222,7 +222,7 @@ class ProductService {
     return this.debounceRequest(cacheKey, async () => {
       try {
         const response = await this.handleRequest(
-          `${this.API_URL}/products?category=${category}`
+          `${this.API_URL}/products/category/${encodeURIComponent(category)}`
         );
         return response.data.success ? response.data.data : [];
       } catch (error) {
@@ -236,7 +236,7 @@ class ProductService {
   static async fetchProductsByApparel() {
     try {
       const response = await this.handleRequest(
-        `${this.API_URL}/products?category=apparel`
+        `${this.API_URL}/products?categories=apparel`
       );
       return response.data.success ? response.data.data : [];
     } catch (error) {
@@ -262,7 +262,7 @@ class ProductService {
   static async fetchRelatedProducts(category, currentProductId) {
     try {
       const response = await this.handleRequest(
-        `${this.API_URL}/products?category=${category}&limit=4`
+        `${this.API_URL}/products/category/${encodeURIComponent(category)}`
       );
 
       if (!response.data.success) {
@@ -364,7 +364,7 @@ class ProductService {
         page: params.page || 1,
         limit: params.limit || 10,
         sort: params.sort || "-createdAt",
-        ...(filters.category && { category: filters.category }),
+        ...(filters.category && { categories: filters.category }),
         ...(filters.minPrice && { minPrice: filters.minPrice }),
         ...(filters.maxPrice && { maxPrice: filters.maxPrice }),
         ...(filters.minRating && { minRating: filters.minRating }),
