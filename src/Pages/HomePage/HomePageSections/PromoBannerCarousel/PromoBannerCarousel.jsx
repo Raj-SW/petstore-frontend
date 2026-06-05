@@ -81,10 +81,11 @@ const PromoBannerCarousel = () => {
             exit="exit"
             transition={{ duration: 0.52, ease: [0.4, 0, 0.2, 1] }}
           >
-            {/* Responsive images via CSS classes */}
-            <img src={slide.desktop} alt={slide.alt} className="pbc-img pbc-img--desktop" />
-            <img src={slide.tablet}  alt={slide.alt} className="pbc-img pbc-img--tablet" />
-            <img src={slide.mobile}  alt={slide.alt} className="pbc-img pbc-img--mobile" />
+            <picture>
+              <source media="(max-width: 575px)"  srcSet={slide.mobile} />
+              <source media="(max-width: 1024px)" srcSet={slide.tablet} />
+              <img src={slide.desktop} alt={slide.alt} className="pbc-img" />
+            </picture>
           </motion.div>
         </AnimatePresence>
       </div>
