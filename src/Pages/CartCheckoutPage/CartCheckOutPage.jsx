@@ -149,7 +149,7 @@ const CartCheckoutPage = () => {
                 </div>
 
                 <div className="cart-items-list">
-                  <AnimatePresence mode="popLayout" initial={false}>
+                  <AnimatePresence initial={false}>
                     {items.map(item => (
                       <CartItem
                         key={item.id}
