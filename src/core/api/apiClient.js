@@ -42,9 +42,15 @@ apiClient.interceptors.response.use(
         window.dispatchEvent(new CustomEvent("auth:logout"));
       }
 
+      // 413 from Vercel/nginx comes back as HTML with no JSON body
+      const message =
+        status === 413
+          ? "File too large. Please use images under 4 MB and try again."
+          : data?.message || data?.error || "An error occurred";
+
       return Promise.reject({
         status,
-        message: data?.message || data?.error || "An error occurred",
+        message,
         data: data,
         originalError: error,
       });

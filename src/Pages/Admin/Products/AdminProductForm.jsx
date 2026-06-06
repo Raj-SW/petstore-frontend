@@ -98,15 +98,29 @@ const AdminProductForm = () => {
   };
 
   // ── File handling ──
+  const MAX_FILE_SIZE_MB = 4;
+  const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
+
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
     if (!files.length) return;
 
-    const newPreviews = files.map((f) => URL.createObjectURL(f));
-    setImageFiles((prev) => [...prev, ...files]);
+    const oversized = files.filter((f) => f.size > MAX_FILE_SIZE_BYTES);
+    if (oversized.length > 0) {
+      const names = oversized.map((f) => f.name).join(", ");
+      addToast(
+        `${oversized.length > 1 ? "These files are" : `"${names}" is`} too large. Maximum size is ${MAX_FILE_SIZE_MB}MB per image.`,
+        "error"
+      );
+    }
+
+    const valid = files.filter((f) => f.size <= MAX_FILE_SIZE_BYTES);
+    if (!valid.length) { e.target.value = ""; return; }
+
+    const newPreviews = valid.map((f) => URL.createObjectURL(f));
+    setImageFiles((prev) => [...prev, ...valid]);
     setImagePreviews((prev) => [...prev, ...newPreviews]);
 
-    // Reset the input so the same file can be re-added after removal
     e.target.value = "";
   };
 
@@ -404,7 +418,7 @@ const AdminProductForm = () => {
                 <p className="admin-pf-dropzone-text">
                   <strong>Click to upload</strong> or drag &amp; drop
                 </p>
-                <p className="admin-pf-dropzone-hint">PNG, JPG, WEBP — up to 10 files</p>
+                <p className="admin-pf-dropzone-hint">PNG, JPG, WEBP · max 4 MB per image · up to 10 files</p>
               </div>
 
               <input
