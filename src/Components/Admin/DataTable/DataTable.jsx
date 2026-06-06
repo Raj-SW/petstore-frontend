@@ -31,6 +31,7 @@ const DataTable = ({
   itemsPerPage = 10,
   showActions = true,
   customActions = null,
+  hideSearch = false,
 }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
@@ -131,16 +132,18 @@ const DataTable = ({
     <div className="data-table-container">
       {/* Table Controls */}
       <div className="table-controls">
-        <div className="search-box">
-          <input
-            type="text"
-            placeholder="Search..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="search-input"
-            aria-label="Search table data"
-          />
-        </div>
+        {!hideSearch && (
+          <div className="search-box">
+            <input
+              type="text"
+              placeholder="Search..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="search-input"
+              aria-label="Search table data"
+            />
+          </div>
+        )}
         <div className="items-per-page">
           <label htmlFor="items-per-page">Show:</label>
           <select
