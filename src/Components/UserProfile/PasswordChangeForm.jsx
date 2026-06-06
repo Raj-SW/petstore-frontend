@@ -1,64 +1,145 @@
-import { Modal, Form, Button } from "react-bootstrap";
-import { PasswordChangeDTO } from "../../models";
+import { useState } from "react";
+import { createPortal } from "react-dom";
+import { AnimatePresence, motion } from "framer-motion";
+import { FaTimes, FaKey, FaExclamationCircle } from "react-icons/fa";
+import "./ProfileModals.css";
 
 const PasswordChangeForm = ({ show, onHide, onSubmit, isLoading }) => {
+  const [formData, setFormData] = useState({
+    currentPassword: "", newPassword: "", confirmPassword: "",
+  });
+  const [validationError, setValidationError] = useState("");
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+    setValidationError("");
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    const formData = new FormData(e.target);
-    const passwordData = {
-      oldPassword: formData.get("currentPassword"),
-      newPassword: formData.get("newPassword"),
-    };
+    setValidationError("");
 
-    const passwordDTO = new PasswordChangeDTO(passwordData);
-    const { isValid, errors } = passwordDTO.validate();
-
-    if (!isValid) {
-      // Handle validation errors
+    if (formData.newPassword.length < 6) {
+      setValidationError("New password must be at least 6 characters.");
+      return;
+    }
+    if (formData.newPassword !== formData.confirmPassword) {
+      setValidationError("New passwords do not match.");
       return;
     }
 
-    onSubmit(passwordData);
+    onSubmit({
+      oldPassword: formData.currentPassword,
+      newPassword: formData.newPassword,
+    });
   };
 
-  return (
-    <Modal show={show} onHide={onHide} centered>
-      <Modal.Header closeButton>
-        <Modal.Title>Change Password</Modal.Title>
-      </Modal.Header>
-      <Form onSubmit={handleSubmit}>
-        <Modal.Body>
-          <Form.Group className="mb-3">
-            <Form.Label>Current Password</Form.Label>
-            <Form.Control type="password" name="currentPassword" required />
-          </Form.Group>
+  const handleClose = () => {
+    setFormData({ currentPassword: "", newPassword: "", confirmPassword: "" });
+    setValidationError("");
+    onHide();
+  };
 
-          <Form.Group className="mb-3">
-            <Form.Label>New Password</Form.Label>
-            <Form.Control
-              type="password"
-              name="newPassword"
-              required
-              minLength={6}
-            />
-          </Form.Group>
+  return createPortal(
+    <AnimatePresence>
+      {show && (
+        <motion.div
+          className="pm-backdrop"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
+          onClick={handleClose}
+        >
+          <motion.div
+            className="pm-modal"
+            initial={{ opacity: 0, scale: 0.94, y: 24 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.96, y: 12 }}
+            transition={{ type: "spring", stiffness: 340, damping: 28 }}
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="pm-header">
+              <div className="pm-header-icon">
+                <FaKey size={15} />
+              </div>
+              <h3 className="pm-title">Change Password</h3>
+              <button type="button" className="pm-close" onClick={handleClose} aria-label="Close">
+                <FaTimes size={13} />
+              </button>
+            </div>
 
-          <Form.Group className="mb-3">
-            <Form.Label>Confirm New Password</Form.Label>
-            <Form.Control type="password" name="confirmPassword" required />
-          </Form.Group>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={onHide}>
-            Cancel
-          </Button>
-          <Button variant="primary" type="submit" disabled={isLoading}>
-            {isLoading ? "Changing..." : "Change Password"}
-          </Button>
-        </Modal.Footer>
-      </Form>
-    </Modal>
+            <form onSubmit={handleSubmit}>
+              <div className="pm-body">
+                {validationError && (
+                  <div className="pm-global-err">
+                    <FaExclamationCircle size={14} />
+                    <span>{validationError}</span>
+                  </div>
+                )}
+
+                <div className="pm-field">
+                  <label className="pm-label">Current Password</label>
+                  <input
+                    className="pm-input"
+                    type="password"
+                    name="currentPassword"
+                    value={formData.currentPassword}
+                    onChange={handleChange}
+                    placeholder="Enter current password"
+                    required
+                    autoComplete="current-password"
+                  />
+                </div>
+
+                <p className="pm-section">New Password</p>
+
+                <div className="pm-field">
+                  <label className="pm-label">New Password</label>
+                  <input
+                    className="pm-input"
+                    type="password"
+                    name="newPassword"
+                    value={formData.newPassword}
+                    onChange={handleChange}
+                    placeholder="At least 6 characters"
+                    required
+                    minLength={6}
+                    autoComplete="new-password"
+                  />
+                </div>
+
+                <div className="pm-field">
+                  <label className="pm-label">Confirm New Password</label>
+                  <input
+                    className="pm-input"
+                    type="password"
+                    name="confirmPassword"
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    placeholder="Repeat new password"
+                    required
+                    autoComplete="new-password"
+                  />
+                </div>
+              </div>
+
+              <div className="pm-footer">
+                <button type="button" className="pm-btn pm-btn--ghost" onClick={handleClose}>
+                  Cancel
+                </button>
+                <button type="submit" className="pm-btn pm-btn--primary" disabled={isLoading}>
+                  {isLoading ? <><span className="pm-spinner" /> Updating…</> : "Change Password"}
+                </button>
+              </div>
+            </form>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>,
+    document.body
   );
 };
 
-export default PasswordChangeForm;
+export { PasswordChangeForm as default };

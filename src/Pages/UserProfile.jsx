@@ -11,6 +11,7 @@ import PetForm from "../Components/UserProfile/PetForm";
 import PetList from "../Components/UserProfile/PetList";
 import ProfileForm from "../Components/UserProfile/ProfileForm";
 import PasswordChangeForm from "../Components/UserProfile/PasswordChangeForm";
+import ConfirmModal from "../Components/UserProfile/ConfirmModal";
 import { User, Pet } from "../models";
 import { useAuth } from "@/context/AuthContext";
 import usersApi from "@/Services/api/usersApi";
@@ -25,6 +26,8 @@ const UserProfile = () => {
   const [showPetModal, setShowPetModal] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [petToDelete, setPetToDelete] = useState(null);
   const [selectedPet, setSelectedPet] = useState(null);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -64,8 +67,9 @@ const UserProfile = () => {
     setError("");
     try {
       if (selectedPet) {
-        const updated = await usersApi.updatePet(selectedPet.id, petData);
-        setPets((prev) => prev.map((p) => p.id === selectedPet.id ? new Pet(updated.data) : p));
+        const petId = selectedPet._id || selectedPet.id;
+        const updated = await UserProfileService.updatePet(petId, petData);
+        setPets((prev) => prev.map((p) => (p._id || p.id) === petId ? { ...updated.data } : p));
         setSuccessMessage("Pet updated successfully!");
       } else {
         const created = await UserProfileService.addPet(petData);
@@ -115,18 +119,24 @@ const UserProfile = () => {
     }
   };
 
-  const handleDeletePet = async (petId) => {
-    if (!window.confirm("Are you sure you want to delete this pet?")) return;
+  const handleDeletePet = (petId) => {
+    setPetToDelete(petId);
+    setShowConfirmModal(true);
+  };
+
+  const confirmDeletePet = async () => {
+    setShowConfirmModal(false);
     setIsLoading(true);
     setError("");
     try {
-      await UserProfileService.deletePet(petId);
-      setPets((prev) => prev.filter((p) => p.id !== petId));
+      await UserProfileService.deletePet(petToDelete);
+      setPets((prev) => prev.filter((p) => (p._id || p.id) !== petToDelete));
       setSuccessMessage("Pet deleted successfully!");
     } catch (err) {
       setError(err.message);
     } finally {
       setIsLoading(false);
+      setPetToDelete(null);
     }
   };
 
@@ -277,6 +287,14 @@ const UserProfile = () => {
         onHide={() => setShowPasswordModal(false)}
         onSubmit={handlePasswordChange}
         isLoading={isLoading}
+      />
+      <ConfirmModal
+        show={showConfirmModal}
+        title="Delete Pet"
+        message="Are you sure you want to delete this pet? This action cannot be undone."
+        confirmLabel="Delete Pet"
+        onConfirm={confirmDeletePet}
+        onCancel={() => { setShowConfirmModal(false); setPetToDelete(null); }}
       />
     </div>
   );
