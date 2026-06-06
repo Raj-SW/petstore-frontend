@@ -397,6 +397,7 @@ const IndividualProductItemPage = () => {
 
       {/* Modals */}
       <ProductReviewFormModal
+        key={editingReview?._id ?? "new"}
         showReviewModal={showReviewModal}
         onClose={() => { setShowReviewModal(false); setEditingReview(null); }}
         productId={id}
