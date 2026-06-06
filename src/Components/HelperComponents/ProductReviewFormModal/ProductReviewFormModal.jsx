@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { FaTimes, FaStar, FaSpinner } from "react-icons/fa";
@@ -15,14 +15,6 @@ const ProductReviewFormModal = ({ showReviewModal, onClose, productId, onReviewS
   const [comment,     setComment]     = useState(existingReview?.comment ?? "");
   const [submitting,  setSubmitting]  = useState(false);
   const [error,       setError]       = useState("");
-
-  // Sync form state when existingReview changes (e.g. opening edit for a different review)
-  useEffect(() => {
-    setRating(existingReview?.rating ?? 5);
-    setComment(existingReview?.comment ?? "");
-    setError("");
-    setHovered(0);
-  }, [existingReview]);
 
   const handleClose = () => {
     setRating(5); setComment(""); setError(""); setHovered(0);

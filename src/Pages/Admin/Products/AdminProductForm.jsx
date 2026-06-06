@@ -59,11 +59,9 @@ const AdminProductForm = () => {
           isFeatured: p.isFeatured ?? false,
         });
 
-        // Store existing image URLs for preview
-        const imgs = Array.isArray(p.imageUrls) && p.imageUrls.length > 0
-          ? p.imageUrls
-          : Array.isArray(p.images) && p.images.length > 0
-          ? p.images
+        // Extract URL strings from {url, publicId} objects
+        const imgs = Array.isArray(p.images) && p.images.length > 0
+          ? p.images.map((img) => (typeof img === "object" ? img.url : img)).filter(Boolean)
           : p.imageUrl
           ? [p.imageUrl]
           : [];
@@ -144,6 +142,14 @@ const AdminProductForm = () => {
       addToast("Select at least one category.", "error");
       return false;
     }
+    if (!isEditMode && imageFiles.length === 0) {
+      addToast("At least one product image is required.", "error");
+      return false;
+    }
+    if (isEditMode && existingImages.length === 0 && imageFiles.length === 0) {
+      addToast("At least one product image is required.", "error");
+      return false;
+    }
     return true;
   };
 
@@ -184,12 +190,8 @@ const AdminProductForm = () => {
       }
       navigate("/admin/products");
     } catch (err) {
-      const msg =
-        err?.response?.data?.message ||
-        err?.message ||
-        (isEditMode ? "Failed to update product." : "Failed to create product.");
+      const msg = err?.message || (isEditMode ? "Failed to update product." : "Failed to create product.");
       addToast(msg, "error");
-      console.error("Product submit error:", err);
     } finally {
       setSubmitting(false);
     }

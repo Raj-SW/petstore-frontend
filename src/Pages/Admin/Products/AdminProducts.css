@@ -77,6 +77,131 @@
 .status-badge.active   { background: #dcfce7; color: #16a34a; }
 .status-badge.inactive { background: #f3f4f6; color: #6b7280; }
 
+/* ── Stats cards ── */
+.ap-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.ap-stat-card {
+  background: #fff;
+  border: 1.5px solid rgba(0, 28, 16, 0.07);
+  border-radius: 14px;
+  padding: 1.1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 28, 16, 0.04);
+}
+
+.ap-stat-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ap-stat-icon--total  { background: #e8f5e9; color: #2e7d32; }
+.ap-stat-icon--active { background: #e3f2fd; color: #1565c0; }
+.ap-stat-icon--low    { background: #fff8e1; color: #f57f17; }
+.ap-stat-icon--out    { background: #fce4ec; color: #c62828; }
+
+.ap-stat-value {
+  font-family: var(--font-body);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--color-primary-forest);
+  margin: 0 0 0.1rem;
+  line-height: 1;
+}
+
+.ap-stat-label {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+  margin: 0;
+  font-weight: 500;
+}
+
+@media (max-width: 900px) {
+  .ap-stats { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 480px) {
+  .ap-stats { grid-template-columns: 1fr; }
+}
+
+/* ── Filter bar ── */
+.ap-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 2rem;
+  margin-bottom: 1.25rem;
+  padding: 1rem 1.25rem;
+  background: #fff;
+  border: 1.5px solid rgba(0, 28, 16, 0.07);
+  border-radius: 14px;
+}
+
+.ap-filter-group {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.ap-filter-label {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.ap-filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.ap-filter-chip {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.3rem 0.8rem;
+  border-radius: 50px;
+  border: 1.5px solid #ddd;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+
+.ap-filter-chip:hover {
+  border-color: var(--color-primary-forest);
+  color: var(--color-primary-forest);
+}
+
+.ap-filter-chip--on {
+  border-color: var(--color-primary-forest);
+  background: var(--color-primary-forest);
+  color: #fff;
+}
+
+/* ── Multi-category cell ── */
+.product-cats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
 /* ── Shared admin modal ── */
 .admin-modal-backdrop {
   position: fixed;
