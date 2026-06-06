@@ -59,11 +59,15 @@ const AdminProductForm = () => {
           isFeatured: p.isFeatured ?? false,
         });
 
-        // Extract URL strings from {url, publicId} objects
+        // Keep full {url, publicId} objects so the backend can clean up removed images
         const imgs = Array.isArray(p.images) && p.images.length > 0
-          ? p.images.map((img) => (typeof img === "object" ? img.url : img)).filter(Boolean)
+          ? p.images.map((img) =>
+              typeof img === "object"
+                ? { url: img.url, publicId: img.publicId || "" }
+                : { url: img, publicId: "" }
+            ).filter((img) => img.url)
           : p.imageUrl
-          ? [p.imageUrl]
+          ? [{ url: p.imageUrl, publicId: "" }]
           : [];
         setExistingImages(imgs);
       } catch (err) {
@@ -181,12 +185,12 @@ const AdminProductForm = () => {
     formData.append("isActive", form.isActive);
     formData.append("isFeatured", form.isFeatured);
 
-    // Attach image files
+    // Attach new image files
     imageFiles.forEach((file) => formData.append("images", file));
 
-    // For edit: signal whether images changed
     if (isEditMode) {
-      formData.append("imagesChanged", imageFiles.length > 0 ? "true" : "false");
+      // Always send keepImages so the backend knows which existing images to preserve
+      formData.append("keepImages", JSON.stringify(existingImages));
     }
 
     try {
@@ -363,9 +367,9 @@ const AdminProductForm = () => {
               {/* Existing images (edit mode) */}
               {existingImages.length > 0 && (
                 <div className="admin-pf-img-grid">
-                  {existingImages.map((url, i) => (
+                  {existingImages.map((img, i) => (
                     <div key={i} className="admin-pf-img-thumb">
-                      <img src={url} alt={`Image ${i + 1}`} />
+                      <img src={img.url} alt={`Image ${i + 1}`} />
                       <button
                         type="button"
                         className="admin-pf-img-remove"
