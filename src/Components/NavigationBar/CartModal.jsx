@@ -32,7 +32,7 @@ const CartModal = ({ show, onHide }) => {
   const handleRemoveItem = (id) => {
     const item = items.find((i) => i.id === id);
     if (item) {
-      showCartToast("remove", item.title);
+      showCartToast("remove", item.name || item.title);
       removeItem(id);
     }
   };
@@ -99,7 +99,7 @@ const CartModal = ({ show, onHide }) => {
                       key={item.id}
                       item={{
                         ...item,
-                        name: item.title,
+                        name: item.name || item.title,
                         image: item.image,
                         quantity: item.quantity || 1,
                         price: item.price,

@@ -1,5 +1,5 @@
 // frontend/src/context/CartContext.jsx
-import { createContext, useContext, useEffect, useCallback } from "react";
+import { createContext, useContext, useEffect, useCallback, useRef } from "react";
 import { CartProvider as RUCProvider, useCart as useRUCCart } from "react-use-cart";
 import { useAuth } from "./AuthContext";
 import cartApi from "../Services/api/cartApi";
@@ -13,6 +13,11 @@ const CartSyncCtx = createContext(null);
 function CartSyncLayer({ children }) {
   const { user } = useAuth();
   const ruc = useRUCCart();
+  // Always keep a ref to the latest ruc so stale useCallback closures never
+  // check an outdated items array (which causes "No such item to update" and
+  // duplicate-item bugs when cart is restored from the backend after login).
+  const rucRef = useRef(ruc);
+  rucRef.current = ruc;
 
   // On login: fetch backend cart and populate local state.
   // On logout: clear local cart.
@@ -31,7 +36,7 @@ function CartSyncLayer({ children }) {
             id: item.product?._id || item.product,
             name: item.product?.name || "Product",
             price: item.price,
-            image: item.product?.images?.[0] || "",
+            image: item.product?.images?.[0]?.url || "",
             quantity: item.quantity,
           }));
           ruc.setItems(converted);
@@ -51,7 +56,7 @@ function CartSyncLayer({ children }) {
   // Optimistic add: update UI immediately, sync to backend in background
   const addItem = useCallback(
     async (item, quantity = 1) => {
-      ruc.addItem(item, quantity);
+      rucRef.current.addItem(item, quantity);
       if (user) {
         try {
           await cartApi.addToCart(item.id, quantity);
@@ -66,7 +71,7 @@ function CartSyncLayer({ children }) {
 
   const removeItem = useCallback(
     async (id) => {
-      ruc.removeItem(id);
+      rucRef.current.removeItem(id);
       if (user) {
         try {
           await cartApi.removeItem(id);
@@ -84,7 +89,7 @@ function CartSyncLayer({ children }) {
       if (quantity <= 0) {
         return removeItem(id);
       }
-      ruc.updateItemQuantity(id, quantity);
+      rucRef.current.updateItemQuantity(id, quantity);
       if (user) {
         try {
           await cartApi.updateItem(id, quantity);
@@ -99,7 +104,7 @@ function CartSyncLayer({ children }) {
 
   const emptyCart = useCallback(
     async () => {
-      ruc.emptyCart();
+      rucRef.current.emptyCart();
       if (user) {
         try {
           await cartApi.clearCart();

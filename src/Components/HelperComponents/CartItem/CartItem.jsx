@@ -25,42 +25,10 @@ export const CartItem = ({
       src={item.image}
       alt={item.name}
       className="cart-item-image"
-      onError={(e) => { e.target.src = "https://placehold.co/80x80"; }}
+      onError={(e) => { e.target.src = "https://placehold.co/72x72"; }}
     />
 
-    <div className="cart-item-info">
-      <h4 className="cart-item-name">{item.name}</h4>
-      <p className="cart-item-unit">${item.price.toFixed(2)} each</p>
-    </div>
-
-    {showQuantityControls && (
-      <div className="cart-item-qty">
-        <motion.button
-          type="button"
-          onClick={() => onDecreaseQuantity(item.id)}
-          disabled={item.quantity <= 1}
-          aria-label="Decrease quantity"
-          whileTap={{ scale: 0.80 }}
-          transition={btnSpring}
-        >
-          <FaMinus size={10} />
-        </motion.button>
-        <span>{item.quantity}</span>
-        <motion.button
-          type="button"
-          onClick={() => onIncreaseQuantity(item.id)}
-          aria-label="Increase quantity"
-          whileTap={{ scale: 0.80 }}
-          transition={btnSpring}
-        >
-          <FaPlus size={10} />
-        </motion.button>
-      </div>
-    )}
-
-    <div className="cart-item-total">
-      ${(item.price * item.quantity).toFixed(2)}
-    </div>
+    <h4 className="cart-item-name">{item.name}</h4>
 
     {showRemoveButton && (
       <motion.button
@@ -72,8 +40,41 @@ export const CartItem = ({
         whileTap={{ scale: 0.85 }}
         transition={btnSpring}
       >
-        <FaTrash size={13} />
+        <FaTrash size={12} />
       </motion.button>
     )}
+
+    <div className="cart-item-bottom">
+      <p className="cart-item-unit">${item.price.toFixed(2)} each</p>
+
+      {showQuantityControls && (
+        <div className="cart-item-qty">
+          <motion.button
+            type="button"
+            onClick={() => onDecreaseQuantity(item.id)}
+            disabled={item.quantity <= 1}
+            aria-label="Decrease quantity"
+            whileTap={{ scale: 0.80 }}
+            transition={btnSpring}
+          >
+            <FaMinus size={9} />
+          </motion.button>
+          <span>{item.quantity}</span>
+          <motion.button
+            type="button"
+            onClick={() => onIncreaseQuantity(item.id)}
+            aria-label="Increase quantity"
+            whileTap={{ scale: 0.80 }}
+            transition={btnSpring}
+          >
+            <FaPlus size={9} />
+          </motion.button>
+        </div>
+      )}
+
+      <div className="cart-item-total">
+        ${(item.price * item.quantity).toFixed(2)}
+      </div>
+    </div>
   </motion.div>
 );

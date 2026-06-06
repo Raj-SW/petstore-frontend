@@ -113,8 +113,8 @@ const PetShopPage = () => {
     const sortMap = {
       priceAsc: "price",
       priceDesc: "-price",
-      alphabeticalAsc: "title",
-      alphabeticalDesc: "-title",
+      alphabeticalAsc: "name",
+      alphabeticalDesc: "-name",
     };
     const sortParam = sortMap[sortType] || "-createdAt";
     ProductService.fetchProductsWithFilters(
@@ -187,8 +187,8 @@ const PetShopPage = () => {
           >
             <ProductCard
               id={p.id}
-              imageUrl={p.imageUrl}
-              title={p.title}
+              imageUrl={p.images?.[0]?.url || p.imageUrl}
+              title={p.name || p.title}
               price={p.price}
               description={p.description}
             />
