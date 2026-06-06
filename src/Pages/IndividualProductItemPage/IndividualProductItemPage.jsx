@@ -56,6 +56,11 @@ const IndividualProductItemPage = () => {
         if (!active) return;
         if (!productData) throw new Error("Product not found");
 
+        if (productData.isActive === false) {
+          setProduct(productData);
+          setIsLoading(false);
+          return;
+        }
         setProduct(productData);
         setActiveImage(0);
         setQuantity(1);
@@ -92,7 +97,7 @@ const IndividualProductItemPage = () => {
           id: String(productId),
           title: product.title?.trim() || product.name?.trim() || "Untitled Product",
           price: parseFloat(product.price) || 0,
-          image: product.images?.[0] || product.imageUrl || "",
+          image: product.images?.[0]?.url || product.imageUrl || "",
         },
         quantity
       );
@@ -154,8 +159,25 @@ const IndividualProductItemPage = () => {
     );
   }
 
+  if (product.isActive === false) {
+    return (
+      <div className="ip-page">
+        <div className="ip-state">
+          <FaExclamationTriangle size={40} />
+          <h2>Product No Longer Available</h2>
+          <p>This product has been discontinued or is no longer listed. Browse our shop for similar items.</p>
+          <button className="ip-btn ip-btn--primary" onClick={() => navigate("/petshop")}>
+            Browse Shop
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   const productName = product.title || product.name || "Product";
-  const images = product.images?.length ? product.images : [product.imageUrl].filter(Boolean);
+  const images = product.images?.length
+    ? product.images.map(img => (typeof img === "object" ? img.url : img)).filter(Boolean)
+    : [product.imageUrl].filter(Boolean);
   const stockQty = product.stock ?? product.quantity ?? null;
   const category = product.category || product.categories?.[0] || null;
 
