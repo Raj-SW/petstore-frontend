@@ -4,7 +4,7 @@ import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
 import ProductReviewCard from "../ProductReviewCard/ProductReviewCard";
 
-const ReviewCarousel = ({ reviews }) => {
+const ReviewCarousel = ({ reviews, currentUserId, onEdit, onDelete }) => {
   const responsiveOptions = [
     {
       breakpoint: "1400px",
@@ -29,8 +29,13 @@ const ReviewCarousel = ({ reviews }) => {
   ];
 
   const reviewTemplate = (review) => (
-    <div className="d-flex justify-content-center p-2">
-      <ProductReviewCard review={review} />
+    <div style={{ display: "flex", justifyContent: "center", padding: "0.5rem" }}>
+      <ProductReviewCard
+        review={review}
+        currentUserId={currentUserId}
+        onEdit={onEdit}
+        onDelete={onDelete}
+      />
     </div>
   );
 

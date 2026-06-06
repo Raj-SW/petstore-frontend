@@ -11,13 +11,12 @@ import { FiShare2, FiChevronLeft } from "react-icons/fi";
 
 import "./IndividaulItemPage.css";
 import Breadcrumb from "@/Components/HelperComponents/Breadcrumb/Breadcrumb";
-import ReviewService from "../../Services/localServices/ReviewService";
 import LoginModal from "@/Components/NavigationBar/Dropdowns/LoginModal";
 import SignUpModal from "@/Components/NavigationBar/Dropdowns/SignUpModal";
 import ProductCard from "@/Components/HelperComponents/ProductCard/ProductCardV2";
 import ReviewCarousel from "@/Components/HelperComponents/Carousel/ReviewCarousel";
 import ProductReviewFormModal from "@/Components/HelperComponents/ProductReviewFormModal/ProductReviewFormModal";
-import ProductService from "@/Services/localServices/ProductService";
+import productsApi from "@/Services/api/productsApi";
 import { useToast } from "@/context/ToastContext";
 import { useAuth } from "@/context/AuthContext";
 
@@ -37,6 +36,7 @@ const IndividualProductItemPage = () => {
   const [error, setError] = useState(null);
 
   const [showReviewModal, setShowReviewModal] = useState(false);
+  const [editingReview,   setEditingReview]   = useState(null);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showSignUpModal, setShowSignUpModal] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -50,9 +50,9 @@ const IndividualProductItemPage = () => {
         setIsLoading(true);
         setError(null);
         if (!id) throw new Error("Product ID is missing");
-        const productId = isNaN(id) ? id : parseInt(id);
 
-        const productData = await ProductService.fetchProductById(productId);
+        const result = await productsApi.getProductById(id);
+        const productData = result.data;
         if (!active) return;
         if (!productData) throw new Error("Product not found");
 
@@ -65,16 +65,17 @@ const IndividualProductItemPage = () => {
         setActiveImage(0);
         setQuantity(1);
 
-        if (productData.category) {
-          const related = await ProductService.fetchRelatedProducts(
-            productData.category,
-            productData.id
-          );
-          if (active) setRelatedProducts(related);
+        const category = productData.category || productData.categories?.[0];
+        if (category) {
+          productsApi
+            .getProductsByCategory(category, productData._id || productData.id)
+            .then(related => { if (active) setRelatedProducts(related.slice(0, 4)); })
+            .catch(() => {});
         }
 
-        ReviewService.fetchProductReviews(productId)
-          .then((productReviews) => { if (active) setReviews(productReviews ?? []); })
+        productsApi
+          .getProductReviews(id)
+          .then(reviews => { if (active) setReviews(reviews ?? []); })
           .catch(() => { if (active) setReviews([]); });
       } catch (err) {
         if (active) setError(err.message || "Failed to load product details");
@@ -94,14 +95,14 @@ const IndividualProductItemPage = () => {
     try {
       addItem(
         {
-          id: String(productId),
-          title: product.title?.trim() || product.name?.trim() || "Untitled Product",
+          id: String(product._id || product.id),
+          name: product.name?.trim() || product.title?.trim() || "Untitled Product",
           price: parseFloat(product.price) || 0,
           image: product.images?.[0]?.url || product.imageUrl || "",
         },
         quantity
       );
-      showCartToast("add", product.title || product.name);
+      showCartToast("add", product.name || product.title);
     } catch (err) {
       setError(`Failed to add to cart: ${err.message}`);
     }
@@ -110,6 +111,20 @@ const IndividualProductItemPage = () => {
   const handleOpenReviewModal = () => {
     if (!user) { setShowLoginModal(true); return; }
     setShowReviewModal(true);
+  };
+
+  const handleEditReview = (review) => {
+    setEditingReview(review);
+    setShowReviewModal(true);
+  };
+
+  const handleDeleteReview = async (reviewId) => {
+    try {
+      await productsApi.deleteReview(reviewId);
+      setReviews((prev) => prev.filter((r) => r._id !== reviewId));
+    } catch {
+      // silently ignore — review stays in list if delete fails
+    }
   };
 
   // ── Loading state ──
@@ -341,8 +356,8 @@ const IndividualProductItemPage = () => {
                 >
                   <ProductCard
                     id={item._id || item.id}
-                    imageUrl={item.images?.[0] || item.imageUrl}
-                    title={item.title || item.name}
+                    imageUrl={item.images?.[0]?.url || item.imageUrl}
+                    title={item.name || item.title}
                     price={item.price}
                     description={item.description}
                   />
@@ -366,7 +381,12 @@ const IndividualProductItemPage = () => {
           </div>
 
           {reviews && reviews.length > 0 ? (
-            <ReviewCarousel reviews={reviews} />
+            <ReviewCarousel
+              reviews={reviews}
+              currentUserId={user?._id || user?.id}
+              onEdit={handleEditReview}
+              onDelete={handleDeleteReview}
+            />
           ) : (
             <div className="ip-empty-reviews">
               <p>No reviews yet. Be the first to share your thoughts!</p>
@@ -378,10 +398,17 @@ const IndividualProductItemPage = () => {
       {/* Modals */}
       <ProductReviewFormModal
         showReviewModal={showReviewModal}
-        onClose={() => setShowReviewModal(false)}
+        onClose={() => { setShowReviewModal(false); setEditingReview(null); }}
         productId={id}
-        onReviewSubmitted={(newReview) => {
-          setReviews((prev) => [newReview, ...prev]);
+        existingReview={editingReview}
+        onReviewSubmitted={(savedReview) => {
+          if (!savedReview) return;
+          if (editingReview) {
+            setReviews((prev) => prev.map((r) => r._id === savedReview._id ? savedReview : r));
+          } else {
+            setReviews((prev) => [savedReview, ...prev]);
+          }
+          setEditingReview(null);
           setShowReviewModal(false);
         }}
       />

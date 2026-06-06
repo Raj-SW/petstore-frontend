@@ -1,86 +1,77 @@
 import { useState } from "react";
+import { FaStar, FaCheckCircle, FaPen, FaTrash } from "react-icons/fa";
 import "./ProductReviewCard.css";
 
-export function ProductReviewCard({ review, onLike }) {
-  const [isLiked, setIsLiked] = useState(false);
+const STAR_LABELS = ["", "Poor", "Fair", "Good", "Very Good", "Excellent"];
 
-  const handleLike = () => {
-    if (!isLiked) {
-      setIsLiked(true);
-      onLike(review.id);
-    }
-  };
+export function ProductReviewCard({ review, currentUserId, onEdit, onDelete }) {
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
-  const formatDate = (dateString) => {
-    const options = { year: "numeric", month: "long", day: "numeric" };
-    return new Date(dateString).toLocaleDateString(undefined, options);
+  const name     = review.user?.name || "Anonymous";
+  const initials = name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2);
+  const rating   = review.rating || 0;
+  const date     = review.createdAt
+    ? new Date(review.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })
+    : "";
+
+  const isOwner = currentUserId &&
+    (review.user?._id?.toString() === currentUserId?.toString() ||
+     review.user?.toString() === currentUserId?.toString());
+
+  const handleDelete = async () => {
+    setDeleting(true);
+    await onDelete(review._id);
+    setDeleting(false);
+    setConfirmDelete(false);
   };
 
   return (
-    <div className="review-card">
-      <div className="review-header">
-        <div className="user-info">
-          <img
-            src={review.userAvatar || "/placeholder.svg"}
-            alt={`${review.userName}'s avatar`}
-            className="user-avatar"
-            style={{ width: "80px", height: "80px" }}
-          />
-          <div className="user-details">
-            <h4 className="user-name">{review.userName}</h4>
-            <span className="review-date">{formatDate(review.date)}</span>
-            {review.verifiedPurchase && (
-              <div className="verified-badge">
-                <i className="bi bi-check-circle-fill verified-icon"></i>
-                Verified Purchase
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-
-      <div className="review-content">
-        <h3 className="review-title" style={{ fontSize: "1.5rem" }}>
-          {review.title}
-        </h3>
-        <div
-          className="rating"
-          style={{
-            fontSize: "2rem",
-            marginTop: "0.5rem",
-            display: "flex",
-            justifyContent: "center",
-          }}
-        >
-          {[...Array(5)].map((_, index) => (
-            <span
-              key={index}
-              className={`star ${index < review.rating ? "filled" : ""}`}
-            >
-              ★
+    <div className="prc-card">
+      <div className="prc-header">
+        <div className="prc-avatar">{initials}</div>
+        <div className="prc-meta">
+          <span className="prc-name">{name}</span>
+          {date && <span className="prc-date">{date}</span>}
+          {review.isVerified && (
+            <span className="prc-verified">
+              <FaCheckCircle size={11} /> Verified Purchase
             </span>
-          ))}
+          )}
         </div>
-        <p className="review-comment">{review.comment}</p>
+
+        {isOwner && !confirmDelete && (
+          <div className="prc-actions">
+            <button type="button" className="prc-action-btn prc-action-btn--edit" onClick={() => onEdit(review)} aria-label="Edit review">
+              <FaPen size={11} />
+            </button>
+            <button type="button" className="prc-action-btn prc-action-btn--delete" onClick={() => setConfirmDelete(true)} aria-label="Delete review">
+              <FaTrash size={11} />
+            </button>
+          </div>
+        )}
+
+        {isOwner && confirmDelete && (
+          <div className="prc-confirm-delete">
+            <span>Delete?</span>
+            <button type="button" className="prc-confirm-btn prc-confirm-btn--yes" onClick={handleDelete} disabled={deleting}>
+              {deleting ? "…" : "Yes"}
+            </button>
+            <button type="button" className="prc-confirm-btn prc-confirm-btn--no" onClick={() => setConfirmDelete(false)} disabled={deleting}>
+              No
+            </button>
+          </div>
+        )}
       </div>
 
-      <div className="review-actions">
-        <button
-          className={`like-button ${isLiked ? "liked" : ""}`}
-          onClick={handleLike}
-          disabled={isLiked}
-          aria-label="Like this review"
-        >
-          <i
-            className={`bi bi-hand-thumbs-up${
-              isLiked ? "-fill" : ""
-            } like-icon`}
-          ></i>
-          <span>
-            {review.likes} {review.likes === 1 ? "like" : "likes"}
-          </span>
-        </button>
+      <div className="prc-stars">
+        {[1, 2, 3, 4, 5].map(i => (
+          <FaStar key={i} size={15} className={i <= rating ? "prc-star--filled" : "prc-star--empty"} />
+        ))}
+        <span className="prc-rating-label">{STAR_LABELS[rating]}</span>
       </div>
+
+      <p className="prc-comment">{review.comment}</p>
     </div>
   );
 }

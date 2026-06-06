@@ -1,154 +1,158 @@
-.review-card {
-    background: var(--color-bg-cream);
-    border-radius: 12px;
-    padding: 16px;
-    box-shadow: 0 2px 8px rgba(0, 28, 16, 0.08);
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    max-width: 90%;
-    min-width: 10rem;
-    width: 100%;
-    height: auto;
+/* ================================================
+   Product Review Card
+   ================================================ */
+
+.prc-card {
+  background: #fff;
+  border: 1.5px solid rgba(0, 28, 16, 0.07);
+  border-radius: 16px;
+  padding: 1.2rem 1.25rem;
+  box-shadow: 0 2px 12px rgba(0, 28, 16, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  height: 100%;
+  box-sizing: border-box;
 }
 
-.review-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 12px;
-    gap: 12px;
+/* ── Header ── */
+
+.prc-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 
-.user-info {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex: 1;
+.prc-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--color-primary-forest, #001c10);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+  letter-spacing: 0.03em;
 }
 
-.user-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
+.prc-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
 }
 
-.user-name {
-    margin: 0;
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: var(--color-text-default);
+.prc-name {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--color-primary-forest, #001c10);
 }
 
-.review-meta {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    margin-top: 2px;
-    flex-wrap: wrap;
+.prc-date {
+  font-family: var(--font-body);
+  font-size: 0.76rem;
+  color: #aaa;
 }
 
-.review-date {
-    font-size: 0.75rem;
-    color: var(--color-text-soft);
+.prc-verified {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-family: var(--font-body);
+  font-size: 0.73rem;
+  font-weight: 600;
+  color: #15803d;
 }
 
-.verified-badge {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 0.7rem;
-    color: var(--color-success);
+/* ── Stars ── */
+
+.prc-stars {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
 }
 
-.verified-icon {
-    font-size: 0.8rem;
+.prc-star--filled { color: var(--color-accent-gold, #d99a2b); }
+.prc-star--empty  { color: #e0e0e0; }
+
+.prc-rating-label {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: #888;
+  margin-left: 0.4rem;
 }
 
-.rating {
-    display: flex;
-    gap: 2px;
-    flex-shrink: 0;
+/* ── Owner actions ── */
+
+.prc-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 0.35rem;
+  flex-shrink: 0;
 }
 
-.star {
-    color: var(--color-border-taupe);
-    font-size: 1rem;
+.prc-action-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1.5px solid transparent;
+  background: #f5f5f5;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
 
-.star.filled {
-    color: var(--color-accent-gold);
+.prc-action-btn--edit  { color: #555; }
+.prc-action-btn--edit:hover  { background: #e8f5e9; color: #15803d; border-color: #bbf7d0; }
+
+.prc-action-btn--delete { color: #888; }
+.prc-action-btn--delete:hover { background: #fef2f2; color: #b91c1c; border-color: #fecaca; }
+
+.prc-confirm-delete {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-shrink: 0;
 }
 
-.review-content {
-    flex-grow: 1;
-    height: auto;
+.prc-confirm-delete span {
+  font-family: var(--font-body);
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: #b91c1c;
 }
 
-.review-title {
-    margin: 0 0 6px 0;
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--color-text-default);
+.prc-confirm-btn {
+  font-family: var(--font-body);
+  font-size: 0.74rem;
+  font-weight: 700;
+  border-radius: 50px;
+  padding: 0.2rem 0.6rem;
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
 }
 
-.review-comment {
-    margin: 0;
-    font-size: 0.9rem;
-    line-height: 1.4;
-    color: var(--color-text-muted);
-    display: -webkit-box;
-    -webkit-line-clamp: 4;
-    -webkit-box-orient: vertical;
-    height: fit-content;
-    padding-bottom: 2rem;
-}
+.prc-confirm-btn--yes { background: #b91c1c; color: #fff; border-color: #b91c1c; }
+.prc-confirm-btn--yes:hover:not(:disabled) { background: #991b1b; }
+.prc-confirm-btn--no  { background: #f5f5f5; color: #555; border-color: #ddd; }
+.prc-confirm-btn--no:hover:not(:disabled)  { background: #e5e5e5; }
+.prc-confirm-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-.review-actions {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: auto;
-}
+/* ── Comment ── */
 
-.like-button {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    padding: 4px 10px;
-    border: 1px solid var(--color-border-taupe);
-    border-radius: 16px;
-    background: var(--color-bg-cream);
-    color: var(--color-text-muted);
-    font-size: 0.8rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.like-button:hover:not(:disabled) {
-    background: var(--color-bg-card-beige);
-}
-
-.like-button.liked {
-    background: var(--color-success);
-    color: var(--color-bg-cream);
-    border-color: var(--color-success);
-    cursor: default;
-}
-
-.like-icon {
-    font-size: 0.8rem;
-}
-
-.productCardReviewWrapper {
-    min-width: 320px;
-    max-width: 380px;
-    width: 100%;
-    margin: 2rem 1.5rem;
-}
-
-.productCardReviewContainer {
-    background-color: var(--color-bg-warm-ivory);
-    position: relative;
-    padding: 2.5rem 2rem 2rem 2rem;
+.prc-comment {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  color: #555;
+  line-height: 1.6;
+  margin: 0;
+  flex: 1;
 }

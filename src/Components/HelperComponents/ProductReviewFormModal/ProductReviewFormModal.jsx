@@ -1,109 +1,170 @@
-import React, { useState } from 'react'
-import PropTypes from 'prop-types'
-import { Modal, Form, Button } from 'react-bootstrap'
-import ReviewService from '../../../Services/localServices/ReviewService'
-import './ProductReviewFormModal.css'
-import { useAuth } from '../../../context/AuthContext'
-import { useToast } from '../../../context/ToastContext'
+import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
+import { AnimatePresence, motion } from "framer-motion";
+import { FaTimes, FaStar, FaSpinner } from "react-icons/fa";
+import productsApi from "@/Services/api/productsApi";
+import { useAuth } from "@/context/AuthContext";
+import "./ProductReviewFormModal.css";
 
-const ProductReviewFormModal = ({ 
-  showReviewModal, 
-  onClose, 
-  productId, 
-  onReviewSubmitted
-}) => {
-  const { showReviewToast } = useToast();
-  const { user } = useAuth(); 
-  const [reviewForm, setReviewForm] = useState({
-    name: user?.name,
-    rating: 5,
-    comment: "",
-  });
-  const [submittingReview, setSubmittingReview] = useState(false);
-  
-  const handleReviewFormChange = (e) => {
-    const { name, value } = e.target;
-    setReviewForm((prev) => ({ ...prev, [name]: value }));
+const ProductReviewFormModal = ({ showReviewModal, onClose, productId, onReviewSubmitted, existingReview }) => {
+  const { user } = useAuth();
+  const isEditing = Boolean(existingReview);
+
+  const [rating,      setRating]      = useState(existingReview?.rating ?? 5);
+  const [hovered,     setHovered]     = useState(0);
+  const [comment,     setComment]     = useState(existingReview?.comment ?? "");
+  const [submitting,  setSubmitting]  = useState(false);
+  const [error,       setError]       = useState("");
+
+  // Sync form state when existingReview changes (e.g. opening edit for a different review)
+  useEffect(() => {
+    setRating(existingReview?.rating ?? 5);
+    setComment(existingReview?.comment ?? "");
+    setError("");
+    setHovered(0);
+  }, [existingReview]);
+
+  const handleClose = () => {
+    setRating(5); setComment(""); setError(""); setHovered(0);
+    onClose();
   };
 
-  const handleSubmitReview = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmittingReview(true);
+    if (!comment.trim()) return;
+    setSubmitting(true);
+    setError("");
     try {
-      const newReview = await ReviewService.addReview({
-        productId: productId,
-        ...reviewForm,
-      });
-      onReviewSubmitted(newReview);
-      showReviewToast("submit", "success");
-    } catch (error) {
-      showReviewToast("submit", "error", error.message);
+      let result;
+      if (isEditing) {
+        result = await productsApi.updateReview(existingReview._id, { rating, comment: comment.trim() });
+      } else {
+        result = await productsApi.submitReview(productId, { rating, comment: comment.trim() });
+      }
+      onReviewSubmitted(result);
+      handleClose();
+    } catch (err) {
+      const msg = (err?.message || "").toLowerCase();
+      const status = err?.status;
+      if (msg.includes("purchased") || msg.includes("bought") || status === 403) {
+        setError("You can only review products you have purchased and received.");
+      } else if (msg.includes("already") || msg.includes("duplicate") || status === 409) {
+        setError("You have already submitted a review for this product.");
+      } else {
+        setError(`Failed to ${isEditing ? "update" : "submit"} review. Please try again.`);
+      }
     } finally {
-      setReviewForm({ name: user.name, rating: 5, comment: "" });
-      setSubmittingReview(false);
-      onClose();
+      setSubmitting(false);
     }
   };
 
-  return (
-      <Modal show={showReviewModal} onHide={onClose} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Write a Review</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form onSubmit={handleSubmitReview}>
-            <Form.Group className="mb-3">
-              <Form.Label>Name</Form.Label>
-              <Form.Control
-              className='productreviewform-name-input'
-                type="text"
-                name="name"
-                value={reviewForm.name}
-                onChange={handleReviewFormChange}
-                required
-              />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Rating</Form.Label>
-              <Form.Select
-                name="rating"
-                value={reviewForm.rating}
-                onChange={handleReviewFormChange}
-                required
-              >
-                {[5, 4, 3, 2, 1].map((rating) => (
-                  <option key={rating} value={rating}>
-                    {rating} Stars
-                  </option>
-                ))}
-              </Form.Select>
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Comment</Form.Label>
-              <Form.Control
-              className='productreviewform-comment-input'
-                as="textarea"
-                rows={3}
-                name="comment"
-                value={reviewForm.comment}
-                onChange={handleReviewFormChange}
-                required
-              />
-            </Form.Group>
-            <Button type="submit" className=" productreviewform-submit-btn " disabled={submittingReview}>
-              {submittingReview ? "Submitting..." : "Submit Review"}
-            </Button>
-          </Form>
-        </Modal.Body>
-      </Modal>
-  )
-}
+  return createPortal(
+    <AnimatePresence>
+      {showReviewModal && (
+        <motion.div
+          className="prfm-backdrop"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
+          onClick={handleClose}
+        >
+          <motion.div
+            className="prfm-modal"
+            initial={{ opacity: 0, scale: 0.94, y: 24 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.96, y: 12 }}
+            transition={{ type: "spring", stiffness: 340, damping: 28 }}
+            onClick={e => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className="prfm-header">
+              <div className="prfm-header-icon"><FaStar size={15} /></div>
+              <h3 className="prfm-title">{isEditing ? "Edit Review" : "Write a Review"}</h3>
+              <button type="button" className="prfm-close" onClick={handleClose} aria-label="Close">
+                <FaTimes size={13} />
+              </button>
+            </div>
 
-ProductReviewFormModal.propTypes = {
-  showReviewModal: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
-  productId: PropTypes.string.isRequired,
-  onReviewSubmitted: PropTypes.func.isRequired,
-}
+            <form onSubmit={handleSubmit}>
+              <div className="prfm-body">
+                {/* Reviewer name (read-only) */}
+                <div className="prfm-field">
+                  <label className="prfm-label">Reviewing as</label>
+                  <p className="prfm-user">{user?.name}</p>
+                </div>
 
-export default ProductReviewFormModal
+                {/* Star rating */}
+                <div className="prfm-field">
+                  <label className="prfm-label">Your rating *</label>
+                  <div className="prfm-stars">
+                    {[1, 2, 3, 4, 5].map(star => (
+                      <button
+                        key={star}
+                        type="button"
+                        className={`prfm-star ${star <= (hovered || rating) ? "prfm-star--filled" : ""}`}
+                        onClick={() => setRating(star)}
+                        onMouseEnter={() => setHovered(star)}
+                        onMouseLeave={() => setHovered(0)}
+                        aria-label={`Rate ${star} star${star !== 1 ? "s" : ""}`}
+                      >
+                        <FaStar size={26} />
+                      </button>
+                    ))}
+                    <span className="prfm-rating-label">
+                      {["", "Poor", "Fair", "Good", "Very Good", "Excellent"][hovered || rating]}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Comment */}
+                <div className="prfm-field">
+                  <label className="prfm-label">Your review *</label>
+                  <textarea
+                    className="prfm-textarea"
+                    value={comment}
+                    onChange={e => setComment(e.target.value)}
+                    placeholder="Share your experience with this product…"
+                    rows={4}
+                    required
+                    maxLength={1000}
+                  />
+                  <span className="prfm-char-count">{comment.length}/1000</span>
+                </div>
+
+                {/* Error */}
+                {error && (
+                  <div className="prfm-error">{error}</div>
+                )}
+
+                {!isEditing && (
+                  <p className="prfm-hint">
+                    Only customers who have received this product can leave a review.
+                  </p>
+                )}
+              </div>
+
+              <div className="prfm-footer">
+                <button type="button" className="prfm-btn prfm-btn--ghost" onClick={handleClose}>
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="prfm-btn prfm-btn--primary"
+                  disabled={submitting || !comment.trim()}
+                >
+                  {submitting
+                    ? <><FaSpinner className="spin" size={13} /> {isEditing ? "Saving…" : "Submitting…"}</>
+                    : isEditing ? "Save Changes" : "Submit Review"}
+                </button>
+              </div>
+            </form>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>,
+    document.body
+  );
+};
+
+export default ProductReviewFormModal;

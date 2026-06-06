@@ -1,21 +1,225 @@
-.productreviewform-name-input {
-    border: 1px solid var(--secondary-blue-color) !important;
-    padding: 0.75rem;
-    font-size: 1rem;
-    line-height: 1.5;
-    color: #495057;
-    background-color: white;
-    border-radius: 0.375rem;
-    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+/* ================================================
+   Product Review Form Modal
+   ================================================ */
+
+.prfm-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 28, 16, 0.65);
+  backdrop-filter: blur(4px);
+  z-index: 2100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
 }
 
-.productreviewform-comment-input {
-    border: 1px solid var(--secondary-blue-color) !important;
-    padding: 0.75rem;
-    font-size: 1rem;
-    line-height: 1.5;
-    color: #495057;
-    background-color: white;
-    border-radius: 0.375rem;
-    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+.prfm-modal {
+  background: #fff;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 460px;
+  max-height: 92vh;
+  overflow-y: auto;
+  box-shadow: 0 32px 80px rgba(0, 28, 16, 0.22);
+}
+
+.prfm-header {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 1.3rem 1.5rem 1.1rem;
+  border-bottom: 1px solid #f0f0f0;
+  position: sticky;
+  top: 0;
+  background: #fff;
+  border-radius: 20px 20px 0 0;
+  z-index: 1;
+}
+
+.prfm-header-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: var(--color-bg-warm-ivory, #f6ece3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-accent-gold, #d99a2b);
+  flex-shrink: 0;
+}
+
+.prfm-title {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--color-primary-forest, #001c10);
+  margin: 0;
+  flex: 1;
+}
+
+.prfm-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #555;
+  transition: background 0.15s, color 0.15s;
+}
+
+.prfm-close:hover { background: var(--color-accent-gold, #d99a2b); color: #fff; }
+
+.prfm-body {
+  padding: 1.4rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.prfm-field { display: flex; flex-direction: column; gap: 0.35rem; }
+
+.prfm-label {
+  font-family: var(--font-body);
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.prfm-user {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-primary-forest, #001c10);
+  margin: 0;
+}
+
+/* ── Stars ── */
+
+.prfm-stars {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.prfm-star {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #ddd;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  transition: color 0.1s, transform 0.1s;
+}
+
+.prfm-star:hover { transform: scale(1.18); }
+.prfm-star--filled { color: var(--color-accent-gold, #d99a2b); }
+
+.prfm-rating-label {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  color: #888;
+  margin-left: 0.6rem;
+  min-width: 72px;
+}
+
+/* ── Textarea ── */
+
+.prfm-textarea {
+  padding: 0.72rem 0.95rem;
+  border: 1.5px solid #e8e8e8;
+  border-radius: 10px;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--color-primary-forest, #001c10);
+  background: var(--color-bg-warm-ivory, #f6ece3);
+  outline: none;
+  resize: vertical;
+  min-height: 110px;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.prfm-textarea:focus {
+  border-color: var(--color-accent-gold, #d99a2b);
+  box-shadow: 0 0 0 3px rgba(217, 154, 43, 0.12);
+  background: #fff;
+}
+
+.prfm-textarea::placeholder { color: #bbb; }
+
+.prfm-char-count {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  color: #bbb;
+  text-align: right;
+}
+
+/* ── Error ── */
+
+.prfm-error {
+  background: #fef2f2;
+  border: 1.5px solid #fecaca;
+  border-radius: 10px;
+  padding: 0.7rem 0.9rem;
+  font-family: var(--font-body);
+  font-size: 0.84rem;
+  color: #b91c1c;
+  line-height: 1.5;
+}
+
+.prfm-hint {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: #bbb;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ── Footer ── */
+
+.prfm-footer {
+  padding: 1rem 1.5rem 1.4rem;
+  display: flex;
+  gap: 0.65rem;
+  justify-content: flex-end;
+  border-top: 1px solid #f0f0f0;
+}
+
+.prfm-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.88rem;
+  border-radius: 50px;
+  padding: 0.65rem 1.4rem;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  transition: opacity 0.18s, background 0.18s, color 0.18s, transform 0.15s;
+}
+
+.prfm-btn--primary { background: var(--color-primary-forest, #001c10); color: #fff; }
+.prfm-btn--primary:hover:not(:disabled) { opacity: 0.85; transform: translateY(-1px); }
+.prfm-btn--primary:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.prfm-btn--ghost { background: transparent; color: #666; border-color: #ddd; }
+.prfm-btn--ghost:hover { background: #f5f5f5; color: #333; }
+
+@keyframes spin { to { transform: rotate(360deg); } }
+.spin { animation: spin 0.7s linear infinite; }
+
+@media (max-width: 575px) {
+  .prfm-backdrop { padding: 0.75rem; }
+  .prfm-modal { max-width: 100%; }
 }

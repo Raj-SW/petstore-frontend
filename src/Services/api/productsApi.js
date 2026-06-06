@@ -42,12 +42,44 @@ const productsApi = {
 
   // Search products
   searchProducts: async (searchTerm, params = {}) => {
-    const queryParams = {
-      search: searchTerm,
-      ...params,
-    };
+    const queryParams = { search: searchTerm, ...params };
     const queryString = new URLSearchParams(queryParams).toString();
     const response = await api.get(`/products?${queryString}`);
+    return response.data;
+  },
+
+  // Get products by category (used for related products)
+  getProductsByCategory: async (category, excludeId = null) => {
+    const response = await api.get(
+      `/products/category/${encodeURIComponent(category)}`
+    );
+    const products = response.data?.data || [];
+    return excludeId
+      ? products.filter(p => p._id !== excludeId && p.id !== excludeId)
+      : products;
+  },
+
+  // Get reviews for a product (public)
+  getProductReviews: async (productId) => {
+    const response = await api.get(`/reviews/product/${productId}`);
+    return response.data?.data || [];
+  },
+
+  // Submit a review (authenticated)
+  submitReview: async (productId, reviewData) => {
+    const response = await api.post(`/reviews/${productId}`, reviewData);
+    return response.data?.data ?? response.data;
+  },
+
+  // Update an existing review (authenticated, owner only)
+  updateReview: async (reviewId, reviewData) => {
+    const response = await api.patch(`/reviews/${reviewId}`, reviewData);
+    return response.data?.data ?? response.data;
+  },
+
+  // Delete a review (authenticated, owner only)
+  deleteReview: async (reviewId) => {
+    const response = await api.delete(`/reviews/${reviewId}`);
     return response.data;
   },
 };
