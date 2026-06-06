@@ -1,102 +1,34 @@
-import axios from "axios";
-
-const API_URL = import.meta.env.VITE_NODE_API_URL;
+import { api } from "../../core/api/apiClient"; // authenticated client
 
 class UserProfileService {
-  // User Profile Operations
-  async getUserProfile() {
-    try {
-      const response = await axios.get(`${API_URL}/users/me`);
-      return response.data;
-    } catch (error) {
-      throw this.handleError(error);
-    }
-  }
-
   async updateUserProfile(profileData) {
-    try {
-      const response = await axios.patch(
-        `${API_URL}/users/update-profile`,
-        profileData
-      );
-      return response.data;
-    } catch (error) {
-      throw this.handleError(error);
-    }
+    const response = await api.patch("/users/update-profile", profileData);
+    return response.data;
   }
 
   async changePassword(passwordData) {
-    try {
-      const response = await axios.post(
-        `${API_URL}/user/change-password`,
-        passwordData
-      );
-      return response.data;
-    } catch (error) {
-      throw this.handleError(error);
-    }
-  }
-
-  // Pet Operations
-  async getUserPets() {
-    try {
-      const response = await axios.get(`${API_URL}/pets`);
-      console.log(response);
-      return response.data.data;
-    } catch (error) {
-      throw this.handleError(error);
-    }
+    const response = await api.patch("/users/change-password", passwordData);
+    return response.data;
   }
 
   async addPet(petData) {
-    try {
-      const response = await axios.post(`${API_URL}/pets`, petData);
-      return response.data;
-    } catch (error) {
-      throw this.handleError(error);
-    }
+    const response = await api.post("/pets", petData);
+    return response.data;
   }
 
   async updatePet(petId, petData) {
-    try {
-      const response = await axios.patch(`${API_URL}/pets/${petId}`, petData);
-      return response.data;
-    } catch (error) {
-      throw this.handleError(error);
-    }
+    const response = await api.patch(`/pets/${petId}`, petData);
+    return response.data;
   }
 
   async deletePet(petId) {
-    try {
-      const response = await axios.delete(`${API_URL}/pets/${petId}`);
-      return response.data;
-    } catch (error) {
-      throw this.handleError(error);
-    }
+    const response = await api.delete(`/pets/${petId}`);
+    return response.data;
   }
 
   async getPet(petId) {
-    try {
-      const response = await axios.get(`${API_URL}/pets/${petId}`);
-      return response.data;
-    } catch (error) {
-      throw this.handleError(error);
-    }
-  }
-
-  // Error handling
-  handleError(error) {
-    if (error.response) {
-      // Server responded with error
-      const message = error.response.data.message || "An error occurred";
-      throw new Error(message);
-    } else if (error.request) {
-      // Request made but no response
-      throw new Error("No response from server");
-    } else {
-      // Other errors
-      throw new Error("Error setting up request");
-    }
+    const response = await api.get(`/pets/${petId}`);
+    return response.data;
   }
 }
 
