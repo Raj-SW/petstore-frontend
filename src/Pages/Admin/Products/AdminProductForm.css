@@ -637,3 +637,151 @@
     text-align: center;
   }
 }
+
+/* ── Product Sections ─────────────────────────────────────────────────── */
+.admin-pf-sections-card {
+  margin-top: 1.5rem;
+}
+
+.admin-pf-sections-header {
+  margin-bottom: 1.25rem;
+}
+
+.admin-pf-sections-hint {
+  font-size: 0.82rem;
+  color: var(--color-text-muted, #6b7b6b);
+  line-height: 1.5;
+  margin-top: 0.2rem;
+}
+
+/* Section card */
+.admin-pf-section-card {
+  border: 1.5px solid #dde5dd;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 0.875rem;
+  background: #fff;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.admin-pf-section-card:hover {
+  border-color: #b0c4b0;
+  box-shadow: 0 4px 16px rgba(0, 28, 16, 0.08);
+}
+
+.admin-pf-section-card.dragging {
+  border-color: var(--color-accent-gold, #d99a2b);
+  box-shadow: 0 8px 28px rgba(0, 28, 16, 0.15);
+}
+
+.admin-pf-section-header {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.65rem 0.875rem;
+  background: #f7faf7;
+  border-bottom: 1.5px solid #e8ede8;
+}
+
+.admin-pf-drag-handle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  color: #b0c4b0;
+  cursor: grab;
+  border-radius: 5px;
+  flex-shrink: 0;
+  font-size: 1rem;
+  padding: 0;
+  transition: color 0.15s, background 0.15s;
+}
+
+.admin-pf-drag-handle:hover {
+  color: var(--color-primary-forest, #001c10);
+  background: rgba(0, 28, 16, 0.06);
+}
+
+.admin-pf-drag-handle:active {
+  cursor: grabbing;
+}
+
+.admin-pf-section-title-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--color-primary-forest, #001c10);
+  min-width: 0;
+}
+
+.admin-pf-section-title-input::placeholder {
+  color: #b0c4b0;
+  font-weight: 400;
+}
+
+.admin-pf-section-badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.2rem 0.55rem;
+  border-radius: 20px;
+  background: #f5e6c0;
+  color: #8a6200;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.admin-pf-section-delete {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  color: #ccc;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background 0.15s, color 0.15s;
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.admin-pf-section-delete:hover {
+  background: #fee2e2;
+  color: #e53e3e;
+}
+
+.admin-pf-section-body {
+  padding: 0.875rem;
+}
+
+/* Add Section button */
+.admin-pf-add-section-btn {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 2px dashed #dde5dd;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--color-text-muted, #6b7b6b);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.admin-pf-add-section-btn:hover {
+  border-color: var(--color-primary-forest, #001c10);
+  color: var(--color-primary-forest, #001c10);
+  background: rgba(0, 28, 16, 0.03);
+}

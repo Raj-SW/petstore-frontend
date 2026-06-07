@@ -514,3 +514,14 @@
 @media (max-width: 380px) {
   .ip-related-grid { grid-template-columns: 1fr; }
 }
+
+/* ══════════════════════════════════════════════════════
+   Overview (inside product card)
+══════════════════════════════════════════════════════ */
+.ip-overview {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1.5px solid #e5ebe5;
+}
+
+/* Sections block and tabs are now fully Tailwind — no custom CSS needed */

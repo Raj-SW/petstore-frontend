@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useCart } from "@/context/CartContext";
 import { motion, AnimatePresence } from "framer-motion";
@@ -7,7 +7,7 @@ import {
   FaShoppingCart, FaShieldAlt, FaCheckCircle, FaExclamationTriangle,
   FaTag,
 } from "react-icons/fa";
-import { FiShare2, FiChevronLeft } from "react-icons/fi";
+import { FiShare2, FiChevronLeft, FiChevronDown, FiChevronRight } from "react-icons/fi";
 
 import "./IndividaulItemPage.css";
 import Breadcrumb from "@/Components/HelperComponents/Breadcrumb/Breadcrumb";
@@ -20,6 +20,221 @@ import ProductReviewFormModal from "@/Components/HelperComponents/ProductReviewF
 import productsApi from "@/Services/api/productsApi";
 import { useToast } from "@/context/ToastContext";
 import { useAuth } from "@/context/AuthContext";
+
+/* ─── Product Section Tabs ───────────────────────────────────────────────── */
+const ProductSectionTabs = ({ sections = [] }) => {
+  const validSections = sections.filter((s) => s.title && s.body);
+
+  const [activeTab, setActiveTab]           = useState(0);
+  const [openAccordion, setOpenAccordion]   = useState(0);
+  const [showLeft, setShowLeft]             = useState(false);
+  const [showRight, setShowRight]           = useState(false);
+  const tabBarRef                           = useRef(null);
+
+  const toggleAccordion = useCallback((i) =>
+    setOpenAccordion((prev) => (prev === i ? -1 : i)), []);
+
+  // Update scroll arrow visibility
+  const updateArrows = useCallback(() => {
+    const el = tabBarRef.current;
+    if (!el) return;
+    setShowLeft(el.scrollLeft > 4);
+    setShowRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
+  }, []);
+
+  useEffect(() => {
+    const el = tabBarRef.current;
+    if (!el) return;
+    updateArrows();
+    el.addEventListener("scroll", updateArrows, { passive: true });
+    window.addEventListener("resize", updateArrows);
+    return () => {
+      el.removeEventListener("scroll", updateArrows);
+      window.removeEventListener("resize", updateArrows);
+    };
+  }, [validSections, updateArrows]);
+
+  const scroll = (dir) => {
+    tabBarRef.current?.scrollBy({ left: dir * 180, behavior: "smooth" });
+  };
+
+  if (validSections.length === 0) return null;
+
+  return (
+    <div className="mb-8">
+      <div className="rounded-2xl overflow-hidden" style={{
+        background: "#FAF5F1",
+        boxShadow: "0 4px 6px rgba(0,28,16,0.04), 0 12px 40px rgba(0,28,16,0.12), 0 0 0 1px rgba(201,186,168,0.4)",
+      }}>
+
+        {/* ── Desktop: gradient header + pill tabs ── */}
+        <div className="hidden md:block">
+
+          {/* Forest-to-gold gradient header */}
+          <div className="relative p-1" style={{
+            background: "linear-gradient(135deg, #001C10 0%, #0B2016 55%, #1a3a22 100%)",
+          }}>
+            {/* Subtle gold shimmer overlay */}
+            <div className="absolute inset-0 pointer-events-none" style={{
+              background: "linear-gradient(135deg, rgba(217,154,43,0.18) 0%, transparent 50%, rgba(201,152,99,0.1) 100%)",
+            }} />
+            {/* Gold top-edge accent line */}
+            <div className="absolute top-0 left-0 right-0" style={{
+              height: 2,
+              background: "linear-gradient(90deg, transparent 0%, #D99A2B 30%, #C99863 70%, transparent 100%)",
+            }} />
+
+            {/* Inner glass pill bar */}
+            <div className="relative rounded-xl" style={{ background: "rgba(255,255,255,0.07)", backdropFilter: "blur(8px)" }}>
+              <div className="relative flex items-center">
+
+                {/* Left scroll arrow */}
+                <AnimatePresence>
+                  {showLeft && (
+                    <motion.button
+                      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                      onClick={() => scroll(-1)}
+                      className="absolute left-2 z-20 flex items-center justify-center border-none cursor-pointer"
+                      style={{ width: 28, height: 28, borderRadius: "50%", background: "rgba(217,154,43,0.25)", color: "#D99A2B", flexShrink: 0 }}
+                    >
+                      <FiChevronLeft size={15} />
+                    </motion.button>
+                  )}
+                </AnimatePresence>
+
+                {/* Scrollable tab list */}
+                <div
+                  ref={tabBarRef}
+                  role="tablist"
+                  className="flex gap-2 overflow-x-auto"
+                  style={{
+                    scrollbarWidth: "none",
+                    padding: "0.5rem",
+                    paddingLeft:  showLeft  ? "2.5rem" : "0.5rem",
+                    paddingRight: showRight ? "2.5rem" : "0.5rem",
+                  }}
+                >
+                  {validSections.map((tab, i) => (
+                    <button
+                      key={i}
+                      role="tab"
+                      aria-selected={activeTab === i}
+                      onClick={() => setActiveTab(i)}
+                      className="relative border-none cursor-pointer font-sans whitespace-nowrap outline-none flex-shrink-0"
+                      style={{
+                        padding: "0.6rem 1.2rem",
+                        borderRadius: 10,
+                        fontSize: "0.85rem",
+                        fontWeight: 600,
+                        letterSpacing: "0.01em",
+                        color: activeTab === i ? "#001C10" : "rgba(250,245,241,0.85)",
+                        textShadow: activeTab === i ? "none" : "0 1px 3px rgba(0,0,0,0.4)",
+                        background: "transparent",
+                        transition: "color 0.2s",
+                      }}
+                    >
+                      {/* Sliding gold pill */}
+                      {activeTab === i && (
+                        <motion.div
+                          layoutId="ip-active-pill"
+                          className="absolute inset-0"
+                          style={{
+                            borderRadius: 10,
+                            background: "linear-gradient(135deg, #D99A2B 0%, #f0c040 50%, #C99863 100%)",
+                            boxShadow: "0 4px 20px rgba(217,154,43,0.5), 0 0 0 1px rgba(217,154,43,0.3)",
+                          }}
+                          transition={{ type: "spring", duration: 0.55, bounce: 0.18 }}
+                        />
+                      )}
+                      <span className="relative z-10">{tab.title}</span>
+                    </button>
+                  ))}
+                </div>
+
+                {/* Right scroll arrow */}
+                <AnimatePresence>
+                  {showRight && (
+                    <motion.button
+                      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                      onClick={() => scroll(1)}
+                      className="absolute right-2 z-20 flex items-center justify-center border-none cursor-pointer"
+                      style={{ width: 28, height: 28, borderRadius: "50%", background: "rgba(217,154,43,0.25)", color: "#D99A2B", flexShrink: 0 }}
+                    >
+                      <FiChevronRight size={15} />
+                    </motion.button>
+                  )}
+                </AnimatePresence>
+              </div>
+            </div>
+          </div>
+
+          {/* Content panel */}
+          <div style={{ background: "#fff", padding: "2rem 2.25rem", minHeight: 200 }}>
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeTab}
+                initial={{ opacity: 0, y: 10, filter: "blur(4px)" }}
+                animate={{ opacity: 1, y: 0,  filter: "blur(0px)" }}
+                exit={{ opacity: 0,    y: -10, filter: "blur(4px)" }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
+              >
+                <RichTextRenderer content={validSections[activeTab]?.body ?? ""} />
+              </motion.div>
+            </AnimatePresence>
+          </div>
+        </div>
+
+        {/* ── Mobile: accordion ── */}
+        <div className="md:hidden">
+          {validSections.map((tab, i) => (
+            <div key={i} style={{ borderBottom: i < validSections.length - 1 ? "1px solid rgba(201,186,168,0.4)" : "none" }}>
+              <button
+                onClick={() => toggleAccordion(i)}
+                aria-expanded={openAccordion === i}
+                className="flex items-center justify-between w-full border-none cursor-pointer text-left font-sans"
+                style={{
+                  padding: "1rem 1.25rem",
+                  background: openAccordion === i
+                    ? "linear-gradient(135deg, #0B2016, #1a3a22)"
+                    : "linear-gradient(135deg, #001C10, #0B2016)",
+                  borderBottom: openAccordion === i ? "2px solid #D99A2B" : "none",
+                  transition: "background 0.2s",
+                }}
+              >
+                <span style={{ fontSize: "0.875rem", fontWeight: 700, color: "#FAF5F1", letterSpacing: "0.01em" }}>
+                  {tab.title}
+                </span>
+                <FiChevronDown style={{
+                  color: openAccordion === i ? "#D99A2B" : "rgba(250,245,241,0.6)",
+                  transition: "transform 0.25s, color 0.2s",
+                  transform: openAccordion === i ? "rotate(180deg)" : "rotate(0deg)",
+                  flexShrink: 0,
+                }} />
+              </button>
+
+              <AnimatePresence initial={false}>
+                {openAccordion === i && (
+                  <motion.div key="body"
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.25, ease: "easeInOut" }}
+                    style={{ overflow: "hidden" }}
+                  >
+                    <div style={{ padding: "1.25rem 1.25rem 1.5rem", background: "#FAF5F1" }}>
+                      <RichTextRenderer content={tab.body} />
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          ))}
+        </div>
+
+      </div>
+    </div>
+  );
+};
 
 const IndividualProductItemPage = () => {
   const { id } = useParams();
@@ -288,12 +503,11 @@ const IndividualProductItemPage = () => {
             <h1 className="ip-title">{productName}</h1>
             <p className="ip-price">${parseFloat(product.price).toFixed(2)}</p>
 
+            {/* Overview always visible in the product card */}
             {product.description && (
-              <RichTextRenderer
-                content={product.description}
-                className="ip-description"
-                emptyText="No description available."
-              />
+              <div className="ip-overview">
+                <RichTextRenderer content={product.description} />
+              </div>
             )}
 
             {product.specifications && Object.keys(product.specifications).length > 0 && (
@@ -346,6 +560,11 @@ const IndividualProductItemPage = () => {
             )}
           </div>
         </motion.div>
+
+        {/* Product sections — additional info tabs */}
+        {product.sections?.filter(s => s.title && s.body).length > 0 && (
+          <ProductSectionTabs sections={product.sections} />
+        )}
 
         {/* Related products */}
         {relatedProducts.length > 0 && (

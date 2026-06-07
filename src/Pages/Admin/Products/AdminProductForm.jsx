@@ -1,11 +1,68 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { FiArrowLeft, FiX, FiUpload, FiPlus } from "react-icons/fi";
+import { MdDragIndicator } from "react-icons/md";
+import {
+  DndContext, closestCenter, KeyboardSensor, PointerSensor,
+  useSensor, useSensors,
+} from "@dnd-kit/core";
+import {
+  SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy,
+  useSortable, arrayMove,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { api } from "../../../core/api/apiClient";
 import { useToast } from "../../../context/ToastContext";
 import { RichTextEditor } from "../../../Components/RichText";
 import "./AdminProductForm.css";
+
+/* ─── Section card (sortable) ────────────────────────────────────────────── */
+const SectionCard = ({ section, index, total, onUpdate, onRemove }) => {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
+    useSortable({ id: section.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+    zIndex: isDragging ? 10 : undefined,
+  };
+
+  return (
+    <div ref={setNodeRef} style={style} className={`admin-pf-section-card${isDragging ? " dragging" : ""}`}>
+      <div className="admin-pf-section-header">
+        {/* Drag handle */}
+        <button type="button" className="admin-pf-drag-handle" {...attributes} {...listeners} title="Drag to reorder">
+          <MdDragIndicator />
+        </button>
+
+        <input
+          className="admin-pf-section-title-input"
+          placeholder="Section title… e.g. Key Benefits"
+          value={section.title}
+          onChange={(e) => onUpdate({ title: e.target.value })}
+        />
+
+        <span className="admin-pf-section-badge">Tab {index + 2}</span>
+
+        <button type="button" className="admin-pf-section-delete" onClick={onRemove} title="Remove section">
+          <FiX size={14} />
+        </button>
+      </div>
+
+      <div className="admin-pf-section-body">
+        <RichTextEditor
+          preset="standard"
+          value={section.body}
+          onChange={(body) => onUpdate({ body })}
+          placeholder="Write this section's content…"
+          minHeight="120px"
+        />
+      </div>
+    </div>
+  );
+};
 
 const CATEGORIES = ["dogs", "cats", "fish", "birds", "general", "apparel"];
 const GENDERS    = ["Male", "Female", "Unisex"];
@@ -42,6 +99,34 @@ const AdminProductForm = () => {
   // Color tag input
   const [colorInput, setColorInput] = useState("");
 
+  // Sections (dynamic rich-text tabs)
+  const [sections, setSections] = useState([]);
+
+  // DnD sensors
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
+
+  const handleDragEnd = useCallback(({ active, over }) => {
+    if (over && active.id !== over.id) {
+      setSections((prev) => {
+        const oldIdx = prev.findIndex((s) => s.id === active.id);
+        const newIdx = prev.findIndex((s) => s.id === over.id);
+        return arrayMove(prev, oldIdx, newIdx);
+      });
+    }
+  }, []);
+
+  const addSection = () =>
+    setSections((prev) => [...prev, { id: `sec-${Date.now()}`, title: "", body: "" }]);
+
+  const removeSection = (id) =>
+    setSections((prev) => prev.filter((s) => s.id !== id));
+
+  const updateSection = (id, changes) =>
+    setSections((prev) => prev.map((s) => (s.id === id ? { ...s, ...changes } : s)));
+
   // ── Fetch product in edit mode ──────────────────────────────────────────────
   useEffect(() => {
     if (!isEditMode) return;
@@ -64,6 +149,12 @@ const AdminProductForm = () => {
           isActive:  p.isActive  ?? true,
           isFeatured:p.isFeatured ?? false,
         });
+
+        setSections(
+          Array.isArray(p.sections)
+            ? p.sections.map((s, i) => ({ id: `sec-${Date.now()}-${i}`, title: s.title || "", body: s.body || "" }))
+            : []
+        );
 
         const imgs = Array.isArray(p.images) && p.images.length > 0
           ? p.images
@@ -207,7 +298,7 @@ const AdminProductForm = () => {
 
     const fd = new FormData();
     fd.append("name",        form.name.trim());
-    fd.append("description", form.description.trim());
+    fd.append("description", form.description);
     fd.append("price",       Number(form.price));
     fd.append("quantity",    Number(form.quantity) || 0);
     fd.append("isActive",    String(form.isActive));
@@ -216,6 +307,13 @@ const AdminProductForm = () => {
     form.categories.forEach((c) => fd.append("categories", c));
     form.colors.forEach((c)     => fd.append("colors", c));
     form.genders.forEach((g)    => fd.append("genders", g));
+
+    // Sections — send as JSON string (FormData can't send nested objects)
+    fd.append("sections", JSON.stringify(
+      sections
+        .filter((s) => s.title.trim() && s.body)
+        .map(({ title, body }, order) => ({ title: title.trim(), body, order }))
+    ));
 
     imageFiles.forEach((file) => fd.append("images", file));
 
@@ -290,6 +388,7 @@ const AdminProductForm = () => {
 
       <form onSubmit={handleSubmit} noValidate>
         <div className="admin-pf-grid">
+
 
           {/* ── Left column: Product details ── */}
           <div className="admin-pf-col">
@@ -577,6 +676,52 @@ const AdminProductForm = () => {
             </div>
           </div>
         </div>
+
+        {/* ── Sections (full-width below the grid) ── */}
+        <div className="admin-card admin-pf-sections-card">
+          <div className="admin-pf-sections-header">
+            <div>
+              <h2 className="admin-pf-section-title" style={{ marginBottom: "0.2rem" }}>
+                📑 Product Sections
+              </h2>
+              <p className="admin-pf-sections-hint">
+                Each section becomes a tab on the product page. The <strong>Overview</strong> tab always comes first and uses the description above.
+              </p>
+            </div>
+          </div>
+
+          {sections.length > 0 && (
+            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+              <SortableContext items={sections.map((s) => s.id)} strategy={verticalListSortingStrategy}>
+                <AnimatePresence>
+                  {sections.map((section, index) => (
+                    <motion.div
+                      key={section.id}
+                      initial={{ opacity: 0, y: -8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.97 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <SectionCard
+                        section={section}
+                        index={index}
+                        total={sections.length}
+                        onUpdate={(changes) => updateSection(section.id, changes)}
+                        onRemove={() => removeSection(section.id)}
+                      />
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              </SortableContext>
+            </DndContext>
+          )}
+
+          <button type="button" className="admin-pf-add-section-btn" onClick={addSection}>
+            <FiPlus size={16} />
+            Add Section
+          </button>
+        </div>
+
       </form>
     </motion.div>
   );
