@@ -1,21 +1,24 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { FiArrowLeft, FiX, FiUpload, FiLink } from "react-icons/fi";
+import { FiArrowLeft, FiX, FiUpload, FiPlus } from "react-icons/fi";
 import { api } from "../../../core/api/apiClient";
 import { useToast } from "../../../context/ToastContext";
 import "./AdminProductForm.css";
 
 const CATEGORIES = ["dogs", "cats", "fish", "birds", "general", "apparel"];
+const GENDERS    = ["Male", "Female", "Unisex"];
 
 const EMPTY_FORM = {
-  name: "",
+  name:        "",
   description: "",
-  price: "",
-  categories: ["general"],
-  quantity: "",
-  isActive: true,
-  isFeatured: false,
+  price:       "",
+  quantity:    "",
+  categories:  ["general"],
+  colors:      [],
+  genders:     [],
+  isActive:    true,
+  isFeatured:  false,
 };
 
 const AdminProductForm = () => {
@@ -26,125 +29,144 @@ const AdminProductForm = () => {
 
   const isEditMode = Boolean(id);
 
-  const [form, setForm] = useState(EMPTY_FORM);
-  const [loading, setLoading] = useState(isEditMode);
+  const [form,       setForm]       = useState(EMPTY_FORM);
+  const [loading,    setLoading]    = useState(isEditMode);
   const [submitting, setSubmitting] = useState(false);
 
-  // File upload state
-  const [imageFiles, setImageFiles] = useState([]);           // new files to upload
-  const [existingImages, setExistingImages] = useState([]);   // URLs from DB (edit mode)
-  const [imagePreviews, setImagePreviews] = useState([]);     // blob preview URLs
+  // Image state
+  const [imageFiles,     setImageFiles]     = useState([]);  // new File objects
+  const [existingImages, setExistingImages] = useState([]);  // {url, publicId} from DB
+  const [imagePreviews,  setImagePreviews]  = useState([]);  // blob URLs for new files
 
-  // Fetch product in edit mode
+  // Color tag input
+  const [colorInput, setColorInput] = useState("");
+
+  // ── Fetch product in edit mode ──────────────────────────────────────────────
   useEffect(() => {
     if (!isEditMode) return;
-
     const fetchProduct = async () => {
       try {
         setLoading(true);
         const res = await api.get(`/products/${id}`);
-        const p = res?.data?.data ?? res?.data ?? {};
+        const p   = res?.data?.data ?? res?.data ?? {};
 
         setForm({
-          name: p.name ?? p.title ?? "",
-          description: p.description ?? "",
-          price: p.price ?? "",
+          name:       p.name        ?? p.title ?? "",
+          description:p.description ?? "",
+          price:      p.price       ?? "",
+          quantity:   p.quantity    ?? p.stock ?? "",
           categories: Array.isArray(p.categories) && p.categories.length > 0
             ? p.categories
-            : p.category
-            ? [p.category]
-            : ["general"],
-          quantity: p.quantity ?? p.stock ?? "",
-          isActive: p.isActive ?? true,
-          isFeatured: p.isFeatured ?? false,
+            : p.category ? [p.category] : ["general"],
+          colors:    Array.isArray(p.colors)  ? p.colors  : [],
+          genders:   Array.isArray(p.genders) ? p.genders : [],
+          isActive:  p.isActive  ?? true,
+          isFeatured:p.isFeatured ?? false,
         });
 
-        // Keep full {url, publicId} objects so the backend can clean up removed images
         const imgs = Array.isArray(p.images) && p.images.length > 0
-          ? p.images.map((img) =>
-              typeof img === "object"
+          ? p.images
+              .map((img) => typeof img === "object"
                 ? { url: img.url, publicId: img.publicId || "" }
-                : { url: img, publicId: "" }
-            ).filter((img) => img.url)
+                : { url: img, publicId: "" })
+              .filter((img) => img.url)
           : p.imageUrl
           ? [{ url: p.imageUrl, publicId: "" }]
           : [];
         setExistingImages(imgs);
       } catch (err) {
         addToast("Failed to load product data.", "error");
-        console.error("Product fetch error:", err);
       } finally {
         setLoading(false);
       }
     };
-
     fetchProduct();
   }, [id]);
 
-  // Clean up blob URLs when component unmounts or previews change
+  // Revoke blob URLs on unmount
   useEffect(() => {
     return () => imagePreviews.forEach((url) => URL.revokeObjectURL(url));
   }, [imagePreviews]);
 
   const setField = (key, value) => setForm((f) => ({ ...f, [key]: value }));
 
-  // ── Category handling ──
-  const toggleCategory = (cat) => {
-    setForm((f) => {
-      const cats = f.categories;
-      return {
-        ...f,
-        categories: cats.includes(cat)
-          ? cats.filter((c) => c !== cat)
-          : [...cats, cat],
-      };
-    });
+  // ── Category chips ──────────────────────────────────────────────────────────
+  const toggleCategory = (cat) =>
+    setForm((f) => ({
+      ...f,
+      categories: f.categories.includes(cat)
+        ? f.categories.filter((c) => c !== cat)
+        : [...f.categories, cat],
+    }));
+
+  // ── Gender checkboxes ───────────────────────────────────────────────────────
+  const toggleGender = (g) =>
+    setForm((f) => ({
+      ...f,
+      genders: f.genders.includes(g)
+        ? f.genders.filter((x) => x !== g)
+        : [...f.genders, g],
+    }));
+
+  // ── Color tag input ─────────────────────────────────────────────────────────
+  const addColor = () => {
+    const val = colorInput.trim();
+    if (!val) return;
+    if (!form.colors.includes(val)) {
+      setField("colors", [...form.colors, val]);
+    }
+    setColorInput("");
   };
 
-  // ── File handling ──
-  const MAX_FILE_SIZE_MB = 4;
-  const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
+  const handleColorKeyDown = (e) => {
+    if (e.key === "Enter" || e.key === ",") {
+      e.preventDefault();
+      addColor();
+    }
+    if (e.key === "Backspace" && !colorInput && form.colors.length > 0) {
+      setField("colors", form.colors.slice(0, -1));
+    }
+  };
+
+  const removeColor = (color) =>
+    setField("colors", form.colors.filter((c) => c !== color));
+
+  // ── File handling ───────────────────────────────────────────────────────────
+  const MAX_MB    = 4;
+  const MAX_BYTES = MAX_MB * 1024 * 1024;
 
   const handleFileChange = (e) => {
-    const files = Array.from(e.target.files);
+    const files    = Array.from(e.target.files || []);
     if (!files.length) return;
 
-    const oversized = files.filter((f) => f.size > MAX_FILE_SIZE_BYTES);
-    if (oversized.length > 0) {
-      const names = oversized.map((f) => f.name).join(", ");
+    const oversized = files.filter((f) => f.size > MAX_BYTES);
+    if (oversized.length) {
       addToast(
-        `${oversized.length > 1 ? "These files are" : `"${names}" is`} too large. Maximum size is ${MAX_FILE_SIZE_MB}MB per image.`,
+        `${oversized.map((f) => `"${f.name}"`).join(", ")} exceed${oversized.length === 1 ? "s" : ""} the ${MAX_MB} MB limit.`,
         "error"
       );
     }
 
-    const valid = files.filter((f) => f.size <= MAX_FILE_SIZE_BYTES);
+    const valid = files.filter((f) => f.size <= MAX_BYTES);
     if (!valid.length) { e.target.value = ""; return; }
 
-    const newPreviews = valid.map((f) => URL.createObjectURL(f));
-    setImageFiles((prev) => [...prev, ...valid]);
-    setImagePreviews((prev) => [...prev, ...newPreviews]);
-
+    setImageFiles((p)    => [...p, ...valid]);
+    setImagePreviews((p) => [...p, ...valid.map((f) => URL.createObjectURL(f))]);
     e.target.value = "";
   };
 
-  const removeNewFile = (index) => {
-    URL.revokeObjectURL(imagePreviews[index]);
-    setImageFiles((prev) => prev.filter((_, i) => i !== index));
-    setImagePreviews((prev) => prev.filter((_, i) => i !== index));
+  const removeNewFile = (i) => {
+    URL.revokeObjectURL(imagePreviews[i]);
+    setImageFiles((p)    => p.filter((_, j) => j !== i));
+    setImagePreviews((p) => p.filter((_, j) => j !== i));
   };
 
-  const removeExistingImage = (index) => {
-    setExistingImages((prev) => prev.filter((_, i) => i !== index));
-  };
+  const removeExistingImage = (i) =>
+    setExistingImages((p) => p.filter((_, j) => j !== i));
 
-  // ── Validation ──
+  // ── Validation ──────────────────────────────────────────────────────────────
   const validate = () => {
-    if (!form.name.trim()) {
-      addToast("Product name is required.", "error");
-      return false;
-    }
-    if (form.name.trim().length < 2) {
+    if (!form.name.trim() || form.name.trim().length < 2) {
       addToast("Product name must be at least 2 characters.", "error");
       return false;
     }
@@ -154,6 +176,10 @@ const AdminProductForm = () => {
     }
     if (form.price === "" || isNaN(Number(form.price)) || Number(form.price) < 0) {
       addToast("Please enter a valid price.", "error");
+      return false;
+    }
+    if (form.quantity === "" || isNaN(Number(form.quantity)) || Number(form.quantity) < 0) {
+      addToast("Please enter a valid stock quantity.", "error");
       return false;
     }
     if (form.categories.length === 0) {
@@ -171,50 +197,55 @@ const AdminProductForm = () => {
     return true;
   };
 
-  // ── Submit ──
+  // ── Submit ──────────────────────────────────────────────────────────────────
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
 
-    const formData = new FormData();
-    formData.append("name", form.name.trim());
-    formData.append("description", form.description.trim());
-    formData.append("price", Number(form.price));
-    formData.append("quantity", form.quantity !== "" ? Number(form.quantity) : 0);
-    form.categories.forEach((cat) => formData.append("categories", cat));
-    formData.append("isActive", form.isActive);
-    formData.append("isFeatured", form.isFeatured);
+    const fd = new FormData();
+    fd.append("name",        form.name.trim());
+    fd.append("description", form.description.trim());
+    fd.append("price",       Number(form.price));
+    fd.append("quantity",    Number(form.quantity) || 0);
+    fd.append("isActive",    String(form.isActive));
+    fd.append("isFeatured",  String(form.isFeatured));
 
-    // Attach new image files
-    imageFiles.forEach((file) => formData.append("images", file));
+    form.categories.forEach((c) => fd.append("categories", c));
+    form.colors.forEach((c)     => fd.append("colors", c));
+    form.genders.forEach((g)    => fd.append("genders", g));
+
+    imageFiles.forEach((file) => fd.append("images", file));
 
     if (isEditMode) {
-      // Always send keepImages so the backend knows which existing images to preserve
-      formData.append("keepImages", JSON.stringify(existingImages));
+      // Tell the backend exactly which existing images to keep (selective delete)
+      fd.append("keepImages", JSON.stringify(existingImages));
     }
 
     try {
       setSubmitting(true);
       if (isEditMode) {
-        await api.patch(`/products/${id}`, formData, {
+        await api.patch(`/products/${id}`, fd, {
           headers: { "Content-Type": "multipart/form-data" },
         });
         addToast("Product updated successfully.", "success");
       } else {
-        await api.post("/products", formData, {
+        await api.post("/products", fd, {
           headers: { "Content-Type": "multipart/form-data" },
         });
         addToast("Product created successfully.", "success");
       }
       navigate("/admin/products");
     } catch (err) {
-      const msg = err?.message || (isEditMode ? "Failed to update product." : "Failed to create product.");
-      addToast(msg, "error");
+      addToast(
+        err?.message || (isEditMode ? "Failed to update product." : "Failed to create product."),
+        "error"
+      );
     } finally {
       setSubmitting(false);
     }
   };
 
+  // ── Loading state ───────────────────────────────────────────────────────────
   if (loading) {
     return (
       <div className="admin-page">
@@ -224,6 +255,7 @@ const AdminProductForm = () => {
   }
 
   const hasAnyImage = existingImages.length > 0 || imagePreviews.length > 0;
+  const descLen     = form.description.length;
 
   return (
     <motion.div
@@ -254,7 +286,7 @@ const AdminProductForm = () => {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} noValidate encType="multipart/form-data">
+      <form onSubmit={handleSubmit} noValidate>
         <div className="admin-pf-grid">
 
           {/* ── Left column: Product details ── */}
@@ -274,7 +306,6 @@ const AdminProductForm = () => {
                   placeholder="e.g. Premium Dog Harness"
                   value={form.name}
                   onChange={(e) => setField("name", e.target.value)}
-                  required
                 />
               </div>
 
@@ -289,12 +320,15 @@ const AdminProductForm = () => {
                   rows={5}
                   placeholder="Describe the product in detail… (min 10 characters)"
                   value={form.description}
+                  maxLength={2000}
                   onChange={(e) => setField("description", e.target.value)}
-                  required
                 />
+                <span className={`admin-pf-char-count${descLen > 1800 ? " admin-pf-char-count--warn" : ""}`}>
+                  {descLen}/2000
+                </span>
               </div>
 
-              {/* Price + Quantity row */}
+              {/* Price + Quantity */}
               <div className="admin-pf-row">
                 <div className="admin-field">
                   <label className="admin-label" htmlFor="pf-price">
@@ -309,13 +343,11 @@ const AdminProductForm = () => {
                     placeholder="0.00"
                     value={form.price}
                     onChange={(e) => setField("price", e.target.value)}
-                    required
                   />
                 </div>
-
                 <div className="admin-field">
                   <label className="admin-label" htmlFor="pf-quantity">
-                    Stock Quantity <span className="admin-required">*</span>
+                    Stock Qty <span className="admin-required">*</span>
                   </label>
                   <input
                     id="pf-quantity"
@@ -326,7 +358,6 @@ const AdminProductForm = () => {
                     placeholder="0"
                     value={form.quantity}
                     onChange={(e) => setField("quantity", e.target.value)}
-                    required
                   />
                 </div>
               </div>
@@ -341,9 +372,7 @@ const AdminProductForm = () => {
                     <button
                       key={cat}
                       type="button"
-                      className={`admin-pf-cat-chip${
-                        form.categories.includes(cat) ? " selected" : ""
-                      }`}
+                      className={`admin-pf-cat-chip${form.categories.includes(cat) ? " selected" : ""}`}
                       onClick={() => toggleCategory(cat)}
                     >
                       {cat.charAt(0).toUpperCase() + cat.slice(1)}
@@ -354,6 +383,56 @@ const AdminProductForm = () => {
                   <p className="admin-pf-cats-hint">Select at least one category</p>
                 )}
               </div>
+
+              {/* Genders */}
+              <div className="admin-field">
+                <span className="admin-label">Suitable For</span>
+                <div className="admin-pf-genders">
+                  {GENDERS.map((g) => (
+                    <label key={g} className="admin-pf-gender-label">
+                      <input
+                        type="checkbox"
+                        className="admin-pf-gender-cb"
+                        checked={form.genders.includes(g)}
+                        onChange={() => toggleGender(g)}
+                      />
+                      <span className={`admin-pf-gender-chip${form.genders.includes(g) ? " selected" : ""}`}>
+                        {g}
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              {/* Colors */}
+              <div className="admin-field">
+                <span className="admin-label">Colors</span>
+                <div className={`admin-pf-color-input-wrap${colorInput ? " focused" : ""}`}>
+                  {form.colors.map((color) => (
+                    <span key={color} className="admin-pf-color-tag">
+                      {color}
+                      <button
+                        type="button"
+                        className="admin-pf-color-tag-remove"
+                        onClick={() => removeColor(color)}
+                        aria-label={`Remove ${color}`}
+                      >
+                        <FiX size={10} />
+                      </button>
+                    </span>
+                  ))}
+                  <input
+                    className="admin-pf-color-input"
+                    type="text"
+                    value={colorInput}
+                    onChange={(e) => setColorInput(e.target.value)}
+                    onKeyDown={handleColorKeyDown}
+                    onBlur={addColor}
+                    placeholder={form.colors.length === 0 ? "Type a color and press Enter…" : "Add another…"}
+                  />
+                </div>
+                <p className="admin-pf-color-hint">Press Enter or comma after each color</p>
+              </div>
             </div>
           </div>
 
@@ -362,7 +441,14 @@ const AdminProductForm = () => {
 
             {/* Images */}
             <div className="admin-card">
-              <h2 className="admin-pf-section-title">Images</h2>
+              <h2 className="admin-pf-section-title">
+                Images
+                {hasAnyImage && (
+                  <span className="admin-pf-img-count">
+                    {existingImages.length + imagePreviews.length} attached
+                  </span>
+                )}
+              </h2>
 
               {/* Existing images (edit mode) */}
               {existingImages.length > 0 && (
@@ -385,7 +471,10 @@ const AdminProductForm = () => {
 
               {/* New file previews */}
               {imagePreviews.length > 0 && (
-                <div className="admin-pf-img-grid" style={{ marginTop: existingImages.length > 0 ? "0.75rem" : 0 }}>
+                <div
+                  className="admin-pf-img-grid"
+                  style={{ marginTop: existingImages.length > 0 ? "0.75rem" : 0 }}
+                >
                   {imagePreviews.map((url, i) => (
                     <div key={i} className="admin-pf-img-thumb admin-pf-img-thumb--new">
                       <img src={url} alt={`New ${i + 1}`} />
@@ -403,17 +492,15 @@ const AdminProductForm = () => {
                 </div>
               )}
 
-              {/* Drop zone / upload button */}
+              {/* Drop zone */}
               <div
                 className="admin-pf-dropzone"
                 onClick={() => fileInputRef.current?.click()}
                 onDragOver={(e) => e.preventDefault()}
                 onDrop={(e) => {
                   e.preventDefault();
-                  const dt = e.dataTransfer;
-                  if (dt.files.length) {
-                    const synth = { target: { files: dt.files, value: "" } };
-                    handleFileChange(synth);
+                  if (e.dataTransfer.files.length) {
+                    handleFileChange({ target: { files: e.dataTransfer.files, value: "" } });
                   }
                 }}
                 style={{ marginTop: hasAnyImage ? "0.85rem" : 0 }}
@@ -422,7 +509,7 @@ const AdminProductForm = () => {
                 <p className="admin-pf-dropzone-text">
                   <strong>Click to upload</strong> or drag &amp; drop
                 </p>
-                <p className="admin-pf-dropzone-hint">PNG, JPG, WEBP · max 4 MB per image · up to 10 files</p>
+                <p className="admin-pf-dropzone-hint">PNG, JPG, WEBP · max {MAX_MB} MB · up to 10 files</p>
               </div>
 
               <input
@@ -435,7 +522,7 @@ const AdminProductForm = () => {
               />
             </div>
 
-            {/* Visibility toggles + submit */}
+            {/* Visibility + Submit */}
             <div className="admin-card">
               <h2 className="admin-pf-section-title">Visibility</h2>
 
@@ -444,7 +531,7 @@ const AdminProductForm = () => {
                   <p className="admin-notification-label">Active</p>
                   <p className="admin-notification-desc">Show this product in the store.</p>
                 </div>
-                <label className="admin-toggle" aria-label="Active toggle">
+                <label className="admin-toggle" aria-label="Active">
                   <input
                     type="checkbox"
                     className="toggle-input"
@@ -457,9 +544,9 @@ const AdminProductForm = () => {
               <div className="admin-pf-toggle-row">
                 <div>
                   <p className="admin-notification-label">Featured</p>
-                  <p className="admin-notification-desc">Highlight this product on the homepage.</p>
+                  <p className="admin-notification-desc">Highlight on the homepage.</p>
                 </div>
-                <label className="admin-toggle" aria-label="Featured toggle">
+                <label className="admin-toggle" aria-label="Featured">
                   <input
                     type="checkbox"
                     className="toggle-input"
@@ -469,7 +556,6 @@ const AdminProductForm = () => {
                 </label>
               </div>
 
-              {/* Submit */}
               <div className="admin-pf-submit-row">
                 <button
                   type="button"
@@ -485,8 +571,8 @@ const AdminProductForm = () => {
                   disabled={submitting}
                 >
                   {submitting
-                    ? isEditMode ? "Saving…" : "Creating…"
-                    : isEditMode ? "Save Changes" : "Create Product"}
+                    ? (isEditMode ? "Saving…" : "Creating…")
+                    : (isEditMode ? "Save Changes" : "Create Product")}
                 </button>
               </div>
             </div>

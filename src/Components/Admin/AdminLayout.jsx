@@ -17,6 +17,7 @@ import {
   FiBox,
   FiFileText,
   FiCreditCard,
+  FiExternalLink,
 } from "react-icons/fi";
 
 const AdminLayout = () => {
@@ -123,6 +124,30 @@ const AdminLayout = () => {
             ))}
           </ul>
         </nav>
+
+        {/* External site shortcuts */}
+        <div className="sidebar-store-link">
+          <a
+            href="/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="store-link-btn"
+            title="Open Homepage"
+          >
+            <FiExternalLink className="menu-icon" />
+            {sidebarOpen && <span>Homepage</span>}
+          </a>
+          <a
+            href="/petshop"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="store-link-btn"
+            title="Open Pet Store"
+          >
+            <FiExternalLink className="menu-icon" />
+            {sidebarOpen && <span>Pet Store</span>}
+          </a>
+        </div>
 
         <div className="sidebar-footer">
           <div className="user-info">
