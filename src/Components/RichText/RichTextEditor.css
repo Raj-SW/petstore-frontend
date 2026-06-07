@@ -1,0 +1,265 @@
+/* ─── Wrapper ──────────────────────────────────────────────────────────── */
+.rte-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.rte-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text-default, #1a2e1a);
+}
+
+/* ─── Container (border box) ───────────────────────────────────────────── */
+.rte-container {
+  border: 1.5px solid #d1d9d1;
+  border-radius: 10px;
+  background: #fff;
+  overflow: hidden;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.rte-container:focus-within {
+  border-color: var(--color-primary-forest, #001c10);
+  box-shadow: 0 0 0 3px rgba(0, 28, 16, 0.08);
+}
+
+.rte-has-error .rte-container {
+  border-color: #e53e3e;
+}
+
+.rte-has-error .rte-container:focus-within {
+  box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.12);
+}
+
+.rte-read-only .rte-container {
+  background: #f9fafb;
+  border-color: #e5e7eb;
+}
+
+/* ─── Toolbar ──────────────────────────────────────────────────────────── */
+.rte-toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.125rem;
+  padding: 0.5rem 0.625rem;
+  border-bottom: 1.5px solid #e8ede8;
+  background: #f7f9f7;
+  position: relative;
+}
+
+.rte-toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: 0.125rem;
+}
+
+.rte-toolbar-end {
+  margin-left: auto;
+}
+
+.rte-toolbar-divider {
+  width: 1px;
+  height: 1.25rem;
+  background: #d1d9d1;
+  margin: 0 0.25rem;
+  flex-shrink: 0;
+}
+
+/* ─── Toolbar Buttons ──────────────────────────────────────────────────── */
+.rte-toolbar-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: #4a5568;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  flex-shrink: 0;
+}
+
+.rte-toolbar-btn:hover:not(.is-disabled) {
+  background: rgba(0, 28, 16, 0.07);
+  color: var(--color-primary-forest, #001c10);
+}
+
+.rte-toolbar-btn.is-active {
+  background: rgba(0, 28, 16, 0.12);
+  color: var(--color-primary-forest, #001c10);
+  font-weight: 700;
+}
+
+.rte-toolbar-btn.is-disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.rte-heading-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* ─── Link dialog ──────────────────────────────────────────────────────── */
+.rte-link-dialog {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0.625rem;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  background: #fff;
+  border: 1.5px solid #d1d9d1;
+  border-radius: 8px;
+  padding: 0.375rem 0.5rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+.rte-link-input {
+  border: 1px solid #d1d9d1;
+  border-radius: 5px;
+  padding: 0.3rem 0.5rem;
+  font-size: 0.875rem;
+  width: 220px;
+  outline: none;
+}
+
+.rte-link-input:focus {
+  border-color: var(--color-primary-forest, #001c10);
+}
+
+.rte-link-confirm,
+.rte-link-cancel {
+  border: none;
+  border-radius: 5px;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.rte-link-confirm {
+  background: var(--color-primary-forest, #001c10);
+  color: #fff;
+}
+
+.rte-link-confirm:hover { opacity: 0.85; }
+
+.rte-link-cancel {
+  background: #f1f5f1;
+  color: #555;
+}
+
+.rte-link-cancel:hover { background: #e5e9e5; }
+
+/* ─── Editor content area ──────────────────────────────────────────────── */
+.rte-content {
+  padding: 0.875rem 1rem;
+}
+
+.rte-content .tiptap {
+  min-height: var(--rte-min-height, 160px);
+  outline: none;
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  color: var(--color-text-default, #1a2e1a);
+}
+
+/* Placeholder */
+.rte-content .tiptap p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  color: #a0aec0;
+  pointer-events: none;
+  float: left;
+  height: 0;
+}
+
+/* ─── Prose styles inside editor ───────────────────────────────────────── */
+.rte-content .tiptap h1 { font-size: 1.5rem; font-weight: 700; margin: 0.75rem 0 0.4rem; }
+.rte-content .tiptap h2 { font-size: 1.25rem; font-weight: 700; margin: 0.75rem 0 0.4rem; }
+.rte-content .tiptap h3 { font-size: 1.1rem;  font-weight: 600; margin: 0.75rem 0 0.4rem; }
+
+.rte-content .tiptap p  { margin: 0 0 0.5rem; }
+.rte-content .tiptap p:last-child { margin-bottom: 0; }
+
+.rte-content .tiptap ul,
+.rte-content .tiptap ol { padding-left: 1.5rem; margin: 0.375rem 0 0.5rem; }
+.rte-content .tiptap li { margin-bottom: 0.2rem; }
+
+.rte-content .tiptap blockquote {
+  border-left: 3px solid var(--color-accent-gold, #d99a2b);
+  margin: 0.5rem 0;
+  padding: 0.25rem 0 0.25rem 1rem;
+  color: #555;
+  font-style: italic;
+}
+
+.rte-content .tiptap code {
+  background: #f0f4f0;
+  border-radius: 4px;
+  padding: 0.1em 0.35em;
+  font-family: monospace;
+  font-size: 0.88em;
+}
+
+.rte-content .tiptap pre {
+  background: #1a2e1a;
+  color: #e2e8e2;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  overflow-x: auto;
+  font-size: 0.875rem;
+  margin: 0.5rem 0;
+}
+
+.rte-content .tiptap a.rte-link {
+  color: var(--color-primary-forest, #001c10);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.rte-content .tiptap a.rte-link:hover { opacity: 0.75; }
+
+.rte-content .tiptap mark {
+  background: #fef08a;
+  border-radius: 2px;
+  padding: 0 2px;
+}
+
+.rte-content .tiptap hr {
+  border: none;
+  border-top: 2px solid #e8ede8;
+  margin: 1rem 0;
+}
+
+/* ─── Footer (char count / error) ─────────────────────────────────────── */
+.rte-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 1.25rem;
+}
+
+.rte-error {
+  font-size: 0.8rem;
+  color: #e53e3e;
+}
+
+.rte-char-count {
+  font-size: 0.78rem;
+  color: #a0aec0;
+  margin-left: auto;
+}
+
+.rte-char-count.rte-over-limit {
+  color: #e53e3e;
+  font-weight: 600;
+}

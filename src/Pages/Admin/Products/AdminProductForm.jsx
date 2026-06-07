@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { FiArrowLeft, FiX, FiUpload, FiPlus } from "react-icons/fi";
 import { api } from "../../../core/api/apiClient";
 import { useToast } from "../../../context/ToastContext";
+import { RichTextEditor } from "../../../Components/RichText";
 import "./AdminProductForm.css";
 
 const CATEGORIES = ["dogs", "cats", "fish", "birds", "general", "apparel"];
@@ -170,7 +171,9 @@ const AdminProductForm = () => {
       addToast("Product name must be at least 2 characters.", "error");
       return false;
     }
-    if (!form.description.trim() || form.description.trim().length < 10) {
+    // Strip HTML tags to get plain text length for validation
+    const descPlain = form.description.replace(/<[^>]*>/g, "").trim();
+    if (!descPlain || descPlain.length < 10) {
       addToast("Description must be at least 10 characters.", "error");
       return false;
     }
@@ -255,7 +258,6 @@ const AdminProductForm = () => {
   }
 
   const hasAnyImage = existingImages.length > 0 || imagePreviews.length > 0;
-  const descLen     = form.description.length;
 
   return (
     <motion.div
@@ -311,21 +313,18 @@ const AdminProductForm = () => {
 
               {/* Description */}
               <div className="admin-field">
-                <label className="admin-label" htmlFor="pf-description">
+                <label className="admin-label">
                   Description <span className="admin-required">*</span>
                 </label>
-                <textarea
-                  id="pf-description"
-                  className="admin-textarea"
-                  rows={5}
-                  placeholder="Describe the product in detail… (min 10 characters)"
+                <RichTextEditor
+                  preset="standard"
                   value={form.description}
+                  onChange={(html) => setField("description", html)}
+                  placeholder="Describe the product in detail… (min 10 characters)"
                   maxLength={2000}
-                  onChange={(e) => setField("description", e.target.value)}
+                  showCharCount
+                  minHeight="160px"
                 />
-                <span className={`admin-pf-char-count${descLen > 1800 ? " admin-pf-char-count--warn" : ""}`}>
-                  {descLen}/2000
-                </span>
               </div>
 
               {/* Price + Quantity */}

@@ -13,6 +13,7 @@ import "./IndividaulItemPage.css";
 import Breadcrumb from "@/Components/HelperComponents/Breadcrumb/Breadcrumb";
 import LoginModal from "@/Components/NavigationBar/Dropdowns/LoginModal";
 import SignUpModal from "@/Components/NavigationBar/Dropdowns/SignUpModal";
+import { RichTextRenderer } from "@/Components/RichText";
 import ProductCard from "@/Components/HelperComponents/ProductCard/ProductCardV2";
 import ReviewCarousel from "@/Components/HelperComponents/Carousel/ReviewCarousel";
 import ProductReviewFormModal from "@/Components/HelperComponents/ProductReviewFormModal/ProductReviewFormModal";
@@ -288,7 +289,11 @@ const IndividualProductItemPage = () => {
             <p className="ip-price">${parseFloat(product.price).toFixed(2)}</p>
 
             {product.description && (
-              <p className="ip-description">{product.description}</p>
+              <RichTextRenderer
+                content={product.description}
+                className="ip-description"
+                emptyText="No description available."
+              />
             )}
 
             {product.specifications && Object.keys(product.specifications).length > 0 && (
