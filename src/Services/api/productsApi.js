@@ -36,8 +36,21 @@ const productsApi = {
 
   // Get featured products
   getFeaturedProducts: async (limit = 8) => {
-    const response = await api.get(`/products?featured=true&limit=${limit}`);
+    const response = await api.get(`/products?isFeatured=true&limit=${limit}`);
     return response.data;
+  },
+
+  // Get featured products filtered by category, falls back to latest products if none are featured
+  getFeaturedByCategory: async (category, limit = 3) => {
+    const base = `/products?categories=${encodeURIComponent(category)}&limit=${limit}&isActive=true`;
+
+    const featuredRes = await api.get(`${base}&isFeatured=true`);
+    const featured = featuredRes.data?.data ?? [];
+    if (featured.length > 0) return featured;
+
+    // Fallback: show latest active products from that category
+    const fallbackRes = await api.get(base);
+    return fallbackRes.data?.data ?? [];
   },
 
   // Search products

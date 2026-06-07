@@ -1,19 +1,20 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import ProductCard from "../../../Components/HelperComponents/ProductCard/ProductCardV2";
-import ProductService from "@/Services/localServices/ProductService";
+import productsApi from "@/Services/api/productsApi";
 import "./FeaturedProductSection.css";
 
+// Keys must exactly match the category values stored in the DB
 const TABS = [
-  { key: "cat",     label: "Cats" },
-  { key: "dog",     label: "Dogs" },
+  { key: "cats",    label: "Cats" },
+  { key: "dogs",    label: "Dogs" },
   { key: "fish",    label: "Fish" },
   { key: "general", label: "General" },
 ];
 
 const FeaturedProductSection = () => {
-  const [activeTab, setActiveTab] = useState("cat");
-  const [products, setProducts] = useState({ cat: [], dog: [], fish: [], general: [] });
+  const [activeTab, setActiveTab] = useState("cats");
+  const [products, setProducts] = useState({ cats: [], dogs: [], fish: [], general: [] });
   const [loading, setLoading] = useState(true);
 
   const headerRef = useRef(null);
@@ -22,16 +23,12 @@ const FeaturedProductSection = () => {
   useEffect(() => {
     let resolved = 0;
     TABS.forEach(({ key }) => {
-      ProductService.fetchProductsByCategory(key)
+      productsApi
+        .getFeaturedByCategory(key, 3)
         .then((data) => {
-          // Prefer featured-flagged products; fall back to first 3 if none are flagged
-          const featured = data.filter((p) => p.featured || p.isFeatured);
-          setProducts((prev) => ({
-            ...prev,
-            [key]: (featured.length > 0 ? featured : data).slice(0, 3),
-          }));
+          setProducts((prev) => ({ ...prev, [key]: data }));
         })
-        .catch((err) => console.error(`Error fetching ${key}:`, err))
+        .catch((err) => console.error(`Error fetching featured ${key}:`, err))
         .finally(() => {
           resolved++;
           if (resolved === TABS.length) setLoading(false);
@@ -55,7 +52,7 @@ const FeaturedProductSection = () => {
         <a href="/petshop" className="fp-view-more-btn">View More &rsaquo;</a>
       </motion.div>
 
-      {/* Category tabs — 21st.dev sliding pill */}
+      {/* Category tabs — sliding pill */}
       <motion.div
         className="fp-tabs-wrapper"
         initial={{ opacity: 0, y: 12 }}
@@ -98,7 +95,7 @@ const FeaturedProductSection = () => {
                 <div key={i} className="fp-skeleton" />
               ))
             ) : currentProducts.length === 0 ? (
-              <p className="fp-empty">No featured products available right now.</p>
+              <p className="fp-empty">No products available right now.</p>
             ) : (
               currentProducts.map((product) => (
                 <ProductCard
