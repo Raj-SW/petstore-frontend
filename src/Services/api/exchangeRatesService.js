@@ -44,15 +44,16 @@ export async function fetchRates() {
   }
 }
 
-// Supported currencies shown in the selector
+// Supported currencies shown in the selector.
+// `country` is the ISO 3166-1 alpha-2 code used by flagcdn.com for flag images.
 export const SUPPORTED_CURRENCIES = [
-  { code: 'MUR', label: 'Rs',  name: 'Mauritian Rupee',    flag: '🇲🇺' },
-  { code: 'USD', label: '$',   name: 'US Dollar',          flag: '🇺🇸' },
-  { code: 'EUR', label: '€',   name: 'Euro',               flag: '🇪🇺' },
-  { code: 'GBP', label: '£',   name: 'British Pound',      flag: '🇬🇧' },
-  { code: 'INR', label: '₹',   name: 'Indian Rupee',       flag: '🇮🇳' },
-  { code: 'ZAR', label: 'R',   name: 'South African Rand', flag: '🇿🇦' },
-  { code: 'AUD', label: 'A$',  name: 'Australian Dollar',  flag: '🇦🇺' },
+  { code: 'MUR', label: 'Rs',  name: 'Mauritian Rupee',    country: 'mu' },
+  { code: 'USD', label: '$',   name: 'US Dollar',          country: 'us' },
+  { code: 'EUR', label: '€',   name: 'Euro',               country: 'eu' },
+  { code: 'GBP', label: '£',   name: 'British Pound',      country: 'gb' },
+  { code: 'INR', label: '₹',   name: 'Indian Rupee',       country: 'in' },
+  { code: 'ZAR', label: 'R',   name: 'South African Rand', country: 'za' },
+  { code: 'AUD', label: 'A$',  name: 'Australian Dollar',  country: 'au' },
 ];
 
 // Map browser locale region → default currency code

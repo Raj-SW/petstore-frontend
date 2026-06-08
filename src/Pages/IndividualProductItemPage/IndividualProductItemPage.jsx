@@ -68,22 +68,11 @@ const ProductSectionTabs = ({ sections = [] }) => {
         boxShadow: "0 4px 6px rgba(0,28,16,0.04), 0 12px 40px rgba(0,28,16,0.12), 0 0 0 1px rgba(201,186,168,0.4)",
       }}>
 
-        {/* ── Desktop: gradient header + pill tabs ── */}
+        {/* ── Desktop: solid header + pill tabs ── */}
         <div className="hidden md:block">
 
-          {/* Forest-to-gold gradient header */}
-          <div className="relative p-1" style={{
-            background: "linear-gradient(135deg, #001C10 0%, #0B2016 55%, #1a3a22 100%)",
-          }}>
-            {/* Subtle gold shimmer overlay */}
-            <div className="absolute inset-0 pointer-events-none" style={{
-              background: "linear-gradient(135deg, rgba(217,154,43,0.18) 0%, transparent 50%, rgba(201,152,99,0.1) 100%)",
-            }} />
-            {/* Gold top-edge accent line */}
-            <div className="absolute top-0 left-0 right-0" style={{
-              height: 2,
-              background: "linear-gradient(90deg, transparent 0%, #D99A2B 30%, #C99863 70%, transparent 100%)",
-            }} />
+          {/* Primary green header — same token as navbar */}
+          <div className="relative p-1" style={{ background: "var(--color-primary-forest)" }}>
 
             {/* Inner glass pill bar */}
             <div className="relative rounded-xl" style={{ background: "rgba(255,255,255,0.07)", backdropFilter: "blur(8px)" }}>
@@ -141,8 +130,8 @@ const ProductSectionTabs = ({ sections = [] }) => {
                           className="absolute inset-0"
                           style={{
                             borderRadius: 10,
-                            background: "linear-gradient(135deg, #D99A2B 0%, #f0c040 50%, #C99863 100%)",
-                            boxShadow: "0 4px 20px rgba(217,154,43,0.5), 0 0 0 1px rgba(217,154,43,0.3)",
+                            background: "#D99A2B",
+                            boxShadow: "0 2px 12px rgba(217,154,43,0.35)",
                           }}
                           transition={{ type: "spring", duration: 0.55, bounce: 0.18 }}
                         />
@@ -195,9 +184,7 @@ const ProductSectionTabs = ({ sections = [] }) => {
                 className="flex items-center justify-between w-full border-none cursor-pointer text-left font-sans"
                 style={{
                   padding: "1rem 1.25rem",
-                  background: openAccordion === i
-                    ? "linear-gradient(135deg, #0B2016, #1a3a22)"
-                    : "linear-gradient(135deg, #001C10, #0B2016)",
+                  background: "var(--color-primary-forest)",
                   borderBottom: openAccordion === i ? "2px solid #D99A2B" : "none",
                   transition: "background 0.2s",
                 }}
@@ -496,7 +483,7 @@ const IndividualProductItemPage = () => {
               )}
               {stockQty !== null && (
                 <span className={`ip-badge ${stockQty > 0 ? "ip-badge--stock" : "ip-badge--out"}`}>
-                  {stockQty > 0 ? `${stockQty} in stock` : "Out of Stock"}
+                  {stockQty > 0 ? "In Stock" : "Out of Stock"}
                 </span>
               )}
             </div>

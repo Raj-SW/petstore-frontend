@@ -28,9 +28,14 @@ const CurrencySelector = () => {
         aria-haspopup="listbox"
         type="button"
       >
-        <span className="currency-trigger-flag">{current.flag}</span>
+        <span className="currency-flag-circle">
+          <img
+            src={`https://flagcdn.com/w40/${current.country}.png`}
+            alt={current.name}
+            className="currency-flag-img"
+          />
+        </span>
         <span className="currency-trigger-code">{current.code}</span>
-        <span className={`currency-trigger-chevron ${open ? 'open' : ''}`}>▼</span>
       </button>
 
       {open && (
@@ -44,7 +49,13 @@ const CurrencySelector = () => {
               className={`currency-option ${c.code === selectedCurrency ? 'active' : ''}`}
               onClick={() => { setCurrency(c.code); setOpen(false); }}
             >
-              <span className="currency-option-flag">{c.flag}</span>
+              <span className="currency-option-flag-wrap">
+                <img
+                  src={`https://flagcdn.com/w40/${c.country}.png`}
+                  alt={c.name}
+                  className="currency-option-flag-img"
+                />
+              </span>
               <span className="currency-option-code">{c.code}</span>
               <span className="currency-option-name">{c.name}</span>
               {c.code === selectedCurrency && (
