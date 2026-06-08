@@ -187,7 +187,7 @@ const PetShopPage = () => {
           >
             <ProductCard
               id={p.id}
-              imageUrl={p.images?.[0]?.url || p.imageUrl}
+              imageUrl={p.images?.[0]?.url || (typeof p.images?.[0] === 'string' ? p.images[0] : null) || p.imageUrl}
               title={p.name || p.title}
               price={p.price}
               description={p.description}

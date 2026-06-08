@@ -568,7 +568,7 @@ const IndividualProductItemPage = () => {
                 >
                   <ProductCard
                     id={item._id || item.id}
-                    imageUrl={item.images?.[0]?.url || item.imageUrl}
+                    imageUrl={item.images?.[0]?.url || (typeof item.images?.[0] === 'string' ? item.images[0] : null) || item.imageUrl}
                     title={item.name || item.title}
                     price={item.price}
                     description={item.description}
