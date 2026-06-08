@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { FaTrash, FaPlus, FaMinus } from "react-icons/fa";
+import Price from "../Price/Price";
 import "./CartItem.css";
 
 const btnSpring = { type: "spring", stiffness: 500, damping: 18 };
@@ -45,7 +46,7 @@ export const CartItem = ({
     )}
 
     <div className="cart-item-bottom">
-      <p className="cart-item-unit">${item.price.toFixed(2)} each</p>
+      <p className="cart-item-unit"><Price amount={item.price} /> each</p>
 
       {showQuantityControls && (
         <div className="cart-item-qty">
@@ -73,7 +74,7 @@ export const CartItem = ({
       )}
 
       <div className="cart-item-total">
-        ${(item.price * item.quantity).toFixed(2)}
+        <Price amount={item.price * item.quantity} />
       </div>
     </div>
   </motion.div>

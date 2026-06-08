@@ -18,6 +18,7 @@ import pawsImg from "../../assets/NavBar Assets/Paws.png";
 import { useAuth } from "../../context/AuthContext";
 import AddToCart from "./AddToCart";
 import SignUpDropdown from "./Dropdowns/SignUpDropdown";
+import CurrencySelector from "../HelperComponents/CurrencySelector/CurrencySelector";
 import ServicesDropdown from "./Dropdowns/ServicesDropdown";
 import "./NavigationBar.css";
 
@@ -171,6 +172,7 @@ const NavigationBar = () => {
 
           {/* Right-side actions */}
           <div className="nav-actions">
+            <CurrencySelector />
             {user ? (
               <div className="nav-user-wrap" ref={userMenuRef}>
                 <button

@@ -14,6 +14,7 @@ import Breadcrumb from "@/Components/HelperComponents/Breadcrumb/Breadcrumb";
 import LoginModal from "@/Components/NavigationBar/Dropdowns/LoginModal";
 import SignUpModal from "@/Components/NavigationBar/Dropdowns/SignUpModal";
 import { RichTextRenderer } from "@/Components/RichText";
+import Price from "@/Components/HelperComponents/Price/Price";
 import ProductCard from "@/Components/HelperComponents/ProductCard/ProductCardV2";
 import ReviewCarousel from "@/Components/HelperComponents/Carousel/ReviewCarousel";
 import ProductReviewFormModal from "@/Components/HelperComponents/ProductReviewFormModal/ProductReviewFormModal";
@@ -501,7 +502,7 @@ const IndividualProductItemPage = () => {
             </div>
 
             <h1 className="ip-title">{productName}</h1>
-            <p className="ip-price">${parseFloat(product.price).toFixed(2)}</p>
+            <Price amount={product.price} className="ip-price" />
 
             {/* Overview always visible in the product card */}
             {product.description && (

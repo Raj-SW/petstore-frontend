@@ -4,6 +4,7 @@ import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FaShoppingBag } from "react-icons/fa";
 import ordersApi from "../../Services/api/ordersApi";
+import Price from "../../Components/HelperComponents/Price/Price";
 import pawSvg from "@/assets/CartoonAssets/paw.svg";
 import sparkleSvg from "@/assets/CartoonAssets/sparkle.svg";
 import "./OrderConfirmedPage.css";
@@ -145,7 +146,7 @@ export default function OrderConfirmedPage() {
                       <span className="oc-item-qty">Qty: {qty}</span>
                     </div>
                     <span className="oc-item-price">
-                      ${(price * qty).toFixed(2)}
+                      <Price amount={price * qty} />
                     </span>
                   </div>
                 );
@@ -156,7 +157,7 @@ export default function OrderConfirmedPage() {
           {orderData.total !== null && (
             <div className="oc-total-row">
               <span>Total paid</span>
-              <strong>${Number(orderData.total).toFixed(2)}</strong>
+              <strong><Price amount={Number(orderData.total)} /></strong>
             </div>
           )}
         </motion.div>

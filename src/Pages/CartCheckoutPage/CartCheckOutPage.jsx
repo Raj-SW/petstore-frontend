@@ -8,8 +8,10 @@ import {
 } from "react-icons/fa";
 import { CartItem } from "../../Components/HelperComponents/CartItem/CartItem";
 import CheckoutStepper from "../../Components/HelperComponents/CheckoutStepper/CheckoutStepper";
+import Price from "../../Components/HelperComponents/Price/Price";
 import { useCart } from "@/context/CartContext";
 import { useToast } from "../../context/ToastContext";
+import { useCurrency } from "../../context/CurrencyContext";
 import ordersApi from "../../Services/api/ordersApi";
 import cartApi from "../../Services/api/cartApi";
 import pawSvg from "@/assets/CartoonAssets/paw.svg";
@@ -53,6 +55,7 @@ const CartCheckoutPage = () => {
 
   const subtotal = cartTotal;
   const total    = subtotal + SHIPPING_FEE;
+  const { selectedCurrency } = useCurrency();
 
   const handlePlaceOrder = async (e) => {
     e.preventDefault();
@@ -174,17 +177,22 @@ const CartCheckoutPage = () => {
                 <div className="cart-summary-rows">
                   <div className="cart-summary-row">
                     <span>Subtotal</span>
-                    <span>${subtotal.toFixed(2)}</span>
+                    <Price amount={subtotal} />
                   </div>
                   <div className="cart-summary-row">
                     <span>Shipping</span>
-                    <span>${SHIPPING_FEE.toFixed(2)}</span>
+                    <Price amount={SHIPPING_FEE} />
                   </div>
                   <div className="cart-summary-divider" />
                   <div className="cart-summary-row cart-summary-row--total">
                     <span>Total</span>
-                    <span>${total.toFixed(2)}</span>
+                    <Price amount={total} showMur={selectedCurrency !== 'MUR'} />
                   </div>
+                  {selectedCurrency !== 'MUR' && (
+                    <p style={{ fontSize: '0.75rem', color: '#6b7b6b', marginTop: '0.5rem', textAlign: 'right' }}>
+                      Charged as Rs {Math.round(total).toLocaleString()} MUR via Stripe
+                    </p>
+                  )}
                 </div>
 
                 <motion.button
@@ -310,23 +318,28 @@ const CartCheckoutPage = () => {
                       <span className="cart-summary-item-name">
                         {item.name || item.title} × {item.quantity}
                       </span>
-                      <span>${(item.price * item.quantity).toFixed(2)}</span>
+                      <Price amount={item.price * item.quantity} />
                     </div>
                   ))}
                   <div className="cart-summary-divider" />
                   <div className="cart-summary-row">
                     <span>Subtotal</span>
-                    <span>${subtotal.toFixed(2)}</span>
+                    <Price amount={subtotal} />
                   </div>
                   <div className="cart-summary-row">
                     <span>Shipping</span>
-                    <span>${SHIPPING_FEE.toFixed(2)}</span>
+                    <Price amount={SHIPPING_FEE} />
                   </div>
                   <div className="cart-summary-divider" />
                   <div className="cart-summary-row cart-summary-row--total">
                     <span>Total</span>
-                    <span>${total.toFixed(2)}</span>
+                    <Price amount={total} showMur={selectedCurrency !== 'MUR'} />
                   </div>
+                  {selectedCurrency !== 'MUR' && (
+                    <p style={{ fontSize: '0.75rem', color: '#6b7b6b', marginTop: '0.5rem', textAlign: 'right' }}>
+                      Charged as Rs {Math.round(total).toLocaleString()} MUR via Stripe
+                    </p>
+                  )}
                 </div>
 
                 <motion.button

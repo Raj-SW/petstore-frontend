@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { FaTimes, FaShoppingBag, FaArrowRight } from "react-icons/fa";
 import { useToast } from "../../context/ToastContext";
 import { CartItem } from "../HelperComponents/CartItem/CartItem";
+import Price from "../HelperComponents/Price/Price";
 import "./CartModal.css";
 
 const SHIPPING_FEE = 20;
@@ -115,15 +116,15 @@ const CartModal = ({ show, onHide }) => {
                   <div className="cm-summary">
                     <div className="cm-summary-row">
                       <span>Subtotal</span>
-                      <span>${cartTotal.toFixed(2)}</span>
+                      <Price amount={cartTotal} />
                     </div>
                     <div className="cm-summary-row">
                       <span>Shipping</span>
-                      <span>${(cartTotal > 0 ? SHIPPING_FEE : 0).toFixed(2)}</span>
+                      <Price amount={cartTotal > 0 ? SHIPPING_FEE : 0} />
                     </div>
                     <div className="cm-summary-row cm-summary-row--total">
                       <span>Total</span>
-                      <span>${total.toFixed(2)}</span>
+                      <Price amount={total} />
                     </div>
                   </div>
 

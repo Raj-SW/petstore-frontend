@@ -32,7 +32,8 @@ const getPaymentClass = (status) => {
   return map[status?.toLowerCase()] || "ao-badge";
 };
 
-const fmt = (n) => `$${Number(n || 0).toFixed(2)}`;
+const fmt = (n) =>
+  `Rs ${Math.round(Number(n || 0)).toLocaleString('en-US')}`;
 
 const AdminOrders = () => {
   const [orders, setOrders]           = useState([]);
@@ -211,7 +212,7 @@ const AdminOrders = () => {
           <span className="admin-stat-pill-lbl">Pending</span>
         </div>
         <div className="admin-stat-pill">
-          <span className="admin-stat-pill-val">${totalRevenue.toFixed(2)}</span>
+          <span className="admin-stat-pill-val">Rs {Math.round(totalRevenue).toLocaleString('en-US')}</span>
           <span className="admin-stat-pill-lbl">Revenue</span>
         </div>
       </div>

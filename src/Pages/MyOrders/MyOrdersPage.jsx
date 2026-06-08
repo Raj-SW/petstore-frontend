@@ -1,5 +1,6 @@
 // frontend/src/Pages/MyOrders/MyOrdersPage.jsx — enhanced
 import { useState, useEffect, useMemo } from "react";
+import Price from "../../Components/HelperComponents/Price/Price";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -379,7 +380,7 @@ export default function MyOrdersPage() {
                           <span className="orders-item-qty">Qty: {item.quantity}</span>
                         </div>
                         <span className="orders-item-price">
-                          ${(item.price * item.quantity).toFixed(2)}
+                          <Price amount={item.price * item.quantity} />
                         </span>
                       </div>
                     );
@@ -443,7 +444,7 @@ export default function MyOrdersPage() {
                 <div className="orders-card-footer">
                   <div className="orders-card-total">
                     <span>Total</span>
-                    <strong>${finalAmount.toFixed(2)}</strong>
+                    <strong><Price amount={finalAmount} /></strong>
                   </div>
 
                   <div className="orders-card-actions">

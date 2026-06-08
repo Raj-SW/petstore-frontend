@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { useCart } from "@/context/CartContext";
 import { FaShoppingCart } from "react-icons/fa";
 import { useToast } from "@/context/ToastContext";
+import Price from "../Price/Price";
 import "./ProductCardV2.css";
 
 const ProductCardV2 = ({ id, imageUrl, title, price, description }) => {
@@ -32,7 +33,7 @@ const ProductCardV2 = ({ id, imageUrl, title, price, description }) => {
           {description || "Premium quality product for your pet."}
         </p>
         <div className="pcv2-bottom-row">
-          <span className="pcv2-price">${price}</span>
+          <Price amount={price} className="pcv2-price" />
           <button
             className="pcv2-cart-btn"
             onClick={handleAddToCart}

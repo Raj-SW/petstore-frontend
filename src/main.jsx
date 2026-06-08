@@ -21,6 +21,7 @@ import { GlobalToastProvider } from "./context/GlobalToastContext";
 import { AuthProvider } from "./context/AuthContext";
 import CartContext from "./context/CartContext";
 import { ToastProvider } from "./context/ToastContext";
+import { CurrencyProvider } from "./context/CurrencyContext";
 import "./context/ToastContext.css";
 import { USER_ROLES } from "./constants/userConstants";
 
@@ -189,11 +190,13 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <GlobalToastProvider>
     <AuthProvider>
-      <CartContext>
-        <ToastProvider>
-          <RouterProvider router={router} />
-        </ToastProvider>
-      </CartContext>
+      <CurrencyProvider>
+        <CartContext>
+          <ToastProvider>
+            <RouterProvider router={router} />
+          </ToastProvider>
+        </CartContext>
+      </CurrencyProvider>
     </AuthProvider>
   </GlobalToastProvider>
 );
