@@ -99,7 +99,7 @@ const AdminDashboard = () => {
     },
     {
       title: "Revenue",
-      value: `$${stats.totalRevenue.toFixed(2)}`,
+      value: `Rs ${Math.round(stats.totalRevenue).toLocaleString('en-US')}`,
       icon: <FiDollarSign />,
       color: "success",
       link: "/admin/analytics",

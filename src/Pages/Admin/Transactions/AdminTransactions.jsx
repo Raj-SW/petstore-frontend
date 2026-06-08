@@ -73,9 +73,9 @@ export default function AdminTransactions() {
       {/* Stats strip */}
       <div className="txn-stats-strip">
         {[
-          { icon: <FiTrendingUp />,  label: "Total Revenue", value: `$${(stats.totalRevenue || 0).toFixed(2)}`, cls: "txn-stat--success" },
-          { icon: <FiTrendingDown />,label: "Total Refunds", value: `$${(stats.totalRefunds || 0).toFixed(2)}`, cls: "txn-stat--danger"  },
-          { icon: <FiActivity />,    label: "Net Revenue",   value: `$${(stats.netRevenue   || 0).toFixed(2)}`, cls: "txn-stat--default" },
+          { icon: <FiTrendingUp />,  label: "Total Revenue", value: `Rs ${Math.round(stats.totalRevenue || 0).toLocaleString('en-US')}`, cls: "txn-stat--success" },
+          { icon: <FiTrendingDown />,label: "Total Refunds", value: `Rs ${Math.round(stats.totalRefunds || 0).toLocaleString('en-US')}`, cls: "txn-stat--danger"  },
+          { icon: <FiActivity />,    label: "Net Revenue",   value: `Rs ${Math.round(stats.netRevenue   || 0).toLocaleString('en-US')}`, cls: "txn-stat--default" },
         ].map((s, i) => (
           <motion.div key={s.label} className={`txn-stat ${s.cls}`}
             initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
@@ -142,7 +142,7 @@ export default function AdminTransactions() {
                         </td>
                         <td>
                           <span className={tx.type === "refund" ? "txn-amount--refund" : "txn-amount--payment"}>
-                            {tx.type === "refund" ? "-" : "+"}${(tx.amount || 0).toFixed(2)}
+                            {tx.type === "refund" ? "-" : "+"}Rs {Math.round(tx.amount || 0).toLocaleString('en-US')}
                           </span>
                         </td>
                         <td>{tx.paymentMethod?.replace("_", " ") || "—"}</td>

@@ -83,8 +83,8 @@ export default function AdminInvoices() {
       <div className="invc-stats-strip">
         {[
           { icon: <FiFileText />,   label: "Total Invoices", value: stats.totalIssued || 0,                          cls: "invc-stat--default" },
-          { icon: <FiDollarSign />, label: "Total Revenue",  value: `$${(stats.totalRevenue  || 0).toFixed(2)}`,     cls: "invc-stat--success" },
-          { icon: <FiRotateCcw />,  label: "Total Refunded", value: `$${(stats.totalRefunded || 0).toFixed(2)}`,     cls: "invc-stat--danger"  },
+          { icon: <FiDollarSign />, label: "Total Revenue",  value: `Rs ${Math.round(stats.totalRevenue  || 0).toLocaleString('en-US')}`, cls: "invc-stat--success" },
+          { icon: <FiRotateCcw />,  label: "Total Refunded", value: `Rs ${Math.round(stats.totalRefunded || 0).toLocaleString('en-US')}`, cls: "invc-stat--danger"  },
         ].map((s, i) => (
           <motion.div key={s.label} className={`invc-stat ${s.cls}`}
             initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
@@ -153,7 +153,7 @@ export default function AdminInvoices() {
                           </div>
                         </td>
                         <td>{new Date(inv.paidAt).toLocaleDateString()}</td>
-                        <td><strong>${(inv.total || 0).toFixed(2)}</strong></td>
+                        <td><strong>Rs {Math.round(inv.total || 0).toLocaleString('en-US')}</strong></td>
                         <td>
                           <span className={`invc-status-badge ${badge.cls}`}>{badge.label}</span>
                         </td>
@@ -234,8 +234,8 @@ export default function AdminInvoices() {
                         <tr key={idx}>
                           <td>{li.name}</td>
                           <td>{li.quantity}</td>
-                          <td>${li.unitPrice?.toFixed(2)}</td>
-                          <td>${li.total?.toFixed(2)}</td>
+                          <td>Rs {Math.round(li.unitPrice || 0).toLocaleString('en-US')}</td>
+                          <td>Rs {Math.round(li.total || 0).toLocaleString('en-US')}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -245,17 +245,17 @@ export default function AdminInvoices() {
                 <div className="invc-totals">
                   <div className="invc-total-row">
                     <span>Subtotal</span>
-                    <span>${(drawer.invoice.subtotal || 0).toFixed(2)}</span>
+                    <span>Rs {Math.round(drawer.invoice.subtotal || 0).toLocaleString('en-US')}</span>
                   </div>
                   {drawer.invoice.discount > 0 && (
                     <div className="invc-total-row invc-total-row--discount">
                       <span>Discount</span>
-                      <span>-${drawer.invoice.discount.toFixed(2)}</span>
+                      <span>-Rs {Math.round(drawer.invoice.discount).toLocaleString('en-US')}</span>
                     </div>
                   )}
                   <div className="invc-total-row invc-total-row--grand">
                     <span>Total</span>
-                    <span>${(drawer.invoice.total || 0).toFixed(2)}</span>
+                    <span>Rs {Math.round(drawer.invoice.total || 0).toLocaleString('en-US')}</span>
                   </div>
                 </div>
 

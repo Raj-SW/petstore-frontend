@@ -145,7 +145,7 @@ const AdminProducts = () => {
       header: "Price",
       accessor: "price",
       render: (value) => (
-        <span className="product-price">${Number(value || 0).toFixed(2)}</span>
+        <span className="product-price">Rs {Math.round(Number(value || 0)).toLocaleString('en-US')}</span>
       ),
     },
     {

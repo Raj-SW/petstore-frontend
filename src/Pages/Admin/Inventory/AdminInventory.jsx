@@ -175,7 +175,7 @@ export default function AdminInventory() {
           { icon: <FiBox />,          label: "Total SKUs",      value: stats.total,                           cls: "inv-stat--default" },
           { icon: <FiAlertTriangle />, label: "Low Stock",       value: stats.low,                             cls: "inv-stat--warn" },
           { icon: <FiXCircle />,       label: "Out of Stock",    value: stats.out,                             cls: "inv-stat--danger" },
-          { icon: <FiDollarSign />,    label: "Inventory Value", value: `$${(stats.totalValue || 0).toFixed(2)}`, cls: "inv-stat--success" },
+          { icon: <FiDollarSign />,    label: "Inventory Value", value: `Rs ${Math.round(stats.totalValue || 0).toLocaleString('en-US')}`, cls: "inv-stat--success" },
         ].map((s, i) => (
           <motion.div
             key={s.label}

@@ -131,7 +131,7 @@ const AdminAnalytics = () => {
         <StatCard
           icon={<FiDollarSign />}
           label="Total Revenue"
-          value={`$${stats.totalRevenue.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+          value={`Rs ${Math.round(stats.totalRevenue).toLocaleString('en-US')}`}
           color="primary"
           loading={loading}
         />
@@ -172,7 +172,7 @@ const AdminAnalytics = () => {
                 <div
                   className="bar"
                   style={{ height: `${(m.revenue / maxRevenue) * 100}%` }}
-                  title={`${m.month}: $${m.revenue.toLocaleString()}`}
+                  title={`${m.month}: Rs ${Math.round(m.revenue).toLocaleString('en-US')}`}
                 />
                 <span className="bar-label">{m.month}</span>
               </div>
@@ -210,7 +210,7 @@ const AdminAnalytics = () => {
             <p className="admin-qs-value">
               {loading
                 ? "—"
-                : `$${stats.avgOrderValue.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+                : `Rs ${Math.round(stats.avgOrderValue).toLocaleString('en-US')}`}
             </p>
           </div>
         </div>
