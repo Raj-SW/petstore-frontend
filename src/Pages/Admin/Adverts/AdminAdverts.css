@@ -1,0 +1,83 @@
+/* ── Admin adverts ─────────────────────────────────────────────────── */
+.aa-title { font-weight: 600; }
+.aa-link {
+  font-size: 12px;
+  color: #6f6e68;
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: inline-block;
+}
+.aa-placement {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 8px;
+}
+.aa-placement.banner { background: #e6f1fb; color: #185fa5; }
+.aa-placement.sponsored { background: #faeeda; color: #633806; }
+.aa-status {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+}
+.aa-status.on { background: #e1f5ee; color: #0f6e56; }
+.aa-status.off { background: #f1efe8; color: #5f5e5a; }
+.aa-modal { max-width: 460px; display: flex; flex-direction: column; gap: 14px; }
+.aa-field { display: flex; flex-direction: column; gap: 5px; }
+.aa-field label { font-size: 13px; font-weight: 600; color: #444441; }
+.aa-field input,
+.aa-field select {
+  padding: 9px 12px;
+  border: 1px solid #e8e4dc;
+  border-radius: 8px;
+  font-size: 14px;
+}
+.aa-check { display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; }
+.aa-submit {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 18px;
+  background: #ba7517;
+  color: #faeeda;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.aa-submit:disabled { opacity: 0.6; }
+
+/* Shared modal styles — duplicated from AdminTips.css because this page
+   imports only its own stylesheet (classes used by the modal markup above) */
+.admin-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.admin-modal {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px 28px;
+  width: 90%;
+}
+.admin-modal h3 { margin: 0 0 8px; }
+.admin-modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
+.at-btn-secondary {
+  padding: 8px 16px;
+  border: 1px solid #e8e4dc;
+  background: #fff;
+  border-radius: 8px;
+  cursor: pointer;
+  text-decoration: none;
+  color: #444441;
+  font-size: 14px;
+}
