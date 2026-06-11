@@ -1,0 +1,84 @@
+/* ── Admin tip form ────────────────────────────────────────────────── */
+.atf-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #ba7517;
+  text-decoration: none;
+  margin-bottom: 6px;
+}
+.atf-form {
+  background: #fff;
+  border: 1px solid #e8e4dc;
+  border-radius: 12px;
+  padding: 24px 28px;
+  max-width: 860px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.atf-field { display: flex; flex-direction: column; gap: 6px; }
+.atf-field label { font-size: 13px; font-weight: 600; color: #444441; }
+.atf-field input,
+.atf-field select {
+  padding: 10px 12px;
+  border: 1px solid #e8e4dc;
+  border-radius: 8px;
+  font-size: 14px;
+  background: #fff;
+}
+.atf-field input:focus,
+.atf-field select:focus { outline: none; border-color: #ba7517; }
+.atf-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 14px;
+}
+.atf-error { color: #a32d2d; font-size: 12px; margin: 0; }
+.atf-toggles { display: flex; gap: 24px; flex-wrap: wrap; }
+.atf-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #444441;
+  cursor: pointer;
+}
+.atf-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 8px;
+  border-top: 1px solid #f1efe8;
+}
+.atf-submit {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 22px;
+  background: #ba7517;
+  color: #faeeda;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.atf-submit:disabled { opacity: 0.6; cursor: default; }
+
+/* Cancel link (shared look with AdminTips buttons; duplicated because this
+   page imports only its own stylesheet) */
+.at-btn-secondary {
+  padding: 8px 16px;
+  border: 1px solid #e8e4dc;
+  background: #fff;
+  border-radius: 8px;
+  cursor: pointer;
+  text-decoration: none;
+  color: #444441;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+}

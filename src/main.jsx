@@ -41,6 +41,7 @@ import AdminInventory     from "./Pages/Admin/Inventory/AdminInventory.jsx";
 import AdminInvoices     from "./Pages/Admin/Invoices/AdminInvoices.jsx";
 import AdminTransactions from "./Pages/Admin/Transactions/AdminTransactions.jsx";
 import AdminTips from "./Pages/Admin/Tips/AdminTips";
+import AdminTipForm from "./Pages/Admin/Tips/AdminTipForm";
 
 const router = createBrowserRouter([
   {
@@ -160,6 +161,14 @@ const router = createBrowserRouter([
       {
         path: "tips",
         element: <AdminTips />,
+      },
+      {
+        path: "tips/new",
+        element: <AdminTipForm />,
+      },
+      {
+        path: "tips/edit/:id",
+        element: <AdminTipForm />,
       },
       {
         path: "inventory",
