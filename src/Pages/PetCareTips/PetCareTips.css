@@ -1,0 +1,67 @@
+/* ── Pet Care Tips — shared feature styles ─────────────────────────── */
+:root {
+  --pct-amber: #ba7517;
+  --pct-amber-tint: #faeeda;
+  --pct-amber-deep: #633806;
+  --pct-border: #e8e4dc;
+  --pct-text: #2c2c2a;
+  --pct-text-muted: #6f6e68;
+  --pct-surface: #ffffff;
+  --pct-bg: #faf9f6;
+  --pct-serif: Georgia, "Times New Roman", serif;
+}
+
+/* Cards */
+.pct-card {
+  background: var(--pct-surface);
+  border: 1px solid var(--pct-border);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.pct-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(44, 44, 42, 0.08);
+}
+.pct-card-link { display: block; color: inherit; text-decoration: none; }
+.pct-card-strip { height: 5px; }
+.pct-card-img {
+  height: 110px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.pct-card-img img { width: 100%; height: 100%; object-fit: cover; }
+.pct-card-img-sponsored { background: #f1efe8; }
+.pct-card-body { padding: 14px 16px 16px; }
+.pct-badges { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+.pct-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 9px;
+  border-radius: 8px;
+  text-transform: capitalize;
+}
+.pct-badge-cat { background: var(--pct-amber-tint); color: var(--pct-amber-deep); }
+.pct-badge-sponsored {
+  background: #f1efe8;
+  color: #444441;
+  border: 1px dashed #b4b2a9;
+}
+.pct-card-title {
+  font-family: var(--pct-serif);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.45;
+  margin: 0 0 8px;
+  color: var(--pct-text);
+}
+.pct-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: var(--pct-text-muted);
+}
+.pct-card-sponsored { border-style: dashed; }
