@@ -23,3 +23,7 @@ dist-ssr
 *.sln
 *.sw?
 *.env
+
+# Graphify scratch output (graph lives in the parent repo)
+graphify-out/
+src/graphify-out/
