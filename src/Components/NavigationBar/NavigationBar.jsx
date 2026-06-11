@@ -32,7 +32,7 @@ const NAV_LINKS = [
   { label: "Home", href: "/home" },
   { label: "Services", href: "/services", hasDropdown: true },
   { label: "Pet Store", href: "/petshop" },
-  { label: "Pet Care Tips", href: null },
+  { label: "Pet Care Tips", href: "/pet-care-tips" },
   { label: "Gallery", href: null },
   { label: "Contact", href: null },
 ];

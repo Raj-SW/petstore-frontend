@@ -14,6 +14,7 @@ import ResetPassword from "./Components/Auth/ResetPassword.jsx";
 import PaymentPage from "./Pages/Payment/PaymentPage.jsx";
 import MyOrdersPage from "./Pages/MyOrders/MyOrdersPage.jsx";
 import OrderConfirmedPage from "./Pages/OrderConfirmed/OrderConfirmedPage.jsx";
+import PetCareTipsPage from "./Pages/PetCareTips/PetCareTipsPage.jsx";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import ProtectedRoute from "./Components/Auth/ProtectedRoute";
 import RoleBasedRoute from "./Components/Auth/RoleBasedRoute";
@@ -67,6 +68,10 @@ const router = createBrowserRouter([
       {
         path: "appointments",
         element: <AppointmentPage />,
+      },
+      {
+        path: "pet-care-tips",
+        element: <PetCareTipsPage />,
       },
       {
         path: "checkout",

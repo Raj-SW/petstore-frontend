@@ -238,3 +238,85 @@
 @media (max-width: 860px) {
   .pct-featured-layout { grid-template-columns: 1fr; }
 }
+
+/* ── Page shell, hero, grid ────────────────────────────────────────── */
+.pct-page { background: var(--pct-bg); min-height: 100vh; }
+.pct-hero {
+  position: relative;
+  overflow: hidden;
+  background: var(--pct-surface);
+  border-bottom: 1px solid var(--pct-border);
+  padding: 56px 24px 44px;
+  text-align: left;
+  max-width: 100%;
+}
+.pct-hero > * { max-width: 1080px; margin-left: auto; margin-right: auto; }
+.pct-hero-paw {
+  position: absolute;
+  right: 4%;
+  top: -20px;
+  font-size: 150px;
+  opacity: 0.05;
+  color: var(--pct-text);
+  pointer-events: none;
+}
+.pct-hero-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  color: var(--pct-amber);
+  margin: 0 auto 12px;
+}
+.pct-hero-title {
+  font-family: var(--pct-serif);
+  font-size: clamp(26px, 4vw, 36px);
+  font-weight: 500;
+  line-height: 1.25;
+  color: var(--pct-text);
+  margin: 0 auto 12px;
+  max-width: 1080px;
+}
+.pct-hero-sub {
+  font-size: 15px;
+  color: var(--pct-text-muted);
+  line-height: 1.6;
+  margin: 0 auto 26px;
+}
+.pct-search {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--pct-bg);
+  border: 1px solid var(--pct-border);
+  border-radius: 12px;
+  padding: 12px 18px;
+  max-width: 560px !important;
+  margin-left: auto;
+  margin-right: auto;
+  color: var(--pct-text-muted);
+  transition: border-color 0.2s ease;
+}
+.pct-search:focus-within { border-color: var(--pct-amber); }
+.pct-search input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 14px;
+  color: var(--pct-text);
+}
+.pct-content { max-width: 1080px; margin: 0 auto; padding: 28px 24px 64px; }
+.pct-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.pct-empty {
+  padding: 48px 0;
+  text-align: center;
+  color: var(--pct-text-muted);
+  font-size: 14px;
+}
+@media (max-width: 980px) { .pct-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 640px) { .pct-grid { grid-template-columns: 1fr; } }
