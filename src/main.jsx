@@ -40,6 +40,7 @@ import AdminSettings from "./Pages/Admin/Settings/AdminSettings";
 import AdminInventory     from "./Pages/Admin/Inventory/AdminInventory.jsx";
 import AdminInvoices     from "./Pages/Admin/Invoices/AdminInvoices.jsx";
 import AdminTransactions from "./Pages/Admin/Transactions/AdminTransactions.jsx";
+import AdminTips from "./Pages/Admin/Tips/AdminTips";
 
 const router = createBrowserRouter([
   {
@@ -155,6 +156,10 @@ const router = createBrowserRouter([
       {
         path: "products/edit/:id",
         element: <AdminProductForm />,
+      },
+      {
+        path: "tips",
+        element: <AdminTips />,
       },
       {
         path: "inventory",

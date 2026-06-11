@@ -18,6 +18,8 @@ import {
   FiFileText,
   FiCreditCard,
   FiExternalLink,
+  FiBookOpen,
+  FiSpeaker,
 } from "react-icons/fi";
 
 const AdminLayout = () => {
@@ -50,6 +52,16 @@ const AdminLayout = () => {
       title: "Products",
       path: "/admin/products",
       icon: <FiPackage className="menu-icon" />,
+    },
+    {
+      title: "Pet Care Tips",
+      path: "/admin/tips",
+      icon: <FiBookOpen className="menu-icon" />,
+    },
+    {
+      title: "Adverts",
+      path: "/admin/adverts",
+      icon: <FiSpeaker className="menu-icon" />,
     },
     {
       title: "Inventory",
