@@ -1,0 +1,171 @@
+/* ── Tip detail page ───────────────────────────────────────────────── */
+.ptd-page { background: #faf9f6; min-height: 100vh; padding-bottom: 64px; }
+.ptd-state {
+  padding: 96px 24px;
+  text-align: center;
+  color: #6f6e68;
+  font-size: 15px;
+}
+.ptd-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 18px 24px;
+  font-size: 13px;
+  color: #6f6e68;
+}
+.ptd-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #ba7517;
+  font-weight: 600;
+  text-decoration: none;
+}
+.ptd-cover {
+  position: relative;
+  height: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.ptd-cover-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.ptd-cover-icon { font-size: 90px; opacity: 0.2; }
+.ptd-cover-overlay {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  background: #ffffff;
+  border-top: 1px solid #e8e4dc;
+  padding: 18px 24px;
+}
+.ptd-cover-overlay > * { max-width: 1032px; margin-left: auto; margin-right: auto; }
+.ptd-badges { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+.ptd-badge { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 8px; }
+.ptd-badge-amber { background: #faeeda; color: #633806; }
+.ptd-title {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(20px, 3vw, 28px);
+  font-weight: 500;
+  line-height: 1.35;
+  color: #2c2c2a;
+  margin: 0;
+}
+.ptd-layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 28px;
+  max-width: 1080px;
+  margin: 28px auto 0;
+  padding: 0 24px;
+}
+.ptd-article {
+  background: #ffffff;
+  border: 1px solid #e8e4dc;
+  border-radius: 12px;
+  padding: 28px 32px;
+}
+.ptd-meta {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  font-size: 13px;
+  color: #6f6e68;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e8e4dc;
+  margin-bottom: 22px;
+}
+.ptd-meta span { display: inline-flex; align-items: center; gap: 5px; }
+.ptd-body { font-size: 15px; line-height: 1.75; color: #444441; }
+.ptd-body h3 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 18px;
+  font-weight: 500;
+  color: #2c2c2a;
+  margin: 24px 0 10px;
+}
+.ptd-body blockquote {
+  margin: 20px 0;
+  padding: 16px 20px;
+  background: #faeeda;
+  border-left: 3px solid #ba7517;
+  border-radius: 0 12px 12px 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-style: italic;
+  color: #633806;
+}
+.ptd-sidebar { display: flex; flex-direction: column; gap: 18px; }
+.ptd-side-card {
+  background: #ffffff;
+  border: 1px solid #e8e4dc;
+  border-radius: 12px;
+  padding: 18px;
+  text-decoration: none;
+  color: inherit;
+}
+.ptd-side-title {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: #6f6e68;
+  margin: 0 0 12px;
+}
+.ptd-facts { margin: 0; }
+.ptd-facts div {
+  display: flex;
+  justify-content: space-between;
+  padding: 7px 0;
+  border-bottom: 1px solid #f1efe8;
+  font-size: 13px;
+}
+.ptd-facts div:last-child { border-bottom: none; }
+.ptd-facts dt { color: #6f6e68; }
+.ptd-facts dd { margin: 0; font-weight: 600; color: #2c2c2a; }
+.ptd-ad { display: block; transition: box-shadow 0.25s ease; }
+.ptd-ad:hover { box-shadow: 0 6px 18px rgba(44, 44, 42, 0.07); }
+.ptd-ad-tag {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #6f6e68;
+  margin: 0 0 8px;
+}
+.ptd-ad-img { width: 100%; height: 110px; object-fit: cover; border-radius: 8px; margin-bottom: 10px; }
+.ptd-ad-title { font-size: 13px; font-weight: 600; margin: 0 0 10px; color: #2c2c2a; }
+.ptd-ad-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 14px;
+  background: #ba7517;
+  color: #faeeda;
+  border-radius: 8px;
+}
+.ptd-related {
+  display: flex;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid #f1efe8;
+  text-decoration: none;
+  color: inherit;
+}
+.ptd-related:last-child { border-bottom: none; }
+.ptd-related-thumb {
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.ptd-related-title { display: block; font-size: 13px; font-weight: 600; line-height: 1.4; color: #2c2c2a; }
+.ptd-related-meta { display: block; font-size: 11px; color: #6f6e68; margin-top: 2px; }
+@media (max-width: 900px) {
+  .ptd-layout { grid-template-columns: 1fr; }
+}
