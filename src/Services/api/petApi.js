@@ -10,7 +10,6 @@ const petApi = {
   // Get all user's pets
   getUserPets: async () => {
     const response = await api.get("/pets");
-    console.log(response.data);
     return response.data;
   },
 
@@ -29,6 +28,32 @@ const petApi = {
   // Delete pet
   deletePet: async (petId) => {
     const response = await api.delete(`/pets/${petId}`);
+    return response.data;
+  },
+
+  // Add photos to a pet (gallery, max 6). files = File[] or FileList
+  addPetImages: async (petId, files) => {
+    const form = new FormData();
+    Array.from(files).forEach((f) => form.append("petImages", f));
+    const response = await api.post(`/pets/${petId}/images`, form, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    return response.data; // { success, data: pet }
+  },
+
+  // Delete one photo by its Cloudinary publicId
+  deletePetImage: async (petId, publicId) => {
+    const response = await api.delete(
+      `/pets/${petId}/images/${encodeURIComponent(publicId)}`
+    );
+    return response.data;
+  },
+
+  // Set a photo as the cover (move to index 0)
+  setPrimaryPetImage: async (petId, publicId) => {
+    const response = await api.patch(
+      `/pets/${petId}/images/${encodeURIComponent(publicId)}/primary`
+    );
     return response.data;
   },
 };
