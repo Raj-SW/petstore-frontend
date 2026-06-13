@@ -230,3 +230,54 @@
     height: 340px;
   }
 }
+
+/* ---- Carousel (Featured Products) ---- */
+
+/* Carousel viewport — horizontal padding so the side arrows aren't clipped */
+.fp-carousel {
+  position: relative;
+  padding: 0 2.75rem;
+}
+
+/* Pin the default ui/carousel arrows to the padded edges of the section */
+.fp-arrow.fp-arrow-prev { left: 0; }
+.fp-arrow.fp-arrow-next { right: 0; }
+
+/* Skeleton row mirrors a 3-up layout while loading */
+.fp-skeleton-row {
+  display: flex;
+  gap: 1rem;
+  padding: 0 2.75rem;
+}
+.fp-skeleton-row .fp-skeleton {
+  flex: 1 1 0;
+  height: 320px;
+}
+
+/* Position dots */
+.fp-dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.4rem;
+  margin-top: 1rem;
+}
+.fp-dot {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: none;
+  border-radius: 9999px;
+  background: #d6ccbf;
+  cursor: pointer;
+  transition: width 0.25s ease, background 0.25s ease;
+}
+.fp-dot-active {
+  width: 20px;
+  background: #b45309;
+}
+
+@media (max-width: 640px) {
+  .fp-carousel { padding: 0 0.5rem; }
+  .fp-arrow { display: none; } /* mobile: drag + dots only */
+  .fp-skeleton-row { padding: 0 0.5rem; }
+}
