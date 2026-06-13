@@ -8,7 +8,7 @@ const TYPE_ICON = {
   Fish:       <FaFish size={18} />,
 };
 
-const PetList = ({ pets, onEdit, onDelete }) => {
+const PetList = ({ pets, onEdit, onDelete, onManagePhotos }) => {
   if (!pets?.length) {
     return (
       <div className="pl-empty">
@@ -31,6 +31,14 @@ const PetList = ({ pets, onEdit, onDelete }) => {
             exit={{ opacity: 0, x: -40 }}
             transition={{ type: "spring", stiffness: 320, damping: 28 }}
           >
+            <div className="pet-cover">
+              {pet.images && pet.images.length > 0 ? (
+                <img src={pet.images[0].url} alt={pet.name} />
+              ) : (
+                <span className="pet-cover-placeholder">🐾</span>
+              )}
+            </div>
+
             <div className="pl-avatar">
               {TYPE_ICON[pet.type] || <FaPaw size={18} />}
             </div>
@@ -63,6 +71,13 @@ const PetList = ({ pets, onEdit, onDelete }) => {
                 aria-label={`Delete ${pet.name}`}
               >
                 <FaTrash size={13} />
+              </button>
+              <button
+                type="button"
+                className="pet-photos-btn"
+                onClick={() => onManagePhotos(pet)}
+              >
+                Photos{pet.images?.length ? ` (${pet.images.length})` : ""}
               </button>
             </div>
           </motion.div>

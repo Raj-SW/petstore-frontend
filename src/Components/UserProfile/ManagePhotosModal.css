@@ -1,0 +1,38 @@
+.mpm-backdrop {
+  position: fixed; inset: 0; z-index: 1000;
+  background: rgba(20, 20, 18, 0.55);
+  display: flex; align-items: center; justify-content: center; padding: 20px;
+}
+.mpm-modal {
+  background: #fff; border-radius: 14px; width: 100%; max-width: 460px;
+  padding: 18px 20px 20px; box-shadow: 0 24px 60px rgba(0,0,0,0.25);
+}
+.mpm-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.mpm-header h3 { font-size: 17px; margin: 0; }
+.mpm-count { font-size: 12px; color: #888780; font-weight: 500; }
+.mpm-close { background: none; border: none; cursor: pointer; color: #555; }
+.mpm-empty { color: #888780; font-size: 14px; text-align: center; padding: 18px 0; }
+.mpm-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
+.mpm-thumb { position: relative; aspect-ratio: 1; border-radius: 10px; overflow: hidden; border: 1px solid #e8e4dc; }
+.mpm-thumb-cover { border-color: #ba7517; box-shadow: 0 0 0 2px #ba7517; }
+.mpm-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.mpm-cover-tag {
+  position: absolute; top: 4px; left: 4px; background: #ba7517; color: #fff;
+  font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 6px;
+}
+.mpm-thumb-actions {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 8px;
+  background: rgba(0,0,0,0.0); opacity: 0; transition: opacity 0.18s, background 0.18s;
+}
+.mpm-thumb:hover .mpm-thumb-actions { opacity: 1; background: rgba(0,0,0,0.35); }
+.mpm-thumb-actions button {
+  width: 30px; height: 30px; border-radius: 50%; border: none; cursor: pointer;
+  background: #fff; color: #2c2c2a; display: flex; align-items: center; justify-content: center;
+}
+.mpm-thumb-actions button:disabled { opacity: 0.6; cursor: default; }
+.mpm-add {
+  width: 100%; padding: 10px; border-radius: 10px; border: 1px dashed #ba7517;
+  background: #faeeda; color: #633806; font-weight: 600; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+.mpm-add:disabled { opacity: 0.55; cursor: default; }

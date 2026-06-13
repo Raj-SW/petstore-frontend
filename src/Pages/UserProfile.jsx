@@ -6,6 +6,7 @@ import {
 } from "react-icons/fa";
 
 import AvatarUploader from "../Components/UserProfile/AvatarUploader";
+import ManagePhotosModal from "../Components/UserProfile/ManagePhotosModal";
 import Breadcrumb from "../Components/HelperComponents/Breadcrumb/Breadcrumb";
 import UserProfileService from "../Services/localServices/userProfileService";
 import PetForm from "../Components/UserProfile/PetForm";
@@ -30,6 +31,7 @@ const UserProfile = () => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [petToDelete, setPetToDelete] = useState(null);
   const [selectedPet, setSelectedPet] = useState(null);
+  const [photosPet, setPhotosPet] = useState(null);
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -258,6 +260,7 @@ const UserProfile = () => {
               pets={pets}
               onEdit={(pet) => { setSelectedPet(pet); setShowPetModal(true); }}
               onDelete={handleDeletePet}
+              onManagePhotos={(pet) => setPhotosPet(pet)}
             />
           )}
         </motion.div>
@@ -291,6 +294,16 @@ const UserProfile = () => {
         onConfirm={confirmDeletePet}
         onCancel={() => { setShowConfirmModal(false); setPetToDelete(null); }}
       />
+      {photosPet && (
+        <ManagePhotosModal
+          pet={photosPet}
+          onClose={() => setPhotosPet(null)}
+          onChange={(updated) => {
+            setPhotosPet(updated);
+            setPets((prev) => prev.map((p) => ((p._id || p.id) === (updated._id || updated.id) ? updated : p)));
+          }}
+        />
+      )}
     </div>
   );
 };
