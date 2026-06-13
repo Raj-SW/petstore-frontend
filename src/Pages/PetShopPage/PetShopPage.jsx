@@ -12,7 +12,7 @@ import ProductService from "@/Services/localServices/ProductService";
 import petshopBanner from "@/assets/PetShopPageAssets/PetshopBannerBackgroundImg.png";
 import "./PetShopPage.css";
 
-const PER_PAGE_OPTIONS = [12, 24, 48];
+const PER_PAGE_OPTIONS = [25, 50, 100];
 const QUICK_CATS = ["All", "Dog", "Cat", "Bird", "Fish", "Small Pets", "General"];
 
 const PetShopPage = () => {
@@ -23,7 +23,7 @@ const PetShopPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [perPage, setPerPage] = useState(12);
+  const [perPage, setPerPage] = useState(25);
   const [totalPages, setTotalPages] = useState(0);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [activeCat, setActiveCat] = useState("All");
