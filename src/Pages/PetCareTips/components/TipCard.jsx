@@ -18,11 +18,16 @@ const TipCard = ({ tip }) => {
     <motion.article className="pct-card" {...cardMotion}>
       <Link to={`/pet-care-tips/${tip.slug || tip._id}`} className="pct-card-link">
         <div className="pct-card-strip" style={{ background: theme.color }} />
-        <div className="pct-card-img" style={{ background: theme.tint }}>
+        <div
+          className="pct-card-img"
+          style={tip.coverImage ? undefined : { background: `linear-gradient(135deg, ${theme.tint} 0%, #fffdf9 135%)` }}
+        >
           {tip.coverImage ? (
             <img src={tip.coverImage} alt={tip.title} loading="lazy" />
           ) : (
-            <Icon style={{ color: theme.color, opacity: 0.4 }} size={32} aria-hidden="true" />
+            <span className="pct-card-img-badge">
+              <Icon style={{ color: theme.color }} size={26} aria-hidden="true" />
+            </span>
           )}
         </div>
         <div className="pct-card-body">

@@ -331,8 +331,16 @@ const NavigationBar = () => {
               Pet Store
             </a>
 
+            {/* Pet Care Tips */}
+            <a
+              href="/pet-care-tips"
+              className={`mobile-menu-link${isActive("/pet-care-tips") ? " active" : ""}`}
+              onClick={handleNav("/pet-care-tips")}
+            >
+              Pet Care Tips
+            </a>
+
             {/* Disabled links */}
-            <span className="mobile-menu-link mobile-link-disabled">Pet Care Tips</span>
             <span className="mobile-menu-link mobile-link-disabled">Gallery</span>
             <span className="mobile-menu-link mobile-link-disabled">Contact</span>
 

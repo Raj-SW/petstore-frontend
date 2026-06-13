@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, useCallback, useMemo } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -27,24 +27,28 @@ const ICON_FOR_TYPE = {
 export const ToastProvider = ({ children }) => {
   const [toasts, setToasts] = useState([]);
 
-  const addToast = (message, type = "success", icon = null) => {
+  // useCallback keeps these identities stable across renders. Without it,
+  // every setToasts re-render hands consumers a new addToast, and any effect
+  // that lists addToast in its deps re-runs — an error toast in such an effect
+  // then loops infinitely (see PetCareTipsPage grid fetch).
+  const addToast = useCallback((message, type = "success", icon = null) => {
     const id = Date.now() + Math.random();
     setToasts((prev) => [...prev, { id, message, type, icon }]);
-  };
+  }, []);
 
-  const removeToast = (id) =>
-    setToasts((prev) => prev.filter((t) => t.id !== id));
+  const removeToast = useCallback((id) =>
+    setToasts((prev) => prev.filter((t) => t.id !== id)), []);
 
   // ── Predefined toasts ──
 
-  const showCartToast = (action, productName) => {
+  const showCartToast = useCallback((action, productName) => {
     const msg = action === "add"
       ? `${productName} added to cart`
       : `${productName} removed from cart`;
     addToast(msg, "success", FaShoppingCart);
-  };
+  }, [addToast]);
 
-  const showAuthToast = (action, status) => {
+  const showAuthToast = useCallback((action, status) => {
     const map = {
       login:     { success: "Welcome back!",                error: "Login failed. Check your credentials." },
       signup:    { success: "Account created successfully!", error: "Signup failed. Please try again." },
@@ -61,17 +65,17 @@ export const ToastProvider = ({ children }) => {
     };
     const msg = map[action]?.[status] || "Notification";
     addToast(msg, status === "success" || status === "request" ? "success" : "error");
-  };
+  }, [addToast]);
 
-  const showCheckoutToast = (status) => {
+  const showCheckoutToast = useCallback((status) => {
     if (status === "success") {
       addToast("Order placed successfully! Thank you for your purchase.", "success", FaCreditCard);
     } else {
       addToast("There was an error processing your order. Please try again.", "error", FaCreditCard);
     }
-  };
+  }, [addToast]);
 
-  const showReviewToast = (action, status, errorMessage) => {
+  const showReviewToast = useCallback((action, status, errorMessage) => {
     const map = {
       submit: {
         success: "Review submitted. Thank you!",
@@ -80,36 +84,40 @@ export const ToastProvider = ({ children }) => {
     };
     const msg = map[action]?.[status] || "Notification";
     addToast(msg, status, FaUserEdit);
-  };
+  }, [addToast]);
 
-  const showProfileToast = (action, status) => {
+  const showProfileToast = useCallback((action, status) => {
     const map = {
       update: { success: "Profile updated successfully!",        error: "Failed to update profile." },
       avatar: { success: "Profile picture updated successfully!", error: "Failed to update profile picture." },
     };
     const msg = map[action]?.[status] || "Notification";
     addToast(msg, status, FaUserEdit);
-  };
+  }, [addToast]);
 
-  const showWishlistToast = (action, productName) => {
+  const showWishlistToast = useCallback((action, productName) => {
     const msg = action === "add"
       ? `${productName} added to wishlist`
       : `${productName} removed from wishlist`;
     addToast(msg, "success", FaHeart);
-  };
+  }, [addToast]);
 
-  const showNotificationToast = (message, type = "info") => {
+  const showNotificationToast = useCallback((message, type = "info") => {
     addToast(message, type, FaBell);
-  };
+  }, [addToast]);
+
+  const value = useMemo(() => ({
+    addToast, removeToast,
+    showCartToast, showAuthToast, showCheckoutToast,
+    showReviewToast, showProfileToast, showWishlistToast, showNotificationToast,
+  }), [
+    addToast, removeToast,
+    showCartToast, showAuthToast, showCheckoutToast,
+    showReviewToast, showProfileToast, showWishlistToast, showNotificationToast,
+  ]);
 
   return (
-    <ToastContext.Provider
-      value={{
-        addToast, removeToast,
-        showCartToast, showAuthToast, showCheckoutToast,
-        showReviewToast, showProfileToast, showWishlistToast, showNotificationToast,
-      }}
-    >
+    <ToastContext.Provider value={value}>
       {children}
       <ToastViewport toasts={toasts} onClose={removeToast} />
     </ToastContext.Provider>

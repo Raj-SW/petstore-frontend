@@ -6,14 +6,14 @@ import "./FeaturedProductSection.css";
 
 // Keys must exactly match the category values stored in the DB
 const TABS = [
-  { key: "cats",    label: "Cats" },
-  { key: "dogs",    label: "Dogs" },
-  { key: "fish",    label: "Fish" },
   { key: "general", label: "General" },
+  { key: "dogs",    label: "Dogs" },
+  { key: "cats",    label: "Cats" },
+  { key: "fish",    label: "Fish" },
 ];
 
 const FeaturedProductSection = () => {
-  const [activeTab, setActiveTab] = useState("cats");
+  const [activeTab, setActiveTab] = useState("general");
   const [products, setProducts] = useState({ cats: [], dogs: [], fish: [], general: [] });
   const [loading, setLoading] = useState(true);
 
