@@ -191,6 +191,16 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Merge partial fields into the current user + persist to localStorage.
+  // Used after profile-photo upload so the navbar avatar updates live.
+  const updateUser = (partial) => {
+    setUser((prev) => {
+      const next = { ...prev, ...partial };
+      localStorage.setItem("vp_user", JSON.stringify(next));
+      return next;
+    });
+  };
+
   const deleteAccount = async () => {
     try {
       setError(null);
@@ -245,6 +255,7 @@ export const AuthProvider = ({ children }) => {
 
     // Profile methods
     updateProfile,
+    updateUser,
     changePassword,
     deleteAccount,
 

@@ -33,6 +33,16 @@ const usersApi = {
     const response = await api.get(`/pets`);
     return response.data.data;
   },
+
+  // Upload/replace the current user's profile photo
+  uploadAvatar: async (file) => {
+    const form = new FormData();
+    form.append("avatar", file);
+    const response = await api.patch("/users/upload-avatar", form, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    return response.data; // { success, data: { profileImage } }
+  },
 };
 
 export default usersApi;
