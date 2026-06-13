@@ -35,12 +35,10 @@ const PetList = ({ pets, onEdit, onDelete, onManagePhotos }) => {
               {pet.images && pet.images.length > 0 ? (
                 <img src={pet.images[0].url} alt={pet.name} />
               ) : (
-                <span className="pet-cover-placeholder">🐾</span>
+                <span className="pet-cover-placeholder">
+                  {TYPE_ICON[pet.type] || <FaPaw size={22} />}
+                </span>
               )}
-            </div>
-
-            <div className="pl-avatar">
-              {TYPE_ICON[pet.type] || <FaPaw size={18} />}
             </div>
 
             <div className="pl-info">
@@ -56,22 +54,24 @@ const PetList = ({ pets, onEdit, onDelete, onManagePhotos }) => {
             </div>
 
             <div className="pl-actions">
-              <button
-                type="button"
-                className="pl-btn pl-btn--edit"
-                onClick={() => onEdit(pet)}
-                aria-label={`Edit ${pet.name}`}
-              >
-                <FaPencilAlt size={13} />
-              </button>
-              <button
-                type="button"
-                className="pl-btn pl-btn--delete"
-                onClick={() => onDelete(pet.id || pet._id)}
-                aria-label={`Delete ${pet.name}`}
-              >
-                <FaTrash size={13} />
-              </button>
+              <div className="pl-icon-row">
+                <button
+                  type="button"
+                  className="pl-btn pl-btn--edit"
+                  onClick={() => onEdit(pet)}
+                  aria-label={`Edit ${pet.name}`}
+                >
+                  <FaPencilAlt size={13} />
+                </button>
+                <button
+                  type="button"
+                  className="pl-btn pl-btn--delete"
+                  onClick={() => onDelete(pet.id || pet._id)}
+                  aria-label={`Delete ${pet.name}`}
+                >
+                  <FaTrash size={13} />
+                </button>
+              </div>
               <button
                 type="button"
                 className="pet-photos-btn"
