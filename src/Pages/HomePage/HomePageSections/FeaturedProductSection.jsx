@@ -1,6 +1,14 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import ProductCard from "../../../Components/HelperComponents/ProductCard/ProductCardV2";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselPrevious,
+  CarouselNext,
+} from "@/components/ui/carousel";
+import { buildCarouselPlugins } from "./featuredAutoplay";
 import productsApi from "@/Services/api/productsApi";
 import "./FeaturedProductSection.css";
 
@@ -12,6 +20,11 @@ const TABS = [
   { key: "fish",    label: "Fish" },
 ];
 
+// "Load all" — featured sets are admin-curated and small; the /products
+// endpoint defaults to limit=10 and has no hard cap, so a generous limit
+// returns every featured item for any realistic catalog.
+const FEATURED_LIMIT = 100;
+
 const FeaturedProductSection = () => {
   const [activeTab, setActiveTab] = useState("general");
   const [products, setProducts] = useState({ cats: [], dogs: [], fish: [], general: [] });
@@ -20,11 +33,34 @@ const FeaturedProductSection = () => {
   const headerRef = useRef(null);
   const inView = useInView(headerRef, { once: true, amount: 0.3 });
 
+  const plugins = useMemo(() => buildCarouselPlugins(), []);
+
+  // Embla api + dot state (re-bound each time the carousel re-mounts per tab)
+  const [emblaApi, setEmblaApi] = useState(null);
+  const [snaps, setSnaps] = useState([]);
+  const [selected, setSelected] = useState(0);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    const onSelect = () => setSelected(emblaApi.selectedScrollSnap());
+    const onReInit = () => {
+      setSnaps(emblaApi.scrollSnapList());
+      onSelect();
+    };
+    onReInit();
+    emblaApi.on("select", onSelect);
+    emblaApi.on("reInit", onReInit);
+    return () => {
+      emblaApi.off("select", onSelect);
+      emblaApi.off("reInit", onReInit);
+    };
+  }, [emblaApi]);
+
   useEffect(() => {
     let resolved = 0;
     TABS.forEach(({ key }) => {
       productsApi
-        .getFeaturedByCategory(key, 3)
+        .getFeaturedByCategory(key, FEATURED_LIMIT)
         .then((data) => {
           setProducts((prev) => ({ ...prev, [key]: data }));
         })
@@ -79,37 +115,68 @@ const FeaturedProductSection = () => {
         </div>
       </motion.div>
 
-      {/* Product grid */}
+      {/* Product carousel */}
       <div className="fp-grid-wrapper">
         <AnimatePresence mode="wait">
           <motion.div
             key={activeTab}
-            className="fp-grid"
+            className="fp-carousel-shell"
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
           >
             {loading ? (
-              Array(3).fill(null).map((_, i) => (
-                <div key={i} className="fp-skeleton" />
-              ))
+              <div className="fp-skeleton-row">
+                {Array(3).fill(null).map((_, i) => (
+                  <div key={i} className="fp-skeleton" />
+                ))}
+              </div>
             ) : currentProducts.length === 0 ? (
               <p className="fp-empty">No products available right now.</p>
             ) : (
-              currentProducts.map((product) => (
-                <ProductCard
-                  key={product._id || product.id}
-                  id={product._id || product.id}
-                  imageUrl={product.images?.[0]?.url || product.images?.[0] || product.imageUrl}
-                  title={product.name || product.title}
-                  price={product.price}
-                  description={product.description}
-                />
-              ))
+              <Carousel
+                className="fp-carousel"
+                opts={{ align: "start" }}
+                plugins={plugins}
+                setApi={setEmblaApi}
+              >
+                <CarouselContent>
+                  {currentProducts.map((product) => (
+                    <CarouselItem
+                      key={product._id || product.id}
+                      className="basis-[83%] sm:basis-1/2 lg:basis-1/3"
+                    >
+                      <ProductCard
+                        id={product._id || product.id}
+                        imageUrl={product.images?.[0]?.url || product.images?.[0] || product.imageUrl}
+                        title={product.name || product.title}
+                        price={product.price}
+                        description={product.description}
+                      />
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselPrevious className="fp-arrow fp-arrow-prev" />
+                <CarouselNext className="fp-arrow fp-arrow-next" />
+              </Carousel>
             )}
           </motion.div>
         </AnimatePresence>
+
+        {!loading && currentProducts.length > 0 && snaps.length > 1 && (
+          <div className="fp-dots">
+            {snaps.map((_, i) => (
+              <button
+                key={i}
+                type="button"
+                className={`fp-dot${i === selected ? " fp-dot-active" : ""}`}
+                aria-label={`Go to slide ${i + 1}`}
+                onClick={() => emblaApi?.scrollTo(i)}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );
