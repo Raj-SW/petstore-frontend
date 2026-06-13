@@ -1,7 +1,8 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useCart } from "@/context/CartContext";
-import { FaShoppingCart } from "react-icons/fa";
+import { FaShoppingCart, FaMinus, FaPlus } from "react-icons/fa";
 import { useToast } from "@/context/ToastContext";
 import Price from "../Price/Price";
 import "./ProductCardV2.css";
@@ -32,10 +33,20 @@ const ProductCardV2 = ({ id, imageUrl, title, price, description }) => {
   const navigate = useNavigate();
   const { addItem } = useCart();
   const { showCartToast } = useToast();
+  const [qty, setQty] = useState(1);
+
+  const dec = (e) => {
+    e.stopPropagation();
+    setQty((q) => Math.max(1, q - 1));
+  };
+  const inc = (e) => {
+    e.stopPropagation();
+    setQty((q) => q + 1);
+  };
 
   const handleAddToCart = (e) => {
     e.stopPropagation();
-    addItem({ id, name: title, price, image: imageUrl });
+    addItem({ id, name: title, price, image: imageUrl }, qty);
     showCartToast("add", title);
   };
 
@@ -61,13 +72,35 @@ const ProductCardV2 = ({ id, imageUrl, title, price, description }) => {
         </p>
         <div className="pcv2-bottom-row">
           <Price amount={price} className="pcv2-price" />
-          <button
-            className="pcv2-cart-btn"
-            onClick={handleAddToCart}
-            aria-label="Add to cart"
-          >
-            <FaShoppingCart size={15} />
-          </button>
+          <div className="pcv2-actions">
+            <div className="pcv2-qty" onClick={(e) => e.stopPropagation()}>
+              <button
+                type="button"
+                className="pcv2-qty-btn"
+                onClick={dec}
+                disabled={qty <= 1}
+                aria-label="Decrease quantity"
+              >
+                <FaMinus size={9} />
+              </button>
+              <span className="pcv2-qty-val">{qty}</span>
+              <button
+                type="button"
+                className="pcv2-qty-btn"
+                onClick={inc}
+                aria-label="Increase quantity"
+              >
+                <FaPlus size={9} />
+              </button>
+            </div>
+            <button
+              className="pcv2-cart-btn"
+              onClick={handleAddToCart}
+              aria-label="Add to cart"
+            >
+              <FaShoppingCart size={15} />
+            </button>
+          </div>
         </div>
       </div>
     </motion.div>

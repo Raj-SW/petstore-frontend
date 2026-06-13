@@ -8,10 +8,10 @@
   width: 100%;
   position: relative;
   background: var(--color-primary-forest, #001c10) center / cover no-repeat;
-  padding: 3.5rem 5% 4.5rem;
+  padding: 2.1rem 5% 2.4rem;
   box-sizing: border-box;
   overflow: hidden;
-  min-height: 340px;
+  min-height: 200px;
   display: flex;
   align-items: center;
 }
@@ -124,8 +124,7 @@
 }
 
 .ps-sidebar {
-  position: sticky;
-  top: 90px;
+  align-self: start;
 }
 
 /* ── Main column ── */
@@ -168,6 +167,26 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
+}
+
+.ps-perpage {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.ps-perpage select {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  padding: 0.35rem 0.5rem;
+  border: 1.5px solid #e3dccf;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--color-primary-forest, #001c10);
+  cursor: pointer;
 }
 
 .ps-filter-mobile-btn {

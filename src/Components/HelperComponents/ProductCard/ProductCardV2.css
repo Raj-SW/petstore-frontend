@@ -107,6 +107,53 @@
   color: var(--color-accent-gold, #d99a2b);
 }
 
+/* ── Quantity stepper ── */
+
+.pcv2-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pcv2-qty {
+  display: flex;
+  align-items: center;
+  border: 1px solid #e3dccf;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.pcv2-qty-btn {
+  width: 24px;
+  height: 26px;
+  border: none;
+  background: #f6ece3;
+  color: var(--color-primary-forest, #001c10);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+
+.pcv2-qty-btn:hover:not(:disabled) {
+  background: #ecdfce;
+}
+
+.pcv2-qty-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.pcv2-qty-val {
+  min-width: 24px;
+  text-align: center;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-primary-forest, #001c10);
+}
+
 /* ── Responsive ── */
 
 @media (max-width: 991px) {

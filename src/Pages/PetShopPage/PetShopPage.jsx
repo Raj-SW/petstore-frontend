@@ -12,7 +12,7 @@ import ProductService from "@/Services/localServices/ProductService";
 import petshopBanner from "@/assets/PetShopPageAssets/PetshopBannerBackgroundImg.png";
 import "./PetShopPage.css";
 
-const PRODUCTS_PER_PAGE = 12;
+const PER_PAGE_OPTIONS = [12, 24, 48];
 const QUICK_CATS = ["All", "Dog", "Cat", "Bird", "Fish", "Small Pets", "General"];
 
 const PetShopPage = () => {
@@ -23,6 +23,7 @@ const PetShopPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [perPage, setPerPage] = useState(12);
   const [totalPages, setTotalPages] = useState(0);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [activeCat, setActiveCat] = useState("All");
@@ -33,7 +34,7 @@ const PetShopPage = () => {
     setError(null);
     ProductService.fetchAllProducts({
       page: currentPage,
-      limit: PRODUCTS_PER_PAGE,
+      limit: perPage,
       sort: "-createdAt",
     })
       .then(({ products: data, pagination }) => {
@@ -52,7 +53,7 @@ const PetShopPage = () => {
         setIsLoading(false);
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentPage, searchParams]);
+  }, [currentPage, perPage, searchParams]);
 
   // ── Handlers ──
   const handlePageChange = (page) => {
@@ -64,10 +65,10 @@ const PetShopPage = () => {
     if (!query?.trim()) {
       setDisplayedProducts(products);
       setCurrentPage(1);
-      setTotalPages(Math.ceil(products.length / PRODUCTS_PER_PAGE));
+      setTotalPages(Math.ceil(products.length / perPage));
       return;
     }
-    ProductService.fetchAllProducts({ search: query, page: 1, limit: PRODUCTS_PER_PAGE })
+    ProductService.fetchAllProducts({ search: query, page: 1, limit: perPage })
       .then(({ products: data, pagination }) => {
         const transformed = data.map((p) => ({ ...p, id: p._id || p.id }));
         setDisplayedProducts(transformed);
@@ -88,7 +89,7 @@ const PetShopPage = () => {
         ...priceFilters,
         minRating: rating || undefined,
       },
-      { page: 1, limit: PRODUCTS_PER_PAGE }
+      { page: 1, limit: perPage }
     )
       .then(({ products: data, pagination }) => {
         const transformed = data.map((p) => ({ ...p, id: p._id || p.id }));
@@ -119,7 +120,7 @@ const PetShopPage = () => {
     const sortParam = sortMap[sortType] || "-createdAt";
     ProductService.fetchProductsWithFilters(
       {},
-      { page: currentPage, limit: PRODUCTS_PER_PAGE, sort: sortParam }
+      { page: currentPage, limit: perPage, sort: sortParam }
     )
       .then(({ products: data, pagination }) => {
         setDisplayedProducts(data.map((p) => ({ ...p, id: p._id || p.id })));
@@ -277,6 +278,21 @@ const PetShopPage = () => {
                 </span>
               </div>
               <div className="ps-toolbar-right">
+                <label className="ps-perpage">
+                  <span>Show</span>
+                  <select
+                    value={perPage}
+                    onChange={(e) => {
+                      setPerPage(Number(e.target.value));
+                      setCurrentPage(1);
+                    }}
+                    aria-label="Products per page"
+                  >
+                    {PER_PAGE_OPTIONS.map((n) => (
+                      <option key={n} value={n}>{n}</option>
+                    ))}
+                  </select>
+                </label>
                 <SortDropDown onSort={handleSort} />
                 <button
                   type="button"
