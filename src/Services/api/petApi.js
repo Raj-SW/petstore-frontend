@@ -35,9 +35,8 @@ const petApi = {
   addPetImages: async (petId, files) => {
     const form = new FormData();
     Array.from(files).forEach((f) => form.append("petImages", f));
-    const response = await api.post(`/pets/${petId}/images`, form, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
+    // Don't set Content-Type manually — let the browser add the multipart boundary.
+    const response = await api.post(`/pets/${petId}/images`, form);
     return response.data; // { success, data: pet }
   },
 

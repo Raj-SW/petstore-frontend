@@ -38,9 +38,8 @@ const usersApi = {
   uploadAvatar: async (file) => {
     const form = new FormData();
     form.append("avatar", file);
-    const response = await api.patch("/users/upload-avatar", form, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
+    // Don't set Content-Type manually — let the browser add the multipart boundary.
+    const response = await api.patch("/users/upload-avatar", form);
     return response.data; // { success, data: { profileImage } }
   },
 };

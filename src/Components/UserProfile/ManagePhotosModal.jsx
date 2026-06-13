@@ -22,9 +22,11 @@ const ManagePhotosModal = ({ pet, onClose, onChange }) => {
   };
 
   const onAdd = async (e) => {
-    const files = e.target.files;
+    // Snapshot into an array BEFORE clearing the input — e.target.files is a
+    // live FileList that resetting value="" empties, which would drop the files.
+    const files = Array.from(e.target.files || []);
     e.target.value = "";
-    if (!files || files.length === 0) return;
+    if (files.length === 0) return;
     if (images.length + files.length > MAX) {
       addToast(`A pet can have at most ${MAX} photos`, "error");
       return;

@@ -20,6 +20,12 @@ apiClient.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+    // For multipart uploads (FormData), strip the default JSON Content-Type so the
+    // browser sets "multipart/form-data" with the correct boundary. Without this,
+    // the instance default application/json sticks and the server can't parse files.
+    if (config.data instanceof FormData) {
+      config.headers.delete("Content-Type");
+    }
     return config;
   },
   (error) => Promise.reject(error)
