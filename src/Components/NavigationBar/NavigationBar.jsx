@@ -181,7 +181,15 @@ const NavigationBar = () => {
                   aria-expanded={userMenuOpen}
                   aria-haspopup="menu"
                 >
-                  <FaUserCircle size={22} />
+                  {user?.profileImage?.url ? (
+                    <img
+                      src={user.profileImage.url}
+                      alt=""
+                      className="nav-avatar-img"
+                    />
+                  ) : (
+                    <FaUserCircle size={22} />
+                  )}
                   <span className="nav-user-name">{user.name}</span>
                   <FaChevronDown size={11} className={`nav-user-chev${userMenuOpen ? " open" : ""}`} />
                 </button>

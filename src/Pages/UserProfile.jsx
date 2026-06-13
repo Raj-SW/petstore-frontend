@@ -5,6 +5,7 @@ import {
   FaPhone, FaMapMarkerAlt, FaExclamationCircle, FaCheckCircle, FaTimes,
 } from "react-icons/fa";
 
+import AvatarUploader from "../Components/UserProfile/AvatarUploader";
 import Breadcrumb from "../Components/HelperComponents/Breadcrumb/Breadcrumb";
 import UserProfileService from "../Services/localServices/userProfileService";
 import PetForm from "../Components/UserProfile/PetForm";
@@ -191,13 +192,7 @@ const UserProfile = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <div className="up-avatar-wrap">
-            <img
-              src={userDetails?.profileImage || "https://placehold.co/150x150?text=Profile"}
-              alt={userDetails?.name || "Profile"}
-              className="up-avatar"
-            />
-          </div>
+          <AvatarUploader />
 
           <h2 className="up-name">{userDetails?.name}</h2>
           <p className="up-role">Member since {new Date(userDetails?.createdAt || Date.now()).getFullYear()}</p>

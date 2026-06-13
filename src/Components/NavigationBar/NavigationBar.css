@@ -164,6 +164,8 @@
   background: rgba(255, 255, 255, 0.08);
 }
 
+.nav-avatar-img { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; }
+
 .nav-user-name {
   display: none;
 }
