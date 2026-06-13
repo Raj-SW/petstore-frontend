@@ -32,7 +32,7 @@ vi.mock("framer-motion", async () => {
 });
 
 // Carousel mocked to lightweight passthroughs — embla needs real layout/ResizeObserver
-vi.mock("@/components/ui/carousel", () => ({
+vi.mock("@/Components/ui/carousel", () => ({
   Carousel: ({ children }) => <div data-testid="carousel">{children}</div>,
   CarouselContent: ({ children }) => <div>{children}</div>,
   CarouselItem: ({ children }) => <div>{children}</div>,

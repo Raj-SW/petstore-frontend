@@ -7,7 +7,7 @@ import {
   CarouselItem,
   CarouselPrevious,
   CarouselNext,
-} from "@/components/ui/carousel";
+} from "@/Components/ui/carousel";
 import { buildCarouselPlugins } from "./featuredAutoplay";
 import productsApi from "@/Services/api/productsApi";
 import "./FeaturedProductSection.css";
