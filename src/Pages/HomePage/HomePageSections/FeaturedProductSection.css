@@ -277,7 +277,7 @@
 }
 
 @media (max-width: 640px) {
-  .fp-carousel { padding: 0 0.5rem; }
-  .fp-arrow { display: none; } /* mobile: drag + dots only */
-  .fp-skeleton-row { padding: 0 0.5rem; }
+  /* Keep gutters wide enough for the side arrows to sit beside the cards */
+  .fp-carousel { padding: 0 2.25rem; }
+  .fp-skeleton-row { padding: 0 2.25rem; }
 }
