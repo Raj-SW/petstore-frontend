@@ -58,7 +58,12 @@ const HeroSection = () => (
             <FaWhatsapp size={22} className="me-2" />
             Book On WhatsApp
           </a>
-          <a href="#" className="hero-btn hero-btn-outline">
+          <a
+            href="https://maps.app.goo.gl/YQRTJz6vFe3K9Z6UA"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hero-btn hero-btn-outline"
+          >
             <FaMapMarkerAlt size={20} className="me-2" />
             Find Us
           </a>
