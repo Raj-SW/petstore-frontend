@@ -3,6 +3,7 @@ import { motion, useInView, AnimatePresence } from "framer-motion";
 import contactApi from "../../../../Services/api/contactApi";
 import { useToast } from "../../../../context/ToastContext";
 import FeedbackForm from "./FeedbackForm";
+import PromoSlideshow from "./PromoSlideshow";
 import "./EngagementSection.css";
 
 const TABS = [
@@ -83,6 +84,9 @@ const EngagementSection = () => {
           </div>
         </motion.div>
 
+        {/* ── Two-column body: tab content (left) + promo slideshow (right) ── */}
+        <div className="es-body">
+          <div className="es-body-left">
         {/* ── Tab content ── */}
         <AnimatePresence mode="wait">
           <motion.div
@@ -162,6 +166,12 @@ const EngagementSection = () => {
             )}
           </motion.div>
         </AnimatePresence>
+          </div>
+
+          <div className="es-body-right">
+            <PromoSlideshow />
+          </div>
+        </div>
 
       </div>
     </section>
