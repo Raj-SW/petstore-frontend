@@ -77,6 +77,11 @@ const EMPTY_FORM = {
   genders:     [],
   isActive:    true,
   isFeatured:  false,
+  onSale:        false,
+  discountType:  "percent",
+  discountValue: "",
+  saleStartsAt:  "",
+  saleEndsAt:    "",
 };
 
 const AdminProductForm = () => {
@@ -148,6 +153,11 @@ const AdminProductForm = () => {
           genders:   Array.isArray(p.genders) ? p.genders : [],
           isActive:  p.isActive  ?? true,
           isFeatured:p.isFeatured ?? false,
+          onSale:        p.onSale ?? false,
+          discountType:  p.discountType ?? "percent",
+          discountValue: p.discountValue ?? "",
+          saleStartsAt:  p.saleStartsAt ? p.saleStartsAt.slice(0, 10) : "",
+          saleEndsAt:    p.saleEndsAt ? p.saleEndsAt.slice(0, 10) : "",
         });
 
         setSections(
@@ -303,6 +313,11 @@ const AdminProductForm = () => {
     fd.append("quantity",    Number(form.quantity) || 0);
     fd.append("isActive",    String(form.isActive));
     fd.append("isFeatured",  String(form.isFeatured));
+    fd.append("onSale",        String(form.onSale));
+    fd.append("discountType",  form.discountType);
+    fd.append("discountValue", String(Number(form.discountValue) || 0));
+    if (form.saleStartsAt) fd.append("saleStartsAt", form.saleStartsAt);
+    if (form.saleEndsAt)   fd.append("saleEndsAt", form.saleEndsAt);
 
     form.categories.forEach((c) => fd.append("categories", c));
     form.colors.forEach((c)     => fd.append("colors", c));
@@ -356,6 +371,18 @@ const AdminProductForm = () => {
   }
 
   const hasAnyImage = existingImages.length > 0 || imagePreviews.length > 0;
+
+  // Live sale-price preview
+  const priceNum = Number(form.price) || 0;
+  const valNum = Number(form.discountValue) || 0;
+  const previewSalePrice =
+    form.discountType === "percent"
+      ? Math.round(priceNum * (1 - Math.min(100, Math.max(0, valNum)) / 100) * 100) / 100
+      : valNum;
+  const previewPct =
+    form.discountType === "percent"
+      ? Math.round(valNum)
+      : priceNum > 0 ? Math.round(((priceNum - valNum) / priceNum) * 100) : 0;
 
   return (
     <motion.div
@@ -653,6 +680,70 @@ const AdminProductForm = () => {
                   />
                 </label>
               </div>
+
+              <div className="admin-pf-toggle-row">
+                <div>
+                  <p className="admin-notification-label">On Sale</p>
+                  <p className="admin-notification-desc">Apply a discount to this product.</p>
+                </div>
+                <label className="admin-toggle" aria-label="On Sale">
+                  <input
+                    type="checkbox"
+                    className="toggle-input"
+                    checked={form.onSale}
+                    onChange={(e) => setField("onSale", e.target.checked)}
+                  />
+                </label>
+              </div>
+
+              {form.onSale && (
+                <div className="admin-pf-sale">
+                  <div className="admin-pf-sale-row">
+                    <label className="admin-pf-sale-field">
+                      <span>Discount type</span>
+                      <select
+                        value={form.discountType}
+                        onChange={(e) => setField("discountType", e.target.value)}
+                      >
+                        <option value="percent">Percentage (%)</option>
+                        <option value="amount">Fixed sale price (Rs)</option>
+                      </select>
+                    </label>
+                    <label className="admin-pf-sale-field">
+                      <span>{form.discountType === "percent" ? "Percent off" : "Sale price (Rs)"}</span>
+                      <input
+                        type="number"
+                        min="0"
+                        value={form.discountValue}
+                        onChange={(e) => setField("discountValue", e.target.value)}
+                      />
+                    </label>
+                  </div>
+                  <div className="admin-pf-sale-row">
+                    <label className="admin-pf-sale-field">
+                      <span>Sale starts (optional)</span>
+                      <input
+                        type="date"
+                        value={form.saleStartsAt}
+                        onChange={(e) => setField("saleStartsAt", e.target.value)}
+                      />
+                    </label>
+                    <label className="admin-pf-sale-field">
+                      <span>Sale ends (optional)</span>
+                      <input
+                        type="date"
+                        value={form.saleEndsAt}
+                        onChange={(e) => setField("saleEndsAt", e.target.value)}
+                      />
+                    </label>
+                  </div>
+                  {valNum > 0 && priceNum > 0 && (
+                    <p className="admin-pf-sale-preview">
+                      Sale price: <strong>Rs {previewSalePrice}</strong> (−{previewPct}%)
+                    </p>
+                  )}
+                </div>
+              )}
 
               <div className="admin-pf-submit-row">
                 <button

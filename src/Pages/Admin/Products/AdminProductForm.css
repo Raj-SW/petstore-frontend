@@ -785,3 +785,10 @@
   color: var(--color-primary-forest, #001c10);
   background: rgba(0, 28, 16, 0.03);
 }
+
+/* ── Sale / discount section ── */
+.admin-pf-sale { border: 1px solid #e3dccf; border-radius: 10px; padding: 12px; margin-top: 8px; }
+.admin-pf-sale-row { display: flex; gap: 12px; flex-wrap: wrap; }
+.admin-pf-sale-field { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 140px; font-size: 0.85rem; color: #555; }
+.admin-pf-sale-field input, .admin-pf-sale-field select { padding: 6px 8px; border: 1px solid #e3dccf; border-radius: 8px; }
+.admin-pf-sale-preview { margin: 10px 0 0; color: #633806; font-size: 0.9rem; }
