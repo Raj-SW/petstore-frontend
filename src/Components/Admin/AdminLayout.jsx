@@ -22,6 +22,7 @@ import {
   FiSpeaker,
   FiImage,
   FiMail,
+  FiMessageSquare,
 } from "react-icons/fi";
 
 const AdminLayout = () => {
@@ -69,6 +70,11 @@ const AdminLayout = () => {
       title: "Contacts",
       path: "/admin/contacts",
       icon: <FiMail className="menu-icon" />,
+    },
+    {
+      title: "Feedback",
+      path: "/admin/feedback",
+      icon: <FiMessageSquare className="menu-icon" />,
     },
     {
       title: "Adverts",

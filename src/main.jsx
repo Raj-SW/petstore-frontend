@@ -49,6 +49,7 @@ import AdminGallery from "./Pages/Admin/Gallery/AdminGallery";
 import AdminGalleryForm from "./Pages/Admin/Gallery/AdminGalleryForm";
 import AdminContacts from "./Pages/Admin/Contacts/AdminContacts";
 import AdminAdverts from "./Pages/Admin/Adverts/AdminAdverts";
+import AdminFeedback from "./Pages/Admin/Feedback/AdminFeedback";
 
 const router = createBrowserRouter([
   {
@@ -208,6 +209,10 @@ const router = createBrowserRouter([
       {
         path: "adverts",
         element: <AdminAdverts />,
+      },
+      {
+        path: "feedback",
+        element: <AdminFeedback />,
       },
       {
         path: "inventory",
