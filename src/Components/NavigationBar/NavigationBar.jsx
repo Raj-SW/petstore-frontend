@@ -33,7 +33,7 @@ const NAV_LINKS = [
   { label: "Services", href: "/services", hasDropdown: true },
   { label: "Pet Store", href: "/petshop" },
   { label: "Pet Care Tips", href: "/pet-care-tips" },
-  { label: "Gallery", href: null },
+  { label: "Gallery", href: "/gallery" },
   { label: "Contact", href: null },
 ];
 
@@ -348,8 +348,16 @@ const NavigationBar = () => {
               Pet Care Tips
             </a>
 
+            {/* Gallery */}
+            <a
+              href="/gallery"
+              className={`mobile-menu-link${isActive("/gallery") ? " active" : ""}`}
+              onClick={handleNav("/gallery")}
+            >
+              Gallery
+            </a>
+
             {/* Disabled links */}
-            <span className="mobile-menu-link mobile-link-disabled">Gallery</span>
             <span className="mobile-menu-link mobile-link-disabled">Contact</span>
 
             <div className="mobile-menu-divider" />

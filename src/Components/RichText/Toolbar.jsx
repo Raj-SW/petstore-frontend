@@ -1,10 +1,10 @@
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import {
   MdFormatBold, MdFormatItalic, MdFormatUnderlined, MdStrikethroughS,
   MdFormatListBulleted, MdFormatListNumbered,
   MdFormatQuote, MdCode,
   MdFormatAlignLeft, MdFormatAlignCenter, MdFormatAlignRight, MdFormatAlignJustify,
-  MdHighlight, MdFormatClear, MdLink, MdLinkOff,
+  MdHighlight, MdFormatClear, MdLink, MdLinkOff, MdImage,
 } from "react-icons/md";
 import { TOOLBAR_GROUPS } from "./extensions";
 
@@ -51,10 +51,30 @@ const LinkDialog = ({ onConfirm, onCancel, initial = "" }) => {
 
 /* ─── Main Toolbar ───────────────────────────────────────────────────── */
 
-const Toolbar = ({ editor, preset = "standard" }) => {
+const Toolbar = ({ editor, preset = "standard", onImageUpload }) => {
   const [linkDialogOpen, setLinkDialogOpen] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef(null);
 
   const groups = TOOLBAR_GROUPS[preset] ?? TOOLBAR_GROUPS.standard;
+
+  const handleImagePick = useCallback(
+    async (e) => {
+      const file = e.target.files?.[0];
+      e.target.value = ""; // allow re-picking the same file
+      if (!file || !editor || !onImageUpload) return;
+      setUploading(true);
+      try {
+        const url = await onImageUpload(file);
+        if (url) editor.chain().focus().setImage({ src: url }).run();
+      } catch (err) {
+        console.error("Image upload failed:", err);
+      } finally {
+        setUploading(false);
+      }
+    },
+    [editor, onImageUpload]
+  );
 
   const openLinkDialog = useCallback(() => {
     if (!editor) return;
@@ -148,6 +168,29 @@ const Toolbar = ({ editor, preset = "standard" }) => {
       {groups.includes("highlight") && (
         <div className="rte-toolbar-group">
           <Btn title="Highlight" active={editor.isActive("highlight")} onClick={() => editor.chain().focus().toggleHighlight().run()}><MdHighlight /></Btn>
+        </div>
+      )}
+
+      {groups.includes("highlight") && groups.includes("image") && <Divider />}
+
+      {/* IMAGE group — upload + insert inline image */}
+      {groups.includes("image") && onImageUpload && (
+        <div className="rte-toolbar-group">
+          <Btn
+            title={uploading ? "Uploading…" : "Insert image"}
+            active={false}
+            disabled={uploading}
+            onClick={() => fileInputRef.current?.click()}
+          >
+            <MdImage />
+          </Btn>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            style={{ display: "none" }}
+            onChange={handleImagePick}
+          />
         </div>
       )}
 

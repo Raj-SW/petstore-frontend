@@ -21,6 +21,14 @@ import Placeholder from "@tiptap/extension-placeholder";
 import CharacterCount from "@tiptap/extension-character-count";
 import TextAlign from "@tiptap/extension-text-align";
 import Highlight from "@tiptap/extension-highlight";
+import Image from "@tiptap/extension-image";
+
+// Shared image config — inline images embedded in the body (blog preset)
+const imageConfig = Image.configure({
+  inline: false,
+  allowBase64: false,
+  HTMLAttributes: { class: "rte-img" },
+});
 
 // Shared link config
 const linkConfig = Link.configure({
@@ -78,6 +86,18 @@ export function buildExtensions(preset = "standard", opts = {}) {
         ...shared,
       ];
 
+    case "blog":
+      // Everything in full + inline images (for Gallery / blog posts)
+      return [
+        StarterKit,
+        Underline,
+        linkConfig,
+        textAlignConfig,
+        Highlight.configure({ multicolor: false }),
+        imageConfig,
+        ...shared,
+      ];
+
     case "standard":
     default:
       return [
@@ -94,4 +114,5 @@ export const TOOLBAR_GROUPS = {
   minimal: ["format", "list"],
   standard: ["format", "heading", "list", "extras"],
   full: ["format", "heading", "list", "extras", "align", "highlight"],
+  blog: ["format", "heading", "list", "extras", "align", "highlight", "image"],
 };

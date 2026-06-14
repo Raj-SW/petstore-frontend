@@ -16,6 +16,8 @@ import MyOrdersPage from "./Pages/MyOrders/MyOrdersPage.jsx";
 import OrderConfirmedPage from "./Pages/OrderConfirmed/OrderConfirmedPage.jsx";
 import PetCareTipsPage from "./Pages/PetCareTips/PetCareTipsPage.jsx";
 import TipDetailPage from "./Pages/PetCareTips/TipDetailPage.jsx";
+import GalleryPage from "./Pages/Gallery/GalleryPage.jsx";
+import GalleryDetailPage from "./Pages/Gallery/GalleryDetailPage.jsx";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import ProtectedRoute from "./Components/Auth/ProtectedRoute";
 import RoleBasedRoute from "./Components/Auth/RoleBasedRoute";
@@ -42,6 +44,8 @@ import AdminInvoices     from "./Pages/Admin/Invoices/AdminInvoices.jsx";
 import AdminTransactions from "./Pages/Admin/Transactions/AdminTransactions.jsx";
 import AdminTips from "./Pages/Admin/Tips/AdminTips";
 import AdminTipForm from "./Pages/Admin/Tips/AdminTipForm";
+import AdminGallery from "./Pages/Admin/Gallery/AdminGallery";
+import AdminGalleryForm from "./Pages/Admin/Gallery/AdminGalleryForm";
 import AdminAdverts from "./Pages/Admin/Adverts/AdminAdverts";
 
 const router = createBrowserRouter([
@@ -80,6 +84,14 @@ const router = createBrowserRouter([
       {
         path: "pet-care-tips/:slug",
         element: <TipDetailPage />,
+      },
+      {
+        path: "gallery",
+        element: <GalleryPage />,
+      },
+      {
+        path: "gallery/:slug",
+        element: <GalleryDetailPage />,
       },
       {
         path: "checkout",
@@ -170,6 +182,18 @@ const router = createBrowserRouter([
       {
         path: "tips/edit/:id",
         element: <AdminTipForm />,
+      },
+      {
+        path: "gallery",
+        element: <AdminGallery />,
+      },
+      {
+        path: "gallery/new",
+        element: <AdminGalleryForm />,
+      },
+      {
+        path: "gallery/edit/:id",
+        element: <AdminGalleryForm />,
       },
       {
         path: "adverts",

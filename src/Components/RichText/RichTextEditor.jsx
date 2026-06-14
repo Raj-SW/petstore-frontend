@@ -35,6 +35,7 @@ const RichTextEditor = ({
   minHeight = "160px",
   className = "",
   autofocus = false,
+  onImageUpload,
 }) => {
   const extensions = buildExtensions(preset, { placeholder, maxLength });
 
@@ -81,7 +82,7 @@ const RichTextEditor = ({
       {label && <label className="rte-label">{label}</label>}
 
       <div className="rte-container">
-        {!readOnly && <Toolbar editor={editor} preset={preset} />}
+        {!readOnly && <Toolbar editor={editor} preset={preset} onImageUpload={onImageUpload} />}
 
         <EditorContent
           editor={editor}

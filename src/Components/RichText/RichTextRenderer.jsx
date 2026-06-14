@@ -22,10 +22,10 @@ const PURIFY_CONFIG = {
     "h1", "h2", "h3", "h4", "h5", "h6",
     "ul", "ol", "li",
     "blockquote", "code", "pre",
-    "a", "hr",
+    "a", "hr", "img",
     "span", "div",
   ],
-  ALLOWED_ATTR: ["href", "target", "rel", "class", "style"],
+  ALLOWED_ATTR: ["href", "target", "rel", "class", "style", "src", "alt", "width", "height"],
   ALLOW_DATA_ATTR: false,
 };
 
