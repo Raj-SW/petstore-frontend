@@ -28,6 +28,16 @@ const advertsApi = {
     const response = await api.delete(`/adverts/${id}`);
     return response.data;
   },
+
+  // Admin: upload one banner image → returns the Cloudinary URL string
+  uploadImage: async (file) => {
+    const fd = new FormData();
+    fd.append("image", file);
+    const response = await api.post("/adverts/upload-image", fd, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    return response.data?.data?.url;
+  },
 };
 
 export default advertsApi;

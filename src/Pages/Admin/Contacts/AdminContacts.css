@@ -1,0 +1,27 @@
+/* Admin contact messages */
+.ac-snippet { color: #5b5147; }
+
+.ac-status {
+  border: none;
+  cursor: pointer;
+  text-transform: capitalize;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.2rem 0.7rem;
+  border-radius: 50px;
+}
+.ac-status-new { background: #fdebd2; color: #b45309; }
+.ac-status-read { background: #e1eef6; color: #2f6f9e; }
+.ac-status-replied { background: #dcfce7; color: #166534; }
+
+.ac-view { max-width: 480px; }
+.ac-view-email { color: #8a7d6e; font-size: 0.85rem; margin: 0 0 1rem; }
+.ac-view-message {
+  background: #faf7f2;
+  border-radius: 10px;
+  padding: 1rem;
+  color: #2b2620;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  white-space: pre-wrap;
+}

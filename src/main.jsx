@@ -18,6 +18,7 @@ import PetCareTipsPage from "./Pages/PetCareTips/PetCareTipsPage.jsx";
 import TipDetailPage from "./Pages/PetCareTips/TipDetailPage.jsx";
 import GalleryPage from "./Pages/Gallery/GalleryPage.jsx";
 import GalleryDetailPage from "./Pages/Gallery/GalleryDetailPage.jsx";
+import ContactPage from "./Pages/Contact/ContactPage.jsx";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import ProtectedRoute from "./Components/Auth/ProtectedRoute";
 import RoleBasedRoute from "./Components/Auth/RoleBasedRoute";
@@ -46,6 +47,7 @@ import AdminTips from "./Pages/Admin/Tips/AdminTips";
 import AdminTipForm from "./Pages/Admin/Tips/AdminTipForm";
 import AdminGallery from "./Pages/Admin/Gallery/AdminGallery";
 import AdminGalleryForm from "./Pages/Admin/Gallery/AdminGalleryForm";
+import AdminContacts from "./Pages/Admin/Contacts/AdminContacts";
 import AdminAdverts from "./Pages/Admin/Adverts/AdminAdverts";
 
 const router = createBrowserRouter([
@@ -92,6 +94,10 @@ const router = createBrowserRouter([
       {
         path: "gallery/:slug",
         element: <GalleryDetailPage />,
+      },
+      {
+        path: "contact",
+        element: <ContactPage />,
       },
       {
         path: "checkout",
@@ -194,6 +200,10 @@ const router = createBrowserRouter([
       {
         path: "gallery/edit/:id",
         element: <AdminGalleryForm />,
+      },
+      {
+        path: "contacts",
+        element: <AdminContacts />,
       },
       {
         path: "adverts",

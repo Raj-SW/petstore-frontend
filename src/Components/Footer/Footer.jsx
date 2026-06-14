@@ -1,8 +1,16 @@
 import { useState } from "react";
-import { FaFacebook, FaInstagram, FaYoutube, FaPaw } from "react-icons/fa";
+import { FaFacebook, FaInstagram, FaPaw } from "react-icons/fa";
+import { FaTiktok } from "react-icons/fa6";
 import { IoLogoWhatsapp } from "react-icons/io";
 import pawImg from "../../assets/Decoratives/paw.png";
 import "./Footer.css";
+
+const SOCIALS = [
+  { label: "WhatsApp", href: "https://wa.me/23057580480", Icon: IoLogoWhatsapp },
+  { label: "TikTok", href: "https://www.tiktok.com/@vitalpawsmru", Icon: FaTiktok },
+  { label: "Facebook", href: "https://www.facebook.com/share/1BUiS7SRxh/?mibextid=wwXIfr", Icon: FaFacebook },
+  { label: "Instagram", href: "https://www.instagram.com/vitalpawsmru", Icon: FaInstagram },
+];
 
 const LINKS = [
   {
@@ -117,10 +125,18 @@ const Footer = () => {
           </div>
 
           <div className="ft-socials">
-            <a href="#" aria-label="Facebook"  className="ft-social-btn"><FaFacebook  size={18} /></a>
-            <a href="#" aria-label="WhatsApp"  className="ft-social-btn"><IoLogoWhatsapp size={18} /></a>
-            <a href="#" aria-label="Instagram" className="ft-social-btn"><FaInstagram size={18} /></a>
-            <a href="#" aria-label="YouTube"   className="ft-social-btn"><FaYoutube   size={18} /></a>
+            {SOCIALS.map(({ label, href, Icon }) => (
+              <a
+                key={label}
+                href={href}
+                aria-label={label}
+                className="ft-social-btn"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Icon size={18} />
+              </a>
+            ))}
           </div>
         </div>
       </div>

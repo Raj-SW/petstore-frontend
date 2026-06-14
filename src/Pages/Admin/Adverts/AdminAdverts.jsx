@@ -1,12 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiPlus, FiSave } from "react-icons/fi";
+import { FiPlus, FiSave, FiUploadCloud } from "react-icons/fi";
 import DataTable from "../../../Components/Admin/DataTable/DataTable";
 import advertsApi from "../../../Services/api/advertsApi";
 import { useToast } from "../../../context/ToastContext";
 import "./AdminAdverts.css";
 
-const EMPTY_FORM = { title: "", image: "", link: "", placement: "banner", active: true };
+const EMPTY_FORM = { title: "", image: "", link: "", placement: "banner", order: 0, active: true };
 
 const AdminAdverts = () => {
   const [adverts, setAdverts] = useState([]);
@@ -15,6 +15,9 @@ const AdminAdverts = () => {
   const [editing, setEditing] = useState(null); // advert being edited, or null = create
   const [form, setForm] = useState(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const imageInputRef = useRef(null);
   const { addToast } = useToast();
 
   useEffect(() => { fetchAdverts(); }, []);
@@ -42,8 +45,9 @@ const AdminAdverts = () => {
     setForm({
       title: advert.title,
       image: advert.image || "",
-      link: advert.link,
+      link: advert.link || "",
       placement: advert.placement,
+      order: advert.order ?? 0,
       active: advert.active,
     });
     setModalOpen(true);
@@ -54,10 +58,26 @@ const AdminAdverts = () => {
     setForm((f) => ({ ...f, [field]: value }));
   };
 
+  const handleImagePick = async (e) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    setUploadingImage(true);
+    try {
+      const url = await advertsApi.uploadImage(file);
+      if (url) setForm((f) => ({ ...f, image: url }));
+    } catch {
+      addToast("Image upload failed", "error");
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
   const handleSave = async (e) => {
     e.preventDefault();
-    if (form.title.trim().length < 2 || !form.link.trim()) {
-      addToast("Title and link are required", "error");
+    // Link is required for banner/sponsored, optional for hero carousel slides.
+    if (form.title.trim().length < 2 || (form.placement !== "hero" && !form.link.trim())) {
+      addToast("Title is required (and a link for banner/sponsored adverts)", "error");
       return;
     }
     try {
@@ -88,11 +108,16 @@ const AdminAdverts = () => {
     }
   };
 
-  const handleDelete = async (advert) => {
-    if (!window.confirm(`Delete advert "${advert.title}"?`)) return;
+  const handleDelete = (advert) => {
+    setDeleteTarget(advert);
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteTarget) return;
     try {
-      await advertsApi.deleteAdvert(advert._id);
+      await advertsApi.deleteAdvert(deleteTarget._id);
       addToast("Advert deleted", "success");
+      setDeleteTarget(null);
       fetchAdverts();
     } catch {
       addToast("Failed to delete advert", "error");
@@ -190,19 +215,55 @@ const AdminAdverts = () => {
                 <input id="aa-title" type="text" value={form.title} onChange={set("title")} maxLength={120} />
               </div>
               <div className="aa-field">
-                <label htmlFor="aa-image">Image URL (optional)</label>
-                <input id="aa-image" type="url" value={form.image} onChange={set("image")} placeholder="https://…" />
-              </div>
-              <div className="aa-field">
-                <label htmlFor="aa-link">Link</label>
-                <input id="aa-link" type="text" value={form.link} onChange={set("link")} placeholder="https://… or /petshop" />
-              </div>
-              <div className="aa-field">
                 <label htmlFor="aa-placement">Placement</label>
                 <select id="aa-placement" value={form.placement} onChange={set("placement")}>
                   <option value="banner">Banner (between sections)</option>
                   <option value="sponsored">Sponsored card (in grid)</option>
+                  <option value="hero">Homepage carousel (hero banner)</option>
                 </select>
+              </div>
+              <div className="aa-field">
+                <label>Image{form.placement === "hero" ? "" : " (optional)"}</label>
+                {form.image && (
+                  <img src={form.image} alt="Advert preview" className="aa-image-preview" />
+                )}
+                <div className="aa-image-upload">
+                  <button
+                    type="button"
+                    className="aa-upload-btn"
+                    onClick={() => imageInputRef.current?.click()}
+                    disabled={uploadingImage}
+                  >
+                    <FiUploadCloud size={15} /> {uploadingImage ? "Uploading…" : "Upload image"}
+                  </button>
+                  <input
+                    ref={imageInputRef}
+                    type="file"
+                    accept="image/*"
+                    style={{ display: "none" }}
+                    onChange={handleImagePick}
+                  />
+                </div>
+                <input
+                  id="aa-image"
+                  type="url"
+                  value={form.image}
+                  onChange={set("image")}
+                  placeholder="…or paste an image URL (https://…)"
+                />
+                {form.placement === "hero" && (
+                  <p className="aa-hint">Recommended ~1920 × 680 px (wide banner). Keep key content centered.</p>
+                )}
+              </div>
+              <div className="aa-field">
+                <label htmlFor="aa-link">
+                  Link{form.placement === "hero" ? " (optional)" : ""}
+                </label>
+                <input id="aa-link" type="text" value={form.link} onChange={set("link")} placeholder="https://… or /petshop" />
+              </div>
+              <div className="aa-field">
+                <label htmlFor="aa-order">Order (lower shows first)</label>
+                <input id="aa-order" type="number" min="0" value={form.order} onChange={set("order")} />
               </div>
               <label className="aa-check">
                 <input type="checkbox" checked={form.active} onChange={set("active")} />
@@ -218,6 +279,37 @@ const AdminAdverts = () => {
                 </button>
               </div>
             </motion.form>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {deleteTarget && (
+          <motion.div
+            className="admin-modal-backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setDeleteTarget(null)}
+          >
+            <motion.div
+              className="admin-modal"
+              initial={{ scale: 0.92, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.92, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h3>Delete advert?</h3>
+              <p>&ldquo;{deleteTarget.title}&rdquo; will be permanently removed.</p>
+              <div className="admin-modal-actions">
+                <button className="at-btn-secondary" onClick={() => setDeleteTarget(null)}>
+                  Cancel
+                </button>
+                <button className="at-btn-danger" onClick={confirmDelete}>
+                  Delete
+                </button>
+              </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>

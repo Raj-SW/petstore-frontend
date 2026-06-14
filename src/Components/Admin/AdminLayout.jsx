@@ -21,6 +21,7 @@ import {
   FiBookOpen,
   FiSpeaker,
   FiImage,
+  FiMail,
 } from "react-icons/fi";
 
 const AdminLayout = () => {
@@ -63,6 +64,11 @@ const AdminLayout = () => {
       title: "Gallery",
       path: "/admin/gallery",
       icon: <FiImage className="menu-icon" />,
+    },
+    {
+      title: "Contacts",
+      path: "/admin/contacts",
+      icon: <FiMail className="menu-icon" />,
     },
     {
       title: "Adverts",
