@@ -1,0 +1,3 @@
+.product-price { display: inline-flex; align-items: baseline; gap: 0.45rem; }
+.product-price-sale { font-weight: 700; color: #c0392b; }
+.product-price-original { font-size: 0.82em; color: #999; text-decoration: line-through; }
