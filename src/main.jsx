@@ -19,6 +19,7 @@ import TipDetailPage from "./Pages/PetCareTips/TipDetailPage.jsx";
 import GalleryPage from "./Pages/Gallery/GalleryPage.jsx";
 import GalleryDetailPage from "./Pages/Gallery/GalleryDetailPage.jsx";
 import ContactPage from "./Pages/Contact/ContactPage.jsx";
+import AboutPage from "./Pages/About/AboutPage.jsx";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import ProtectedRoute from "./Components/Auth/ProtectedRoute";
 import RoleBasedRoute from "./Components/Auth/RoleBasedRoute";
@@ -99,6 +100,10 @@ const router = createBrowserRouter([
       {
         path: "contact",
         element: <ContactPage />,
+      },
+      {
+        path: "about",
+        element: <AboutPage />,
       },
       {
         path: "checkout",
