@@ -525,3 +525,5 @@
 }
 
 /* Sections block and tabs are now fully Tailwind — no custom CSS needed */
+
+.ip-price-row { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }

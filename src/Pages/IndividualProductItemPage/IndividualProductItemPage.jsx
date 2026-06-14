@@ -14,7 +14,8 @@ import Breadcrumb from "@/Components/HelperComponents/Breadcrumb/Breadcrumb";
 import LoginModal from "@/Components/NavigationBar/Dropdowns/LoginModal";
 import SignUpModal from "@/Components/NavigationBar/Dropdowns/SignUpModal";
 import { RichTextRenderer } from "@/Components/RichText";
-import Price from "@/Components/HelperComponents/Price/Price";
+import ProductPrice from "@/Components/HelperComponents/Price/ProductPrice";
+import SaleBadge from "@/Components/HelperComponents/SaleBadge/SaleBadge";
 import ProductCard from "@/Components/HelperComponents/ProductCard/ProductCardV2";
 import ReviewCarousel from "@/Components/HelperComponents/Carousel/ReviewCarousel";
 import ProductReviewFormModal from "@/Components/HelperComponents/ProductReviewFormModal/ProductReviewFormModal";
@@ -301,7 +302,7 @@ const IndividualProductItemPage = () => {
         {
           id: String(product._id || product.id),
           name: product.name?.trim() || product.title?.trim() || "Untitled Product",
-          price: parseFloat(product.price) || 0,
+          price: parseFloat(product.effectivePrice ?? product.price) || 0,
           image: product.images?.[0]?.url || product.imageUrl || "",
         },
         quantity
@@ -489,7 +490,15 @@ const IndividualProductItemPage = () => {
             </div>
 
             <h1 className="ip-title">{productName}</h1>
-            <Price amount={product.price} className="ip-price" />
+            <div className="ip-price-row">
+              <ProductPrice
+                price={product.price}
+                salePrice={product.salePrice}
+                isOnSaleNow={product.isOnSaleNow}
+                className="ip-price"
+              />
+              {product.isOnSaleNow && <SaleBadge percent={product.discountPercentLabel} />}
+            </div>
 
             {/* Overview always visible in the product card */}
             {product.description && (
