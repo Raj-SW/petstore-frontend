@@ -192,6 +192,10 @@ const PetShopPage = () => {
               title={p.name || p.title}
               price={p.price}
               description={p.description}
+              salePrice={p.salePrice}
+              isOnSaleNow={p.isOnSaleNow}
+              discountPercentLabel={p.discountPercentLabel}
+              effectivePrice={p.effectivePrice}
             />
           </motion.div>
         ))}

@@ -4,7 +4,8 @@ import { motion } from "framer-motion";
 import { useCart } from "@/context/CartContext";
 import { FaShoppingCart, FaMinus, FaPlus } from "react-icons/fa";
 import { useToast } from "@/context/ToastContext";
-import Price from "../Price/Price";
+import ProductPrice from "../Price/ProductPrice";
+import SaleBadge from "../SaleBadge/SaleBadge";
 import "./ProductCardV2.css";
 
 /** Strip HTML tags so rich-text descriptions render as plain text in the card. */
@@ -29,7 +30,10 @@ export const resolveProductImage = (p) =>
 const PLACEHOLDER_IMG =
   "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect width='400' height='300' fill='%23f0ebe4'/%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-size='56' fill='%23c9baa8'%3E%F0%9F%90%BE%3C/text%3E%3C/svg%3E";
 
-const ProductCardV2 = ({ id, imageUrl, title, price, description }) => {
+const ProductCardV2 = ({
+  id, imageUrl, title, price, description,
+  salePrice = null, isOnSaleNow = false, discountPercentLabel = 0, effectivePrice,
+}) => {
   const navigate = useNavigate();
   const { addItem } = useCart();
   const { showCartToast } = useToast();
@@ -46,7 +50,7 @@ const ProductCardV2 = ({ id, imageUrl, title, price, description }) => {
 
   const handleAddToCart = (e) => {
     e.stopPropagation();
-    addItem({ id, name: title, price, image: imageUrl }, qty);
+    addItem({ id, name: title, price: effectivePrice ?? price, image: imageUrl }, qty);
     showCartToast("add", title);
   };
 
@@ -63,6 +67,9 @@ const ProductCardV2 = ({ id, imageUrl, title, price, description }) => {
           className="pcv2-img"
           onError={(e) => { e.currentTarget.src = PLACEHOLDER_IMG; }}
         />
+        {isOnSaleNow && (
+          <SaleBadge percent={discountPercentLabel} className="pcv2-sale-badge" />
+        )}
       </div>
 
       <div className="pcv2-info">
@@ -71,7 +78,12 @@ const ProductCardV2 = ({ id, imageUrl, title, price, description }) => {
           {stripHtml(description) || "Premium quality product for your pet."}
         </p>
         <div className="pcv2-bottom-row">
-          <Price amount={price} className="pcv2-price" />
+          <ProductPrice
+            price={price}
+            salePrice={salePrice}
+            isOnSaleNow={isOnSaleNow}
+            className="pcv2-price"
+          />
           <div className="pcv2-actions">
             <div className="pcv2-qty" onClick={(e) => e.stopPropagation()}>
               <button

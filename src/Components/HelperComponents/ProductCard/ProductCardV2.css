@@ -24,6 +24,14 @@
 
 .pcv2-img-wrap {
   padding: 10px 10px 0;
+  position: relative;
+}
+
+.pcv2-sale-badge {
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  z-index: 2;
 }
 
 .pcv2-img {
