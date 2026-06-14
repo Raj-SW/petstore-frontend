@@ -3,7 +3,7 @@ import FeaturedProductSection from "./HomePageSections/FeaturedProductSection";
 import HeroSection from "./HomePageSections/HeroSection";
 import ServicesSection from "./HomePageSections/ServicesSection";
 import StatsSection from "./HomePageSections/StatsSection";
-import ContactSection from "./HomePageSections/ContactSection/ContactSection";
+import EngagementSection from "./HomePageSections/EngagementSection/EngagementSection";
 import PromoBannerCarousel from "./HomePageSections/PromoBannerCarousel/PromoBannerCarousel";
 import "./HomePage.css";
 
@@ -15,7 +15,7 @@ const HomePage = () => {
       <PromoBannerCarousel />
       <FeaturedProductSection />
       <StatsSection />
-      <ContactSection />
+      <EngagementSection />
     </>
   );
 };
