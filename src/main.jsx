@@ -20,6 +20,7 @@ import GalleryPage from "./Pages/Gallery/GalleryPage.jsx";
 import GalleryDetailPage from "./Pages/Gallery/GalleryDetailPage.jsx";
 import ContactPage from "./Pages/Contact/ContactPage.jsx";
 import AboutPage from "./Pages/About/AboutPage.jsx";
+import MySubscriptions from "./Pages/Subscriptions/MySubscriptions.jsx";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import ProtectedRoute from "./Components/Auth/ProtectedRoute";
 import RoleBasedRoute from "./Components/Auth/RoleBasedRoute";
@@ -53,6 +54,7 @@ import AdminAdverts from "./Pages/Admin/Adverts/AdminAdverts";
 import AdminFeedback from "./Pages/Admin/Feedback/AdminFeedback";
 import AdminAnnouncements from "./Pages/Admin/Announcements/AdminAnnouncements";
 import AdminFaqs from "./Pages/Admin/Faqs/AdminFaqs";
+import AdminSubscriptions from "./Pages/Admin/Subscriptions/AdminSubscriptions";
 
 const router = createBrowserRouter([
   {
@@ -128,6 +130,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <MyOrdersPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "my-subscriptions",
+        element: (
+          <ProtectedRoute>
+            <MySubscriptions />
           </ProtectedRoute>
         ),
       },
@@ -228,6 +238,10 @@ const router = createBrowserRouter([
       {
         path: "faqs",
         element: <AdminFaqs />,
+      },
+      {
+        path: "subscriptions",
+        element: <AdminSubscriptions />,
       },
       {
         path: "inventory",

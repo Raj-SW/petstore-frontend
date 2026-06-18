@@ -16,6 +16,7 @@ import SignUpModal from "@/Components/NavigationBar/Dropdowns/SignUpModal";
 import { RichTextRenderer } from "@/Components/RichText";
 import ProductPrice from "@/Components/HelperComponents/Price/ProductPrice";
 import SaleBadge from "@/Components/HelperComponents/SaleBadge/SaleBadge";
+import SubscribeWidget from "@/Components/Subscriptions/SubscribeWidget";
 import ProductCard from "@/Components/HelperComponents/ProductCard/ProductCardV2";
 import ReviewCarousel from "@/Components/HelperComponents/Carousel/ReviewCarousel";
 import ProductReviewFormModal from "@/Components/HelperComponents/ProductReviewFormModal/ProductReviewFormModal";
@@ -547,6 +548,8 @@ const IndividualProductItemPage = () => {
                 <FaShoppingCart size={15} />
                 {stockQty === 0 ? "Out of Stock" : "Add to Cart"}
               </button>
+
+              <SubscribeWidget product={product} quantity={quantity} />
             </div>
 
             {product.supplierDetails && (

@@ -212,6 +212,10 @@ const NavigationBar = () => {
                         <span style={{ fontSize: "14px" }}>📦</span>
                         <span>My Orders</span>
                       </a>
+                      <a href="/my-subscriptions" onClick={handleNav("/my-subscriptions")} className="nav-menu-item">
+                        <span style={{ fontSize: "14px" }}>🔁</span>
+                        <span>My Subscriptions</span>
+                      </a>
                       {isAdmin() && (
                         <>
                           <div className="nav-menu-divider" />
@@ -375,6 +379,9 @@ const NavigationBar = () => {
                 </a>
                 <a href="/my-orders" className="mobile-menu-link" onClick={handleNav("/my-orders")}>
                   <span style={{ fontSize: "14px" }}>📦</span><span>My Orders</span>
+                </a>
+                <a href="/my-subscriptions" className="mobile-menu-link" onClick={handleNav("/my-subscriptions")}>
+                  <span style={{ fontSize: "14px" }}>🔁</span><span>My Subscriptions</span>
                 </a>
                 {isAdmin() && (
                   <a href="/admin" className="mobile-menu-link" onClick={handleNav("/admin")}>

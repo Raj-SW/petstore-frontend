@@ -25,6 +25,7 @@ import {
   FiMessageSquare,
   FiSend,
   FiHelpCircle,
+  FiRepeat,
 } from "react-icons/fi";
 
 const AdminLayout = () => {
@@ -112,6 +113,11 @@ const AdminLayout = () => {
       title: "Orders",
       path: "/admin/orders",
       icon: <FiShoppingCart className="menu-icon" />,
+    },
+    {
+      title: "Subscriptions",
+      path: "/admin/subscriptions",
+      icon: <FiRepeat className="menu-icon" />,
     },
     {
       title: "Appointments",
