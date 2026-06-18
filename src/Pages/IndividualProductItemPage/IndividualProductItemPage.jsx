@@ -655,6 +655,11 @@ const IndividualProductItemPage = () => {
                     title={item.name || item.title}
                     price={item.price}
                     description={item.description}
+                    salePrice={item.salePrice}
+                    isOnSaleNow={item.isOnSaleNow}
+                    discountPercentLabel={item.discountPercentLabel}
+                    effectivePrice={item.effectivePrice}
+                    variantsView={item.variantsView}
                   />
                 </motion.div>
               ))}

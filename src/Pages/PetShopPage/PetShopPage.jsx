@@ -196,6 +196,7 @@ const PetShopPage = () => {
               isOnSaleNow={p.isOnSaleNow}
               discountPercentLabel={p.discountPercentLabel}
               effectivePrice={p.effectivePrice}
+              variantsView={p.variantsView}
             />
           </motion.div>
         ))}

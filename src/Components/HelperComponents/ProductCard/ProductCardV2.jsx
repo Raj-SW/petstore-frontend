@@ -33,11 +33,17 @@ const PLACEHOLDER_IMG =
 const ProductCardV2 = ({
   id, imageUrl, title, price, description,
   salePrice = null, isOnSaleNow = false, discountPercentLabel = 0, effectivePrice,
+  variantsView = null,
 }) => {
   const navigate = useNavigate();
   const { addItem } = useCart();
   const { showCartToast } = useToast();
   const [qty, setQty] = useState(1);
+
+  const hasVariants = Array.isArray(variantsView) && variantsView.length > 0;
+  const fromPrice = hasVariants
+    ? Math.min(...variantsView.map((v) => v.effectivePrice ?? v.price))
+    : null;
 
   const dec = (e) => {
     e.stopPropagation();
@@ -78,40 +84,58 @@ const ProductCardV2 = ({
           {stripHtml(description) || "Premium quality product for your pet."}
         </p>
         <div className="pcv2-bottom-row">
-          <ProductPrice
-            price={price}
-            salePrice={salePrice}
-            isOnSaleNow={isOnSaleNow}
-            className="pcv2-price"
-          />
+          {hasVariants ? (
+            <span className="pcv2-price pcv2-price-from">
+              From <ProductPrice price={fromPrice} isOnSaleNow={false} className="pcv2-price" />
+            </span>
+          ) : (
+            <ProductPrice
+              price={price}
+              salePrice={salePrice}
+              isOnSaleNow={isOnSaleNow}
+              className="pcv2-price"
+            />
+          )}
           <div className="pcv2-actions">
-            <div className="pcv2-qty" onClick={(e) => e.stopPropagation()}>
+            {hasVariants ? (
               <button
-                type="button"
-                className="pcv2-qty-btn"
-                onClick={dec}
-                disabled={qty <= 1}
-                aria-label="Decrease quantity"
+                className="pcv2-select-btn"
+                onClick={(e) => { e.stopPropagation(); navigate(`/product/${id}`); }}
+                aria-label="Select options"
               >
-                <FaMinus size={9} />
+                Select options
               </button>
-              <span className="pcv2-qty-val">{qty}</span>
-              <button
-                type="button"
-                className="pcv2-qty-btn"
-                onClick={inc}
-                aria-label="Increase quantity"
-              >
-                <FaPlus size={9} />
-              </button>
-            </div>
-            <button
-              className="pcv2-cart-btn"
-              onClick={handleAddToCart}
-              aria-label="Add to cart"
-            >
-              <FaShoppingCart size={15} />
-            </button>
+            ) : (
+              <>
+                <div className="pcv2-qty" onClick={(e) => e.stopPropagation()}>
+                  <button
+                    type="button"
+                    className="pcv2-qty-btn"
+                    onClick={dec}
+                    disabled={qty <= 1}
+                    aria-label="Decrease quantity"
+                  >
+                    <FaMinus size={9} />
+                  </button>
+                  <span className="pcv2-qty-val">{qty}</span>
+                  <button
+                    type="button"
+                    className="pcv2-qty-btn"
+                    onClick={inc}
+                    aria-label="Increase quantity"
+                  >
+                    <FaPlus size={9} />
+                  </button>
+                </div>
+                <button
+                  className="pcv2-cart-btn"
+                  onClick={handleAddToCart}
+                  aria-label="Add to cart"
+                >
+                  <FaShoppingCart size={15} />
+                </button>
+              </>
+            )}
           </div>
         </div>
       </div>

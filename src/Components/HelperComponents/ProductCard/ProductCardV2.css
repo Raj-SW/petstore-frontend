@@ -172,3 +172,20 @@
   .pcv2-card { width: 100%; max-width: 420px; }
   .pcv2-img  { height: 190px; }
 }
+
+/* Variant products: "From" price + select-options button */
+.pcv2-price-from { display: inline-flex; align-items: baseline; gap: 4px; font-size: 0.78rem; color: #8a958c; font-weight: 600; }
+.pcv2-select-btn {
+  border: 1.5px solid var(--color-primary-forest, #001c10);
+  background: transparent;
+  color: var(--color-primary-forest, #001c10);
+  border-radius: 50px;
+  padding: 0.4rem 0.9rem;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.78rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.18s ease, color 0.18s ease;
+}
+.pcv2-select-btn:hover { background: var(--color-primary-forest, #001c10); color: #f6ece3; }
