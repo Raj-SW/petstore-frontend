@@ -20,9 +20,11 @@ import usersApi from "@/Services/api/usersApi";
 import "./UserProfile.css";
 
 const UserProfile = () => {
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
 
   const [userDetails, setUserDetails] = useState(user);
+  const [salesEmails, setSalesEmails] = useState(user?.emailPreferences?.sales !== false);
+  const [savingPrefs, setSavingPrefs] = useState(false);
   const [pets, setPets] = useState([]);
 
   const [showPetModal, setShowPetModal] = useState(false);
@@ -105,6 +107,23 @@ const UserProfile = () => {
       setError(err.message || "Failed to update profile");
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleSalesEmailsToggle = async (e) => {
+    const next = e.target.checked;
+    setSalesEmails(next);          // optimistic
+    setSavingPrefs(true);
+    setError("");
+    try {
+      await UserProfileService.updateUserProfile({ emailPreferences: { sales: next } });
+      updateUser({ emailPreferences: { sales: next } });
+      setSuccessMessage(next ? "Subscribed to sale & promo emails" : "Unsubscribed from sale & promo emails");
+    } catch (err) {
+      setSalesEmails(!next);       // revert on failure
+      setError(err.message || "Failed to update email preferences");
+    } finally {
+      setSavingPrefs(false);
     }
   };
 
@@ -227,6 +246,19 @@ const UserProfile = () => {
               <FaKey size={12} />
               <span>Change Password</span>
             </button>
+          </div>
+
+          <div className="up-prefs">
+            <h3 className="up-prefs-title">Email preferences</h3>
+            <label className="up-prefs-toggle">
+              <input
+                type="checkbox"
+                checked={salesEmails}
+                disabled={savingPrefs}
+                onChange={handleSalesEmailsToggle}
+              />
+              <span>Receive sale &amp; promo emails</span>
+            </label>
           </div>
         </motion.aside>
 

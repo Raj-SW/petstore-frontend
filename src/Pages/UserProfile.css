@@ -147,6 +147,47 @@
   width: 100%;
 }
 
+/* ── Email preferences ── */
+
+.up-prefs {
+  width: 100%;
+  margin-top: 1.1rem;
+  padding-top: 1.1rem;
+  border-top: 1px solid rgba(0, 28, 16, 0.1);
+}
+
+.up-prefs-title {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #8a7a66;
+  margin: 0 0 0.6rem;
+}
+
+.up-prefs-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: #001C10;
+  cursor: pointer;
+}
+
+.up-prefs-toggle input {
+  width: 16px;
+  height: 16px;
+  accent-color: #BA7517;
+  cursor: pointer;
+}
+
+.up-prefs-toggle input:disabled {
+  cursor: progress;
+  opacity: 0.6;
+}
+
 /* ── Buttons ── */
 
 .up-btn {
