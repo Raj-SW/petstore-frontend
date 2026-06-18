@@ -76,7 +76,7 @@ const AdminAdverts = () => {
   const handleSave = async (e) => {
     e.preventDefault();
     // Link is required for banner/sponsored, optional for hero carousel slides.
-    const linkOptional = form.placement === "hero" || form.placement === "promo";
+    const linkOptional = form.placement === "hero" || form.placement === "promo" || form.placement === "shop";
     if (form.title.trim().length < 2 || (!linkOptional && !form.link.trim())) {
       addToast("Title is required (and a link for banner/sponsored adverts)", "error");
       return;
@@ -136,7 +136,7 @@ const AdminAdverts = () => {
       accessor: "placement",
       render: (value) => (
         <span className={`aa-placement ${value}`}>
-          {value === "banner" ? "Banner" : "Sponsored card"}
+          {{ banner: "Banner", sponsored: "Sponsored card", hero: "Homepage hero", promo: "Homepage promo", shop: "Pet Shop banner" }[value] || value}
         </span>
       ),
     },
@@ -222,10 +222,11 @@ const AdminAdverts = () => {
                   <option value="sponsored">Sponsored card (in grid)</option>
                   <option value="hero">Homepage carousel (hero banner)</option>
                   <option value="promo">Homepage engagement promo</option>
+                  <option value="shop">Pet Shop page banner</option>
                 </select>
               </div>
               <div className="aa-field">
-                <label>Image{form.placement === "hero" || form.placement === "promo" ? "" : " (optional)"}</label>
+                <label>Image{["hero", "promo", "shop"].includes(form.placement) ? "" : " (optional)"}</label>
                 {form.image && (
                   <img src={form.image} alt="Advert preview" className="aa-image-preview" />
                 )}
@@ -258,6 +259,9 @@ const AdminAdverts = () => {
                 )}
                 {form.placement === "promo" && (
                   <p className="aa-hint">Shown beside the homepage Ask-a-Question / Feedback forms. Recommended ~720 × 900 px (portrait card).</p>
+                )}
+                {form.placement === "shop" && (
+                  <p className="aa-hint">Shown at the top of the Pet Shop page. Recommended ~1600 × 500 px (wide banner). Keep key content left-aligned.</p>
                 )}
               </div>
               <div className="aa-field">
