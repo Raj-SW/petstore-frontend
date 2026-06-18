@@ -15,6 +15,7 @@ A large batch of features was requested and **decomposed into independent sub-pr
 | 2 | Homepage Engagement: Question/Feedback tabs + Feedback testimonials | ✅ DONE on branch `feature/feedback-engagement-2026-06-14` (backend + frontend; not yet merged to main) | `*-feedback-engagement-*` |
 | 3 | Discounts / On-Sale | ✅ DONE on branch `feature/feedback-engagement-2026-06-14` (backend + frontend; not yet merged) | `*-discounts-on-sale-*` |
 | 4 | Recurring Orders (subscriptions) | ✅ DONE on branch `feature/feedback-engagement-2026-06-14` (backend + frontend; not yet merged). Loyalty/benefits NOT started. | `*-recurring-orders-*` |
+| 4B | Sale Announcements (email broadcast; re-scope of "Loyalty") | ✅ DONE same branch (backend + frontend; not merged) | `*-sale-announcements-*` |
 | — | Promo slideshow restored in EngagementSection (both tabs, `promo`-advert driven w/ fallback) | ✅ same branch; **pending visual QA** | — |
 | — | Homepage FAQ accordion section (`FaqSection`, design-system styled) | ✅ same branch; **pending visual QA** | — |
 | — | About Us page (`/about`, 6 branded sections from skeleton) | ✅ same branch; **pending visual QA** (built by subagent, not yet reviewed) | — |
