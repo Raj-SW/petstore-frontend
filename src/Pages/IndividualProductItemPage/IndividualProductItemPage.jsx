@@ -7,7 +7,7 @@ import {
   FaShoppingCart, FaShieldAlt, FaCheckCircle, FaExclamationTriangle,
   FaTag,
 } from "react-icons/fa";
-import { FiShare2, FiChevronLeft, FiChevronDown, FiChevronRight } from "react-icons/fi";
+import { FiShare2, FiChevronLeft, FiChevronDown, FiChevronRight, FiSearch, FiX } from "react-icons/fi";
 
 import "./IndividaulItemPage.css";
 import Breadcrumb from "@/Components/HelperComponents/Breadcrumb/Breadcrumb";
@@ -237,6 +237,15 @@ const IndividualProductItemPage = () => {
   const [reviews, setReviews] = useState([]);
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [activeImage, setActiveImage] = useState(0);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+
+  // Close the image lightbox on Escape.
+  useEffect(() => {
+    if (!lightboxOpen) return undefined;
+    const onKey = (e) => { if (e.key === "Escape") setLightboxOpen(false); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [lightboxOpen]);
   const [quantity, setQuantity] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -425,7 +434,14 @@ const IndividualProductItemPage = () => {
         >
           {/* Left — gallery */}
           <div className="ip-gallery">
-            <div className="ip-gallery-main">
+            <div
+              className="ip-gallery-main"
+              onClick={() => setLightboxOpen(true)}
+              role="button"
+              tabIndex={0}
+              aria-label="Expand image"
+              onKeyDown={(e) => { if (e.key === "Enter") setLightboxOpen(true); }}
+            >
               <AnimatePresence mode="wait">
                 <motion.img
                   key={activeImage}
@@ -438,6 +454,9 @@ const IndividualProductItemPage = () => {
                   transition={{ duration: 0.28 }}
                 />
               </AnimatePresence>
+              <span className="ip-gallery-zoom-hint" aria-hidden="true">
+                <FiSearch size={16} />
+              </span>
             </div>
 
             {images.length > 1 && (
@@ -652,6 +671,53 @@ const IndividualProductItemPage = () => {
         togglePasswordVisibility={() => setShowPassword((p) => !p)}
         onLoginClick={() => { setShowSignUpModal(false); setShowLoginModal(true); }}
       />
+
+      {/* Image lightbox */}
+      <AnimatePresence>
+        {lightboxOpen && (
+          <motion.div
+            className="ip-lightbox"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            onClick={() => setLightboxOpen(false)}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Product image"
+          >
+            <button type="button" className="ip-lightbox-close" aria-label="Close">
+              <FiX size={24} />
+            </button>
+            <motion.img
+              key={activeImage}
+              src={images[activeImage]}
+              alt={`${productName} ${activeImage + 1}`}
+              className="ip-lightbox-img"
+              initial={{ scale: 0.94, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.96, opacity: 0 }}
+              transition={{ duration: 0.22 }}
+              onClick={(e) => e.stopPropagation()}
+            />
+            {images.length > 1 && (
+              <div className="ip-lightbox-thumbs" onClick={(e) => e.stopPropagation()}>
+                {images.map((img, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    className={`ip-lightbox-thumb${i === activeImage ? " ip-lightbox-thumb--active" : ""}`}
+                    onClick={() => setActiveImage(i)}
+                    aria-label={`View image ${i + 1}`}
+                  >
+                    <img src={img} alt="" />
+                  </button>
+                ))}
+              </div>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 };
