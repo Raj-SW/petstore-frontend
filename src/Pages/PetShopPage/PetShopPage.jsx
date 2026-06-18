@@ -217,10 +217,7 @@ const PetShopPage = () => {
         </div>
       </div>
 
-      {/* ── Advert banner (admin-managed, with branded fallback) ── */}
-      <ShopBanner />
-
-      {/* ── Intro band: heading + prominent search ── */}
+      {/* ── Intro band: heading + description + centered search ── */}
       <section className="ps-intro">
         <motion.h1
           className="ps-intro-title"
@@ -263,6 +260,9 @@ const PetShopPage = () => {
           ))}
         </div>
       </div>
+
+      {/* ── Slim advert banner (admin-managed, branded fallback) — right before products ── */}
+      <ShopBanner />
 
       {/* ── Main body ── */}
       <section className="ps-body">

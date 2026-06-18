@@ -42,6 +42,12 @@
 .ps-intro-search {
   display: flex;
   justify-content: center;
+  width: fit-content;
+  margin: 0 auto;
+  padding: 0.55rem 1rem;
+  background: var(--color-primary-forest, #001c10);
+  border-radius: 50px;
+  box-shadow: 0 10px 28px rgba(0, 28, 16, 0.18);
 }
 
 /* ── Category quick-filter strip ── */
