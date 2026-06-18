@@ -14,6 +14,8 @@ const AdminContacts = () => {
   const [loading, setLoading] = useState(true);
   const [viewing, setViewing] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
+  const [replyText, setReplyText] = useState("");
+  const [sendingReply, setSendingReply] = useState(false);
   const { addToast } = useToast();
 
   useEffect(() => { fetchContacts(); }, []);
@@ -43,6 +45,22 @@ const AdminContacts = () => {
       fetchContacts();
     } catch {
       addToast("Failed to update status", "error");
+    }
+  };
+
+  const sendReply = async () => {
+    if (!viewing || !replyText.trim()) return;
+    try {
+      setSendingReply(true);
+      await contactApi.replyContact(viewing._id, replyText.trim());
+      addToast("Reply sent", "success");
+      setReplyText("");
+      setViewing(null);
+      fetchContacts();
+    } catch {
+      addToast("Failed to send reply", "error");
+    } finally {
+      setSendingReply(false);
     }
   };
 
@@ -111,15 +129,29 @@ const AdminContacts = () => {
       {/* View modal */}
       <AnimatePresence>
         {viewing && (
-          <motion.div className="admin-modal-backdrop" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setViewing(null)}>
+          <motion.div className="admin-modal-backdrop" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => { setViewing(null); setReplyText(""); }}>
             <motion.div className="admin-modal ac-view" initial={{ scale: 0.92, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.92, opacity: 0 }} onClick={(e) => e.stopPropagation()}>
               <h3>{viewing.name}</h3>
               <p className="ac-view-email">{viewing.email}</p>
               <p className="ac-view-message">{viewing.message}</p>
+              {viewing.lastReply && (
+                <p className="ac-view-message" style={{ background: "#f0f8f3", borderRadius: 8, padding: "10px 12px" }}>
+                  <strong>Last reply:</strong> {viewing.lastReply}
+                </p>
+              )}
+              <textarea
+                className="es-input es-textarea"
+                style={{ width: "100%", minHeight: 90, marginTop: 8 }}
+                placeholder={`Reply to ${viewing.name}…`}
+                value={replyText}
+                onChange={(e) => setReplyText(e.target.value)}
+              />
               <div className="admin-modal-actions">
-                <a className="at-btn-secondary" href={`mailto:${viewing.email}`}><FiCornerUpLeft size={13} /> Reply by email</a>
-                <button className="aa-submit" onClick={() => { cycleStatus(viewing); setViewing(null); }}>
+                <button className="at-btn-secondary" onClick={() => { cycleStatus(viewing); setViewing(null); }}>
                   Mark {STATUS_CYCLE[viewing.status] || "read"}
+                </button>
+                <button className="aa-submit" disabled={sendingReply || !replyText.trim()} onClick={sendReply}>
+                  <FiCornerUpLeft size={13} /> {sendingReply ? "Sending…" : "Send reply"}
                 </button>
               </div>
             </motion.div>

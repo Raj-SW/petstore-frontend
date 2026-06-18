@@ -23,6 +23,12 @@ const contactApi = {
     return response.data;
   },
 
+  // Admin: send a reply email to the customer
+  replyContact: async (id, message) => {
+    const response = await api.post(`/contact/${id}/reply`, { message });
+    return response.data;
+  },
+
   // Admin: delete
   deleteContact: async (id) => {
     const response = await api.delete(`/contact/${id}`);

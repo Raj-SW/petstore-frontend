@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { fetchRates, detectCurrency, SUPPORTED_CURRENCIES } from '../Services/api/exchangeRatesService';
+import { fetchRates, detectCurrency, detectCurrencyByIP, SUPPORTED_CURRENCIES } from '../Services/api/exchangeRatesService';
 
 const CurrencyContext = createContext(null);
 
@@ -14,6 +14,20 @@ export const CurrencyProvider = ({ children }) => {
 
   useEffect(() => {
     fetchRates().then(r => { setRates(r); setLoading(false); });
+  }, []);
+
+  // Auto-detect currency from the visitor's location (IP geo) — only when the
+  // user hasn't explicitly chosen one. Does not persist, so an explicit pick
+  // (which sets LS_KEY via setCurrency) always wins.
+  useEffect(() => {
+    if (localStorage.getItem(LS_KEY)) return undefined;
+    let cancelled = false;
+    detectCurrencyByIP().then((code) => {
+      if (!cancelled && code && !localStorage.getItem(LS_KEY)) {
+        setSelectedCurrency(code);
+      }
+    });
+    return () => { cancelled = true; };
   }, []);
 
   const setCurrency = useCallback((code) => {

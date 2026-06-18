@@ -15,6 +15,7 @@ import { CSS } from "@dnd-kit/utilities";
 import { api } from "../../../core/api/apiClient";
 import { useToast } from "../../../context/ToastContext";
 import { RichTextEditor } from "../../../Components/RichText";
+import announcementsApi from "../../../Services/api/announcementsApi";
 import "./AdminProductForm.css";
 
 /* ─── Section card (sortable) ────────────────────────────────────────────── */
@@ -95,6 +96,7 @@ const AdminProductForm = () => {
   const [form,       setForm]       = useState(EMPTY_FORM);
   const [loading,    setLoading]    = useState(isEditMode);
   const [submitting, setSubmitting] = useState(false);
+  const [notifyOnSale, setNotifyOnSale] = useState(false);
 
   // Image state
   const [imageFiles,     setImageFiles]     = useState([]);  // new File objects
@@ -339,17 +341,35 @@ const AdminProductForm = () => {
 
     try {
       setSubmitting(true);
+      let res;
       if (isEditMode) {
-        await api.patch(`/products/${id}`, fd, {
+        res = await api.patch(`/products/${id}`, fd, {
           headers: { "Content-Type": "multipart/form-data" },
         });
         addToast("Product updated successfully.", "success");
       } else {
-        await api.post("/products", fd, {
+        res = await api.post("/products", fd, {
           headers: { "Content-Type": "multipart/form-data" },
         });
         addToast("Product created successfully.", "success");
       }
+
+      // Inline sale notification — fire-and-forget; never block the save flow.
+      const savedProduct = res?.data?.data || res?.data;
+      const savedId = savedProduct?._id || id;
+      if (notifyOnSale && form.onSale && savedId) {
+        try {
+          await announcementsApi.createAnnouncement({
+            subject: `${savedProduct?.name || form.name.trim()} is now on sale at VitalPaws`,
+            productIds: [savedId],
+            source: "inline",
+          });
+          addToast("Customers notified about this sale", "success");
+        } catch {
+          addToast("Saved, but the sale email could not be sent", "warning");
+        }
+      }
+
       navigate("/admin/products");
     } catch (err) {
       addToast(
@@ -742,6 +762,14 @@ const AdminProductForm = () => {
                       Sale price: <strong>Rs {previewSalePrice}</strong> (−{previewPct}%)
                     </p>
                   )}
+                  <label className="admin-pf-notify-row">
+                    <input
+                      type="checkbox"
+                      checked={notifyOnSale}
+                      onChange={(e) => setNotifyOnSale(e.target.checked)}
+                    />
+                    <span>Email subscribed customers about this sale</span>
+                  </label>
                 </div>
               )}
 

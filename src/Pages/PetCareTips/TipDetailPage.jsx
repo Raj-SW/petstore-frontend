@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { FiClock, FiCalendar, FiUser, FiArrowLeft, FiChevronRight, FiArrowRight } from "react-icons/fi";
+import { FiClock, FiCalendar, FiUser, FiArrowLeft, FiArrowRight } from "react-icons/fi";
 import tipsApi from "../../Services/api/tipsApi";
 import advertsApi from "../../Services/api/advertsApi";
 import { RichTextRenderer } from "../../Components/RichText";
+import Breadcrumb from "../../Components/HelperComponents/Breadcrumb/Breadcrumb";
 import { getAnimalTheme, capitalize } from "./tipTheme";
 import "./TipDetail.css";
 
@@ -62,15 +63,16 @@ const TipDetailPage = () => {
       transition={{ duration: 0.4 }}
     >
       {/* Breadcrumb */}
-      <nav className="ptd-breadcrumb" aria-label="Breadcrumb">
-        <Link to="/pet-care-tips" className="ptd-back">
-          <FiArrowLeft size={14} aria-hidden="true" /> Back to tips
-        </Link>
-        <FiChevronRight size={12} aria-hidden="true" />
-        <span>{theme.label}</span>
-        <FiChevronRight size={12} aria-hidden="true" />
-        <span>{capitalize(tip.category)}</span>
-      </nav>
+      <div className="ptd-breadcrumb">
+        <Breadcrumb
+          items={[
+            { label: "Home", path: "/" },
+            { label: "Pet Care Tips", path: "/pet-care-tips" },
+            { label: theme.label },
+            { label: capitalize(tip.category) },
+          ]}
+        />
+      </div>
 
       {/* Cover hero */}
       <div className="ptd-cover" style={{ background: theme.tint }}>

@@ -239,7 +239,32 @@
   padding: 0 2.75rem;
 }
 
-/* Pin the default ui/carousel arrows to the padded edges of the section */
+/* Prominent, on-brand carousel arrows (override the faint shadcn defaults) */
+.fp-arrow {
+  width: 46px;
+  height: 46px;
+  background: var(--color-primary-forest, #001c10);
+  color: #fff;
+  border: none;
+  border-radius: 9999px;
+  box-shadow: 0 6px 18px rgba(0, 28, 16, 0.28);
+  opacity: 1;
+  transition: background 0.2s ease, transform 0.15s ease;
+  z-index: 5;
+}
+.fp-arrow:hover {
+  background: var(--color-accent-gold, #ba7517);
+  color: #fff;
+  transform: scale(1.08);
+}
+.fp-arrow svg {
+  width: 22px;
+  height: 22px;
+}
+.fp-arrow:disabled {
+  opacity: 0.35;
+  pointer-events: none;
+}
 .fp-arrow.fp-arrow-prev { left: 0; }
 .fp-arrow.fp-arrow-next { right: 0; }
 

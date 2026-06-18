@@ -84,93 +84,106 @@ const EngagementSection = () => {
           </div>
         </motion.div>
 
-        {/* ── Two-column body: tab content (left) + promo slideshow (right) ── */}
+        {/* ── Two-panel body: Form panel + Promo panel that swap sides per tab ── */}
         <div className="es-body">
-          <div className="es-body-left">
-        {/* ── Tab content ── */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeTab}
-            className="es-content"
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.3 }}
-          >
-            {activeTab === "question" ? (
-              <div className="es-form-wrap">
-                <h3 className="es-form-heading">
-                  Connecting You with Care for Your Beloved Pets
-                </h3>
-                <p className="es-form-subheading">
-                  We&apos;re here to answer your questions and provide support.
-                </p>
-
-                <form className="es-form" onSubmit={handleContactSubmit}>
-                  <div className="es-field">
-                    <label className="es-label">Your Name</label>
-                    <input
-                      className="es-input"
-                      type="text"
-                      name="name"
-                      value={form.name}
-                      onChange={handleChange}
-                      placeholder="Darlene Robertson"
-                      required
-                    />
-                  </div>
-
-                  <div className="es-field">
-                    <label className="es-label">Your Email Address</label>
-                    <input
-                      className="es-input"
-                      type="email"
-                      name="email"
-                      value={form.email}
-                      onChange={handleChange}
-                      placeholder="darlenerobert@mail.com"
-                      required
-                    />
-                  </div>
-
-                  <div className="es-field">
-                    <label className="es-label">Message</label>
-                    <textarea
-                      className="es-input es-textarea"
-                      name="message"
-                      value={form.message}
-                      onChange={handleChange}
-                      placeholder="How can we help you and your furry friend?"
-                      required
-                    />
-                  </div>
-
-                  <button
-                    className="es-submit"
-                    type="submit"
-                    disabled={status === "loading"}
+          {(activeTab === "question" ? ["form", "promo"] : ["promo", "form"]).map((panel) =>
+            panel === "form" ? (
+              <motion.div
+                key="form"
+                layout
+                transition={{ type: "spring", stiffness: 260, damping: 30 }}
+                className="es-panel es-panel-form"
+              >
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={activeTab}
+                    className="es-content"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.25 }}
                   >
-                    {status === "loading" ? (
-                      <>
-                        <span className="es-spinner" />
-                        Sending&hellip;
-                      </>
-                    ) : (
-                      "Send Message"
-                    )}
-                  </button>
-                </form>
-              </div>
-            ) : (
-              <FeedbackForm />
-            )}
-          </motion.div>
-        </AnimatePresence>
-          </div>
+                    {activeTab === "question" ? (
+                      <div className="es-form-wrap">
+                        <h3 className="es-form-heading">
+                          Connecting You with Care for Your Beloved Pets
+                        </h3>
+                        <p className="es-form-subheading">
+                          We&apos;re here to answer your questions and provide support.
+                        </p>
 
-          <div className="es-body-right">
-            <PromoSlideshow />
-          </div>
+                        <form className="es-form" onSubmit={handleContactSubmit}>
+                          <div className="es-field">
+                            <label className="es-label">Your Name</label>
+                            <input
+                              className="es-input"
+                              type="text"
+                              name="name"
+                              value={form.name}
+                              onChange={handleChange}
+                              placeholder="Darlene Robertson"
+                              required
+                            />
+                          </div>
+
+                          <div className="es-field">
+                            <label className="es-label">Your Email Address</label>
+                            <input
+                              className="es-input"
+                              type="email"
+                              name="email"
+                              value={form.email}
+                              onChange={handleChange}
+                              placeholder="darlenerobert@mail.com"
+                              required
+                            />
+                          </div>
+
+                          <div className="es-field">
+                            <label className="es-label">Message</label>
+                            <textarea
+                              className="es-input es-textarea"
+                              name="message"
+                              value={form.message}
+                              onChange={handleChange}
+                              placeholder="How can we help you and your furry friend?"
+                              required
+                            />
+                          </div>
+
+                          <button
+                            className="es-submit"
+                            type="submit"
+                            disabled={status === "loading"}
+                          >
+                            {status === "loading" ? (
+                              <>
+                                <span className="es-spinner" />
+                                Sending&hellip;
+                              </>
+                            ) : (
+                              "Send Message"
+                            )}
+                          </button>
+                        </form>
+                      </div>
+                    ) : (
+                      <FeedbackForm />
+                    )}
+                  </motion.div>
+                </AnimatePresence>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="promo"
+                layout
+                transition={{ type: "spring", stiffness: 260, damping: 30 }}
+                className="es-panel es-panel-promo"
+              >
+                <PromoSlideshow />
+              </motion.div>
+            )
+          )}
         </div>
 
       </div>

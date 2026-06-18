@@ -112,6 +112,17 @@
   gap: 0.35rem;
 }
 
+.pm-checkbox-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: #444;
+  cursor: pointer;
+}
+.pm-checkbox-row input { width: auto; }
+
 .pm-label {
   font-family: var(--font-body);
   font-size: 0.76rem;

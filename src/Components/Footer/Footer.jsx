@@ -3,6 +3,8 @@ import { FaFacebook, FaInstagram, FaPaw } from "react-icons/fa";
 import { FaTiktok } from "react-icons/fa6";
 import { IoLogoWhatsapp } from "react-icons/io";
 import pawImg from "../../assets/Decoratives/paw.png";
+import newsletterApi from "../../Services/api/newsletterApi";
+import { useToast } from "../../context/ToastContext";
 import "./Footer.css";
 
 const SOCIALS = [
@@ -36,31 +38,43 @@ const LINKS = [
   {
     heading: "Company",
     items: [
-      { label: "About Us",  href: "/about" },
-      { label: "Our Team",  href: "/about" },
-      { label: "Blog",      href: "/" },
-      { label: "Careers",   href: "/" },
-      { label: "Community", href: "/" },
+      { label: "About Us",      href: "/about" },
+      { label: "Our Team",      href: "/about" },
+      { label: "Pet Care Tips", href: "/pet-care-tips" },
+      { label: "Gallery",       href: "/gallery" },
+      { label: "Contact",       href: "/contact" },
     ],
   },
   {
     heading: "Support",
     items: [
-      { label: "Contact Us",       href: "/" },
-      { label: "FAQ",              href: "/" },
-      { label: "Terms of Service", href: "/" },
-      { label: "Privacy Policy",   href: "/" },
-      { label: "Refund Policy",    href: "/" },
+      { label: "Contact Us",     href: "/contact" },
+      { label: "Book a Service", href: "/appointments" },
+      { label: "Pet Store",      href: "/petshop" },
+      { label: "My Orders",      href: "/my-orders" },
+      { label: "Pet Care Tips",  href: "/pet-care-tips" },
     ],
   },
 ];
 
 const Footer = () => {
   const [email, setEmail] = useState("");
+  const [subscribing, setSubscribing] = useState(false);
+  const { addToast } = useToast();
 
-  const handleSubscribe = (e) => {
+  const handleSubscribe = async (e) => {
     e.preventDefault();
-    setEmail("");
+    if (!email.trim()) return;
+    try {
+      setSubscribing(true);
+      const res = await newsletterApi.subscribe(email.trim());
+      addToast(res.message || "You're subscribed!", "success");
+      setEmail("");
+    } catch (err) {
+      addToast(err.response?.data?.message || "Could not subscribe. Please try again.", "error");
+    } finally {
+      setSubscribing(false);
+    }
   };
 
   return (
@@ -91,8 +105,8 @@ const Footer = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                 />
-                <button className="ft-subscribe-btn" type="submit">
-                  Subscribe
+                <button className="ft-subscribe-btn" type="submit" disabled={subscribing}>
+                  {subscribing ? "…" : "Subscribe"}
                 </button>
               </div>
             </form>

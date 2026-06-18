@@ -1,9 +1,10 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence, useInView } from "framer-motion";
 import { FiChevronDown } from "react-icons/fi";
+import faqsApi from "../../../../Services/api/faqsApi";
 import "./FaqSection.css";
 
-const FAQS = [
+const FALLBACK_FAQS = [
   {
     q: "Do you offer 24/7 emergency veterinary care?",
     a: "Yes. Our veterinary team is on call around the clock for urgent and emergency cases. Call our hotline any time and we'll guide you through the next steps and arrange immediate care.",
@@ -61,8 +62,22 @@ const FaqItem = ({ item, isOpen, onToggle }) => (
 
 const FaqSection = () => {
   const [openIdx, setOpenIdx] = useState(0);
+  const [faqs, setFaqs] = useState(FALLBACK_FAQS);
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, amount: 0.15 });
+
+  // Admin-managed FAQs from the API; fall back to the curated defaults.
+  useEffect(() => {
+    faqsApi
+      .getFaqs()
+      .then((res) => {
+        const items = res?.data;
+        if (Array.isArray(items) && items.length > 0) {
+          setFaqs(items.map((f) => ({ q: f.question, a: f.answer })));
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   return (
     <section className="faq-section" ref={ref}>
@@ -85,7 +100,7 @@ const FaqSection = () => {
         animate={inView ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.5, delay: 0.12 }}
       >
-        {FAQS.map((item, i) => (
+        {faqs.map((item, i) => (
           <FaqItem
             key={item.q}
             item={item}

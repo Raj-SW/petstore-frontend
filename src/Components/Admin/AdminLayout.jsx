@@ -23,6 +23,8 @@ import {
   FiImage,
   FiMail,
   FiMessageSquare,
+  FiSend,
+  FiHelpCircle,
 } from "react-icons/fi";
 
 const AdminLayout = () => {
@@ -75,6 +77,16 @@ const AdminLayout = () => {
       title: "Feedback",
       path: "/admin/feedback",
       icon: <FiMessageSquare className="menu-icon" />,
+    },
+    {
+      title: "Announcements",
+      path: "/admin/announcements",
+      icon: <FiSend className="menu-icon" />,
+    },
+    {
+      title: "FAQs",
+      path: "/admin/faqs",
+      icon: <FiHelpCircle className="menu-icon" />,
     },
     {
       title: "Adverts",

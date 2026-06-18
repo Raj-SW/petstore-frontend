@@ -76,7 +76,8 @@ const AdminAdverts = () => {
   const handleSave = async (e) => {
     e.preventDefault();
     // Link is required for banner/sponsored, optional for hero carousel slides.
-    if (form.title.trim().length < 2 || (form.placement !== "hero" && !form.link.trim())) {
+    const linkOptional = form.placement === "hero" || form.placement === "promo";
+    if (form.title.trim().length < 2 || (!linkOptional && !form.link.trim())) {
       addToast("Title is required (and a link for banner/sponsored adverts)", "error");
       return;
     }
@@ -220,10 +221,11 @@ const AdminAdverts = () => {
                   <option value="banner">Banner (between sections)</option>
                   <option value="sponsored">Sponsored card (in grid)</option>
                   <option value="hero">Homepage carousel (hero banner)</option>
+                  <option value="promo">Homepage engagement promo</option>
                 </select>
               </div>
               <div className="aa-field">
-                <label>Image{form.placement === "hero" ? "" : " (optional)"}</label>
+                <label>Image{form.placement === "hero" || form.placement === "promo" ? "" : " (optional)"}</label>
                 {form.image && (
                   <img src={form.image} alt="Advert preview" className="aa-image-preview" />
                 )}
@@ -254,10 +256,13 @@ const AdminAdverts = () => {
                 {form.placement === "hero" && (
                   <p className="aa-hint">Recommended ~1920 × 680 px (wide banner). Keep key content centered.</p>
                 )}
+                {form.placement === "promo" && (
+                  <p className="aa-hint">Shown beside the homepage Ask-a-Question / Feedback forms. Recommended ~720 × 900 px (portrait card).</p>
+                )}
               </div>
               <div className="aa-field">
                 <label htmlFor="aa-link">
-                  Link{form.placement === "hero" ? " (optional)" : ""}
+                  Link{form.placement === "hero" || form.placement === "promo" ? " (optional)" : ""}
                 </label>
                 <input id="aa-link" type="text" value={form.link} onChange={set("link")} placeholder="https://… or /petshop" />
               </div>

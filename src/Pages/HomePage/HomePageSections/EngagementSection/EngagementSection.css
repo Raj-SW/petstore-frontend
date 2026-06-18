@@ -18,20 +18,22 @@
   gap: 1.8rem;
 }
 
-/* ── Two-column body: tab content (left) + promo slideshow (right) ── */
+/* ── Two-panel body: Form panel + Promo panel that swap sides per tab ── */
 .es-body {
   display: flex;
   gap: 2.2rem;
   align-items: stretch;
+  justify-content: center;
   width: 100%;
 }
-.es-body-left { flex: 1; min-width: 0; }
-.es-body-right { width: 360px; flex-shrink: 0; }
+.es-panel-form { flex: 0 1 420px; min-width: 0; }
+.es-panel-promo { width: 420px; flex-shrink: 0; }
 .es-promo-link { display: block; height: 100%; text-decoration: none; }
 
 @media (max-width: 880px) {
   .es-body { flex-direction: column; }
-  .es-body-right { width: 100%; }
+  .es-panel-form { flex: 1 1 auto; width: 100%; }
+  .es-panel-promo { width: 100%; }
 }
 
 /* ── Header ── */

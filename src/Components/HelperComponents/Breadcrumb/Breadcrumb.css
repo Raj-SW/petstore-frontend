@@ -1,42 +1,55 @@
 /* ================================================
-   Breadcrumb
+   Breadcrumb — system component (on-brand pill)
    ================================================ */
 
 .breadcrumb {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.4rem;
   flex-wrap: wrap;
-  background: transparent;
-  padding: 0;
+  background: var(--color-bg-warm-ivory, #faf7f1);
+  border: 1px solid #ece6dc;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
   margin: 0;
+  box-shadow: 0 1px 2px rgba(0, 28, 16, 0.04);
 }
 
 .breadcrumb-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.34rem;
   background: none;
   border: none;
   padding: 0;
   margin: 0;
   font-family: var(--font-body);
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   font-weight: 500;
-  color: #777;
+  color: #6f6e68;
   cursor: pointer;
-  transition: color 0.15s;
+  transition: color 0.15s ease;
+  line-height: 1;
 }
 
 .breadcrumb-text:hover {
-  color: var(--color-accent-gold, #d99a2b);
+  color: var(--color-accent-gold, #ba7517);
+}
+
+.breadcrumb-home {
+  font-size: 0.86rem;
+  margin-bottom: 1px;
 }
 
 .breadcrumb-text.active {
   color: var(--color-primary-forest, #001c10);
-  font-weight: 600;
+  font-weight: 700;
   cursor: default;
 }
 
 .breadcrumb-sep {
-  font-size: 0.65rem;
-  color: #ccc;
+  font-size: 0.58rem;
+  color: var(--color-accent-gold, #ba7517);
+  opacity: 0.65;
   flex-shrink: 0;
 }

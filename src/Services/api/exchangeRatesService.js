@@ -56,6 +56,29 @@ export const SUPPORTED_CURRENCIES = [
   { code: 'AUD', label: 'A$',  name: 'Australian Dollar',  country: 'au' },
 ];
 
+// Map ISO 3166-1 alpha-2 country code → a supported currency code
+const COUNTRY_CURRENCY = {
+  MU: 'MUR', US: 'USD', GB: 'GBP', AU: 'AUD', IN: 'INR', ZA: 'ZAR',
+  FR: 'EUR', DE: 'EUR', IT: 'EUR', ES: 'EUR', NL: 'EUR', BE: 'EUR',
+  PT: 'EUR', AT: 'EUR', FI: 'EUR', IE: 'EUR', GR: 'EUR', LU: 'EUR',
+};
+
+// Resolve the visitor's currency from IP geolocation (free, no API key).
+// Returns a supported currency code, or null on failure / unsupported region.
+export async function detectCurrencyByIP() {
+  try {
+    const res = await fetch('https://ipapi.co/json/');
+    if (!res.ok) throw new Error(`geo HTTP ${res.status}`);
+    const json = await res.json();
+    const cc = (json.country_code || json.country || '').toUpperCase();
+    const code = COUNTRY_CURRENCY[cc];
+    if (code && SUPPORTED_CURRENCIES.some((c) => c.code === code)) return code;
+    return null;
+  } catch {
+    return null;
+  }
+}
+
 // Map browser locale region → default currency code
 export function detectCurrency() {
   try {

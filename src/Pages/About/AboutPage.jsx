@@ -70,7 +70,7 @@ const FirstAidCard = ({ number, title, desc }) => (
 );
 
 /* ── Alternating care row ── */
-const CareRow = ({ reverse, icon: Icon, heading, body, meta, checks, delay }) => {
+const CareRow = ({ reverse, icon: Icon, image, heading, body, meta, checks, delay }) => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, amount: 0.15 });
   const navigate = useNavigate();
@@ -83,8 +83,9 @@ const CareRow = ({ reverse, icon: Icon, heading, body, meta, checks, delay }) =>
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.65, delay, ease: [0.25, 0.46, 0.45, 0.94] }}
     >
-      <div className="about-care-img-placeholder" aria-hidden="true">
-        <Icon className="about-care-img-icon" />
+      <div className="about-care-img-placeholder">
+        <img src={image} alt={heading} className="about-care-img" loading="lazy" />
+        <span className="about-care-img-badge" aria-hidden="true"><Icon /></span>
       </div>
       <div className="about-care-text">
         <h3 className="about-care-heading">{heading}</h3>
@@ -150,6 +151,7 @@ const SERVICE_STRIP = [
 const CARE_ROWS = [
   {
     icon: FaPhoneAlt,
+    image: "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=720&h=640&fit=crop",
     heading: "24/7 Emergency Hotline",
     body: "When your pet needs urgent care at 2 AM, our emergency line connects you directly to a qualified vet. No waiting, no hold music — real help, real fast.",
     meta: "Response within 5 minutes",
@@ -161,6 +163,7 @@ const CARE_ROWS = [
   },
   {
     icon: FaUserMd,
+    image: "https://images.unsplash.com/photo-1628009368231-7bb7cfcb0def?w=720&h=640&fit=crop",
     heading: "Expert Veterinary Team",
     body: "Our certified vets bring decades of combined experience across small animals, exotic pets, and emergency medicine. Every consultation is thorough and compassionate.",
     meta: "60 min / session",
@@ -172,6 +175,7 @@ const CARE_ROWS = [
   },
   {
     icon: FaCar,
+    image: "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=720&h=640&fit=crop",
     heading: "Home Visits & Pet Taxi",
     body: "Can't make it to the clinic? We come to you. Our trained pet-handling drivers offer safe, GPS-tracked door-to-door transport for appointments, grooming, and more.",
     meta: "Available island-wide in Mauritius",
@@ -279,10 +283,15 @@ const AboutPage = () => {
       ═══════════════════════════════════════ */}
       <section className="about-firstaid">
         <div className="about-firstaid-inner">
-          {/* Image placeholder */}
+          {/* Section image */}
           <FadeInWhenVisible className="about-firstaid-img" delay={0}>
-            <div className="about-firstaid-img-block" aria-hidden="true">
-              <FaHeartbeat className="about-firstaid-img-icon" />
+            <div className="about-firstaid-img-block">
+              <img
+                src="https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=760&h=920&fit=crop"
+                alt="A happy, well-cared-for dog"
+                className="about-firstaid-img-photo"
+                loading="lazy"
+              />
             </div>
           </FadeInWhenVisible>
 
