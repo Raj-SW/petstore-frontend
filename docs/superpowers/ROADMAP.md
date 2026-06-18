@@ -14,7 +14,7 @@ A large batch of features was requested and **decomposed into independent sub-pr
 | 1b | Promo banner → admin-managed (`hero`/`promo` adverts) | ✅ same branch | `*-promo-banner-admin-*` |
 | 2 | Homepage Engagement: Question/Feedback tabs + Feedback testimonials | ✅ DONE on branch `feature/feedback-engagement-2026-06-14` (backend + frontend; not yet merged to main) | `*-feedback-engagement-*` |
 | 3 | Discounts / On-Sale | ✅ DONE on branch `feature/feedback-engagement-2026-06-14` (backend + frontend; not yet merged) | `*-discounts-on-sale-*` |
-| 4 | Recurring Orders (subscriptions) | ✅ DONE on branch `feature/feedback-engagement-2026-06-14` (backend + frontend; not yet merged). Loyalty/benefits NOT started. | `*-recurring-orders-*` |
+| 4 | Recurring Orders (subscriptions) | ✅ DONE on branch `feature/feedback-engagement-2026-06-14` (backend + frontend; not yet merged). Loyalty/benefits descoped. | `*-recurring-orders-*` |
 | 4B | Sale Announcements (email broadcast; re-scope of "Loyalty") | ✅ DONE same branch (backend + frontend; not merged) | `*-sale-announcements-*` |
 | — | Promo slideshow restored in EngagementSection (both tabs, `promo`-advert driven w/ fallback) | ✅ same branch; **pending visual QA** | — |
 | — | Homepage FAQ accordion section (`FaqSection`, design-system styled) | ✅ same branch; **pending visual QA** | — |
@@ -29,7 +29,7 @@ Feedback resource (public submit, name/role/rating/message + up to 3 photos, **a
 Product sale pricing (e.g. `salePrice` or `discountPercent` + `onSale`), "On Sale" badge on cards/detail, admin toggle in AdminProducts, and price display honoring the currency formatting. Brainstorm → spec → plan → build.
 
 ### 4. Recurring Orders (subscriptions) ✅ DONE (branch, not merged)
-Backend (commit `a334548`) + frontend (commit `0d82f1d`). Customer: My Subscriptions page (`/my-subscriptions`) with pause/resume/skip/cancel + nav entries; Subscribe & Save widget on the product page; "Make this a recurring order" toggle at checkout. Admin: Subscriptions page (`/admin/subscriptions`) + sidebar. Backend runs a Vercel daily cron (`/api/subscriptions/process-due`, Bearer `CRON_SECRET`) that auto-creates discounted pending orders, reserves stock, and emails a pay-now link. See backend ROADMAP for the full backend breakdown. **Benefits/Loyalty (points/tiers) still NOT started.**
+Backend (commit `a334548`) + frontend (commit `0d82f1d`). Customer: My Subscriptions page (`/my-subscriptions`) with pause/resume/skip/cancel + nav entries; Subscribe & Save widget on the product page; "Make this a recurring order" toggle at checkout. Admin: Subscriptions page (`/admin/subscriptions`) + sidebar. Backend runs a Vercel daily cron (`/api/subscriptions/process-due`, Bearer `CRON_SECRET`) that auto-creates discounted pending orders, reserves stock, and emails a pay-now link. See backend ROADMAP for the full backend breakdown. **Benefits/Loyalty (points/tiers) descoped** (2026-06-18, user decision).
 
 ## Already satisfied / not needed
 - **Auto-identifiable currency** — `CurrencyContext` already auto-detects via browser locale (`detectCurrency()` → region→currency, default MUR). Only optional upgrade: IP geolocation.
