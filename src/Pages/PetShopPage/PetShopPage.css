@@ -17,14 +17,13 @@
 
 .ps-intro {
   text-align: center;
-  max-width: 720px;
-  margin: 0 auto;
-  padding: 1.8rem 1.25rem 0.5rem;
+  background: var(--color-primary-forest, #001c10);
+  padding: 2.6rem 1.25rem 2.8rem;
 }
 
 .ps-intro-title {
   font-family: var(--font-display, 'Bebas Neue', sans-serif);
-  color: var(--color-primary-forest, #001c10);
+  color: #f6ece3;
   font-size: clamp(2rem, 5vw, 3.2rem);
   line-height: 1;
   letter-spacing: 0.02em;
@@ -33,21 +32,15 @@
 
 .ps-intro-subtitle {
   font-family: var(--font-body);
-  color: #5b6b5f;
+  color: rgba(246, 236, 227, 0.82);
   font-size: 1rem;
-  margin: 0.6rem auto 1.3rem;
+  margin: 0.6rem auto 1.5rem;
   max-width: 520px;
 }
 
 .ps-intro-search {
   display: flex;
   justify-content: center;
-  width: fit-content;
-  margin: 0 auto;
-  padding: 0.55rem 1rem;
-  background: var(--color-primary-forest, #001c10);
-  border-radius: 50px;
-  box-shadow: 0 10px 28px rgba(0, 28, 16, 0.18);
 }
 
 /* ── Category quick-filter strip ── */
