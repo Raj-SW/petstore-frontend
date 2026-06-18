@@ -1,13 +1,23 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { FaPaw } from "react-icons/fa";
-import { FiSend, FiMapPin, FiPhone, FiMail } from "react-icons/fi";
+import { FaPaw, FaFacebook, FaInstagram } from "react-icons/fa";
+import { FaTiktok } from "react-icons/fa6";
+import { IoLogoWhatsapp } from "react-icons/io5";
+import { FiSend, FiMapPin, FiPhone } from "react-icons/fi";
 import contactApi from "../../Services/api/contactApi";
 import advertsApi from "../../Services/api/advertsApi";
 import { useToast } from "../../context/ToastContext";
 import GoogleMap, { CLINIC_LOCATION } from "../../Components/Common/GoogleMap";
 import "./Contact.css";
+
+// Same targets as the footer — keep in sync.
+const SOCIALS = [
+  { label: "WhatsApp", href: "https://wa.me/23057580480", Icon: IoLogoWhatsapp },
+  { label: "Facebook", href: "https://www.facebook.com/share/1BUiS7SRxh/?mibextid=wwXIfr", Icon: FaFacebook },
+  { label: "Instagram", href: "https://www.instagram.com/vitalpawsmru", Icon: FaInstagram },
+  { label: "TikTok", href: "https://www.tiktok.com/@vitalpawsmru", Icon: FaTiktok },
+];
 
 const SHOWCASE = [
   "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=600",
@@ -162,8 +172,27 @@ const ContactPage = () => {
           <div className="ct-address">
             <h2 className="ct-connect-title">Visit Us</h2>
             <p className="ct-addr-line"><FiMapPin size={15} /> Vitalpaws Veterinary Clinic, Mauritius</p>
-            <p className="ct-addr-line"><FiPhone size={15} /> +230 5758 0480</p>
-            <p className="ct-addr-line"><FiMail size={15} /> Reach us anytime via the form</p>
+            <a className="ct-addr-line ct-addr-link" href="tel:+23057580480">
+              <FiPhone size={15} /> +230 5758 0480
+            </a>
+
+            <div className="ct-socials">
+              <span className="ct-socials-label">Follow us</span>
+              <div className="ct-socials-row">
+                {SOCIALS.map(({ label, href, Icon }) => (
+                  <a
+                    key={label}
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="ct-social"
+                    aria-label={label}
+                  >
+                    <Icon size={17} />
+                  </a>
+                ))}
+              </div>
+            </div>
           </div>
           <div className="ct-map-wrap">
             <GoogleMap query={CLINIC_LOCATION} height="340px" title="VitalPaws location" />
