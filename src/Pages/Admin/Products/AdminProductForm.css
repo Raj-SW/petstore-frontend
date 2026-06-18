@@ -793,3 +793,19 @@
 .admin-pf-sale-field input, .admin-pf-sale-field select { padding: 6px 8px; border: 1px solid #e3dccf; border-radius: 8px; }
 .admin-pf-sale-preview { margin: 10px 0 0; color: #633806; font-size: 0.9rem; }
 .admin-pf-notify-row { display: flex; align-items: center; gap: 8px; margin-top: 12px; font-size: 0.9rem; }
+
+/* Variants editor */
+.apf-variants { margin-top: 0.5rem; }
+.apf-variants-head { display: flex; align-items: center; justify-content: space-between; }
+.apf-variant-add {
+  border: 1px solid #BA7517; background: #fff; color: #BA7517;
+  border-radius: 8px; padding: 4px 12px; font-weight: 600; font-size: 13px; cursor: pointer;
+}
+.apf-variant-add:hover { background: #BA7517; color: #fff; }
+.apf-hint { font-size: 12px; color: #8a7a66; margin: 6px 0; }
+.apf-variant-row { display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 8px; margin-top: 8px; align-items: center; }
+.apf-variant-remove {
+  border: 1px solid #e7c3bd; background: #fff; color: #c0392b;
+  border-radius: 8px; padding: 8px 12px; font-size: 13px; cursor: pointer; white-space: nowrap;
+}
+.apf-variant-remove:hover { background: #c0392b; color: #fff; }

@@ -108,6 +108,7 @@ const AdminProductForm = () => {
 
   // Sections (dynamic rich-text tabs)
   const [sections, setSections] = useState([]);
+  const [variants, setVariants] = useState([]); // [{ label, price, quantity }]
 
   // DnD sensors
   const sensors = useSensors(
@@ -162,6 +163,11 @@ const AdminProductForm = () => {
           saleEndsAt:    p.saleEndsAt ? p.saleEndsAt.slice(0, 10) : "",
         });
 
+        setVariants(
+          Array.isArray(p.variants)
+            ? p.variants.map((v) => ({ label: v.label, price: v.price, quantity: v.quantity }))
+            : []
+        );
         setSections(
           Array.isArray(p.sections)
             ? p.sections.map((s, i) => ({ id: `sec-${Date.now()}-${i}`, title: s.title || "", body: s.body || "" }))
@@ -280,13 +286,21 @@ const AdminProductForm = () => {
       addToast("Description must be at least 10 characters.", "error");
       return false;
     }
-    if (form.price === "" || isNaN(Number(form.price)) || Number(form.price) < 0) {
-      addToast("Please enter a valid price.", "error");
-      return false;
-    }
-    if (form.quantity === "" || isNaN(Number(form.quantity)) || Number(form.quantity) < 0) {
-      addToast("Please enter a valid stock quantity.", "error");
-      return false;
+    if (variants.length > 0) {
+      const bad = variants.find((v) => !v.label.trim() || v.price === "" || Number(v.price) < 0 || v.quantity === "" || Number(v.quantity) < 0);
+      if (bad) {
+        addToast("Each variant needs a label, price and stock.", "error");
+        return false;
+      }
+    } else {
+      if (form.price === "" || isNaN(Number(form.price)) || Number(form.price) < 0) {
+        addToast("Please enter a valid price.", "error");
+        return false;
+      }
+      if (form.quantity === "" || isNaN(Number(form.quantity)) || Number(form.quantity) < 0) {
+        addToast("Please enter a valid stock quantity.", "error");
+        return false;
+      }
     }
     if (form.categories.length === 0) {
       addToast("Select at least one category.", "error");
@@ -311,8 +325,14 @@ const AdminProductForm = () => {
     const fd = new FormData();
     fd.append("name",        form.name.trim());
     fd.append("description", form.description);
-    fd.append("price",       Number(form.price));
-    fd.append("quantity",    Number(form.quantity) || 0);
+    if (variants.length === 0) {
+      fd.append("price",     Number(form.price));
+      fd.append("quantity",  Number(form.quantity) || 0);
+    } else {
+      fd.append("variants", JSON.stringify(
+        variants.map((v) => ({ label: v.label.trim(), price: Number(v.price), quantity: Number(v.quantity) }))
+      ));
+    }
     fd.append("isActive",    String(form.isActive));
     fd.append("isFeatured",  String(form.isFeatured));
     fd.append("onSale",        String(form.onSale));
@@ -473,38 +493,86 @@ const AdminProductForm = () => {
                 />
               </div>
 
-              {/* Price + Quantity */}
-              <div className="admin-pf-row">
-                <div className="admin-field">
-                  <label className="admin-label" htmlFor="pf-price">
-                    Price ($) <span className="admin-required">*</span>
-                  </label>
-                  <input
-                    id="pf-price"
-                    className="admin-input"
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    placeholder="0.00"
-                    value={form.price}
-                    onChange={(e) => setField("price", e.target.value)}
-                  />
+              {/* Price + Quantity (hidden when variants are used — derived from them) */}
+              {variants.length === 0 && (
+                <div className="admin-pf-row">
+                  <div className="admin-field">
+                    <label className="admin-label" htmlFor="pf-price">
+                      Price ($) <span className="admin-required">*</span>
+                    </label>
+                    <input
+                      id="pf-price"
+                      className="admin-input"
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      placeholder="0.00"
+                      value={form.price}
+                      onChange={(e) => setField("price", e.target.value)}
+                    />
+                  </div>
+                  <div className="admin-field">
+                    <label className="admin-label" htmlFor="pf-quantity">
+                      Stock Qty <span className="admin-required">*</span>
+                    </label>
+                    <input
+                      id="pf-quantity"
+                      className="admin-input"
+                      type="number"
+                      min="0"
+                      step="1"
+                      placeholder="0"
+                      value={form.quantity}
+                      onChange={(e) => setField("quantity", e.target.value)}
+                    />
+                  </div>
                 </div>
-                <div className="admin-field">
-                  <label className="admin-label" htmlFor="pf-quantity">
-                    Stock Qty <span className="admin-required">*</span>
-                  </label>
-                  <input
-                    id="pf-quantity"
-                    className="admin-input"
-                    type="number"
-                    min="0"
-                    step="1"
-                    placeholder="0"
-                    value={form.quantity}
-                    onChange={(e) => setField("quantity", e.target.value)}
-                  />
+              )}
+
+              {/* Weight / size variants */}
+              <div className="admin-field apf-variants">
+                <div className="apf-variants-head">
+                  <span className="admin-label">Weight / size variants</span>
+                  <button
+                    type="button"
+                    className="apf-variant-add"
+                    onClick={() => setVariants((vs) => [...vs, { label: "", price: "", quantity: "" }])}
+                  >
+                    + Add variant
+                  </button>
                 </div>
+                {variants.length > 0 && (
+                  <p className="apf-hint">Price &amp; stock are set per variant — the top-level price/stock are derived automatically.</p>
+                )}
+                {variants.map((v, i) => (
+                  <div key={i} className="apf-variant-row">
+                    <input
+                      className="admin-input"
+                      placeholder="Label (e.g. 5kg)"
+                      value={v.label}
+                      onChange={(e) => setVariants((vs) => vs.map((x, j) => (j === i ? { ...x, label: e.target.value } : x)))}
+                    />
+                    <input
+                      className="admin-input"
+                      type="number" min="0" step="0.01" placeholder="Price"
+                      value={v.price}
+                      onChange={(e) => setVariants((vs) => vs.map((x, j) => (j === i ? { ...x, price: e.target.value } : x)))}
+                    />
+                    <input
+                      className="admin-input"
+                      type="number" min="0" step="1" placeholder="Stock"
+                      value={v.quantity}
+                      onChange={(e) => setVariants((vs) => vs.map((x, j) => (j === i ? { ...x, quantity: e.target.value } : x)))}
+                    />
+                    <button
+                      type="button"
+                      className="apf-variant-remove"
+                      onClick={() => setVariants((vs) => vs.filter((_, j) => j !== i))}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                ))}
               </div>
 
               {/* Categories */}
