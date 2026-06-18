@@ -33,7 +33,12 @@ function CartSyncLayer({ children }) {
         if (backendCart?.items?.length) {
           // Backend has items → restore into local cart
           const converted = backendCart.items.map((item) => ({
-            id: item.product?._id || item.product,
+            id: item.variantId
+              ? `${item.product?._id || item.product}::${item.variantId}`
+              : (item.product?._id || item.product),
+            productId: item.product?._id || item.product,
+            variantId: item.variantId || null,
+            variantLabel: item.variantLabel || null,
             name: item.product?.name || "Product",
             price: item.price,
             image: item.product?.images?.[0]?.url || "",
@@ -43,7 +48,7 @@ function CartSyncLayer({ children }) {
         } else if (ruc.items?.length) {
           // Backend is empty but local cart has items (added before login) → push up
           ruc.items.forEach((item) => {
-            cartApi.addToCart(item.id, item.quantity).catch(() => {});
+            cartApi.addToCart(item.productId || item.id, item.quantity, item.variantId || null).catch(() => {});
           });
         }
       })
@@ -59,7 +64,7 @@ function CartSyncLayer({ children }) {
       rucRef.current.addItem(item, quantity);
       if (user) {
         try {
-          await cartApi.addToCart(item.id, quantity);
+          await cartApi.addToCart(item.productId || item.id, quantity, item.variantId || null);
         } catch {
           /* silent — UI already updated */
         }
