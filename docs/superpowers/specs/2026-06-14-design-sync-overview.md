@@ -20,12 +20,12 @@
 | P2 | **Appointment booking** | scrap & rebuild (Radix/react-bits/21st-magic); reuse SearchBar; drill-down to professional details; responsive + animations | High (full rebuild) | Pending approval |
 | P3 | **Service page** | scrap & rebuild; inline import/export form (no navigation); system design | High | Pending approval |
 | P4 | **Petstore (shop)** | replace hero with advert banner; make heading/search/breadcrumb prominent | Medium | **DONE** (2026-06-18) — new `shop` advert placement (backend); `ShopBanner` w/ rotation + branded fallback; breadcrumb strip → banner → intro+search; design-system polish (chips/toolbar/pagination); AdminAdverts option. Spec/plan `2026-06-18-petshop-rebuild*`. Browser-verified. |
-| P5 | **Individual product** | elevate UX; breadcrumb (F1 ✓) | Medium | Pending approval |
+| P5 | **Individual product** | elevate UX; breadcrumb (F1 ✓) | Medium | **DONE** (2026-06-18) — sticky gallery (image follows on scroll); main-image hover-zoom + full-screen lightbox (thumb strip, Esc/click-out close); buy controls grouped into one elevated purchase panel. Commit `a13e34f`. Browser-verified. |
 | P6 | **Pet Care Tips list** | full refactor (looks AI-gen); seed good data + Unsplash images; reuse SearchBar | High | Pending approval |
 | P7 | **Pet Care Tips detail** | full refactor; admin **sectioning**; breadcrumb (F1 ✓ migrated) | High | Breadcrumb done; refactor pending |
 | P8 | **Gallery** | refactor; more "gallery"-like; admin sectioning | Medium-High | Pending approval |
 | P9 | **Gallery detail** | refactor; admin sectioning; breadcrumb (F1) | High | Pending approval |
-| P10 | **Contact** | elevate; verify backend wiring | Medium | Pending approval |
+| P10 | **Contact** | elevate; verify backend wiring | Medium | **DONE** (2026-06-18) — page was already built (hero, working form, promo, GoogleMap). Elevation: enriched "Visit Us" with a Follow-us socials row (real URLs from footer) + tel: link + amber icons; form inputs got a border + amber focus ring. Backend wiring (submitContact + admin reply) already verified. Commit `7d81efa`. |
 | P11 | **About** | elevate (already partially polished + real images) | Medium | Pending approval |
 
 ### Backend mini-features (folded into the page that needs them)
