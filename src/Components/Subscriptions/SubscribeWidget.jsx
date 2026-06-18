@@ -7,7 +7,7 @@ import "./SubscribeWidget.css";
 
 const DISCOUNT = Number(import.meta.env.VITE_SUBSCRIPTION_DISCOUNT_PERCENT) || 10;
 
-const SubscribeWidget = ({ product, quantity = 1 }) => {
+const SubscribeWidget = ({ product, quantity = 1, variantId = null }) => {
   const [open, setOpen] = useState(false);
   const [unit, setUnit] = useState("week");
   const [count, setCount] = useState(2);
@@ -32,7 +32,7 @@ const SubscribeWidget = ({ product, quantity = 1 }) => {
     try {
       setSubmitting(true);
       await subscriptionsApi.create({
-        items: [{ product: product._id || product.id, quantity }],
+        items: [{ product: product._id || product.id, variantId: variantId || null, quantity }],
         shippingAddress: addr,
         paymentMethod: "stripe",
         intervalUnit: unit,

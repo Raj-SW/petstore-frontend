@@ -238,6 +238,7 @@ const IndividualProductItemPage = () => {
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [activeImage, setActiveImage] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [selectedVariant, setSelectedVariant] = useState(null);
 
   // Close the image lightbox on Escape.
   useEffect(() => {
@@ -246,6 +247,14 @@ const IndividualProductItemPage = () => {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [lightboxOpen]);
+
+  // Default to the first in-stock variant once the product loads.
+  useEffect(() => {
+    if (product?.variantsView?.length) {
+      const inStock = product.variantsView.find((v) => v.quantity > 0) || product.variantsView[0];
+      setSelectedVariant(inStock);
+    }
+  }, [product]);
   const [quantity, setQuantity] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -304,15 +313,26 @@ const IndividualProductItemPage = () => {
 
   const handleAddToCart = () => {
     if (!product) return;
-    const productId = product._id || product.id;
+    const productId = String(product._id || product.id);
     if (!productId) return;
+
+    const variants = Array.isArray(product.variantsView) ? product.variantsView : [];
+    const variantId = variants.length ? selectedVariant?._id : null;
+    const variantLabel = variants.length ? selectedVariant?.label : null;
+    const lineId = variantId ? `${productId}::${variantId}` : productId;
+    const unitPrice = variants.length
+      ? (selectedVariant?.effectivePrice ?? selectedVariant?.price)
+      : (product.effectivePrice ?? product.price);
 
     try {
       addItem(
         {
-          id: String(product._id || product.id),
+          id: lineId,
+          productId,
+          variantId,
+          variantLabel,
           name: product.name?.trim() || product.title?.trim() || "Untitled Product",
-          price: parseFloat(product.effectivePrice ?? product.price) || 0,
+          price: parseFloat(unitPrice) || 0,
           image: product.images?.[0]?.url || product.imageUrl || "",
         },
         quantity
@@ -411,6 +431,15 @@ const IndividualProductItemPage = () => {
   const stockQty = product.stock ?? product.quantity ?? null;
   const category = product.category || product.categories?.[0] || null;
 
+  // Variant-aware display values (fall back to product-level for non-variant products).
+  const hasVariants = Array.isArray(product.variantsView) && product.variantsView.length > 0;
+  const vStock = hasVariants ? (selectedVariant?.quantity ?? 0) : stockQty;
+  const displayPrice = hasVariants ? (selectedVariant?.price ?? product.price) : product.price;
+  const displaySalePrice = hasVariants ? (selectedVariant?.salePrice ?? null) : product.salePrice;
+  const displayOnSale = hasVariants ? !!selectedVariant?.isOnSaleNow : product.isOnSaleNow;
+  const displayPctLabel = hasVariants ? (selectedVariant?.discountPercentLabel ?? 0) : product.discountPercentLabel;
+  const displayEffective = displayOnSale ? displaySalePrice : displayPrice;
+
   return (
     <>
       <div className="ip-page">
@@ -502,9 +531,9 @@ const IndividualProductItemPage = () => {
                   <FaTag size={10} /> {category}
                 </span>
               )}
-              {stockQty !== null && (
-                <span className={`ip-badge ${stockQty > 0 ? "ip-badge--stock" : "ip-badge--out"}`}>
-                  {stockQty > 0 ? "In Stock" : "Out of Stock"}
+              {vStock !== null && (
+                <span className={`ip-badge ${vStock > 0 ? "ip-badge--stock" : "ip-badge--out"}`}>
+                  {vStock > 0 ? "In Stock" : "Out of Stock"}
                 </span>
               )}
             </div>
@@ -512,13 +541,32 @@ const IndividualProductItemPage = () => {
             <h1 className="ip-title">{productName}</h1>
             <div className="ip-price-row">
               <ProductPrice
-                price={product.price}
-                salePrice={product.salePrice}
-                isOnSaleNow={product.isOnSaleNow}
+                price={displayPrice}
+                salePrice={displaySalePrice}
+                isOnSaleNow={displayOnSale}
                 className="ip-price"
               />
-              {product.isOnSaleNow && <SaleBadge percent={product.discountPercentLabel} />}
+              {displayOnSale && <SaleBadge percent={displayPctLabel} />}
             </div>
+
+            {hasVariants && (
+              <div className="ip-variants">
+                <span className="ip-variants-label">Size</span>
+                <div className="ip-variants-row">
+                  {product.variantsView.map((v) => (
+                    <button
+                      key={v._id}
+                      type="button"
+                      className={`ip-variant${selectedVariant?._id === v._id ? " ip-variant--active" : ""}${v.quantity <= 0 ? " ip-variant--out" : ""}`}
+                      disabled={v.quantity <= 0}
+                      onClick={() => setSelectedVariant(v)}
+                    >
+                      {v.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Overview always visible in the product card */}
             {product.description && (
@@ -552,7 +600,7 @@ const IndividualProductItemPage = () => {
                   type="button"
                   onClick={() => setQuantity((q) => q + 1)}
                   aria-label="Increase quantity"
-                  disabled={stockQty !== null && quantity >= stockQty}
+                  disabled={vStock !== null && quantity >= vStock}
                 >
                   <FaPlus size={11} />
                 </button>
@@ -562,13 +610,17 @@ const IndividualProductItemPage = () => {
                 type="button"
                 className="ip-btn ip-btn--primary ip-btn--cart"
                 onClick={handleAddToCart}
-                disabled={stockQty === 0}
+                disabled={vStock === 0}
               >
                 <FaShoppingCart size={15} />
                 {stockQty === 0 ? "Out of Stock" : "Add to Cart"}
               </button>
 
-              <SubscribeWidget product={product} quantity={quantity} />
+              <SubscribeWidget
+                product={product}
+                quantity={quantity}
+                variantId={hasVariants ? selectedVariant?._id : null}
+              />
             </div>
 
             {product.supplierDetails && (

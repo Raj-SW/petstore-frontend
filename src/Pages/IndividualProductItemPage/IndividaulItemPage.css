@@ -653,3 +653,23 @@
   opacity: 1;
   border-color: var(--color-accent-gold, #d99a2b);
 }
+
+/* ── Variant / size selector ── */
+.ip-variants { margin: 0.2rem 0; }
+.ip-variants-label {
+  display: block; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.04em;
+  text-transform: uppercase; color: #8a958c; margin-bottom: 0.5rem;
+}
+.ip-variants-row { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.ip-variant {
+  min-width: 56px; padding: 0.5rem 1rem; border-radius: 12px;
+  border: 1.5px solid rgba(0, 28, 16, 0.14); background: #fff;
+  font-family: var(--font-body); font-weight: 600; font-size: 0.9rem;
+  color: var(--color-primary-forest, #001c10); cursor: pointer; transition: all 0.16s ease;
+}
+.ip-variant:hover:not(:disabled) { border-color: var(--color-accent-gold, #d99a2b); }
+.ip-variant--active {
+  background: var(--color-primary-forest, #001c10);
+  border-color: var(--color-primary-forest, #001c10); color: #f6ece3;
+}
+.ip-variant--out { opacity: 0.4; cursor: not-allowed; text-decoration: line-through; }
