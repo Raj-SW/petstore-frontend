@@ -6,6 +6,7 @@ import IndividualProductItemPage from "./Pages/IndividualProductItemPage/Individ
 import PetShopPage from "./Pages/PetShopPage/PetShopPage.jsx";
 import ServicePage from "./Pages/ServicePage/ServicePage.jsx";
 import AppointmentPage from "./Pages/AppointmentPage/AppointmentPage.jsx";
+import ProfessionalDetailPage from "./Pages/AppointmentPage/ProfessionalDetailPage.jsx";
 import CartCheckOutPage from "./Pages/CartCheckoutPage/CartCheckOutPage.jsx";
 import ImportExportServicePage from "./Pages/ImportExport/ImportExportServicePage.jsx";
 import ExportImportForm from "./Pages/ImportExport/Import/ImportPage.jsx";
@@ -84,6 +85,10 @@ const router = createBrowserRouter([
       {
         path: "appointments",
         element: <AppointmentPage />,
+      },
+      {
+        path: "appointments/professional/:id",
+        element: <ProfessionalDetailPage />,
       },
       {
         path: "pet-care-tips",
