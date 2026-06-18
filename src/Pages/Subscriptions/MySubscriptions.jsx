@@ -69,7 +69,7 @@ const MySubscriptions = () => {
             <ul className="ms-items">
               {s.items.map((it, i) => (
                 <li key={i}>
-                  <span className="ms-item-name">{(it.product?.name) || "Item"}</span> × {it.quantity}
+                  <span className="ms-item-name">{(it.product?.name) || "Item"}</span>{it.variantLabel ? ` · ${it.variantLabel}` : ""} × {it.quantity}
                 </li>
               ))}
             </ul>

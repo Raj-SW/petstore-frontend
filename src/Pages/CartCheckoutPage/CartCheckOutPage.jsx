@@ -179,7 +179,9 @@ const CartCheckoutPage = () => {
                         key={item.id}
                         item={{
                           ...item,
-                          name:     item.name || item.title,
+                          name:     item.variantLabel
+                            ? `${item.name || item.title} · ${item.variantLabel}`
+                            : (item.name || item.title),
                           quantity: item.quantity || 1,
                         }}
                         onIncreaseQuantity={id => updateItemQuantity(id, item.quantity + 1)}
@@ -337,7 +339,7 @@ const CartCheckoutPage = () => {
                   {items.map(item => (
                     <div key={item.id} className="cart-summary-row cart-summary-row--item">
                       <span className="cart-summary-item-name">
-                        {item.name || item.title} × {item.quantity}
+                        {item.name || item.title}{item.variantLabel ? ` · ${item.variantLabel}` : ""} × {item.quantity}
                       </span>
                       <Price amount={item.price * item.quantity} />
                     </div>
