@@ -2,58 +2,46 @@
    PetShop Page
    ================================================ */
 
-/* ── Hero / banner ── */
+/* ── Breadcrumb strip + intro band ── */
 
-.ps-hero {
-  width: 100%;
-  position: relative;
-  background: var(--color-primary-forest, #001c10) center / cover no-repeat;
-  padding: 2.1rem 5% 2.4rem;
-  box-sizing: border-box;
-  overflow: hidden;
-  min-height: 200px;
-  display: flex;
-  align-items: center;
+.ps-crumb-strip {
+  background: var(--color-ivory, #f6ece3);
+  border-bottom: 1px solid rgba(0, 28, 16, 0.06);
+  padding: 0.9rem 1.25rem;
 }
 
-.ps-hero-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(0, 28, 16, 0.90) 0%, rgba(0, 28, 16, 0.60) 100%);
-  pointer-events: none;
-}
-
-.ps-hero-inner {
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  max-width: 1380px;
+.ps-crumb-inner {
+  max-width: 1280px;
   margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 1.1rem;
 }
 
-.ps-hero-title {
+.ps-intro {
+  text-align: center;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 1.8rem 1.25rem 0.5rem;
+}
+
+.ps-intro-title {
   font-family: var(--font-display, 'Bebas Neue', sans-serif);
-  font-size: clamp(2.8rem, 5vw, 5rem);
-  color: #fff;
-  margin: 0;
-  line-height: 1.05;
+  color: var(--color-primary-forest, #001c10);
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  line-height: 1;
   letter-spacing: 0.02em;
-}
-
-.ps-hero-accent {
-  color: var(--color-accent-gold, #d99a2b);
-}
-
-.ps-hero-subtitle {
-  font-family: var(--font-body);
-  font-size: 0.98rem;
-  color: rgba(255, 255, 255, 0.78);
   margin: 0;
+}
+
+.ps-intro-subtitle {
+  font-family: var(--font-body);
+  color: #5b6b5f;
+  font-size: 1rem;
+  margin: 0.6rem auto 1.3rem;
   max-width: 520px;
-  line-height: 1.65;
+}
+
+.ps-intro-search {
+  display: flex;
+  justify-content: center;
 }
 
 /* ── Category quick-filter strip ── */
@@ -83,15 +71,15 @@
   font-family: var(--font-body);
   font-size: 0.85rem;
   font-weight: 600;
-  padding: 0.42rem 1.1rem;
+  color: #4a574d;
+  background: #fff;
+  border: 1px solid rgba(0, 28, 16, 0.12);
   border-radius: 50px;
-  border: 1.5px solid #e5e5e5;
-  background: transparent;
-  color: #555;
+  padding: 0.5rem 1.15rem;
   cursor: pointer;
-  transition: border-color 0.18s, background 0.18s, color 0.18s;
   white-space: nowrap;
   flex-shrink: 0;
+  transition: all 0.18s ease;
 }
 
 .ps-cat-chip:hover {
@@ -100,9 +88,9 @@
 }
 
 .ps-cat-chip--active {
-  border-color: var(--color-primary-forest, #001c10);
   background: var(--color-primary-forest, #001c10);
-  color: #fff !important;
+  border-color: var(--color-primary-forest, #001c10);
+  color: #f6ece3;
 }
 
 /* ── Body ── */
@@ -150,17 +138,18 @@
 }
 
 .ps-section-title {
-  font-family: var(--font-body);
-  font-weight: 700;
-  font-size: 1.45rem;
+  font-family: var(--font-display, 'Bebas Neue', sans-serif);
   color: var(--color-primary-forest, #001c10);
+  font-size: 1.7rem;
+  letter-spacing: 0.01em;
   margin: 0;
 }
 
 .ps-result-count {
   font-family: var(--font-body);
-  font-size: 0.84rem;
-  color: #999;
+  font-size: 0.85rem;
+  color: #8a958c;
+  margin-left: 0.6rem;
 }
 
 .ps-toolbar-right {
@@ -272,14 +261,14 @@
   min-width: 38px;
   height: 38px;
   border-radius: 50%;
-  border: 1.5px solid #e5e5e5;
+  border: 1px solid rgba(0, 28, 16, 0.12);
   background: #fff;
-  color: #444;
+  color: #4a574d;
   font-family: var(--font-body);
   font-size: 0.88rem;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.18s;
+  transition: all 0.18s ease;
   padding: 0 0.65rem;
   display: flex;
   align-items: center;
@@ -292,12 +281,12 @@
 }
 
 .ps-page-btn--active {
-  background: var(--color-primary-forest, #001c10);
-  color: #fff !important;
-  border-color: var(--color-primary-forest, #001c10);
+  background: var(--color-accent-gold, #d99a2b);
+  color: #2a1a05 !important;
+  border-color: var(--color-accent-gold, #d99a2b);
 }
 
-.ps-page-btn--active:hover { color: #fff !important; }
+.ps-page-btn--active:hover { color: #2a1a05 !important; }
 
 .ps-page-btn:disabled {
   opacity: 0.4;
