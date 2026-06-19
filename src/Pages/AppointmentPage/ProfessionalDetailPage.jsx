@@ -13,6 +13,21 @@ const ROLE_LABELS = {
 const avatarUrl = (name) =>
   `https://ui-avatars.com/api/?name=${encodeURIComponent(name || "Pro")}&background=74B49B&color=fff&size=256`;
 
+const DAY_ORDER = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
+const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+
+// Turn the availability object ({ monday: { startTime, endTime, isAvailable } … })
+// into readable rows. Falls back to [] for unknown shapes.
+const availabilityRows = (availability) => {
+  if (!availability || typeof availability !== "object") return [];
+  return DAY_ORDER
+    .filter((d) => availability[d] && availability[d].isAvailable)
+    .map((d) => ({
+      day: cap(d),
+      hours: `${availability[d].startTime || "—"} – ${availability[d].endTime || "—"}`,
+    }));
+};
+
 const ProfessionalDetailPage = () => {
   const { id } = useParams();
   const [pro, setPro] = useState(null);
@@ -52,6 +67,8 @@ const ProfessionalDetailPage = () => {
     || (Array.isArray(pro.specialties) ? pro.specialties.join(", ") : "");
   const qualifications = pro.qualifications || [];
   const services = pro.services || [];
+  const availRows = availabilityRows(pro.availability);
+  const availText = typeof pro.availability === "string" ? pro.availability : null;
 
   return (
     <div className="pd-page">
@@ -120,12 +137,20 @@ const ProfessionalDetailPage = () => {
             </section>
           )}
 
-          {pro.availability && (
+          {(availRows.length > 0 || availText) && (
             <section className="pd-section">
               <h2 className="pd-section-title"><FiClock /> Availability</h2>
-              <p className="pd-availability">
-                {typeof pro.availability === "string" ? pro.availability : JSON.stringify(pro.availability)}
-              </p>
+              {availText && <p className="pd-availability">{availText}</p>}
+              {availRows.length > 0 && (
+                <ul className="pd-availability-list">
+                  {availRows.map((r) => (
+                    <li key={r.day}>
+                      <span className="pd-avail-day">{r.day}</span>
+                      <span className="pd-avail-hours">{r.hours}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </section>
           )}
         </div>

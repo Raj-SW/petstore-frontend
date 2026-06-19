@@ -48,3 +48,9 @@
   .pd-grid { grid-template-columns: 1fr; }
   .pd-aside { position: static; }
 }
+
+.pd-availability-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.4rem; }
+.pd-availability-list li { display: flex; justify-content: space-between; gap: 1rem; padding: 0.35rem 0; border-bottom: 1px solid rgba(0, 28, 16, 0.06); }
+.pd-availability-list li:last-child { border-bottom: none; }
+.pd-avail-day { color: var(--color-primary-forest, #001c10); font-weight: 600; }
+.pd-avail-hours { color: #5b6b5f; }
