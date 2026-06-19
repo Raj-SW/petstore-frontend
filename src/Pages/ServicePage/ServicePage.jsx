@@ -245,7 +245,7 @@ const ServicePage = () => {
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.97 }}
             >
-              Book Appointment
+              Find a Professional
             </motion.button>
             <motion.button
               type="button"
@@ -365,7 +365,7 @@ const ServicePage = () => {
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.97 }}
             >
-              Book Appointment
+              Find a Professional
             </motion.button>
             <motion.button
               type="button"

@@ -24,7 +24,7 @@ import "./NavigationBar.css";
 
 const MOBILE_SERVICE_ITEMS = [
   { label: "All Services", href: "/services", icon: FaThLarge },
-  { label: "Book Appointment", href: "/appointments", icon: FaStethoscope },
+  { label: "Find a Professional", href: "/appointments", icon: FaStethoscope },
   { label: "Import & Export", href: "/import-export-service", icon: FaPlane },
 ];
 

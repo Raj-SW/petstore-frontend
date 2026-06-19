@@ -114,7 +114,7 @@ const ContactPage = () => {
           Discover our mission, values, and unwavering commitment to providing exceptional veterinary care for your cherished companions.
         </motion.p>
         <motion.div className="ct-hero-actions" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: 0.18 }}>
-          <Link to="/appointments" className="ct-btn ct-btn-primary">Book Appointment</Link>
+          <Link to="/appointments" className="ct-btn ct-btn-primary">Find a Professional</Link>
           <Link to="/petshop" className="ct-btn ct-btn-ghost">Get Started</Link>
         </motion.div>
         <FaPaw className="ct-hero-paw" aria-hidden="true" />
