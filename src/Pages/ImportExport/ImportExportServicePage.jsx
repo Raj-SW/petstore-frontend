@@ -1,25 +1,31 @@
+import { useState, useRef } from "react";
 import { Container, Row, Col, Button, Card } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
 import Breadcrumb from "@/Components/HelperComponents/Breadcrumb/Breadcrumb";
 import "./ImportExportServicePage.css";
 import catflying from "../../assets/ExportImport/catflying.png";
 import { useToast } from "../../context/ToastContext";
 import { useAuth } from "../../context/AuthContext";
+import ExportImportForm from "./Import/ImportPage";
 const ImportExportServicePage = () => {
-  const navigate = useNavigate();
   const { user } = useAuth();
   const { addToast } = useToast();
+  const [showForm, setShowForm] = useState(false);
+  const formRef = useRef(null);
   const breadcrumbItems = [
     { label: "Home", path: "/" },
     { label: "Import/Export" },
   ];
 
   const handleApply = () => {
-    if(user==null){
+    if (user == null) {
       addToast("You need to log in to apply for import/export service.", "warning");
       return;
     }
-    navigate("/import-page");
+    setShowForm(true);
+    // Reveal the inline form and scroll to it (no page navigation)
+    setTimeout(() => {
+      formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 80);
   };
   return (
     <div className="min-vh-100 importexport-services-section">
@@ -116,6 +122,13 @@ const ImportExportServicePage = () => {
           </Col>
         </Row>
       </Container>
+
+      {/* Inline application form — revealed by "Apply" (no page navigation) */}
+      {showForm && (
+        <div ref={formRef} className="importexport-inline-form">
+          <ExportImportForm />
+        </div>
+      )}
     </div>
   );
 };
