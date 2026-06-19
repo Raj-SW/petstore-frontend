@@ -26,7 +26,7 @@
 | P8 | **Gallery** | refactor; more "gallery"-like; admin sectioning | Medium-High | Pending approval |
 | P9 | **Gallery detail** | refactor; admin sectioning; breadcrumb (F1) | High | Pending approval |
 | P10 | **Contact** | elevate; verify backend wiring | Medium | **DONE** (2026-06-18) — page was already built (hero, working form, promo, GoogleMap). Elevation: enriched "Visit Us" with a Follow-us socials row (real URLs from footer) + tel: link + amber icons; form inputs got a border + amber focus ring. Backend wiring (submitContact + admin reply) already verified. Commit `7d81efa`. |
-| P11 | **About** | elevate (already partially polished + real images) | Medium | Pending approval |
+| P11 | **About** | elevate (already partially polished + real images) | Medium | **DONE** (2026-06-19) — page was already strongly polished (hero, ticker, emergency-steps, real images); verified on-brand. Fixed the now-stale "Book Appointment" CTA → "Find a Professional" (booking removed in P2). |
 
 ### Backend mini-features (folded into the page that needs them)
 - **FAQ resource + admin CRUD** (P1): model `Faq { question, answer, order, active }`, public `GET /api/faqs`, admin CRUD, AdminFaqs page; homepage FAQ section reads from it (with hardcoded fallback). Also "wider accordion" — CSS width bump.
