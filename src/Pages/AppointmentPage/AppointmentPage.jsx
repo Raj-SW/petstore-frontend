@@ -67,8 +67,8 @@ const AppointmentPage = () => {
         {/* Sidebar */}
         <aside className="ap-sidebar">
           <div className="ap-sidebar-header">
-            <h2 className="ap-sidebar-title">Appointment Manager</h2>
-            <p className="ap-sidebar-subtitle">Manage your pet care schedule</p>
+            <h2 className="ap-sidebar-title">Meet our professionals</h2>
+            <p className="ap-sidebar-subtitle">Browse our certified pet-care team</p>
           </div>
 
           <nav className="ap-tabs" role="tablist">
@@ -96,7 +96,7 @@ const AppointmentPage = () => {
               <p className="ap-user-meta">
                 {user
                   ? user.address || "Address not provided"
-                  : "Please log in to access your dashboard"}
+                  : "Browsing as a guest"}
               </p>
             </div>
           </div>
