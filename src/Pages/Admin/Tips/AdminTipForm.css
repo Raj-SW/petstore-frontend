@@ -82,3 +82,14 @@
   display: inline-flex;
   align-items: center;
 }
+
+/* Sections editor */
+.atf-sections { margin-top: 1.4rem; }
+.atf-sections-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+.atf-sections-hint { font-size: 12px; color: #8a7a66; margin: 4px 0 0; }
+.atf-section-card { border: 1px solid rgba(0,28,16,0.12); border-radius: 12px; padding: 1rem; margin-top: 0.8rem; background: #faf9f6; }
+.atf-section-card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.6rem; }
+.atf-section-num { font-weight: 600; font-size: 13px; color: #001c10; }
+.atf-section-remove { border: 1px solid #e7c3bd; background: #fff; color: #c0392b; border-radius: 8px; padding: 4px 10px; font-size: 12px; cursor: pointer; }
+.atf-section-remove:hover { background: #c0392b; color: #fff; }
+.atf-section-heading { width: 100%; padding: 0.6rem 0.8rem; border: 1px solid rgba(0,28,16,0.14); border-radius: 8px; margin-bottom: 0.6rem; font-weight: 600; }

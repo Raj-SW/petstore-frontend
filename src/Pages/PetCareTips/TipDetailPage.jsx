@@ -106,6 +106,19 @@ const TipDetailPage = () => {
             <span><FiUser size={13} aria-hidden="true" /> VitalPaws team</span>
           </div>
           <RichTextRenderer content={tip.body} className="ptd-body" />
+
+          {Array.isArray(tip.sections) && tip.sections.length > 0 && (
+            <div className="ptd-sections">
+              {[...tip.sections]
+                .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+                .map((s, i) => (
+                  <section key={i} className="ptd-section">
+                    {s.heading && <h2 className="ptd-section-heading">{s.heading}</h2>}
+                    {s.body && <RichTextRenderer content={s.body} className="ptd-body" />}
+                  </section>
+                ))}
+            </div>
+          )}
         </article>
 
         <aside className="ptd-sidebar">
