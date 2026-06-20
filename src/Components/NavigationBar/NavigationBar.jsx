@@ -24,7 +24,7 @@ import "./NavigationBar.css";
 
 const MOBILE_SERVICE_ITEMS = [
   { label: "All Services", href: "/services", icon: FaThLarge },
-  { label: "Book Appointment", href: "/appointments", icon: FaStethoscope },
+  { label: "Find a Professional", href: "/appointments", icon: FaStethoscope },
   { label: "Import & Export", href: "/import-export-service", icon: FaPlane },
 ];
 
@@ -34,7 +34,7 @@ const NAV_LINKS = [
   { label: "Pet Store", href: "/petshop" },
   { label: "Pet Care Tips", href: "/pet-care-tips" },
   { label: "Gallery", href: "/gallery" },
-  { label: "Contact", href: null },
+  { label: "Contact", href: "/contact" },
 ];
 
 const NavigationBar = () => {
@@ -212,6 +212,10 @@ const NavigationBar = () => {
                         <span style={{ fontSize: "14px" }}>📦</span>
                         <span>My Orders</span>
                       </a>
+                      <a href="/my-subscriptions" onClick={handleNav("/my-subscriptions")} className="nav-menu-item">
+                        <span style={{ fontSize: "14px" }}>🔁</span>
+                        <span>My Subscriptions</span>
+                      </a>
                       {isAdmin() && (
                         <>
                           <div className="nav-menu-divider" />
@@ -357,8 +361,14 @@ const NavigationBar = () => {
               Gallery
             </a>
 
-            {/* Disabled links */}
-            <span className="mobile-menu-link mobile-link-disabled">Contact</span>
+            {/* Contact */}
+            <a
+              href="/contact"
+              className={`mobile-menu-link${isActive("/contact") ? " active" : ""}`}
+              onClick={handleNav("/contact")}
+            >
+              Contact
+            </a>
 
             <div className="mobile-menu-divider" />
 
@@ -369,6 +379,9 @@ const NavigationBar = () => {
                 </a>
                 <a href="/my-orders" className="mobile-menu-link" onClick={handleNav("/my-orders")}>
                   <span style={{ fontSize: "14px" }}>📦</span><span>My Orders</span>
+                </a>
+                <a href="/my-subscriptions" className="mobile-menu-link" onClick={handleNav("/my-subscriptions")}>
+                  <span style={{ fontSize: "14px" }}>🔁</span><span>My Subscriptions</span>
                 </a>
                 {isAdmin() && (
                   <a href="/admin" className="mobile-menu-link" onClick={handleNav("/admin")}>

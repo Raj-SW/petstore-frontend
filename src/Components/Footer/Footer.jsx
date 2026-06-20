@@ -1,8 +1,18 @@
 import { useState } from "react";
-import { FaFacebook, FaInstagram, FaYoutube, FaPaw } from "react-icons/fa";
+import { FaFacebook, FaInstagram, FaPaw } from "react-icons/fa";
+import { FaTiktok } from "react-icons/fa6";
 import { IoLogoWhatsapp } from "react-icons/io";
 import pawImg from "../../assets/Decoratives/paw.png";
+import newsletterApi from "../../Services/api/newsletterApi";
+import { useToast } from "../../context/ToastContext";
 import "./Footer.css";
+
+const SOCIALS = [
+  { label: "WhatsApp", href: "https://wa.me/23057580480", Icon: IoLogoWhatsapp },
+  { label: "TikTok", href: "https://www.tiktok.com/@vitalpawsmru", Icon: FaTiktok },
+  { label: "Facebook", href: "https://www.facebook.com/share/1BUiS7SRxh/?mibextid=wwXIfr", Icon: FaFacebook },
+  { label: "Instagram", href: "https://www.instagram.com/vitalpawsmru", Icon: FaInstagram },
+];
 
 const LINKS = [
   {
@@ -28,31 +38,43 @@ const LINKS = [
   {
     heading: "Company",
     items: [
-      { label: "About Us",  href: "/about" },
-      { label: "Our Team",  href: "/about" },
-      { label: "Blog",      href: "/" },
-      { label: "Careers",   href: "/" },
-      { label: "Community", href: "/" },
+      { label: "About Us",      href: "/about" },
+      { label: "Our Team",      href: "/about" },
+      { label: "Pet Care Tips", href: "/pet-care-tips" },
+      { label: "Gallery",       href: "/gallery" },
+      { label: "Contact",       href: "/contact" },
     ],
   },
   {
     heading: "Support",
     items: [
-      { label: "Contact Us",       href: "/" },
-      { label: "FAQ",              href: "/" },
-      { label: "Terms of Service", href: "/" },
-      { label: "Privacy Policy",   href: "/" },
-      { label: "Refund Policy",    href: "/" },
+      { label: "Contact Us",     href: "/contact" },
+      { label: "Book a Service", href: "/appointments" },
+      { label: "Pet Store",      href: "/petshop" },
+      { label: "My Orders",      href: "/my-orders" },
+      { label: "Pet Care Tips",  href: "/pet-care-tips" },
     ],
   },
 ];
 
 const Footer = () => {
   const [email, setEmail] = useState("");
+  const [subscribing, setSubscribing] = useState(false);
+  const { addToast } = useToast();
 
-  const handleSubscribe = (e) => {
+  const handleSubscribe = async (e) => {
     e.preventDefault();
-    setEmail("");
+    if (!email.trim()) return;
+    try {
+      setSubscribing(true);
+      const res = await newsletterApi.subscribe(email.trim());
+      addToast(res.message || "You're subscribed!", "success");
+      setEmail("");
+    } catch (err) {
+      addToast(err.response?.data?.message || "Could not subscribe. Please try again.", "error");
+    } finally {
+      setSubscribing(false);
+    }
   };
 
   return (
@@ -83,8 +105,8 @@ const Footer = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                 />
-                <button className="ft-subscribe-btn" type="submit">
-                  Subscribe
+                <button className="ft-subscribe-btn" type="submit" disabled={subscribing}>
+                  {subscribing ? "…" : "Subscribe"}
                 </button>
               </div>
             </form>
@@ -117,10 +139,18 @@ const Footer = () => {
           </div>
 
           <div className="ft-socials">
-            <a href="#" aria-label="Facebook"  className="ft-social-btn"><FaFacebook  size={18} /></a>
-            <a href="#" aria-label="WhatsApp"  className="ft-social-btn"><IoLogoWhatsapp size={18} /></a>
-            <a href="#" aria-label="Instagram" className="ft-social-btn"><FaInstagram size={18} /></a>
-            <a href="#" aria-label="YouTube"   className="ft-social-btn"><FaYoutube   size={18} /></a>
+            {SOCIALS.map(({ label, href, Icon }) => (
+              <a
+                key={label}
+                href={href}
+                aria-label={label}
+                className="ft-social-btn"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Icon size={18} />
+              </a>
+            ))}
           </div>
         </div>
       </div>

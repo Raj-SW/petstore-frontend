@@ -366,7 +366,8 @@ export default function MyOrdersPage() {
                 <div className="orders-card-items">
                   {order.items?.map(item => {
                     const product = item.product;
-                    const name    = product?.name || "Product";
+                    const baseName = product?.name || "Product";
+                    const name    = item.variantLabel ? `${baseName} · ${item.variantLabel}` : baseName;
                     const img     = product?.images?.[0]?.url || product?.imageUrl;
                     return (
                       <div

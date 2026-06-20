@@ -1,9 +1,9 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { Container, InputGroup, Form, Alert, Button } from "react-bootstrap";
 import { FaSearch, FaSync, FaUserMd, FaCut, FaCar } from "react-icons/fa";
 import { motion } from "framer-motion";
 import ProfessionalCard from "@/Components/HelperComponents/ProfessionalCard/ProfessionalCard";
-import ProfessionalCalendar from "@/Components/HelperComponents/ProfessionalCalendar/ProfessionalCalendar";
 import PaginationBar from "@/Components/HelperComponents/PaginationBar/PaginationBar";
 import LoadingSpinner from "@/Components/HelperComponents/LoadingSpinner/LoadingSpinner";
 import professionalsApi from "@/Services/api/professionalsApi";
@@ -68,6 +68,7 @@ const ProfessionalList = ({
   // Get configuration for the professional type
   const config = { ...PROFESSIONAL_CONFIGS[role], ...customConfig };
   const { addToast } = useToast();
+  const navigate = useNavigate();
 
   // State management
   const [professionals, setProfessionals] = useState([]);
@@ -75,8 +76,6 @@ const ProfessionalList = ({
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [showCalendar, setShowCalendar] = useState(false);
-  const [selectedProfessional, setSelectedProfessional] = useState(null);
   const [sortBy, setSortBy] = useState("name");
   const [sortOrder, setSortOrder] = useState("asc");
 
@@ -198,35 +197,14 @@ const ProfessionalList = ({
 
   const handleBook = useCallback(
     (professional) => {
-      setSelectedProfessional(professional);
-      setShowCalendar(true);
-
-      // Call parent callback if provided
-      if (onProfessionalSelect) {
-        onProfessionalSelect(professional);
-      }
+      navigate(`/appointments/professional/${professional._id || professional.id}`);
     },
-    [onProfessionalSelect]
+    [navigate]
   );
 
   const handleRetry = useCallback(() => {
     fetchProfessionals();
   }, [fetchProfessionals]);
-
-  const handleBackToList = useCallback(() => {
-    setShowCalendar(false);
-    setSelectedProfessional(null);
-  }, []);
-
-  // Render calendar view
-  if (showCalendar && selectedProfessional) {
-    return (
-      <ProfessionalCalendar
-        professional={selectedProfessional}
-        onBack={handleBackToList}
-      />
-    );
-  }
 
   // Render loading state
   if (loading) {

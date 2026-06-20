@@ -1,6 +1,7 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+import feedbackApi from "../../../Services/api/feedbackApi";
 import vetWithDogImg from "../../../assets/StatsSection/vet-with-dog.jpg";
 import slide1a from "../../../assets/StatsSection/slide-1-a.jpg";
 import slide1b from "../../../assets/StatsSection/slide-1-b.jpg";
@@ -64,6 +65,31 @@ const slideVariants = {
 
 const StatsSection = () => {
   const [[activeIdx, dir], setSlide] = useState([0, 1]);
+  const [testimonials, setTestimonials] = useState(TESTIMONIALS);
+
+  // Fetch approved feedback on mount; fall back to hardcoded TESTIMONIALS on error/empty
+  useEffect(() => {
+    feedbackApi
+      .getFeedback({ limit: 12 })
+      .then((res) => {
+        const items = res?.data;
+        if (Array.isArray(items) && items.length > 0) {
+          setTestimonials(
+            items.map((fb, i) => ({
+              id: fb._id || i,
+              author: fb.role ? `${fb.name}, ${fb.role}` : fb.name,
+              text: fb.message,
+              rating: fb.rating,
+              image: fb.photos?.[0] || null,
+            }))
+          );
+        }
+        // else keep hardcoded TESTIMONIALS
+      })
+      .catch(() => {
+        // silently fall back to hardcoded data
+      });
+  }, []);
 
   const aboutRef       = useRef(null);
   const statsRef       = useRef(null);
@@ -74,8 +100,8 @@ const StatsSection = () => {
   const testInView   = useInView(testimonialRef, { once: true, amount: 0.2 });
 
   const go = (next) => setSlide(([cur]) => [next, next > cur ? 1 : -1]);
-  const prev = () => go((activeIdx - 1 + TESTIMONIALS.length) % TESTIMONIALS.length);
-  const next = () => go((activeIdx + 1) % TESTIMONIALS.length);
+  const prev = () => go((activeIdx - 1 + testimonials.length) % testimonials.length);
+  const next = () => go((activeIdx + 1) % testimonials.length);
 
   return (
     <section className="ss-section">
@@ -159,10 +185,10 @@ const StatsSection = () => {
                     className="ss-test-inner"
                   >
                     <span className="ss-test-author-pill">
-                      {TESTIMONIALS[activeIdx].author}
+                      {testimonials[activeIdx].author}
                     </span>
                     <p className="ss-test-quote">
-                      {TESTIMONIALS[activeIdx].text}
+                      {testimonials[activeIdx].text}
                     </p>
                   </motion.div>
                 </AnimatePresence>
@@ -196,19 +222,35 @@ const StatsSection = () => {
                   transition={{ duration: 0.38, ease: [0.4, 0, 0.2, 1] }}
                   className="ss-imgs-grid"
                 >
-                  {SLIDE_IMAGES[activeIdx] ? (
-                    <>
-                      <img src={SLIDE_IMAGES[activeIdx][0]} alt="" className="ss-slide-img ss-slide-img--tall" />
-                      <img src={SLIDE_IMAGES[activeIdx][1]} alt="" className="ss-slide-img" />
-                      <img src={SLIDE_IMAGES[activeIdx][2]} alt="" className="ss-slide-img" />
-                    </>
-                  ) : (
-                    <>
-                      <div className="ss-img-placeholder ss-img-placeholder--tall" />
-                      <div className="ss-img-placeholder" />
-                      <div className="ss-img-placeholder" />
-                    </>
-                  )}
+                  {(() => {
+                    const dbImage = testimonials[activeIdx]?.image;
+                    const staticImages = SLIDE_IMAGES[activeIdx];
+                    if (dbImage) {
+                      return (
+                        <>
+                          <img src={dbImage} alt="" className="ss-slide-img ss-slide-img--tall" />
+                          <div className="ss-img-placeholder" />
+                          <div className="ss-img-placeholder" />
+                        </>
+                      );
+                    }
+                    if (staticImages) {
+                      return (
+                        <>
+                          <img src={staticImages[0]} alt="" className="ss-slide-img ss-slide-img--tall" />
+                          <img src={staticImages[1]} alt="" className="ss-slide-img" />
+                          <img src={staticImages[2]} alt="" className="ss-slide-img" />
+                        </>
+                      );
+                    }
+                    return (
+                      <>
+                        <div className="ss-img-placeholder ss-img-placeholder--tall" />
+                        <div className="ss-img-placeholder" />
+                        <div className="ss-img-placeholder" />
+                      </>
+                    );
+                  })()}
                 </motion.div>
               </AnimatePresence>
             </motion.div>
@@ -216,7 +258,7 @@ const StatsSection = () => {
 
           {/* Dot indicators */}
           <div className="ss-dots">
-            {TESTIMONIALS.map((_, i) => (
+            {testimonials.map((_, i) => (
               <button
                 key={i}
                 className={`ss-dot${i === activeIdx ? " ss-dot--active" : ""}`}

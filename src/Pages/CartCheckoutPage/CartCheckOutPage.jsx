@@ -13,6 +13,7 @@ import { useCart } from "@/context/CartContext";
 import { useToast } from "../../context/ToastContext";
 import { useCurrency } from "../../context/CurrencyContext";
 import ordersApi from "../../Services/api/ordersApi";
+import subscriptionsApi from "../../Services/api/subscriptionsApi";
 import cartApi from "../../Services/api/cartApi";
 import pawSvg from "@/assets/CartoonAssets/paw.svg";
 import "./CartCheckOutPage.css";
@@ -44,6 +45,9 @@ const CartCheckoutPage = () => {
   const [stepDir, setStepDir] = useState(1);
   const [address, setAddress] = useState(EMPTY_ADDRESS);
   const [placing, setPlacing] = useState(false);
+  const [makeRecurring, setMakeRecurring] = useState(false);
+  const [recurUnit, setRecurUnit]   = useState("week");
+  const [recurCount, setRecurCount] = useState(4);
 
   const goNext = () => { setStepDir(1);  setStep(s => s + 1); };
   const goBack = () => { setStepDir(-1); setStep(s => s - 1); };
@@ -69,6 +73,23 @@ const CartCheckoutPage = () => {
         shippingAddress: address,
         paymentMethod: "stripe",
       });
+
+      // Optionally turn this order into a recurring subscription — non-fatal:
+      // the order already succeeded even if subscription creation fails.
+      if (makeRecurring) {
+        try {
+          await subscriptionsApi.create({
+            items: items.map((i) => ({ product: i.id, quantity: i.quantity })),
+            shippingAddress: address,
+            paymentMethod: "stripe",
+            intervalUnit: recurUnit,
+            intervalCount: Number(recurCount),
+            source: "checkout",
+          });
+        } catch {
+          // ignore — order succeeded
+        }
+      }
 
       await emptyCart();
 
@@ -158,7 +179,9 @@ const CartCheckoutPage = () => {
                         key={item.id}
                         item={{
                           ...item,
-                          name:     item.name || item.title,
+                          name:     item.variantLabel
+                            ? `${item.name || item.title} · ${item.variantLabel}`
+                            : (item.name || item.title),
                           quantity: item.quantity || 1,
                         }}
                         onIncreaseQuantity={id => updateItemQuantity(id, item.quantity + 1)}
@@ -316,7 +339,7 @@ const CartCheckoutPage = () => {
                   {items.map(item => (
                     <div key={item.id} className="cart-summary-row cart-summary-row--item">
                       <span className="cart-summary-item-name">
-                        {item.name || item.title} × {item.quantity}
+                        {item.name || item.title}{item.variantLabel ? ` · ${item.variantLabel}` : ""} × {item.quantity}
                       </span>
                       <Price amount={item.price * item.quantity} />
                     </div>
@@ -339,6 +362,33 @@ const CartCheckoutPage = () => {
                     <p style={{ fontSize: '0.75rem', color: '#6b7b6b', marginTop: '0.5rem', textAlign: 'right' }}>
                       Charged as Rs {Math.round(total).toLocaleString()} MUR via Stripe
                     </p>
+                  )}
+                </div>
+
+                <div className="cart-recurring">
+                  <label className="cart-recurring-toggle">
+                    <input
+                      type="checkbox"
+                      checked={makeRecurring}
+                      onChange={(e) => setMakeRecurring(e.target.checked)}
+                    />
+                    <span>Make this a recurring order &amp; save</span>
+                  </label>
+                  {makeRecurring && (
+                    <div className="cart-recurring-row">
+                      <span>Every</span>
+                      <input
+                        type="number"
+                        min="1"
+                        value={recurCount}
+                        onChange={(e) => setRecurCount(e.target.value)}
+                        className="cart-recurring-count"
+                      />
+                      <select value={recurUnit} onChange={(e) => setRecurUnit(e.target.value)}>
+                        <option value="day">day(s)</option>
+                        <option value="week">week(s)</option>
+                      </select>
+                    </div>
                   )}
                 </div>
 

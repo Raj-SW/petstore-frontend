@@ -2,17 +2,15 @@ import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  FaCalendarAlt, FaStethoscope, FaCut, FaDog, FaTaxi,
+  FaStethoscope, FaCut, FaDog, FaTaxi,
 } from "react-icons/fa";
 
 import Breadcrumb from "@/Components/HelperComponents/Breadcrumb/Breadcrumb";
-import AppointmentCalendar from "./AppointmentCalendar/appointmentCalendar";
 import ProfessionalList from "@/Components/HelperComponents/ProfessionalList/ProfessionalList";
 import { useAuth } from "@/context/AuthContext";
 import "./AppointmentPage.css";
 
 const TABS = [
-  { key: "dashboard",     label: "Dashboard",     icon: FaCalendarAlt, authOnly: true },
   { key: "veterinarians", label: "Veterinarians", icon: FaStethoscope },
   { key: "groomers",      label: "Groomers",      icon: FaCut },
   { key: "trainers",      label: "Trainers",      icon: FaDog },
@@ -28,42 +26,29 @@ const AppointmentPage = () => {
   const initialTab = searchParams.get("tab") || "veterinarians";
   const [activeTab, setActiveTab] = useState(initialTab);
 
-  // Keep tab in sync with URL + auth
-  useEffect(() => {
-    if (!user && activeTab === "dashboard") {
-      setActiveTab("veterinarians");
-      setSearchParams({ tab: "veterinarians" });
-    }
-  }, [user, activeTab, setSearchParams]);
-
+  // Keep the active tab in sync with the URL (?tab=)
   useEffect(() => {
     const urlTab = searchParams.get("tab");
     if (urlTab && urlTab !== activeTab && VALID_TABS.includes(urlTab)) {
-      if (urlTab === "dashboard" && !user) {
-        setActiveTab("veterinarians");
-        setSearchParams({ tab: "veterinarians" });
-      } else {
-        setActiveTab(urlTab);
-      }
+      setActiveTab(urlTab);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams, user]);
+  }, [searchParams]);
 
   const handleTabChange = (key) => {
     setActiveTab(key);
     setSearchParams({ tab: key });
   };
 
-  const visibleTabs = TABS.filter((t) => !t.authOnly || user);
+  const visibleTabs = TABS;
 
   const renderPanel = () => {
     switch (activeTab) {
-      case "dashboard":     return user ? <AppointmentCalendar /> : null;
       case "veterinarians": return <ProfessionalList role="veterinarian" />;
       case "groomers":      return <ProfessionalList role="groomer" />;
       case "trainers":      return <ProfessionalList role="trainer" />;
       case "petTaxi":       return <ProfessionalList role="petTaxi" />;
-      default:              return null;
+      default:              return <ProfessionalList role="veterinarian" />;
     }
   };
 
@@ -82,8 +67,8 @@ const AppointmentPage = () => {
         {/* Sidebar */}
         <aside className="ap-sidebar">
           <div className="ap-sidebar-header">
-            <h2 className="ap-sidebar-title">Appointment Manager</h2>
-            <p className="ap-sidebar-subtitle">Manage your pet care schedule</p>
+            <h2 className="ap-sidebar-title">Meet our professionals</h2>
+            <p className="ap-sidebar-subtitle">Browse our certified pet-care team</p>
           </div>
 
           <nav className="ap-tabs" role="tablist">
@@ -111,7 +96,7 @@ const AppointmentPage = () => {
               <p className="ap-user-meta">
                 {user
                   ? user.address || "Address not provided"
-                  : "Please log in to access your dashboard"}
+                  : "Browsing as a guest"}
               </p>
             </div>
           </div>

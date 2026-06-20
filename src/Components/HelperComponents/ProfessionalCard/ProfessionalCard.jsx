@@ -92,7 +92,7 @@ const ProfessionalCard = ({
       </Card.Body>
       <Card.Footer className="bg-white border-0 professional-card-footer">
         <Button onClick={onBook} className="book-appointment-btn rounded-5">
-          Book Appointment
+          View profile
         </Button>
       </Card.Footer>
     </Card>

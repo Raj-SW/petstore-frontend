@@ -10,8 +10,8 @@ const cartApi = {
 
   // Add a product to the backend cart
   // productId = MongoDB _id string, quantity = positive integer
-  addToCart: async (productId, quantity = 1) => {
-    const response = await api.post("/cart", { productId, quantity });
+  addToCart: async (productId, quantity = 1, variantId = null) => {
+    const response = await api.post("/cart", { productId, quantity, variantId });
     return response.data.data;
   },
 

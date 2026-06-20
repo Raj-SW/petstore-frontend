@@ -6,6 +6,7 @@ import IndividualProductItemPage from "./Pages/IndividualProductItemPage/Individ
 import PetShopPage from "./Pages/PetShopPage/PetShopPage.jsx";
 import ServicePage from "./Pages/ServicePage/ServicePage.jsx";
 import AppointmentPage from "./Pages/AppointmentPage/AppointmentPage.jsx";
+import ProfessionalDetailPage from "./Pages/AppointmentPage/ProfessionalDetailPage.jsx";
 import CartCheckOutPage from "./Pages/CartCheckoutPage/CartCheckOutPage.jsx";
 import ImportExportServicePage from "./Pages/ImportExport/ImportExportServicePage.jsx";
 import ExportImportForm from "./Pages/ImportExport/Import/ImportPage.jsx";
@@ -18,6 +19,9 @@ import PetCareTipsPage from "./Pages/PetCareTips/PetCareTipsPage.jsx";
 import TipDetailPage from "./Pages/PetCareTips/TipDetailPage.jsx";
 import GalleryPage from "./Pages/Gallery/GalleryPage.jsx";
 import GalleryDetailPage from "./Pages/Gallery/GalleryDetailPage.jsx";
+import ContactPage from "./Pages/Contact/ContactPage.jsx";
+import AboutPage from "./Pages/About/AboutPage.jsx";
+import MySubscriptions from "./Pages/Subscriptions/MySubscriptions.jsx";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import ProtectedRoute from "./Components/Auth/ProtectedRoute";
 import RoleBasedRoute from "./Components/Auth/RoleBasedRoute";
@@ -46,7 +50,12 @@ import AdminTips from "./Pages/Admin/Tips/AdminTips";
 import AdminTipForm from "./Pages/Admin/Tips/AdminTipForm";
 import AdminGallery from "./Pages/Admin/Gallery/AdminGallery";
 import AdminGalleryForm from "./Pages/Admin/Gallery/AdminGalleryForm";
+import AdminContacts from "./Pages/Admin/Contacts/AdminContacts";
 import AdminAdverts from "./Pages/Admin/Adverts/AdminAdverts";
+import AdminFeedback from "./Pages/Admin/Feedback/AdminFeedback";
+import AdminAnnouncements from "./Pages/Admin/Announcements/AdminAnnouncements";
+import AdminFaqs from "./Pages/Admin/Faqs/AdminFaqs";
+import AdminSubscriptions from "./Pages/Admin/Subscriptions/AdminSubscriptions";
 
 const router = createBrowserRouter([
   {
@@ -78,6 +87,10 @@ const router = createBrowserRouter([
         element: <AppointmentPage />,
       },
       {
+        path: "appointments/professional/:id",
+        element: <ProfessionalDetailPage />,
+      },
+      {
         path: "pet-care-tips",
         element: <PetCareTipsPage />,
       },
@@ -92,6 +105,14 @@ const router = createBrowserRouter([
       {
         path: "gallery/:slug",
         element: <GalleryDetailPage />,
+      },
+      {
+        path: "contact",
+        element: <ContactPage />,
+      },
+      {
+        path: "about",
+        element: <AboutPage />,
       },
       {
         path: "checkout",
@@ -114,6 +135,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <MyOrdersPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "my-subscriptions",
+        element: (
+          <ProtectedRoute>
+            <MySubscriptions />
           </ProtectedRoute>
         ),
       },
@@ -196,8 +225,28 @@ const router = createBrowserRouter([
         element: <AdminGalleryForm />,
       },
       {
+        path: "contacts",
+        element: <AdminContacts />,
+      },
+      {
         path: "adverts",
         element: <AdminAdverts />,
+      },
+      {
+        path: "feedback",
+        element: <AdminFeedback />,
+      },
+      {
+        path: "announcements",
+        element: <AdminAnnouncements />,
+      },
+      {
+        path: "faqs",
+        element: <AdminFaqs />,
+      },
+      {
+        path: "subscriptions",
+        element: <AdminSubscriptions />,
       },
       {
         path: "inventory",

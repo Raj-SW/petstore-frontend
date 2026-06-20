@@ -1,0 +1,5 @@
+.aps-actions { display: inline-flex; align-items: center; gap: 6px; }
+.aps-actions button {
+  border: 1px solid #d8d4cc; background: #faf9f6; border-radius: 6px;
+  padding: 3px 7px; cursor: pointer; display: inline-flex; align-items: center;
+}

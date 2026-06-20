@@ -1,0 +1,78 @@
+/* ── AdminFeedback ───────────────────────────────────────────── */
+
+.af-stars {
+  display: inline-flex;
+  gap: 1px;
+}
+
+.af-star-filled {
+  color: #f5a623;
+  font-size: 14px;
+}
+
+.af-star-empty {
+  color: #ddd;
+  font-size: 14px;
+}
+
+.af-role-sub {
+  display: block;
+  font-size: 11px;
+  color: #999;
+  margin-top: 2px;
+}
+
+.af-message-snippet {
+  font-size: 13px;
+  color: #555;
+}
+
+/* ── View modal ── */
+
+.af-view-modal {
+  max-width: 520px;
+}
+
+.af-view-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 12px;
+}
+
+.af-view-name {
+  margin: 0 0 4px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #111;
+}
+
+.af-view-role {
+  margin: 0;
+  font-size: 13px;
+  color: #777;
+}
+
+.af-view-message {
+  font-size: 14px;
+  color: #333;
+  line-height: 1.6;
+  margin: 0 0 16px;
+  white-space: pre-wrap;
+}
+
+.af-view-photos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.af-thumb {
+  width: 90px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+}

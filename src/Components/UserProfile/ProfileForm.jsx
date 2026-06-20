@@ -6,7 +6,7 @@ import "./ProfileModals.css";
 
 const ProfileForm = ({ show, onHide, onSubmit, initialData, isLoading }) => {
   const [formData, setFormData] = useState({
-    name: "", email: "", phoneNumber: "", address: "",
+    name: "", email: "", phoneNumber: "", address: "", salesEmails: true,
   });
 
   useEffect(() => {
@@ -16,6 +16,7 @@ const ProfileForm = ({ show, onHide, onSubmit, initialData, isLoading }) => {
         email: initialData.email || "",
         phoneNumber: initialData.phoneNumber || "",
         address: initialData.address || "",
+        salesEmails: initialData.emailPreferences?.sales !== false,
       });
     }
   }, [initialData]);
@@ -27,7 +28,8 @@ const ProfileForm = ({ show, onHide, onSubmit, initialData, isLoading }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit(formData);
+    const { salesEmails, ...rest } = formData;
+    onSubmit({ ...rest, emailPreferences: { sales: salesEmails } });
   };
 
   return createPortal(
@@ -110,6 +112,19 @@ const ProfileForm = ({ show, onHide, onSubmit, initialData, isLoading }) => {
                       placeholder="City, Country"
                     />
                   </div>
+                </div>
+
+                <div className="pm-field">
+                  <label className="pm-checkbox-row">
+                    <input
+                      type="checkbox"
+                      checked={formData.salesEmails}
+                      onChange={(e) =>
+                        setFormData(prev => ({ ...prev, salesEmails: e.target.checked }))
+                      }
+                    />
+                    <span>Receive sale &amp; promo emails</span>
+                  </label>
                 </div>
               </div>
 

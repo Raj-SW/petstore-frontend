@@ -144,9 +144,22 @@ const AdminProducts = () => {
     {
       header: "Price",
       accessor: "price",
-      render: (value) => (
-        <span className="product-price">Rs {Math.round(Number(value || 0)).toLocaleString('en-US')}</span>
-      ),
+      render: (value, item) =>
+        item.isOnSaleNow ? (
+          <span>
+            <span style={{ color: "#c0392b", fontWeight: 700 }}>
+              Rs {Math.round(Number(item.effectivePrice || 0)).toLocaleString('en-US')}
+            </span>{" "}
+            <span style={{ textDecoration: "line-through", color: "#999", fontSize: "0.85em" }}>
+              Rs {Math.round(Number(value || 0)).toLocaleString('en-US')}
+            </span>{" "}
+            <span style={{ background: "#c0392b", color: "#fff", fontSize: "0.7em", padding: "1px 6px", borderRadius: 5 }}>
+              -{item.discountPercentLabel}%
+            </span>
+          </span>
+        ) : (
+          <span className="product-price">Rs {Math.round(Number(value || 0)).toLocaleString('en-US')}</span>
+        ),
     },
     {
       header: "Stock",

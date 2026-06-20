@@ -21,6 +21,11 @@ import {
   FiBookOpen,
   FiSpeaker,
   FiImage,
+  FiMail,
+  FiMessageSquare,
+  FiSend,
+  FiHelpCircle,
+  FiRepeat,
 } from "react-icons/fi";
 
 const AdminLayout = () => {
@@ -65,6 +70,26 @@ const AdminLayout = () => {
       icon: <FiImage className="menu-icon" />,
     },
     {
+      title: "Contacts",
+      path: "/admin/contacts",
+      icon: <FiMail className="menu-icon" />,
+    },
+    {
+      title: "Feedback",
+      path: "/admin/feedback",
+      icon: <FiMessageSquare className="menu-icon" />,
+    },
+    {
+      title: "Announcements",
+      path: "/admin/announcements",
+      icon: <FiSend className="menu-icon" />,
+    },
+    {
+      title: "FAQs",
+      path: "/admin/faqs",
+      icon: <FiHelpCircle className="menu-icon" />,
+    },
+    {
       title: "Adverts",
       path: "/admin/adverts",
       icon: <FiSpeaker className="menu-icon" />,
@@ -88,6 +113,11 @@ const AdminLayout = () => {
       title: "Orders",
       path: "/admin/orders",
       icon: <FiShoppingCart className="menu-icon" />,
+    },
+    {
+      title: "Subscriptions",
+      path: "/admin/subscriptions",
+      icon: <FiRepeat className="menu-icon" />,
     },
     {
       title: "Appointments",

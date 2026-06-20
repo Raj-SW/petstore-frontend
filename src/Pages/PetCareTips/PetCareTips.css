@@ -332,3 +332,8 @@
 }
 @media (max-width: 980px) { .pct-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 640px) { .pct-grid { grid-template-columns: 1fr; } }
+
+/* Tip detail — admin-defined sections */
+.ptd-sections { margin-top: 1.5rem; display: flex; flex-direction: column; gap: 1.4rem; }
+.ptd-section-heading { font-family: var(--font-display, 'Bebas Neue', sans-serif); color: var(--color-primary-forest, #001c10); font-size: 1.5rem; margin: 0 0 0.5rem; letter-spacing: 0.01em; }
+.ptd-section { border-top: 1px solid rgba(0,28,16,0.08); padding-top: 1.2rem; }

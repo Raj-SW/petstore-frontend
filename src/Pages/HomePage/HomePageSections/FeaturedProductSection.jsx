@@ -153,6 +153,11 @@ const FeaturedProductSection = () => {
                         title={product.name || product.title}
                         price={product.price}
                         description={product.description}
+                        salePrice={product.salePrice}
+                        isOnSaleNow={product.isOnSaleNow}
+                        discountPercentLabel={product.discountPercentLabel}
+                        effectivePrice={product.effectivePrice}
+                        variantsView={product.variantsView}
                       />
                     </CarouselItem>
                   ))}

@@ -380,3 +380,40 @@
   .cart-items-title { font-size: 1.25rem; }
   .checkout-field-row { grid-template-columns: 1fr; }
 }
+
+/* Recurring-order toggle on the checkout summary */
+.cart-recurring {
+  margin: 0.85rem 0 1rem;
+  padding: 0.85rem 1rem;
+  border: 1px dashed #1d9e75;
+  border-radius: 12px;
+  background: #f0f8f3;
+}
+.cart-recurring-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-weight: 600;
+  color: #1d7a5a;
+  cursor: pointer;
+}
+.cart-recurring-toggle input { width: 16px; height: 16px; accent-color: #1d9e75; }
+.cart-recurring-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.6rem;
+  color: #2c2c2a;
+  font-size: 0.9rem;
+}
+.cart-recurring-count {
+  width: 64px;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid #d8d4cc;
+  border-radius: 8px;
+}
+.cart-recurring-row select {
+  padding: 0.35rem 0.5rem;
+  border: 1px solid #d8d4cc;
+  border-radius: 8px;
+}

@@ -17,7 +17,7 @@ const SERVICE_ITEMS = [
   },
   {
     key: "appointments",
-    label: "Book Appointment",
+    label: "Find a Professional",
     desc: "Vets, groomers, trainers & more",
     href: "/appointments",
     image: img2,

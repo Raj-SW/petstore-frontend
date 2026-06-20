@@ -7,9 +7,9 @@ import ProductCard from "../../Components/HelperComponents/ProductCard/ProductCa
 import SortDropDown from "@/Components/HelperComponents/SortDropDown/SortDropDown";
 import Breadcrumb from "@/Components/HelperComponents/Breadcrumb/Breadcrumb";
 import SearchBar from "@/Components/HelperComponents/SearchBar/SearchBar";
+import ShopBanner from "../../Components/Shop/ShopBanner";
 import FilterComponent from "./FilterComponent";
 import ProductService from "@/Services/localServices/ProductService";
-import petshopBanner from "@/assets/PetShopPageAssets/PetshopBannerBackgroundImg.png";
 import "./PetShopPage.css";
 
 const PER_PAGE_OPTIONS = [25, 50, 100];
@@ -192,6 +192,11 @@ const PetShopPage = () => {
               title={p.name || p.title}
               price={p.price}
               description={p.description}
+              salePrice={p.salePrice}
+              isOnSaleNow={p.isOnSaleNow}
+              discountPercentLabel={p.discountPercentLabel}
+              effectivePrice={p.effectivePrice}
+              variantsView={p.variantsView}
             />
           </motion.div>
         ))}
@@ -201,44 +206,44 @@ const PetShopPage = () => {
 
   return (
     <>
-      {/* ── Hero ── */}
-      <section
-        className="ps-hero"
-        style={{ backgroundImage: `url(${petshopBanner})` }}
-      >
-        <div className="ps-hero-overlay" />
-        <div className="ps-hero-inner">
+      {/* ── Breadcrumb strip ── */}
+      <div className="ps-crumb-strip">
+        <div className="ps-crumb-inner">
           <Breadcrumb
             items={[
               { label: "Home", path: "/" },
               { label: "Pet Shop", path: "/petshop" },
             ]}
           />
-          <motion.h1
-            className="ps-hero-title"
-            initial={{ opacity: 0, y: 32 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            Everything for your{" "}
-            <span className="ps-hero-accent">beloved pet</span>
-          </motion.h1>
-          <motion.p
-            className="ps-hero-subtitle"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, delay: 0.18 }}
-          >
-            Curated essentials, premium nutrition, and unique finds — all in one place.
-          </motion.p>
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-          >
-            <SearchBar showInPages={["/petshop"]} />
-          </motion.div>
         </div>
+      </div>
+
+      {/* ── Intro band: heading + description + centered search ── */}
+      <section className="ps-intro">
+        <motion.h1
+          className="ps-intro-title"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          Pet Shop
+        </motion.h1>
+        <motion.p
+          className="ps-intro-subtitle"
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+        >
+          Find food, toys, accessories and more — everything your companion needs.
+        </motion.p>
+        <motion.div
+          className="ps-intro-search"
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, delay: 0.2 }}
+        >
+          <SearchBar showInPages={["/petshop"]} />
+        </motion.div>
       </section>
 
       {/* ── Category quick-filter strip ── */}
@@ -256,6 +261,9 @@ const PetShopPage = () => {
           ))}
         </div>
       </div>
+
+      {/* ── Slim advert banner (admin-managed, branded fallback) — right before products ── */}
+      <ShopBanner />
 
       {/* ── Main body ── */}
       <section className="ps-body">
