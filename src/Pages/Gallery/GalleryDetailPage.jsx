@@ -79,6 +79,19 @@ const GalleryDetailPage = () => {
             </div>
           )}
           <RichTextRenderer content={post.body} className="gald-body" />
+
+          {Array.isArray(post.sections) && post.sections.length > 0 && (
+            <div className="gald-sections">
+              {[...post.sections]
+                .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+                .map((s, i) => (
+                  <section key={i} className="gald-section">
+                    {s.heading && <h2 className="gald-section-heading">{s.heading}</h2>}
+                    {s.body && <RichTextRenderer content={s.body} className="gald-body" />}
+                  </section>
+                ))}
+            </div>
+          )}
         </motion.article>
 
         <aside className="gald-sidebar">

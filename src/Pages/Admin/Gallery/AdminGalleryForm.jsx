@@ -34,11 +34,19 @@ const AdminGalleryForm = () => {
   const navigate = useNavigate();
   const { addToast } = useToast();
   const [form, setForm] = useState(EMPTY_FORM);
+  const [sections, setSections] = useState([]); // [{ id, heading, body }]
   const [errors, setErrors] = useState({});
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(isEdit);
   const [uploadingCover, setUploadingCover] = useState(false);
   const coverInputRef = useRef(null);
+
+  const addSection = () =>
+    setSections((prev) => [...prev, { id: `sec-${Date.now()}`, heading: "", body: "" }]);
+  const removeSection = (sid) =>
+    setSections((prev) => prev.filter((s) => s.id !== sid));
+  const updateSection = (sid, changes) =>
+    setSections((prev) => prev.map((s) => (s.id === sid ? { ...s, ...changes } : s)));
 
   useEffect(() => {
     if (!isEdit) return;
@@ -57,6 +65,11 @@ const AdminGalleryForm = () => {
           featured: Boolean(p.featured),
           published: Boolean(p.published),
         });
+        setSections(
+          Array.isArray(p.sections)
+            ? p.sections.map((s, i) => ({ id: `sec-${Date.now()}-${i}`, heading: s.heading || "", body: s.body || "" }))
+            : []
+        );
       } catch {
         addToast("Failed to load post", "error");
         navigate("/admin/gallery");
@@ -107,6 +120,9 @@ const AdminGalleryForm = () => {
         ...form,
         location: form.location.trim(),
         tags: form.tags.split(",").map((t) => t.trim()).filter(Boolean),
+        sections: sections
+          .filter((s) => (s.heading && s.heading.trim()) || (s.body && s.body !== "<p></p>"))
+          .map(({ heading, body }, order) => ({ heading: (heading || "").trim(), body: body || "", order })),
       };
       if (isEdit) {
         await galleryApi.updatePost(id, payload);
@@ -211,6 +227,40 @@ const AdminGalleryForm = () => {
           error={errors.body}
           onImageUpload={galleryApi.uploadImage}
         />
+
+        <div className="atf-sections">
+          <div className="atf-sections-head">
+            <div>
+              <label>Sections (optional)</label>
+              <p className="atf-sections-hint">Add ordered headed sections shown below the body on the post page.</p>
+            </div>
+            <button type="button" className="at-btn-secondary" onClick={addSection}>+ Add section</button>
+          </div>
+          {sections.map((section, index) => (
+            <div key={section.id} className="atf-section-card">
+              <div className="atf-section-card-head">
+                <span className="atf-section-num">Section {index + 1}</span>
+                <button type="button" className="atf-section-remove" onClick={() => removeSection(section.id)}>Remove</button>
+              </div>
+              <input
+                type="text"
+                className="atf-section-heading"
+                placeholder="Section heading"
+                value={section.heading}
+                maxLength={150}
+                onChange={(e) => updateSection(section.id, { heading: e.target.value })}
+              />
+              <RichTextEditor
+                value={section.body}
+                onChange={(html) => updateSection(section.id, { body: html })}
+                preset="blog"
+                placeholder="Section content…"
+                minHeight="160px"
+                onImageUpload={galleryApi.uploadImage}
+              />
+            </div>
+          ))}
+        </div>
 
         <div className="atf-toggles">
           <label className="atf-check">
