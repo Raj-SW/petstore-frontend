@@ -138,6 +138,13 @@
   margin-left: auto;
 }
 
+/* Currency + account cluster — desktop only (moved into the drawer on mobile) */
+.nav-actions-desktop {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
 /* ── User dropdown ── */
 
 .nav-user-wrap {
@@ -339,6 +346,14 @@
   flex: 1;
 }
 
+.mobile-currency-wrap {
+  display: flex;
+  justify-content: flex-start;
+  padding: 0.25rem 0.5rem 0.6rem;
+  margin-bottom: 0.35rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
 .mobile-menu-link {
   display: flex;
   align-items: center;
@@ -480,6 +495,9 @@
 
 @media (max-width: 991px) {
   .nav-inner { padding: 0.6rem 1.25rem; }
+  /* Mobile bar = logo + cart + hamburger only */
+  .nav-brand-text { display: none; }
+  .nav-actions-desktop { display: none; }
 }
 
 @media (max-width: 575px) {

@@ -6,6 +6,7 @@ import advertsApi from "../../Services/api/advertsApi";
 import { useToast } from "../../context/ToastContext";
 import { Link } from "react-router-dom";
 import GalleryCard from "./components/GalleryCard";
+import Breadcrumb from "../../Components/HelperComponents/Breadcrumb/Breadcrumb";
 import AdvertBanner from "../PetCareTips/components/AdvertBanner";
 import { GALLERY_CATEGORIES, getCategoryTheme, formatEventDate } from "./galleryTheme";
 import "./Gallery.css";
@@ -94,6 +95,9 @@ const GalleryPage = () => {
 
   return (
     <div className="gal-page">
+      <div className="gal-breadcrumb" style={{ maxWidth: "1200px", margin: "0 auto", padding: "1rem 1.5rem 0" }}>
+        <Breadcrumb items={[{ label: "Home", path: "/" }, { label: "Gallery" }]} />
+      </div>
       <header className="gal-hero">
         <motion.p className="gal-hero-label" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45 }}>
           VitalPaws · Moments

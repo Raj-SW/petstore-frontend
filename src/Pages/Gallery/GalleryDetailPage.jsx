@@ -5,6 +5,7 @@ import { FiCalendar, FiMapPin, FiArrowLeft } from "react-icons/fi";
 import galleryApi from "../../Services/api/galleryApi";
 import advertsApi from "../../Services/api/advertsApi";
 import RichTextRenderer from "../../Components/RichText/RichTextRenderer";
+import Breadcrumb from "../../Components/HelperComponents/Breadcrumb/Breadcrumb";
 import AdvertBanner from "../PetCareTips/components/AdvertBanner";
 import { getCategoryTheme, formatEventDate } from "./galleryTheme";
 import "./GalleryDetail.css";
@@ -53,6 +54,9 @@ const GalleryDetailPage = () => {
 
   return (
     <div className="gald-page">
+      <div className="gald-breadcrumb" style={{ maxWidth: "1100px", margin: "0 auto", padding: "1rem 1.5rem 0" }}>
+        <Breadcrumb items={[{ label: "Home", path: "/" }, { label: "Gallery", path: "/gallery" }, { label: post.title }]} />
+      </div>
       <div className="gald-cover" style={post.coverImage ? { backgroundImage: `url(${post.coverImage})` } : { background: `linear-gradient(135deg, ${theme.color}, #0f3d2a)` }}>
         <span className="gal-card-pill" style={{ background: theme.color }}>
           {post.featured ? "★ " : ""}{theme.label}
