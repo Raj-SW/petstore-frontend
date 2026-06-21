@@ -116,3 +116,28 @@
   border-top: 2px solid #e8ede8;
   margin: 1.25em 0;
 }
+
+/* ─── Images (constrain so RTE-inserted images never break the layout) ─── */
+.rte-prose img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0.75em auto;
+  border-radius: 8px;
+}
+
+.rte-prose figure {
+  margin: 0.75em 0;
+  max-width: 100%;
+}
+
+.rte-prose figure img {
+  margin: 0 auto;
+}
+
+.rte-prose figcaption {
+  font-size: 0.8125rem;
+  color: #666;
+  text-align: center;
+  margin-top: 0.4em;
+}
