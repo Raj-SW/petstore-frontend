@@ -66,6 +66,7 @@ const slideVariants = {
 const StatsSection = () => {
   const [[activeIdx, dir], setSlide] = useState([0, 1]);
   const [testimonials, setTestimonials] = useState(TESTIMONIALS);
+  const [usingDbData, setUsingDbData] = useState(false);
 
   // Fetch approved feedback on mount; fall back to hardcoded TESTIMONIALS on error/empty
   useEffect(() => {
@@ -80,9 +81,13 @@ const StatsSection = () => {
               author: fb.role ? `${fb.name}, ${fb.role}` : fb.name,
               text: fb.message,
               rating: fb.rating,
-              image: fb.photos?.[0] || null,
+              // each testimonial carries ONLY its own photos (string URL or {url})
+              photos: (fb.photos || [])
+                .map((p) => (typeof p === "string" ? p : p?.url))
+                .filter(Boolean),
             }))
           );
+          setUsingDbData(true);
         }
         // else keep hardcoded TESTIMONIALS
       })
@@ -223,17 +228,41 @@ const StatsSection = () => {
                   className="ss-imgs-grid"
                 >
                   {(() => {
-                    const dbImage = testimonials[activeIdx]?.image;
-                    const staticImages = SLIDE_IMAGES[activeIdx];
-                    if (dbImage) {
+                    // DB-backed feedback: show ONLY this testimonial's own photos —
+                    // never the hardcoded SLIDE_IMAGES (that fallback was the wrong-photo bug).
+                    if (usingDbData) {
+                      const photos = testimonials[activeIdx]?.photos || [];
+                      if (photos.length === 0) {
+                        const initial = (testimonials[activeIdx]?.author || "?").charAt(0).toUpperCase();
+                        return (
+                          <div
+                            style={{
+                              gridColumn: "1 / -1", gridRow: "1 / -1",
+                              display: "flex", alignItems: "center", justifyContent: "center",
+                              minHeight: 200, borderRadius: 16,
+                              background: "linear-gradient(135deg, #001C10, #0B2016)",
+                            }}
+                          >
+                            <span style={{ fontSize: "3.5rem", fontWeight: 700, color: "#D99A2B" }}>{initial}</span>
+                          </div>
+                        );
+                      }
                       return (
                         <>
-                          <img src={dbImage} alt="" className="ss-slide-img ss-slide-img--tall" />
-                          <div className="ss-img-placeholder" />
-                          <div className="ss-img-placeholder" />
+                          {photos[0]
+                            ? <img src={photos[0]} alt="" className="ss-slide-img ss-slide-img--tall" />
+                            : <div className="ss-img-placeholder ss-img-placeholder--tall" />}
+                          {photos[1]
+                            ? <img src={photos[1]} alt="" className="ss-slide-img" />
+                            : <div className="ss-img-placeholder" />}
+                          {photos[2]
+                            ? <img src={photos[2]} alt="" className="ss-slide-img" />
+                            : <div className="ss-img-placeholder" />}
                         </>
                       );
                     }
+                    // Hardcoded fallback (no approved feedback): demo slide images
+                    const staticImages = SLIDE_IMAGES[activeIdx];
                     if (staticImages) {
                       return (
                         <>
