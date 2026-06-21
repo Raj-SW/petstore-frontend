@@ -19,12 +19,14 @@ module.exports = {
           dark:    "#00160C",
           soft:    "#0B2016",
           DEFAULT: "#001C10",
+          foreground: "#FAF5F1",
         },
         accent: {
           gold:      "#D99A2B",
           burnished: "#A1703D",
           copper:    "#C99863",
           DEFAULT:   "#D99A2B",
+          foreground: "#001C10",
         },
         bg: {
           cream:       "#FAF5F1",
@@ -41,6 +43,17 @@ module.exports = {
           muted:   "#62573C",
           soft:    "#757060",
         },
+        // shadcn/ui semantic tokens bound to the premium forest/gold palette
+        // (so the src/Components/ui primitives render on-brand)
+        background:  "#FAF5F1",
+        foreground:  "#0B2016",
+        card:        { DEFAULT: "#FFFFFF", foreground: "#0B2016" },
+        popover:     { DEFAULT: "#FFFFFF", foreground: "#0B2016" },
+        secondary:   { DEFAULT: "#F3E3D2", foreground: "#0B2016" },
+        muted:       { DEFAULT: "#F6ECE3", foreground: "#62573C" },
+        destructive: { DEFAULT: "#C0392B", foreground: "#FFFFFF" },
+        input:       "#C9BAA8",
+        ring:        "#D99A2B",
   		},
   		keyframes: {
   			enterFromRight: {
