@@ -19,24 +19,27 @@ import "./ServicesSection.css";
 const SERVICES = [
   {
     key: "vet",
+    status: "live",
     label: "Veterinary Care",
     icon: FaStethoscope,
     image: imgVeterinary,
-    href: "/appointments",
+    href: "/appointments?tab=veterinarians",
     gridClass: "sc-vet",
     delay: 0.05,
   },
   {
     key: "grooming",
+    status: "live",
     label: "Grooming",
     icon: FaCut,
     image: imgGrooming,
-    href: "/appointments",
+    href: "/appointments?tab=groomers",
     gridClass: "sc-grooming",
     delay: 0.1,
   },
   {
     key: "adoption",
+    status: "coming-soon",
     label: "Adoption & Rescue",
     icon: FaHeart,
     image: imgAdoption,
@@ -46,6 +49,7 @@ const SERVICES = [
   },
   {
     key: "boarding",
+    status: "coming-soon",
     label: "Boarding",
     icon: FaBed,
     image: imgBoarding,
@@ -55,6 +59,7 @@ const SERVICES = [
   },
   {
     key: "training",
+    status: "coming-soon",
     label: "Pet Training",
     icon: FaDog,
     image: imgTraining,
@@ -64,11 +69,14 @@ const SERVICES = [
   },
 ];
 
-const ServiceCard = ({ label, icon: Icon, image, href, delay }) => {
+const ServiceCard = ({ label, icon: Icon, image, href, status = "live", delay }) => {
   const navigate = useNavigate();
   const cardRef = useRef(null);
   const inView = useInView(cardRef, { once: true, amount: 0.15 });
   const [hovered, setHovered] = useState(false);
+  const comingSoon = status === "coming-soon";
+
+  const go = () => { if (!comingSoon) navigate(href); };
 
   return (
     <motion.div
@@ -80,11 +88,26 @@ const ServiceCard = ({ label, icon: Icon, image, href, delay }) => {
       whileHover={{ scale: 1.025, boxShadow: "0 24px 52px rgba(0,28,16,0.28)" }}
       onHoverStart={() => setHovered(true)}
       onHoverEnd={() => setHovered(false)}
-      onClick={() => navigate(href)}
+      onClick={go}
+      style={comingSoon ? { cursor: "default" } : undefined}
     >
       <img src={image} alt={label} className="sc-image" />
 
       <div className="sc-bottom-gradient" />
+
+      {comingSoon && (
+        <span
+          style={{
+            position: "absolute", top: 12, left: 12, zIndex: 4,
+            background: "#D99A2B", color: "#001C10",
+            fontSize: "0.68rem", fontWeight: 700, letterSpacing: "0.05em",
+            textTransform: "uppercase", padding: "0.26rem 0.6rem", borderRadius: 999,
+            boxShadow: "0 4px 12px rgba(0,28,16,0.2)",
+          }}
+        >
+          Coming Soon
+        </span>
+      )}
 
       <div className="sc-label-row">
         <div className="sc-icon-badge">
@@ -103,14 +126,24 @@ const ServiceCard = ({ label, icon: Icon, image, href, delay }) => {
             transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
             onClick={(e) => e.stopPropagation()}
           >
-            <motion.button
-              className="sc-view-btn"
-              onClick={() => navigate(href)}
-              whileHover={{ scale: 1.06 }}
-              whileTap={{ scale: 0.96 }}
-            >
-              View Details →
-            </motion.button>
+            {comingSoon ? (
+              <span
+                className="sc-view-btn"
+                style={{ opacity: 0.7, cursor: "default" }}
+                aria-disabled="true"
+              >
+                Coming Soon
+              </span>
+            ) : (
+              <motion.button
+                className="sc-view-btn"
+                onClick={() => navigate(href)}
+                whileHover={{ scale: 1.06 }}
+                whileTap={{ scale: 0.96 }}
+              >
+                View Details →
+              </motion.button>
+            )}
           </motion.div>
         )}
       </AnimatePresence>
