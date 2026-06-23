@@ -93,3 +93,7 @@
 .atf-section-remove { border: 1px solid #e7c3bd; background: #fff; color: #c0392b; border-radius: 8px; padding: 4px 10px; font-size: 12px; cursor: pointer; }
 .atf-section-remove:hover { background: #c0392b; color: #fff; }
 .atf-section-heading { width: 100%; padding: 0.6rem 0.8rem; border: 1px solid rgba(0,28,16,0.14); border-radius: 8px; margin-bottom: 0.6rem; font-weight: 600; }
+
+/* Epic 8 — per-section image manager */
+.atf-section-images { margin-top: 10px; }
+.atf-section-images-label { display: block; font-size: 12px; font-weight: 600; color: #5a5247; margin-bottom: 6px; }

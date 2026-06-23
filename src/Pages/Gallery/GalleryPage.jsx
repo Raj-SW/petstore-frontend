@@ -9,6 +9,7 @@ import GalleryCard from "./components/GalleryCard";
 import Breadcrumb from "../../Components/HelperComponents/Breadcrumb/Breadcrumb";
 import AdvertBanner from "../PetCareTips/components/AdvertBanner";
 import { GALLERY_CATEGORIES, getCategoryTheme, formatEventDate } from "./galleryTheme";
+import { coverUrl } from "../../utils/coverImage";
 import "./Gallery.css";
 
 const FeaturedHero = ({ post }) => {
@@ -25,7 +26,7 @@ const FeaturedHero = ({ post }) => {
       <Link to={`/gallery/${post.slug || post._id}`} className="gal-hero-feature-link">
         <div
           className="gal-hero-feature-img"
-          style={post.coverImage ? { backgroundImage: `url(${post.coverImage})` } : { background: `linear-gradient(135deg, ${theme.color}, #0f3d2a)` }}
+          style={coverUrl(post.coverImage) ? { backgroundImage: `url(${coverUrl(post.coverImage)})` } : { background: `linear-gradient(135deg, ${theme.color}, #0f3d2a)` }}
         >
           <span className="gal-card-pill" style={{ background: theme.color }}>★ Featured · {theme.label}</span>
         </div>

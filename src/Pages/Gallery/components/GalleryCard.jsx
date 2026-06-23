@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FiCalendar, FiMapPin } from "react-icons/fi";
 import { getCategoryTheme, formatEventDate } from "../galleryTheme";
+import { coverUrl } from "../../../utils/coverImage";
 
 const cardMotion = {
   initial: { opacity: 0, y: 24 },
@@ -12,16 +13,17 @@ const cardMotion = {
 
 const GalleryCard = ({ post }) => {
   const theme = getCategoryTheme(post.category);
+  const cover = coverUrl(post.coverImage);
 
   return (
     <motion.article className="gal-card" {...cardMotion}>
       <Link to={`/gallery/${post.slug || post._id}`} className="gal-card-link">
         <div
           className="gal-card-img"
-          style={post.coverImage ? undefined : { background: `linear-gradient(135deg, ${theme.color} 0%, #0f3d2a 130%)` }}
+          style={cover ? undefined : { background: `linear-gradient(135deg, ${theme.color} 0%, #0f3d2a 130%)` }}
         >
-          {post.coverImage ? (
-            <img src={post.coverImage} alt={post.title} loading="lazy" />
+          {cover ? (
+            <img src={cover} alt={post.title} loading="lazy" />
           ) : null}
           <span className="gal-card-pill" style={{ background: theme.color }}>
             {post.featured ? "★ " : ""}{theme.label}
