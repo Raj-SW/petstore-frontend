@@ -25,6 +25,8 @@ const PetShopPage = () => {
   const [perPage, setPerPage] = useState(25);
   const [totalPages, setTotalPages] = useState(0);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  // Toolbar title reflects the applied category filter ("All" when none selected)
+  const [activeCat, setActiveCat] = useState("All");
 
   // ── Data loading ──
   useEffect(() => {
@@ -80,6 +82,13 @@ const PetShopPage = () => {
     const priceFilters = {};
     if (minPrice && minPrice > 0) priceFilters.minPrice = minPrice;
     if (maxPrice && maxPrice < Infinity) priceFilters.maxPrice = maxPrice;
+
+    // Surface the chosen category in the toolbar title
+    setActiveCat(
+      categories && categories.length
+        ? categories.map((c) => c.charAt(0).toUpperCase() + c.slice(1)).join(", ")
+        : "All"
+    );
 
     ProductService.fetchProductsWithFilters(
       {
