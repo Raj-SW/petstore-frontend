@@ -1,34 +1,44 @@
 import { useState } from "react";
+import { FaShoppingCart } from "react-icons/fa";
 import { FiRepeat } from "react-icons/fi";
 import subscriptionsApi from "../../Services/api/subscriptionsApi";
 import { useAuth } from "../../context/AuthContext";
 import { useToast } from "../../context/ToastContext";
+import SubscriptionChooser from "./SubscriptionChooser";
+import { isIntervalValid } from "../../utils/subscriptionPricing";
 import "./SubscribeWidget.css";
 
 const DISCOUNT = Number(import.meta.env.VITE_SUBSCRIPTION_DISCOUNT_PERCENT) || 10;
 
-const SubscribeWidget = ({ product, quantity = 1, variantId = null }) => {
-  const [open, setOpen] = useState(false);
+const SubscribeWidget = ({
+  product,
+  quantity = 1,
+  variantId = null,
+  unitPrice = 0,
+  onAddToCart,
+  outOfStock = false,
+}) => {
+  const [mode, setMode] = useState("onetime");
   const [unit, setUnit] = useState("week");
   const [count, setCount] = useState(2);
   const [submitting, setSubmitting] = useState(false);
   const { user } = useAuth();
   const { addToast } = useToast();
 
-  const minOk = (unit === "day" ? count : count * 7) >= 7;
+  const intervalOk = isIntervalValid(unit, count);
 
   const subscribe = async () => {
     if (!user) {
       addToast("Please log in to subscribe", "error");
       return;
     }
-    if (!minOk) {
+    if (!intervalOk) {
       addToast("Minimum interval is 7 days", "error");
       return;
     }
-    const addr = user.address
-      ? { street: user.address, city: "-", state: "-", country: "-", zipCode: "-" }
-      : { street: "-", city: "-", state: "-", country: "-", zipCode: "-" };
+    const addr = {
+      street: user.address || "-", city: "-", state: "-", country: "-", zipCode: "-",
+    };
     try {
       setSubmitting(true);
       await subscriptionsApi.create({
@@ -40,7 +50,7 @@ const SubscribeWidget = ({ product, quantity = 1, variantId = null }) => {
         source: "product",
       });
       addToast("Subscribed! Manage it under My Subscriptions.", "success");
-      setOpen(false);
+      setMode("onetime");
     } catch (err) {
       addToast(err.response?.data?.message || "Failed to subscribe", "error");
     } finally {
@@ -48,34 +58,42 @@ const SubscribeWidget = ({ product, quantity = 1, variantId = null }) => {
     }
   };
 
+  const subscribeMode = mode === "subscribe";
+  const buttonDisabled = subscribeMode ? submitting || !intervalOk : outOfStock;
+
+  const handleClick = () => {
+    if (subscribeMode) subscribe();
+    else onAddToCart?.();
+  };
+
   return (
     <div className="sw-box">
-      <button className="sw-toggle" onClick={() => setOpen((o) => !o)}>
-        <FiRepeat /> Subscribe &amp; Save {DISCOUNT}%
+      <SubscriptionChooser
+        basePrice={(Number(unitPrice) || 0) * quantity}
+        discountPercent={DISCOUNT}
+        mode={mode}
+        onModeChange={setMode}
+        intervalCount={count}
+        intervalUnit={unit}
+        onIntervalCountChange={setCount}
+        onIntervalUnitChange={setUnit}
+      />
+      <button
+        type="button"
+        className="sw-smartbtn"
+        disabled={buttonDisabled}
+        onClick={handleClick}
+      >
+        {subscribeMode ? (
+          <>
+            <FiRepeat /> {submitting ? "Subscribing…" : `Subscribe & Save ${DISCOUNT}%`}
+          </>
+        ) : (
+          <>
+            <FaShoppingCart /> {outOfStock ? "Out of Stock" : "Add to Cart"}
+          </>
+        )}
       </button>
-      {open && (
-        <div className="sw-panel">
-          <p className="sw-line">Auto-reorder this item and save {DISCOUNT}% every time.</p>
-          <div className="sw-row">
-            <span>Every</span>
-            <input
-              type="number"
-              min="1"
-              value={count}
-              onChange={(e) => setCount(e.target.value)}
-              className="sw-count"
-            />
-            <select value={unit} onChange={(e) => setUnit(e.target.value)}>
-              <option value="day">day(s)</option>
-              <option value="week">week(s)</option>
-            </select>
-          </div>
-          {!minOk && <p className="sw-warn">Minimum interval is 7 days.</p>}
-          <button className="sw-confirm" disabled={submitting || !minOk} onClick={subscribe}>
-            {submitting ? "Subscribing…" : "Subscribe"}
-          </button>
-        </div>
-      )}
     </div>
   );
 };
