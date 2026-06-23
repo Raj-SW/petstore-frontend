@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FiClock } from "react-icons/fi";
 import { getAnimalTheme, capitalize } from "../tipTheme";
+import { coverUrl } from "../../../utils/coverImage";
 
 const FeaturedSection = ({ tips }) => {
   if (!tips || tips.length === 0) return null;
@@ -22,8 +23,8 @@ const FeaturedSection = ({ tips }) => {
           <Link to={`/pet-care-tips/${main.slug || main._id}`} className="pct-card-link">
             <div className="pct-feat-main-img" style={{ background: mainTheme.tint }}>
               <span className="pct-badge pct-feat-float">Featured</span>
-              {main.coverImage ? (
-                <img src={main.coverImage} alt={main.title} />
+              {coverUrl(main.coverImage) ? (
+                <img src={coverUrl(main.coverImage)} alt={main.title} />
               ) : (
                 <MainIcon size={56} style={{ color: mainTheme.color, opacity: 0.3 }} aria-hidden="true" />
               )}
@@ -59,8 +60,8 @@ const FeaturedSection = ({ tips }) => {
               >
                 <Link to={`/pet-care-tips/${tip.slug || tip._id}`} className="pct-card-link pct-feat-small-link">
                   <div className="pct-feat-small-img" style={{ background: theme.tint }}>
-                    {tip.coverImage ? (
-                      <img src={tip.coverImage} alt={tip.title} loading="lazy" />
+                    {coverUrl(tip.coverImage) ? (
+                      <img src={coverUrl(tip.coverImage)} alt={tip.title} loading="lazy" />
                     ) : (
                       <Icon size={26} style={{ color: theme.color, opacity: 0.4 }} aria-hidden="true" />
                     )}

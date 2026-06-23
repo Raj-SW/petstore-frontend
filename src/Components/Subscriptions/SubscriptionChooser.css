@@ -1,0 +1,55 @@
+.subchooser { display: flex; flex-direction: column; gap: 10px; margin: 14px 0; }
+
+.subchooser-card {
+  display: flex; align-items: flex-start; gap: 10px; width: 100%;
+  text-align: left; cursor: pointer; background: #fff;
+  border: 2px solid #e2e0da; border-radius: 12px; padding: 14px 16px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.subchooser-card--active.subchooser-card--onetime { border-color: #8a93a0; }
+.subchooser-card--active.subchooser-card--subscribe {
+  border-color: #1d9e75; box-shadow: 0 0 0 1px #1d9e75 inset;
+}
+
+.subchooser-dot {
+  flex: 0 0 auto; width: 16px; height: 16px; margin-top: 3px;
+  border: 2px solid #b9b6ad; border-radius: 50%;
+}
+.subchooser-card--active .subchooser-dot {
+  border-color: #1d9e75;
+  background: radial-gradient(circle, #1d9e75 0 5px, transparent 6px);
+}
+.subchooser-card--active.subchooser-card--onetime .subchooser-dot {
+  border-color: #8a93a0;
+  background: radial-gradient(circle, #8a93a0 0 5px, transparent 6px);
+}
+
+.subchooser-card-body { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+.subchooser-card-titlerow { display: flex; align-items: center; gap: 8px; }
+.subchooser-card-title { font-weight: 700; color: #1f2a24; }
+.subchooser-price-onetime { color: #4a544c; font-weight: 600; }
+
+.subchooser-pill {
+  background: #d8f3e6; color: #0f6b48; font-size: 12px; font-weight: 700;
+  padding: 2px 10px; border-radius: 999px;
+}
+
+.subchooser-pricerow { display: flex; align-items: baseline; gap: 8px; }
+.subchooser-price-base {
+  color: #9aa0a6; font-size: 14px; text-decoration: line-through;
+}
+.subchooser-price-discounted {
+  color: #1d9e75; font-size: 20px; font-weight: 800;
+}
+.subchooser-save { color: #0f6b48; font-size: 12px; font-weight: 600; }
+
+.subchooser-freq {
+  border: 1px solid #e8e4dc; border-radius: 10px; padding: 12px; background: #f8fbf9;
+}
+.subchooser-freq-label {
+  display: block; font-size: 12px; font-weight: 600; color: #4a544c; margin-bottom: 6px;
+}
+.subchooser-freq-row { display: flex; align-items: center; gap: 8px; }
+.subchooser-freq-count { width: 64px; padding: 6px 8px; border: 1px solid #d8d4cc; border-radius: 6px; }
+.subchooser-freq-row select { padding: 6px 8px; border: 1px solid #d8d4cc; border-radius: 6px; }
+.subchooser-warn { color: #c0392b; font-size: 12px; margin: 8px 0 0; }

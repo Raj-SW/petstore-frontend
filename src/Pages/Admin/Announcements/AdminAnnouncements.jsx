@@ -4,24 +4,46 @@ import { FiSend, FiTag, FiUsers } from "react-icons/fi";
 import DataTable from "../../../Components/Admin/DataTable/DataTable";
 import announcementsApi from "../../../Services/api/announcementsApi";
 import productsApi from "../../../Services/api/productsApi";
+import tipsApi from "../../../Services/api/tipsApi";
+import galleryApi from "../../../Services/api/galleryApi";
 import { useToast } from "../../../context/ToastContext";
 import { useCurrency } from "../../../context/CurrencyContext";
 import "../Tips/AdminTips.css";
 import "./AdminAnnouncements.css";
+
+const TYPE_OPTIONS = [
+  { value: "sale", label: "Sale", group: "product" },
+  { value: "new_product", label: "New product", group: "product" },
+  { value: "price_drop", label: "Price drop", group: "product" },
+  { value: "restock", label: "Back in stock", group: "product" },
+  { value: "new_tip", label: "New care tip", group: "content", kind: "tip" },
+  { value: "new_post", label: "New gallery post", group: "content", kind: "post" },
+  { value: "event", label: "Event", group: "event" },
+  { value: "general", label: "General news", group: "general" },
+];
+
+const groupOf = (type) => TYPE_OPTIONS.find((t) => t.value === type)?.group || "product";
 
 const AdminAnnouncements = () => {
   const [products, setProducts] = useState([]);
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const [type, setType] = useState("sale");
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
   const [selectedIds, setSelectedIds] = useState([]);
+  const [contentItems, setContentItems] = useState([]);
+  const [contentId, setContentId] = useState("");
+  const [event, setEvent] = useState({ title: "", startsAt: "", endsAt: "", location: "", description: "" });
+  const [cta, setCta] = useState({ label: "", url: "" });
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [sending, setSending] = useState(false);
 
   const { addToast } = useToast();
   const { formatPrice } = useCurrency();
+
+  const group = groupOf(type);
 
   useEffect(() => {
     fetchAll();
@@ -35,8 +57,7 @@ const AdminAnnouncements = () => {
         announcementsApi.getAnnouncements(),
       ]);
       const list = Array.isArray(prodRes) ? prodRes : prodRes.data || prodRes.products || [];
-      // Default the picker to on-sale products
-      setProducts(list.filter((p) => p.onSale));
+      setProducts(list);
       setHistory(histRes.data || []);
     } catch {
       addToast("Failed to load products or history", "error");
@@ -45,33 +66,78 @@ const AdminAnnouncements = () => {
     }
   };
 
+  // Lazily load tips/posts when a content type is selected.
+  useEffect(() => {
+    const opt = TYPE_OPTIONS.find((t) => t.value === type);
+    if (group !== "content") return;
+    setContentId("");
+    const load = opt.kind === "tip" ? tipsApi.getTips({ limit: 200 }) : galleryApi.getPosts({ limit: 200 });
+    load
+      .then((res) => {
+        const items = res?.data || res?.posts || res?.tips || (Array.isArray(res) ? res : []);
+        setContentItems(items);
+      })
+      .catch(() => addToast("Failed to load content list", "error"));
+  }, [type, group, addToast]);
+
+  // For the 'sale' type default the picker to on-sale products; otherwise all.
+  const displayedProducts = useMemo(
+    () => (type === "sale" ? products.filter((p) => p.onSale) : products),
+    [products, type]
+  );
+
   const toggleProduct = (id) =>
     setSelectedIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
 
-  const canSend = subject.trim().length >= 2 && selectedIds.length > 0 && !sending;
+  const targetReady = (() => {
+    if (group === "product") return selectedIds.length > 0;
+    if (group === "content") return Boolean(contentId);
+    if (group === "event") return event.title.trim() && event.startsAt;
+    if (group === "general") return message.trim() || cta.url.trim();
+    return false;
+  })();
+
+  const canSend = subject.trim().length >= 2 && targetReady && !sending;
 
   const selectedProducts = useMemo(
     () => products.filter((p) => selectedIds.includes(p._id)),
     [products, selectedIds]
   );
 
+  const buildPayload = () => {
+    const base = { type, subject: subject.trim(), message: message.trim(), source: "composer" };
+    if (group === "product") return { ...base, productIds: selectedIds };
+    if (group === "content") {
+      const kind = TYPE_OPTIONS.find((t) => t.value === type).kind;
+      return { ...base, contentRef: { kind, id: contentId } };
+    }
+    if (group === "event") {
+      const ev = { title: event.title.trim(), startsAt: event.startsAt };
+      if (event.endsAt) ev.endsAt = event.endsAt;
+      if (event.location.trim()) ev.location = event.location.trim();
+      if (event.description.trim()) ev.description = event.description.trim();
+      const payload = { ...base, event: ev };
+      if (cta.url.trim()) payload.cta = { label: cta.label.trim() || "Learn more", url: cta.url.trim() };
+      return payload;
+    }
+    // general
+    const payload = { ...base };
+    if (cta.url.trim()) payload.cta = { label: cta.label.trim() || "Learn more", url: cta.url.trim() };
+    return payload;
+  };
+
   const doSend = async () => {
     try {
       setSending(true);
-      const res = await announcementsApi.createAnnouncement({
-        subject: subject.trim(),
-        message: message.trim(),
-        productIds: selectedIds,
-        source: "composer",
-      });
+      const res = await announcementsApi.createAnnouncement(buildPayload());
       addToast(res.message || "Announcement sent", "success");
-      setSubject("");
-      setMessage("");
-      setSelectedIds([]);
+      setSubject(""); setMessage(""); setSelectedIds([]); setContentId("");
+      setEvent({ title: "", startsAt: "", endsAt: "", location: "", description: "" });
+      setCta({ label: "", url: "" });
       setConfirmOpen(false);
       fetchAll();
     } catch (err) {
-      addToast(err.response?.data?.message || "Failed to send announcement", "error");
+      addToast(err.response?.data?.message || err.message || "Failed to send announcement", "error");
     } finally {
       setSending(false);
     }
@@ -79,12 +145,7 @@ const AdminAnnouncements = () => {
 
   const columns = [
     { header: "Subject", accessor: "subject" },
-    {
-      header: "Products",
-      accessor: "products",
-      sortable: false,
-      render: (value) => <span className="at-pill">{Array.isArray(value) ? value.length : 0}</span>,
-    },
+    { header: "Type", accessor: "type", render: (v) => <span className="at-pill">{v || "sale"}</span> },
     {
       header: "Sent / Audience",
       accessor: "sentCount",
@@ -108,14 +169,28 @@ const AdminAnnouncements = () => {
     >
       <div className="admin-page-header">
         <div>
-          <h1 className="admin-page-title">Sale Announcements</h1>
+          <h1 className="admin-page-title">Announcements</h1>
           <p className="admin-page-subtitle">
-            Email registered customers about products on sale.
+            Email customers about sales, new products, events, tips and news.
           </p>
         </div>
       </div>
 
       <div className="aa-composer">
+        <div className="aa-field">
+          <label className="admin-label" htmlFor="aa-type">Announcement type</label>
+          <select
+            id="aa-type"
+            className="admin-select"
+            value={type}
+            onChange={(e) => setType(e.target.value)}
+          >
+            {TYPE_OPTIONS.map((t) => (
+              <option key={t.value} value={t.value}>{t.label}</option>
+            ))}
+          </select>
+        </div>
+
         <input
           className="aa-input"
           placeholder="Email subject (e.g. Weekend Dog Food Sale)"
@@ -124,34 +199,72 @@ const AdminAnnouncements = () => {
         />
         <textarea
           className="aa-textarea"
-          placeholder="Optional message shown above the products…"
+          placeholder="Optional message shown at the top…"
           rows={3}
           value={message}
           onChange={(e) => setMessage(e.target.value)}
         />
 
-        <p className="aa-section-label">
-          <FiTag /> On-sale products {products.length === 0 && !loading && "— none currently on sale"}
-        </p>
-        <div className="aa-product-grid">
-          {products.map((p) => {
-            const checked = selectedIds.includes(p._id);
-            return (
-              <label key={p._id} className={`aa-product ${checked ? "on" : ""}`}>
-                <input
-                  type="checkbox"
-                  aria-label={`select ${p.name}`}
-                  checked={checked}
-                  onChange={() => toggleProduct(p._id)}
-                />
-                <span className="aa-product-name">{p.name}</span>
-                <span className="aa-product-price">
-                  {p.salePrice ? formatPrice(p.salePrice) : formatPrice(p.price)}
-                </span>
-              </label>
-            );
-          })}
-        </div>
+        {/* Product target */}
+        {group === "product" && (
+          <>
+            <p className="aa-section-label">
+              <FiTag /> {type === "sale" ? "On-sale products" : "Products"}
+              {displayedProducts.length === 0 && !loading && " — none available"}
+            </p>
+            <div className="aa-product-grid">
+              {displayedProducts.map((p) => {
+                const checked = selectedIds.includes(p._id);
+                return (
+                  <label key={p._id} className={`aa-product ${checked ? "on" : ""}`}>
+                    <input
+                      type="checkbox"
+                      aria-label={`select ${p.name}`}
+                      checked={checked}
+                      onChange={() => toggleProduct(p._id)}
+                    />
+                    <span className="aa-product-name">{p.name}</span>
+                    <span className="aa-product-price">
+                      {p.salePrice ? formatPrice(p.salePrice) : formatPrice(p.price)}
+                    </span>
+                  </label>
+                );
+              })}
+            </div>
+          </>
+        )}
+
+        {/* Content target */}
+        {group === "content" && (
+          <div className="aa-field">
+            <label className="admin-label" htmlFor="aa-content">Select {type === "new_tip" ? "a care tip" : "a gallery post"}</label>
+            <select id="aa-content" className="admin-select" value={contentId} onChange={(e) => setContentId(e.target.value)}>
+              <option value="">— choose —</option>
+              {contentItems.map((c) => (
+                <option key={c._id} value={c._id}>{c.title}</option>
+              ))}
+            </select>
+          </div>
+        )}
+
+        {/* Event fields */}
+        {group === "event" && (
+          <div className="aa-event-grid">
+            <input className="aa-input" placeholder="Event title" value={event.title} onChange={(e) => setEvent((v) => ({ ...v, title: e.target.value }))} />
+            <input className="aa-input" type="datetime-local" aria-label="event start" value={event.startsAt} onChange={(e) => setEvent((v) => ({ ...v, startsAt: e.target.value }))} />
+            <input className="aa-input" type="datetime-local" aria-label="event end" value={event.endsAt} onChange={(e) => setEvent((v) => ({ ...v, endsAt: e.target.value }))} />
+            <input className="aa-input" placeholder="Location (optional)" value={event.location} onChange={(e) => setEvent((v) => ({ ...v, location: e.target.value }))} />
+            <textarea className="aa-textarea" placeholder="Event description (optional)" rows={2} value={event.description} onChange={(e) => setEvent((v) => ({ ...v, description: e.target.value }))} />
+          </div>
+        )}
+
+        {/* Optional CTA for event + general */}
+        {(group === "event" || group === "general") && (
+          <div className="aa-cta-grid">
+            <input className="aa-input" placeholder="Button label (optional)" value={cta.label} onChange={(e) => setCta((v) => ({ ...v, label: e.target.value }))} />
+            <input className="aa-input" placeholder="Button URL (optional)" value={cta.url} onChange={(e) => setCta((v) => ({ ...v, url: e.target.value }))} />
+          </div>
+        )}
 
         <button
           className="at-btn-primary aa-send"
@@ -182,12 +295,10 @@ const AdminAnnouncements = () => {
               onClick={(e) => e.stopPropagation()}
             >
               <h3>
-                <FiUsers /> Send to all subscribed customers?
+                <FiUsers /> Send this announcement?
               </h3>
               <p>
-                &ldquo;{subject}&rdquo; featuring {selectedProducts.length} product
-                {selectedProducts.length === 1 ? "" : "s"} will be emailed to every customer
-                who has sale emails enabled.
+                &ldquo;{subject}&rdquo;{group === "product" ? ` featuring ${selectedProducts.length} product${selectedProducts.length === 1 ? "" : "s"}` : ""} will be emailed to every customer subscribed to this kind of update.
               </p>
               <div className="admin-modal-actions">
                 <button className="at-btn-secondary" onClick={() => setConfirmOpen(false)}>

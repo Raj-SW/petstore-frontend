@@ -13,7 +13,6 @@ import ProductService from "@/Services/localServices/ProductService";
 import "./PetShopPage.css";
 
 const PER_PAGE_OPTIONS = [25, 50, 100];
-const QUICK_CATS = ["All", "Dog", "Cat", "Bird", "Fish", "Small Pets", "General"];
 
 const PetShopPage = () => {
   const [searchParams] = useSearchParams();
@@ -26,6 +25,7 @@ const PetShopPage = () => {
   const [perPage, setPerPage] = useState(25);
   const [totalPages, setTotalPages] = useState(0);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  // Toolbar title reflects the applied category filter ("All" when none selected)
   const [activeCat, setActiveCat] = useState("All");
 
   // ── Data loading ──
@@ -78,16 +78,24 @@ const PetShopPage = () => {
       .catch((err) => setError(err.message));
   };
 
-  const handleApplyFilters = ({ minPrice, maxPrice, categories, rating }) => {
+  const handleApplyFilters = ({ minPrice, maxPrice, categories, colors, genders }) => {
     const priceFilters = {};
     if (minPrice && minPrice > 0) priceFilters.minPrice = minPrice;
     if (maxPrice && maxPrice < Infinity) priceFilters.maxPrice = maxPrice;
 
+    // Surface the chosen category in the toolbar title
+    setActiveCat(
+      categories && categories.length
+        ? categories.map((c) => c.charAt(0).toUpperCase() + c.slice(1)).join(", ")
+        : "All"
+    );
+
     ProductService.fetchProductsWithFilters(
       {
-        category: categories.length > 0 ? categories[0] : undefined,
+        categories: categories && categories.length ? categories : undefined,
+        colors: colors && colors.length ? colors : undefined,
+        genders: genders && genders.length ? genders : undefined,
         ...priceFilters,
-        minRating: rating || undefined,
       },
       { page: 1, limit: perPage }
     )
@@ -99,15 +107,6 @@ const PetShopPage = () => {
         setDrawerOpen(false);
       })
       .catch((err) => setError(err.message));
-  };
-
-  const handleCategoryClick = (cat) => {
-    setActiveCat(cat);
-    if (cat === "All") {
-      handleApplyFilters({ minPrice: 0, maxPrice: Infinity, categories: [], rating: 0 });
-    } else {
-      handleApplyFilters({ minPrice: 0, maxPrice: Infinity, categories: [cat.toLowerCase()], rating: 0 });
-    }
   };
 
   const handleSort = (sortType) => {
@@ -245,22 +244,6 @@ const PetShopPage = () => {
           <SearchBar showInPages={["/petshop"]} />
         </motion.div>
       </section>
-
-      {/* ── Category quick-filter strip ── */}
-      <div className="ps-cat-strip">
-        <div className="ps-cat-strip-inner">
-          {QUICK_CATS.map((cat) => (
-            <button
-              key={cat}
-              type="button"
-              className={`ps-cat-chip${activeCat === cat ? " ps-cat-chip--active" : ""}`}
-              onClick={() => handleCategoryClick(cat)}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-      </div>
 
       {/* ── Slim advert banner (admin-managed, branded fallback) — right before products ── */}
       <ShopBanner />

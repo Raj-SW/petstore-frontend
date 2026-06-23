@@ -4,7 +4,7 @@ import { useCart } from "@/context/CartContext";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   FaFacebook, FaTwitter, FaInstagram, FaPlus, FaMinus,
-  FaShoppingCart, FaShieldAlt, FaCheckCircle, FaExclamationTriangle,
+  FaShieldAlt, FaCheckCircle, FaExclamationTriangle,
   FaTag,
 } from "react-icons/fa";
 import { FiShare2, FiChevronLeft, FiChevronDown, FiChevronRight, FiSearch, FiX } from "react-icons/fi";
@@ -255,6 +255,9 @@ const IndividualProductItemPage = () => {
       setSelectedVariant(inStock);
     }
   }, [product]);
+
+  // Reset the active thumbnail when the variant changes (its gallery may differ).
+  useEffect(() => { setActiveImage(0); }, [selectedVariant?._id]);
   const [quantity, setQuantity] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -425,9 +428,14 @@ const IndividualProductItemPage = () => {
   }
 
   const productName = product.title || product.name || "Product";
-  const images = product.images?.length
+  const productImages = product.images?.length
     ? product.images.map(img => (typeof img === "object" ? img.url : img)).filter(Boolean)
     : [product.imageUrl].filter(Boolean);
+  // When a variant with its own images is selected, show those; else the product gallery.
+  const variantImages = Array.isArray(selectedVariant?.images)
+    ? selectedVariant.images.map(img => (typeof img === "object" ? img.url : img)).filter(Boolean)
+    : [];
+  const images = variantImages.length ? variantImages : productImages;
   const stockQty = product.stock ?? product.quantity ?? null;
   const category = product.category || product.categories?.[0] || null;
 
@@ -606,20 +614,13 @@ const IndividualProductItemPage = () => {
                 </button>
               </div>
 
-              <button
-                type="button"
-                className="ip-btn ip-btn--primary ip-btn--cart"
-                onClick={handleAddToCart}
-                disabled={vStock === 0}
-              >
-                <FaShoppingCart size={15} />
-                {stockQty === 0 ? "Out of Stock" : "Add to Cart"}
-              </button>
-
               <SubscribeWidget
                 product={product}
                 quantity={quantity}
                 variantId={hasVariants ? selectedVariant?._id : null}
+                unitPrice={displayEffective}
+                onAddToCart={handleAddToCart}
+                outOfStock={vStock === 0}
               />
             </div>
 

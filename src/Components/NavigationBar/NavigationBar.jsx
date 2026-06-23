@@ -34,6 +34,7 @@ const NAV_LINKS = [
   { label: "Pet Store", href: "/petshop" },
   { label: "Pet Care Tips", href: "/pet-care-tips" },
   { label: "Gallery", href: "/gallery" },
+  { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
 ];
 
@@ -172,6 +173,8 @@ const NavigationBar = () => {
 
           {/* Right-side actions */}
           <div className="nav-actions">
+            {/* Desktop-only: currency + account (hidden < 992px; moved into the drawer on mobile) */}
+            <div className="nav-actions-desktop">
             <CurrencySelector />
             {user ? (
               <div className="nav-user-wrap" ref={userMenuRef}>
@@ -241,6 +244,7 @@ const NavigationBar = () => {
             ) : (
               <SignUpDropdown showLogin={showLogin} setShowLogin={setShowLogin} />
             )}
+            </div>
 
             <AddToCart />
 
@@ -285,6 +289,11 @@ const NavigationBar = () => {
           </div>
 
           <div className="mobile-menu-content">
+            {/* Currency (desktop shows it in the top bar; on mobile it lives here) */}
+            <div className="mobile-currency-wrap">
+              <CurrencySelector />
+            </div>
+
             {/* Home */}
             <a
               href="/home"
@@ -359,6 +368,15 @@ const NavigationBar = () => {
               onClick={handleNav("/gallery")}
             >
               Gallery
+            </a>
+
+            {/* About */}
+            <a
+              href="/about"
+              className={`mobile-menu-link${isActive("/about") ? " active" : ""}`}
+              onClick={handleNav("/about")}
+            >
+              About
             </a>
 
             {/* Contact */}

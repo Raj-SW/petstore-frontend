@@ -357,27 +357,29 @@ class ProductService {
     }
   }
 
-  // Fetch products with filters
+  // Fetch products with filters. Array filters (categories/colors/genders) are
+  // serialized as repeated query keys (categories=a&categories=b).
   static async fetchProductsWithFilters(filters = {}, params = {}) {
     try {
-      const queryParams = new URLSearchParams({
-        page: params.page || 1,
-        limit: params.limit || 10,
-        sort: params.sort || "-createdAt",
-        ...(filters.category && { categories: filters.category }),
-        ...(filters.minPrice && { minPrice: filters.minPrice }),
-        ...(filters.maxPrice && { maxPrice: filters.maxPrice }),
-        ...(filters.minRating && { minRating: filters.minRating }),
-        ...(filters.maxRating && { maxRating: filters.maxRating }),
-        ...(filters.search && { search: filters.search }),
-      });
+      const queryParams = new URLSearchParams();
+      queryParams.set("page", params.page || 1);
+      queryParams.set("limit", params.limit || 10);
+      queryParams.set("sort", params.sort || "-createdAt");
 
-      // Remove any undefined or null values
-      for (const [key, value] of queryParams.entries()) {
-        if (value === "undefined" || value === "null" || value === "Infinity") {
-          queryParams.delete(key);
-        }
-      }
+      const appendArray = (key, val) => {
+        const arr = Array.isArray(val) ? val : val != null ? [val] : [];
+        arr
+          .filter((v) => v !== undefined && v !== null && v !== "")
+          .forEach((v) => queryParams.append(key, v));
+      };
+      // accepts `categories` (array) and legacy `category` (single)
+      appendArray("categories", filters.categories ?? filters.category);
+      appendArray("colors", filters.colors);
+      appendArray("genders", filters.genders);
+
+      if (filters.minPrice && Number(filters.minPrice) > 0) queryParams.set("minPrice", filters.minPrice);
+      if (filters.maxPrice && Number.isFinite(Number(filters.maxPrice))) queryParams.set("maxPrice", filters.maxPrice);
+      if (filters.search) queryParams.set("search", filters.search);
 
       const response = await this.handleRequest(
         `${this.API_URL}/products?${queryParams}`
@@ -393,6 +395,20 @@ class ProductService {
     } catch (error) {
       console.error("Error fetching products with filters:", error);
       return { products: [], pagination: { total: 0, page: 1, pages: 1 } };
+    }
+  }
+
+  // Distinct filter options (categories/colors/genders) for the side panel.
+  static async fetchFilterOptions() {
+    try {
+      const response = await this.handleRequest(
+        `${this.API_URL}/products/filter-options`
+      );
+      if (response.data.success) return response.data.data;
+      return { categories: [], colors: [], genders: [] };
+    } catch (error) {
+      console.error("Error fetching filter options:", error);
+      return { categories: [], colors: [], genders: [] };
     }
   }
 }

@@ -31,6 +31,7 @@ import "./ServicePage.css";
 const SERVICES = [
   {
     key: "vet",
+    status: "live",
     label: "Veterinary Care",
     icon: FaStethoscope,
     image: imgVeterinary,
@@ -40,6 +41,7 @@ const SERVICES = [
   },
   {
     key: "import",
+    status: "live",
     label: "Import & Export",
     icon: FaPlane,
     image: imgImport,
@@ -49,6 +51,7 @@ const SERVICES = [
   },
   {
     key: "grooming",
+    status: "live",
     label: "Grooming",
     icon: FaCut,
     image: imgGrooming,
@@ -58,6 +61,7 @@ const SERVICES = [
   },
   {
     key: "taxi",
+    status: "coming-soon",
     label: "Pet Taxi",
     icon: FaTaxi,
     image: imgTaxi,
@@ -67,6 +71,7 @@ const SERVICES = [
   },
   {
     key: "training",
+    status: "coming-soon",
     label: "Pet Training",
     icon: FaDog,
     image: imgTraining,
@@ -76,6 +81,7 @@ const SERVICES = [
   },
   {
     key: "adoption",
+    status: "coming-soon",
     label: "Adoption & Rescue",
     icon: FaHeart,
     image: imgAdoption,
@@ -85,6 +91,7 @@ const SERVICES = [
   },
   {
     key: "boarding",
+    status: "coming-soon",
     label: "Boarding",
     icon: FaBed,
     image: imgBoarding,
@@ -103,10 +110,11 @@ const STATS = [
 
 /* ── Sub-components ── */
 
-const ServiceCard = ({ label, icon: Icon, image, href, desc, features, delay }) => {
+const ServiceCard = ({ label, icon: Icon, image, href, desc, features, status = "live", delay }) => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, amount: 0.12 });
   const navigate = useNavigate();
+  const comingSoon = status === "coming-soon";
 
   return (
     <motion.article
@@ -115,7 +123,7 @@ const ServiceCard = ({ label, icon: Icon, image, href, desc, features, delay }) 
       initial={{ opacity: 0, y: 36 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.5, delay, ease: [0.25, 0.46, 0.45, 0.94] }}
-      whileHover={{ y: -6, boxShadow: "0 24px 52px rgba(0,28,16,0.18)" }}
+      whileHover={comingSoon ? undefined : { y: -6, boxShadow: "0 24px 52px rgba(0,28,16,0.18)" }}
     >
       <div className="sp-card-img-wrap">
         <img src={image} alt={label} className="sp-card-img" />
@@ -123,6 +131,19 @@ const ServiceCard = ({ label, icon: Icon, image, href, desc, features, delay }) 
         <div className="sp-card-badge">
           <Icon size={14} />
         </div>
+        {comingSoon && (
+          <span
+            style={{
+              position: "absolute", top: 12, left: 12, zIndex: 3,
+              background: "#D99A2B", color: "#001C10",
+              fontSize: "0.68rem", fontWeight: 700, letterSpacing: "0.05em",
+              textTransform: "uppercase", padding: "0.28rem 0.65rem", borderRadius: 999,
+              boxShadow: "0 4px 12px rgba(0,28,16,0.2)",
+            }}
+          >
+            Coming Soon
+          </span>
+        )}
       </div>
 
       <div className="sp-card-body">
@@ -138,16 +159,28 @@ const ServiceCard = ({ label, icon: Icon, image, href, desc, features, delay }) 
           ))}
         </ul>
 
-        <motion.button
-          type="button"
-          className="sp-card-btn"
-          onClick={() => navigate(href)}
-          whileHover={{ gap: "0.65rem" }}
-          whileTap={{ scale: 0.97 }}
-        >
-          <span>Learn More</span>
-          <FaArrowRight size={12} />
-        </motion.button>
+        {comingSoon ? (
+          <button
+            type="button"
+            className="sp-card-btn"
+            disabled
+            aria-disabled="true"
+            style={{ opacity: 0.55, cursor: "default" }}
+          >
+            <span>Coming Soon</span>
+          </button>
+        ) : (
+          <motion.button
+            type="button"
+            className="sp-card-btn"
+            onClick={() => navigate(href)}
+            whileHover={{ gap: "0.65rem" }}
+            whileTap={{ scale: 0.97 }}
+          >
+            <span>Learn More</span>
+            <FaArrowRight size={12} />
+          </motion.button>
+        )}
       </div>
     </motion.article>
   );

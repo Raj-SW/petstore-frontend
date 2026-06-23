@@ -3,3 +3,13 @@
   border: 1px solid #d8d4cc; background: #faf9f6; border-radius: 6px;
   padding: 3px 7px; cursor: pointer; display: inline-flex; align-items: center;
 }
+
+/* Epic 12 — demand forecast panel */
+.aps-demand { background: #fff; border: 1px solid rgba(201,186,168,0.4); border-radius: 14px; padding: 16px 18px; margin: 8px 0 18px; }
+.aps-demand-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.aps-horizon { font-size: 13px; color: #5a5247; display: inline-flex; align-items: center; }
+.aps-demand-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 14px; }
+.aps-demand-table th, .aps-demand-table td { text-align: left; padding: 8px 10px; border-bottom: 1px solid #f0e9e1; }
+.aps-demand-table th { font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: #8a7f72; }
+.aps-shortfall { color: #c0392b; font-weight: 700; }
+.aps-demand-ok { color: #2e7d4f; font-weight: 600; margin: 6px 0 0; }

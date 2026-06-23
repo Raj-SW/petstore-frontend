@@ -7,6 +7,7 @@ import advertsApi from "../../Services/api/advertsApi";
 import { RichTextRenderer } from "../../Components/RichText";
 import Breadcrumb from "../../Components/HelperComponents/Breadcrumb/Breadcrumb";
 import { getAnimalTheme, capitalize } from "./tipTheme";
+import { coverUrl } from "../../utils/coverImage";
 import "./TipDetail.css";
 
 const TipDetailPage = () => {
@@ -76,8 +77,8 @@ const TipDetailPage = () => {
 
       {/* Cover hero */}
       <div className="ptd-cover" style={{ background: theme.tint }}>
-        {tip.coverImage ? (
-          <img src={tip.coverImage} alt="" className="ptd-cover-img" />
+        {coverUrl(tip.coverImage) ? (
+          <img src={coverUrl(tip.coverImage)} alt="" className="ptd-cover-img" />
         ) : (
           <Icon className="ptd-cover-icon" style={{ color: theme.color }} aria-hidden="true" />
         )}
@@ -114,6 +115,13 @@ const TipDetailPage = () => {
                 .map((s, i) => (
                   <section key={i} className="ptd-section">
                     {s.heading && <h2 className="ptd-section-heading">{s.heading}</h2>}
+                    {Array.isArray(s.images) && s.images.length > 0 && (
+                      <div className="ptd-section-images">
+                        {s.images.map((img, j) => (
+                          <img key={j} src={typeof img === "object" ? img.url : img} alt={s.heading || `Section image ${j + 1}`} loading="lazy" />
+                        ))}
+                      </div>
+                    )}
                     {s.body && <RichTextRenderer content={s.body} className="ptd-body" />}
                   </section>
                 ))}

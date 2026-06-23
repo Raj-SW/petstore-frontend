@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FiClock, FiExternalLink } from "react-icons/fi";
 import { getAnimalTheme, capitalize } from "../tipTheme";
+import { coverUrl } from "../../../utils/coverImage";
 
 const cardMotion = {
   initial: { opacity: 0, y: 24 },
@@ -13,6 +14,7 @@ const cardMotion = {
 const TipCard = ({ tip }) => {
   const theme = getAnimalTheme(tip.animalType);
   const Icon = theme.icon;
+  const cover = coverUrl(tip.coverImage);
 
   return (
     <motion.article className="pct-card" {...cardMotion}>
@@ -20,10 +22,10 @@ const TipCard = ({ tip }) => {
         <div className="pct-card-strip" style={{ background: theme.color }} />
         <div
           className="pct-card-img"
-          style={tip.coverImage ? undefined : { background: `linear-gradient(135deg, ${theme.tint} 0%, #fffdf9 135%)` }}
+          style={cover ? undefined : { background: `linear-gradient(135deg, ${theme.tint} 0%, #fffdf9 135%)` }}
         >
-          {tip.coverImage ? (
-            <img src={tip.coverImage} alt={tip.title} loading="lazy" />
+          {cover ? (
+            <img src={cover} alt={tip.title} loading="lazy" />
           ) : (
             <span className="pct-card-img-badge">
               <Icon style={{ color: theme.color }} size={26} aria-hidden="true" />

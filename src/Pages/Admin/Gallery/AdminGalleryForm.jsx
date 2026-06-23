@@ -1,17 +1,18 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { FiArrowLeft, FiSave, FiUploadCloud, FiX } from "react-icons/fi";
+import { FiArrowLeft, FiSave } from "react-icons/fi";
 import { RichTextEditor } from "../../../Components/RichText";
+import ImageManager from "../../../Components/Admin/ImageManager/ImageManager";
 import galleryApi from "../../../Services/api/galleryApi";
 import { useToast } from "../../../context/ToastContext";
 import { GALLERY_CATEGORIES } from "../../Gallery/galleryTheme";
+import { coverUrl } from "../../../utils/coverImage";
 import "../Tips/AdminTipForm.css";
 import "./AdminGalleryForm.css";
 
 const EMPTY_FORM = {
   title: "",
-  coverImage: "",
   body: "",
   category: "event",
   eventDate: "",
@@ -34,15 +35,14 @@ const AdminGalleryForm = () => {
   const navigate = useNavigate();
   const { addToast } = useToast();
   const [form, setForm] = useState(EMPTY_FORM);
-  const [sections, setSections] = useState([]); // [{ id, heading, body }]
+  const [cover, setCover] = useState([]); // [{ url, publicId }] (0 or 1)
+  const [sections, setSections] = useState([]); // [{ id, heading, body, images }]
   const [errors, setErrors] = useState({});
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(isEdit);
-  const [uploadingCover, setUploadingCover] = useState(false);
-  const coverInputRef = useRef(null);
 
   const addSection = () =>
-    setSections((prev) => [...prev, { id: `sec-${Date.now()}`, heading: "", body: "" }]);
+    setSections((prev) => [...prev, { id: `sec-${Date.now()}`, heading: "", body: "", images: [] }]);
   const removeSection = (sid) =>
     setSections((prev) => prev.filter((s) => s.id !== sid));
   const updateSection = (sid, changes) =>
@@ -56,7 +56,6 @@ const AdminGalleryForm = () => {
         const p = res.data;
         setForm({
           title: p.title || "",
-          coverImage: p.coverImage || "",
           body: p.body || "",
           category: p.category || "event",
           eventDate: toDateInput(p.eventDate),
@@ -65,9 +64,18 @@ const AdminGalleryForm = () => {
           featured: Boolean(p.featured),
           published: Boolean(p.published),
         });
+        const cu = coverUrl(p.coverImage);
+        setCover(cu ? [{ url: cu, publicId: p.coverImage?.publicId || "" }] : []);
         setSections(
           Array.isArray(p.sections)
-            ? p.sections.map((s, i) => ({ id: `sec-${Date.now()}-${i}`, heading: s.heading || "", body: s.body || "" }))
+            ? p.sections.map((s, i) => ({
+                id: `sec-${Date.now()}-${i}`,
+                heading: s.heading || "",
+                body: s.body || "",
+                images: Array.isArray(s.images)
+                  ? s.images.map((img) => (typeof img === "object" ? { url: img.url, publicId: img.publicId || "" } : { url: img, publicId: "" })).filter((x) => x.url && x.publicId)
+                  : [],
+              }))
             : []
         );
       } catch {
@@ -84,29 +92,11 @@ const AdminGalleryForm = () => {
     setForm((f) => ({ ...f, [field]: value }));
   };
 
-  const handleCoverPick = async (e) => {
-    const file = e.target.files?.[0];
-    e.target.value = "";
-    if (!file) return;
-    setUploadingCover(true);
-    try {
-      const url = await galleryApi.uploadImage(file);
-      if (url) setForm((f) => ({ ...f, coverImage: url }));
-    } catch {
-      addToast("Cover upload failed", "error");
-    } finally {
-      setUploadingCover(false);
-    }
-  };
-
   const validate = () => {
     const errs = {};
     if (form.title.trim().length < 2) errs.title = "Title must be at least 2 characters";
     if (!form.body || form.body === "<p></p>") errs.body = "Body is required";
     if (!form.eventDate) errs.eventDate = "Event date is required";
-    if (form.coverImage && !/^https?:\/\//.test(form.coverImage)) {
-      errs.coverImage = "Cover image must be a valid URL";
-    }
     setErrors(errs);
     return Object.keys(errs).length === 0;
   };
@@ -120,9 +110,15 @@ const AdminGalleryForm = () => {
         ...form,
         location: form.location.trim(),
         tags: form.tags.split(",").map((t) => t.trim()).filter(Boolean),
+        coverImage: cover[0] ? { url: cover[0].url, publicId: cover[0].publicId } : { url: "", publicId: "" },
         sections: sections
-          .filter((s) => (s.heading && s.heading.trim()) || (s.body && s.body !== "<p></p>"))
-          .map(({ heading, body }, order) => ({ heading: (heading || "").trim(), body: body || "", order })),
+          .filter((s) => (s.heading && s.heading.trim()) || (s.body && s.body !== "<p></p>") || (s.images && s.images.length))
+          .map(({ heading, body, images }, order) => ({
+            heading: (heading || "").trim(),
+            body: body || "",
+            order,
+            images: (images || []).map((img) => ({ url: img.url, publicId: img.publicId })),
+          })),
       };
       if (isEdit) {
         await galleryApi.updatePost(id, payload);
@@ -191,30 +187,13 @@ const AdminGalleryForm = () => {
 
         <div className="atf-field">
           <label>Cover image (optional)</label>
-          <div className="agf-cover">
-            {form.coverImage ? (
-              <div className="agf-cover-preview">
-                <img src={form.coverImage} alt="Cover preview" />
-                <button type="button" className="agf-cover-remove" onClick={() => setForm((f) => ({ ...f, coverImage: "" }))} title="Remove cover">
-                  <FiX size={14} />
-                </button>
-              </div>
-            ) : (
-              <button type="button" className="agf-cover-drop" onClick={() => coverInputRef.current?.click()} disabled={uploadingCover}>
-                <FiUploadCloud size={20} />
-                {uploadingCover ? "Uploading…" : "Upload a cover image"}
-              </button>
-            )}
-            <input ref={coverInputRef} type="file" accept="image/*" style={{ display: "none" }} onChange={handleCoverPick} />
-          </div>
-          <input
-            type="url"
-            className="agf-cover-url"
-            value={form.coverImage}
-            onChange={set("coverImage")}
-            placeholder="…or paste an image URL (https://…)"
+          <ImageManager
+            value={cover}
+            onChange={setCover}
+            uploadUrl="/gallery/upload-image"
+            max={1}
+            onError={(msg) => addToast(msg, "error")}
           />
-          {errors.coverImage && <p className="atf-error">{errors.coverImage}</p>}
         </div>
 
         <RichTextEditor
@@ -258,6 +237,16 @@ const AdminGalleryForm = () => {
                 minHeight="160px"
                 onImageUpload={galleryApi.uploadImage}
               />
+              <div className="atf-section-images">
+                <label className="atf-section-images-label">Section images (optional, up to 8 — first is the lead)</label>
+                <ImageManager
+                  value={section.images || []}
+                  onChange={(imgs) => updateSection(section.id, { images: imgs })}
+                  uploadUrl="/gallery/upload-image"
+                  max={8}
+                  onError={(msg) => addToast(msg, "error")}
+                />
+              </div>
             </div>
           ))}
         </div>

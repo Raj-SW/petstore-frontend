@@ -1,7 +1,7 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiArrowLeft, FiX, FiUpload, FiPlus } from "react-icons/fi";
+import { FiArrowLeft, FiX, FiPlus } from "react-icons/fi";
 import { MdDragIndicator } from "react-icons/md";
 import {
   DndContext, closestCenter, KeyboardSensor, PointerSensor,
@@ -15,6 +15,7 @@ import { CSS } from "@dnd-kit/utilities";
 import { api } from "../../../core/api/apiClient";
 import { useToast } from "../../../context/ToastContext";
 import { RichTextEditor } from "../../../Components/RichText";
+import ImageManager from "../../../Components/Admin/ImageManager/ImageManager";
 import announcementsApi from "../../../Services/api/announcementsApi";
 import "./AdminProductForm.css";
 
@@ -89,7 +90,6 @@ const AdminProductForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { addToast } = useToast();
-  const fileInputRef = useRef(null);
 
   const isEditMode = Boolean(id);
 
@@ -98,10 +98,9 @@ const AdminProductForm = () => {
   const [submitting, setSubmitting] = useState(false);
   const [notifyOnSale, setNotifyOnSale] = useState(false);
 
-  // Image state
-  const [imageFiles,     setImageFiles]     = useState([]);  // new File objects
-  const [existingImages, setExistingImages] = useState([]);  // {url, publicId} from DB
-  const [imagePreviews,  setImagePreviews]  = useState([]);  // blob URLs for new files
+  // Image state — ordered refs [{ url, publicId }]; index 0 = cover.
+  // Uploads happen immediately inside <ImageManager>, so the form just holds refs.
+  const [images, setImages] = useState([]);
 
   // Color tag input
   const [colorInput, setColorInput] = useState("");
@@ -165,7 +164,16 @@ const AdminProductForm = () => {
 
         setVariants(
           Array.isArray(p.variants)
-            ? p.variants.map((v) => ({ label: v.label, price: v.price, quantity: v.quantity }))
+            ? p.variants.map((v) => ({
+                label: v.label,
+                price: v.price,
+                quantity: v.quantity,
+                images: Array.isArray(v.images)
+                  ? v.images
+                      .map((img) => (typeof img === "object" ? { url: img.url, publicId: img.publicId || "" } : { url: img, publicId: "" }))
+                      .filter((img) => img.url && img.publicId)
+                  : [],
+              }))
             : []
         );
         setSections(
@@ -179,11 +187,9 @@ const AdminProductForm = () => {
               .map((img) => typeof img === "object"
                 ? { url: img.url, publicId: img.publicId || "" }
                 : { url: img, publicId: "" })
-              .filter((img) => img.url)
-          : p.imageUrl
-          ? [{ url: p.imageUrl, publicId: "" }]
+              .filter((img) => img.url && img.publicId)
           : [];
-        setExistingImages(imgs);
+        setImages(imgs);
       } catch (err) {
         addToast("Failed to load product data.", "error");
       } finally {
@@ -192,11 +198,6 @@ const AdminProductForm = () => {
     };
     fetchProduct();
   }, [id]);
-
-  // Revoke blob URLs on unmount
-  useEffect(() => {
-    return () => imagePreviews.forEach((url) => URL.revokeObjectURL(url));
-  }, [imagePreviews]);
 
   const setField = (key, value) => setForm((f) => ({ ...f, [key]: value }));
 
@@ -241,38 +242,9 @@ const AdminProductForm = () => {
   const removeColor = (color) =>
     setField("colors", form.colors.filter((c) => c !== color));
 
-  // ── File handling ───────────────────────────────────────────────────────────
-  const MAX_MB    = 4;
-  const MAX_BYTES = MAX_MB * 1024 * 1024;
-
-  const handleFileChange = (e) => {
-    const files    = Array.from(e.target.files || []);
-    if (!files.length) return;
-
-    const oversized = files.filter((f) => f.size > MAX_BYTES);
-    if (oversized.length) {
-      addToast(
-        `${oversized.map((f) => `"${f.name}"`).join(", ")} exceed${oversized.length === 1 ? "s" : ""} the ${MAX_MB} MB limit.`,
-        "error"
-      );
-    }
-
-    const valid = files.filter((f) => f.size <= MAX_BYTES);
-    if (!valid.length) { e.target.value = ""; return; }
-
-    setImageFiles((p)    => [...p, ...valid]);
-    setImagePreviews((p) => [...p, ...valid.map((f) => URL.createObjectURL(f))]);
-    e.target.value = "";
-  };
-
-  const removeNewFile = (i) => {
-    URL.revokeObjectURL(imagePreviews[i]);
-    setImageFiles((p)    => p.filter((_, j) => j !== i));
-    setImagePreviews((p) => p.filter((_, j) => j !== i));
-  };
-
-  const removeExistingImage = (i) =>
-    setExistingImages((p) => p.filter((_, j) => j !== i));
+  // Update one variant's fields (incl. its images array)
+  const updateVariant = (i, changes) =>
+    setVariants((vs) => vs.map((x, j) => (j === i ? { ...x, ...changes } : x)));
 
   // ── Validation ──────────────────────────────────────────────────────────────
   const validate = () => {
@@ -306,11 +278,7 @@ const AdminProductForm = () => {
       addToast("Select at least one category.", "error");
       return false;
     }
-    if (!isEditMode && imageFiles.length === 0) {
-      addToast("At least one product image is required.", "error");
-      return false;
-    }
-    if (isEditMode && existingImages.length === 0 && imageFiles.length === 0) {
+    if (images.length === 0) {
       addToast("At least one product image is required.", "error");
       return false;
     }
@@ -330,7 +298,12 @@ const AdminProductForm = () => {
       fd.append("quantity",  Number(form.quantity) || 0);
     } else {
       fd.append("variants", JSON.stringify(
-        variants.map((v) => ({ label: v.label.trim(), price: Number(v.price), quantity: Number(v.quantity) }))
+        variants.map((v) => ({
+          label: v.label.trim(),
+          price: Number(v.price),
+          quantity: Number(v.quantity),
+          images: (v.images || []).map((img) => ({ url: img.url, publicId: img.publicId })),
+        }))
       ));
     }
     fd.append("isActive",    String(form.isActive));
@@ -352,25 +325,19 @@ const AdminProductForm = () => {
         .map(({ title, body }, order) => ({ title: title.trim(), body, order }))
     ));
 
-    imageFiles.forEach((file) => fd.append("images", file));
-
-    if (isEditMode) {
-      // Tell the backend exactly which existing images to keep (selective delete)
-      fd.append("keepImages", JSON.stringify(existingImages));
-    }
+    // ImageManager already uploaded every image — submit the final ordered refs.
+    fd.append("imageRefs", JSON.stringify(
+      images.map((img) => ({ url: img.url, publicId: img.publicId }))
+    ));
 
     try {
       setSubmitting(true);
       let res;
       if (isEditMode) {
-        res = await api.patch(`/products/${id}`, fd, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
+        res = await api.patch(`/products/${id}`, fd);
         addToast("Product updated successfully.", "success");
       } else {
-        res = await api.post("/products", fd, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
+        res = await api.post("/products", fd);
         addToast("Product created successfully.", "success");
       }
 
@@ -409,8 +376,6 @@ const AdminProductForm = () => {
       </div>
     );
   }
-
-  const hasAnyImage = existingImages.length > 0 || imagePreviews.length > 0;
 
   // Live sale-price preview
   const priceNum = Number(form.price) || 0;
@@ -498,7 +463,7 @@ const AdminProductForm = () => {
                 <div className="admin-pf-row">
                   <div className="admin-field">
                     <label className="admin-label" htmlFor="pf-price">
-                      Price ($) <span className="admin-required">*</span>
+                      Price (Rs) <span className="admin-required">*</span>
                     </label>
                     <input
                       id="pf-price"
@@ -536,7 +501,7 @@ const AdminProductForm = () => {
                   <button
                     type="button"
                     className="apf-variant-add"
-                    onClick={() => setVariants((vs) => [...vs, { label: "", price: "", quantity: "" }])}
+                    onClick={() => setVariants((vs) => [...vs, { label: "", price: "", quantity: "", images: [] }])}
                   >
                     + Add variant
                   </button>
@@ -545,32 +510,44 @@ const AdminProductForm = () => {
                   <p className="apf-hint">Price &amp; stock are set per variant — the top-level price/stock are derived automatically.</p>
                 )}
                 {variants.map((v, i) => (
-                  <div key={i} className="apf-variant-row">
-                    <input
-                      className="admin-input"
-                      placeholder="Label (e.g. 5kg)"
-                      value={v.label}
-                      onChange={(e) => setVariants((vs) => vs.map((x, j) => (j === i ? { ...x, label: e.target.value } : x)))}
-                    />
-                    <input
-                      className="admin-input"
-                      type="number" min="0" step="0.01" placeholder="Price"
-                      value={v.price}
-                      onChange={(e) => setVariants((vs) => vs.map((x, j) => (j === i ? { ...x, price: e.target.value } : x)))}
-                    />
-                    <input
-                      className="admin-input"
-                      type="number" min="0" step="1" placeholder="Stock"
-                      value={v.quantity}
-                      onChange={(e) => setVariants((vs) => vs.map((x, j) => (j === i ? { ...x, quantity: e.target.value } : x)))}
-                    />
-                    <button
-                      type="button"
-                      className="apf-variant-remove"
-                      onClick={() => setVariants((vs) => vs.filter((_, j) => j !== i))}
-                    >
-                      Remove
-                    </button>
+                  <div key={i} className="apf-variant-block">
+                    <div className="apf-variant-row">
+                      <input
+                        className="admin-input"
+                        placeholder="Label (e.g. 5kg)"
+                        value={v.label}
+                        onChange={(e) => updateVariant(i, { label: e.target.value })}
+                      />
+                      <input
+                        className="admin-input"
+                        type="number" min="0" step="0.01" placeholder="Price (Rs)"
+                        value={v.price}
+                        onChange={(e) => updateVariant(i, { price: e.target.value })}
+                      />
+                      <input
+                        className="admin-input"
+                        type="number" min="0" step="1" placeholder="Stock"
+                        value={v.quantity}
+                        onChange={(e) => updateVariant(i, { quantity: e.target.value })}
+                      />
+                      <button
+                        type="button"
+                        className="apf-variant-remove"
+                        onClick={() => setVariants((vs) => vs.filter((_, j) => j !== i))}
+                      >
+                        Remove
+                      </button>
+                    </div>
+                    <div className="apf-variant-images">
+                      <span className="apf-variant-images-label">Variant images (optional, up to 6)</span>
+                      <ImageManager
+                        value={v.images || []}
+                        onChange={(imgs) => updateVariant(i, { images: imgs })}
+                        uploadUrl="/products/upload-image"
+                        max={6}
+                        onError={(msg) => addToast(msg, "error")}
+                      />
+                    </div>
                   </div>
                 ))}
               </div>
@@ -656,82 +633,19 @@ const AdminProductForm = () => {
             <div className="admin-card">
               <h2 className="admin-pf-section-title">
                 Images
-                {hasAnyImage && (
-                  <span className="admin-pf-img-count">
-                    {existingImages.length + imagePreviews.length} attached
-                  </span>
+                {images.length > 0 && (
+                  <span className="admin-pf-img-count">{images.length} attached</span>
                 )}
               </h2>
-
-              {/* Existing images (edit mode) */}
-              {existingImages.length > 0 && (
-                <div className="admin-pf-img-grid">
-                  {existingImages.map((img, i) => (
-                    <div key={i} className="admin-pf-img-thumb">
-                      <img src={img.url} alt={`Image ${i + 1}`} />
-                      <button
-                        type="button"
-                        className="admin-pf-img-remove"
-                        onClick={() => removeExistingImage(i)}
-                        aria-label="Remove image"
-                      >
-                        <FiX size={12} />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {/* New file previews */}
-              {imagePreviews.length > 0 && (
-                <div
-                  className="admin-pf-img-grid"
-                  style={{ marginTop: existingImages.length > 0 ? "0.75rem" : 0 }}
-                >
-                  {imagePreviews.map((url, i) => (
-                    <div key={i} className="admin-pf-img-thumb admin-pf-img-thumb--new">
-                      <img src={url} alt={`New ${i + 1}`} />
-                      <button
-                        type="button"
-                        className="admin-pf-img-remove"
-                        onClick={() => removeNewFile(i)}
-                        aria-label="Remove image"
-                      >
-                        <FiX size={12} />
-                      </button>
-                      <span className="admin-pf-img-new-badge">New</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {/* Drop zone */}
-              <div
-                className="admin-pf-dropzone"
-                onClick={() => fileInputRef.current?.click()}
-                onDragOver={(e) => e.preventDefault()}
-                onDrop={(e) => {
-                  e.preventDefault();
-                  if (e.dataTransfer.files.length) {
-                    handleFileChange({ target: { files: e.dataTransfer.files, value: "" } });
-                  }
-                }}
-                style={{ marginTop: hasAnyImage ? "0.85rem" : 0 }}
-              >
-                <FiUpload size={22} className="admin-pf-dropzone-icon" />
-                <p className="admin-pf-dropzone-text">
-                  <strong>Click to upload</strong> or drag &amp; drop
-                </p>
-                <p className="admin-pf-dropzone-hint">PNG, JPG, WEBP · max {MAX_MB} MB · up to 10 files</p>
-              </div>
-
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                multiple
-                style={{ display: "none" }}
-                onChange={handleFileChange}
+              <p className="apf-hint" style={{ marginTop: 0 }}>
+                Drag to reorder · the first image is the cover shown everywhere.
+              </p>
+              <ImageManager
+                value={images}
+                onChange={setImages}
+                uploadUrl="/products/upload-image"
+                max={10}
+                onError={(msg) => addToast(msg, "error")}
               />
             </div>
 

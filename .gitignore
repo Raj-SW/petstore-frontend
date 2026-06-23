@@ -24,6 +24,9 @@ dist-ssr
 *.sw?
 *.env
 
+# Test coverage output
+coverage/
+
 # Graphify scratch output (graph lives in the parent repo)
 graphify-out/
 src/graphify-out/

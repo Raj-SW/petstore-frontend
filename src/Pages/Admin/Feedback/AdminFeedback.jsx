@@ -7,10 +7,15 @@ import {
   FiStar,
 } from "react-icons/fi";
 import DataTable from "../../../Components/Admin/DataTable/DataTable";
+import ImageManager from "../../../Components/Admin/ImageManager/ImageManager";
 import feedbackApi from "../../../Services/api/feedbackApi";
 import { useToast } from "../../../context/ToastContext";
 import "../Tips/AdminTips.css";
 import "./AdminFeedback.css";
+
+// Normalise a photo entry to a { url, publicId } ref (legacy entries were strings)
+const toPhotoRef = (p) =>
+  typeof p === "object" ? { url: p.url, publicId: p.publicId || "" } : { url: p, publicId: "" };
 
 /** Render n filled/empty stars */
 const Stars = ({ rating, max = 5 }) => (
@@ -34,6 +39,8 @@ const AdminFeedback = () => {
   // View modal
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [viewed, setViewed] = useState(null);
+  const [editPhotos, setEditPhotos] = useState([]);
+  const [savingPhotos, setSavingPhotos] = useState(false);
 
   const { addToast } = useToast();
 
@@ -95,7 +102,25 @@ const AdminFeedback = () => {
 
   const handleView = (item) => {
     setViewed(item);
+    setEditPhotos(Array.isArray(item.photos) ? item.photos.map(toPhotoRef).filter((p) => p.url) : []);
     setViewModalOpen(true);
+  };
+
+  const savePhotos = async () => {
+    if (!viewed) return;
+    try {
+      setSavingPhotos(true);
+      await feedbackApi.updateFeedback(viewed._id, {
+        photos: editPhotos.map((p) => ({ url: p.url, publicId: p.publicId })),
+      });
+      addToast("Photos updated", "success");
+      setViewModalOpen(false);
+      fetchFeedback();
+    } catch {
+      addToast("Failed to update photos", "error");
+    } finally {
+      setSavingPhotos(false);
+    }
   };
 
   const columns = [
@@ -250,24 +275,32 @@ const AdminFeedback = () => {
                 <Stars rating={viewed.rating} />
               </div>
               <p className="af-view-message">{viewed.message}</p>
-              {viewed.photos?.length > 0 && (
-                <div className="af-view-photos">
-                  {viewed.photos.map((url, i) => (
-                    <img
-                      key={i}
-                      src={url}
-                      alt={`Feedback photo ${i + 1}`}
-                      className="af-thumb"
-                    />
-                  ))}
-                </div>
-              )}
+
+              <div className="af-view-photos-editor">
+                <span className="admin-label">Photos — drag to reorder, delete, or add</span>
+                <ImageManager
+                  value={editPhotos}
+                  onChange={setEditPhotos}
+                  uploadUrl="/feedback/upload-image"
+                  max={6}
+                  onError={(msg) => addToast(msg, "error")}
+                />
+              </div>
+
               <div className="admin-modal-actions">
                 <button
                   className="at-btn-secondary"
                   onClick={() => setViewModalOpen(false)}
+                  disabled={savingPhotos}
                 >
                   Close
+                </button>
+                <button
+                  className="at-btn-primary"
+                  onClick={savePhotos}
+                  disabled={savingPhotos}
+                >
+                  {savingPhotos ? "Saving…" : "Save Photos"}
                 </button>
               </div>
             </motion.div>

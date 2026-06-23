@@ -24,6 +24,7 @@ const UserProfile = () => {
 
   const [userDetails, setUserDetails] = useState(user);
   const [salesEmails, setSalesEmails] = useState(user?.emailPreferences?.sales !== false);
+  const [newsEmails, setNewsEmails] = useState(user?.emailPreferences?.news !== false);
   const [savingPrefs, setSavingPrefs] = useState(false);
   const [pets, setPets] = useState([]);
 
@@ -121,6 +122,23 @@ const UserProfile = () => {
       setSuccessMessage(next ? "Subscribed to sale & promo emails" : "Unsubscribed from sale & promo emails");
     } catch (err) {
       setSalesEmails(!next);       // revert on failure
+      setError(err.message || "Failed to update email preferences");
+    } finally {
+      setSavingPrefs(false);
+    }
+  };
+
+  const handleNewsEmailsToggle = async (e) => {
+    const next = e.target.checked;
+    setNewsEmails(next);           // optimistic
+    setSavingPrefs(true);
+    setError("");
+    try {
+      await UserProfileService.updateUserProfile({ emailPreferences: { news: next } });
+      updateUser({ emailPreferences: { news: next } });
+      setSuccessMessage(next ? "Subscribed to news & updates" : "Unsubscribed from news & updates");
+    } catch (err) {
+      setNewsEmails(!next);        // revert on failure
       setError(err.message || "Failed to update email preferences");
     } finally {
       setSavingPrefs(false);
@@ -258,6 +276,15 @@ const UserProfile = () => {
                 onChange={handleSalesEmailsToggle}
               />
               <span>Receive sale &amp; promo emails</span>
+            </label>
+            <label className="up-prefs-toggle">
+              <input
+                type="checkbox"
+                checked={newsEmails}
+                disabled={savingPrefs}
+                onChange={handleNewsEmailsToggle}
+              />
+              <span>Receive news &amp; updates (events, tips, posts)</span>
             </label>
           </div>
         </motion.aside>

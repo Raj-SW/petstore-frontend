@@ -210,6 +210,25 @@
     background-color: var(--color-error-light);
 }
 
+/* Row selection */
+.select-header,
+.select-cell {
+    width: 44px;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.dt-checkbox {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: var(--color-primary);
+}
+
+.data-table tbody tr.row-selected {
+    background-color: var(--color-bg-card-beige);
+}
+
 /* Pagination */
 .table-pagination {
     display: flex;

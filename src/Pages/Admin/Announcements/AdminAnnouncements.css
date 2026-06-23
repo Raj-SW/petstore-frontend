@@ -47,3 +47,10 @@
 .aa-product-price { font-weight: 600; color: #c0392b; font-size: 13px; }
 .aa-send { display: inline-flex; align-items: center; gap: 6px; }
 .aa-history-title { font-size: 18px; margin: 8px 0 12px; }
+
+/* Epic 9b — typed composer fields */
+.aa-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+.aa-event-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.aa-event-grid .aa-textarea { grid-column: 1 / -1; }
+.aa-cta-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 10px; margin-bottom: 12px; }
+@media (max-width: 640px) { .aa-event-grid, .aa-cta-grid { grid-template-columns: 1fr; } }

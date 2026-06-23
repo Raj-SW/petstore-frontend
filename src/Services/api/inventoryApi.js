@@ -31,20 +31,20 @@ const inventoryApi = {
   },
 
   // PATCH /admin/inventory/:id/restock
-  restockProduct: async (productId, units, note = "") => {
-    const response = await api.patch(`/admin/inventory/${productId}/restock`, {
-      units,
-      note,
-    });
+  // variantId is required when the product has variants.
+  restockProduct: async (productId, units, note = "", variantId = null) => {
+    const body = { units, note };
+    if (variantId) body.variantId = variantId;
+    const response = await api.patch(`/admin/inventory/${productId}/restock`, body);
     return response.data;
   },
 
   // PATCH /admin/inventory/:id/adjust
-  adjustStock: async (productId, newQuantity, note) => {
-    const response = await api.patch(`/admin/inventory/${productId}/adjust`, {
-      newQuantity,
-      note,
-    });
+  // variantId is required when the product has variants.
+  adjustStock: async (productId, newQuantity, note, variantId = null) => {
+    const body = { newQuantity, note };
+    if (variantId) body.variantId = variantId;
+    const response = await api.patch(`/admin/inventory/${productId}/adjust`, body);
     return response.data;
   },
 };

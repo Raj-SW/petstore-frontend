@@ -1,9 +1,13 @@
 import { useState, useEffect, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiPlus, FiPackage, FiAlertCircle, FiXCircle, FiCheckCircle } from "react-icons/fi";
+import {
+  FiPlus, FiPackage, FiAlertCircle, FiXCircle, FiCheckCircle,
+  FiCheck, FiSlash, FiStar, FiTag, FiTrash2, FiX,
+} from "react-icons/fi";
 import DataTable from "../../../Components/Admin/DataTable/DataTable";
 import productsApi from "../../../Services/api/productsApi";
+import subscriptionsApi from "../../../Services/api/subscriptionsApi";
 import { useToast } from "../../../context/ToastContext";
 import "./AdminProducts.css";
 
@@ -25,17 +29,31 @@ const AdminProducts = () => {
   const [filterStock,    setFilterStock]    = useState("all");
   const [filterStatus,   setFilterStatus]   = useState("all");
 
+  // ── Bulk actions ──
+  const [selectedIds,    setSelectedIds]    = useState([]);
+  const [bulkBusy,       setBulkBusy]       = useState(false);
+  const [saleModalOpen,  setSaleModalOpen]  = useState(false);
+  const [bulkDeleteOpen, setBulkDeleteOpen] = useState(false);
+  const [saleForm,       setSaleForm]       = useState({
+    discountType: "percent", discountValue: "", saleStartsAt: "", saleEndsAt: "",
+  });
+
   useEffect(() => { fetchProducts(); }, []);
 
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      const response = await productsApi.getProducts({ limit: 1000 });
+      // Coverage is best-effort (admin-only); don't fail the list if it errors.
+      const [response, coverage] = await Promise.all([
+        productsApi.getProducts({ limit: 1000, isActive: 'all' }),
+        subscriptionsApi.getProductCoverage().catch(() => ({})),
+      ]);
       const raw = response.data || [];
       const normalized = raw.map((p) => ({
         ...p,
         name: p.name || p.title || "",
         _qty: resolveQty(p),
+        _subscribedCount: coverage?.[p._id]?.activeSubs || 0,
       }));
       setProducts(normalized);
     } catch {
@@ -93,6 +111,51 @@ const AdminProducts = () => {
     } catch {
       addToast("Failed to delete product", "error");
     }
+  };
+
+  // ── Bulk action runner ──
+  const runBulk = async (action, options) => {
+    if (selectedIds.length === 0 || bulkBusy) return;
+    try {
+      setBulkBusy(true);
+      const res = await productsApi.bulkAction(action, selectedIds, options);
+      const d = res?.data || {};
+      const summary = action === "delete"
+        ? `Deleted ${d.deleted ?? selectedIds.length} product(s)`
+        : `Updated ${d.modified ?? 0} of ${d.matched ?? selectedIds.length} product(s)`;
+      addToast(summary, "success");
+      setSelectedIds([]);
+      await fetchProducts();
+    } catch (e) {
+      addToast(e?.message || "Bulk action failed", "error");
+    } finally {
+      setBulkBusy(false);
+      setSaleModalOpen(false);
+      setBulkDeleteOpen(false);
+    }
+  };
+
+  const submitBulkSale = () => {
+    const value = Number(saleForm.discountValue);
+    if (!(value > 0)) {
+      addToast("Enter a discount value greater than 0", "error");
+      return;
+    }
+    if (saleForm.discountType === "percent" && value > 100) {
+      addToast("Percent discount cannot exceed 100", "error");
+      return;
+    }
+    if (saleForm.saleStartsAt && saleForm.saleEndsAt &&
+        new Date(saleForm.saleEndsAt) < new Date(saleForm.saleStartsAt)) {
+      addToast("Sale end must be after the start date", "error");
+      return;
+    }
+    runBulk("sale", {
+      discountType: saleForm.discountType,
+      discountValue: value,
+      saleStartsAt: saleForm.saleStartsAt || null,
+      saleEndsAt: saleForm.saleEndsAt || null,
+    });
   };
 
   const columns = [
@@ -169,6 +232,16 @@ const AdminProducts = () => {
         const cls = qty > 10 ? "in-stock" : qty > 0 ? "low-stock" : "out-of-stock";
         return <span className={`stock-badge ${cls}`}>{qty}</span>;
       },
+    },
+    {
+      header: "Subscribed",
+      accessor: "_subscribedCount",
+      sortable: false,
+      render: (value) => (
+        Number(value) > 0
+          ? <span className="status-badge active" title={`${value} active subscription(s)`}>🔁 {value}</span>
+          : <span className="stock-badge out-of-stock" style={{ opacity: 0.4 }}>—</span>
+      ),
     },
     {
       header: "Status",
@@ -304,12 +377,40 @@ const AdminProducts = () => {
         )}
       </div>
 
+      {/* Bulk action toolbar */}
+      <AnimatePresence>
+        {selectedIds.length > 0 && (
+          <motion.div
+            className="ap-bulk-bar"
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.18 }}
+          >
+            <span className="ap-bulk-count">{selectedIds.length} selected</span>
+            <div className="ap-bulk-actions">
+              <button type="button" className="ap-bulk-btn" disabled={bulkBusy} onClick={() => runBulk("activate")}><FiCheck /> Activate</button>
+              <button type="button" className="ap-bulk-btn" disabled={bulkBusy} onClick={() => runBulk("deactivate")}><FiSlash /> Deactivate</button>
+              <button type="button" className="ap-bulk-btn" disabled={bulkBusy} onClick={() => runBulk("feature")}><FiStar /> Feature</button>
+              <button type="button" className="ap-bulk-btn" disabled={bulkBusy} onClick={() => runBulk("unfeature")}><FiStar /> Unfeature</button>
+              <button type="button" className="ap-bulk-btn" disabled={bulkBusy} onClick={() => setSaleModalOpen(true)}><FiTag /> Put on Sale</button>
+              <button type="button" className="ap-bulk-btn" disabled={bulkBusy} onClick={() => runBulk("clearSale")}><FiTag /> Clear Sale</button>
+              <button type="button" className="ap-bulk-btn ap-bulk-btn--danger" disabled={bulkBusy} onClick={() => setBulkDeleteOpen(true)}><FiTrash2 /> Delete</button>
+            </div>
+            <button type="button" className="ap-bulk-clear" onClick={() => setSelectedIds([])} aria-label="Clear selection"><FiX /></button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Table */}
       <div className="admin-card">
         <DataTable
           data={filteredProducts}
           columns={columns}
           loading={loading}
+          selectable
+          selectedIds={selectedIds}
+          onSelectionChange={setSelectedIds}
           onEdit={(product) => navigate(`/admin/products/edit/${product._id}`)}
           onDelete={handleDelete}
           onView={(product) => window.open(`/product/${product._id}`, "_blank")}
@@ -341,6 +442,108 @@ const AdminProducts = () => {
               <div className="admin-modal-actions">
                 <button className="admin-modal-btn cancel" onClick={() => setDeleteModalOpen(false)}>Cancel</button>
                 <button className="admin-modal-btn confirm" onClick={confirmDelete}>Delete</button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Bulk Sale Modal */}
+      <AnimatePresence>
+        {saleModalOpen && (
+          <motion.div
+            className="admin-modal-backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => !bulkBusy && setSaleModalOpen(false)}
+          >
+            <motion.div
+              className="admin-modal"
+              initial={{ scale: 0.92, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.92, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h3 className="admin-modal-title">Put {selectedIds.length} product(s) on sale</h3>
+              <div className="ap-sale-fields">
+                <label className="ap-sale-field">
+                  <span>Discount type</span>
+                  <select
+                    value={saleForm.discountType}
+                    onChange={(e) => setSaleForm((f) => ({ ...f, discountType: e.target.value }))}
+                  >
+                    <option value="percent">Percent (%)</option>
+                    <option value="amount">Amount (Rs)</option>
+                  </select>
+                </label>
+                <label className="ap-sale-field">
+                  <span>Discount value</span>
+                  <input
+                    type="number"
+                    min="0"
+                    step="any"
+                    value={saleForm.discountValue}
+                    onChange={(e) => setSaleForm((f) => ({ ...f, discountValue: e.target.value }))}
+                    placeholder={saleForm.discountType === "percent" ? "e.g. 20" : "e.g. 150"}
+                  />
+                </label>
+                <label className="ap-sale-field">
+                  <span>Starts at (optional)</span>
+                  <input
+                    type="date"
+                    value={saleForm.saleStartsAt}
+                    onChange={(e) => setSaleForm((f) => ({ ...f, saleStartsAt: e.target.value }))}
+                  />
+                </label>
+                <label className="ap-sale-field">
+                  <span>Ends at (optional)</span>
+                  <input
+                    type="date"
+                    value={saleForm.saleEndsAt}
+                    onChange={(e) => setSaleForm((f) => ({ ...f, saleEndsAt: e.target.value }))}
+                  />
+                </label>
+              </div>
+              <div className="admin-modal-actions">
+                <button className="admin-modal-btn cancel" disabled={bulkBusy} onClick={() => setSaleModalOpen(false)}>Cancel</button>
+                <button className="admin-modal-btn confirm ap-confirm-gold" disabled={bulkBusy} onClick={submitBulkSale}>
+                  {bulkBusy ? "Applying…" : "Apply sale"}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Bulk Delete Modal */}
+      <AnimatePresence>
+        {bulkDeleteOpen && (
+          <motion.div
+            className="admin-modal-backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => !bulkBusy && setBulkDeleteOpen(false)}
+          >
+            <motion.div
+              className="admin-modal"
+              initial={{ scale: 0.92, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.92, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h3 className="admin-modal-title">Delete {selectedIds.length} product(s)</h3>
+              <p className="admin-modal-msg">
+                Are you sure you want to delete {selectedIds.length} selected product(s)? This action cannot be undone.
+              </p>
+              <div className="admin-modal-actions">
+                <button className="admin-modal-btn cancel" disabled={bulkBusy} onClick={() => setBulkDeleteOpen(false)}>Cancel</button>
+                <button className="admin-modal-btn confirm" disabled={bulkBusy} onClick={() => runBulk("delete")}>
+                  {bulkBusy ? "Deleting…" : "Delete"}
+                </button>
               </div>
             </motion.div>
           </motion.div>

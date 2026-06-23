@@ -6,8 +6,10 @@ import advertsApi from "../../Services/api/advertsApi";
 import { useToast } from "../../context/ToastContext";
 import { Link } from "react-router-dom";
 import GalleryCard from "./components/GalleryCard";
+import Breadcrumb from "../../Components/HelperComponents/Breadcrumb/Breadcrumb";
 import AdvertBanner from "../PetCareTips/components/AdvertBanner";
 import { GALLERY_CATEGORIES, getCategoryTheme, formatEventDate } from "./galleryTheme";
+import { coverUrl } from "../../utils/coverImage";
 import "./Gallery.css";
 
 const FeaturedHero = ({ post }) => {
@@ -24,7 +26,7 @@ const FeaturedHero = ({ post }) => {
       <Link to={`/gallery/${post.slug || post._id}`} className="gal-hero-feature-link">
         <div
           className="gal-hero-feature-img"
-          style={post.coverImage ? { backgroundImage: `url(${post.coverImage})` } : { background: `linear-gradient(135deg, ${theme.color}, #0f3d2a)` }}
+          style={coverUrl(post.coverImage) ? { backgroundImage: `url(${coverUrl(post.coverImage)})` } : { background: `linear-gradient(135deg, ${theme.color}, #0f3d2a)` }}
         >
           <span className="gal-card-pill" style={{ background: theme.color }}>★ Featured · {theme.label}</span>
         </div>
@@ -94,6 +96,9 @@ const GalleryPage = () => {
 
   return (
     <div className="gal-page">
+      <div className="gal-breadcrumb" style={{ maxWidth: "1200px", margin: "0 auto", padding: "1rem 1.5rem 0" }}>
+        <Breadcrumb items={[{ label: "Home", path: "/" }, { label: "Gallery" }]} />
+      </div>
       <header className="gal-hero">
         <motion.p className="gal-hero-label" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45 }}>
           VitalPaws · Moments

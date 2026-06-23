@@ -3,14 +3,15 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FiArrowLeft, FiSave } from "react-icons/fi";
 import { RichTextEditor } from "../../../Components/RichText";
+import ImageManager from "../../../Components/Admin/ImageManager/ImageManager";
 import tipsApi from "../../../Services/api/tipsApi";
 import { useToast } from "../../../context/ToastContext";
 import { ANIMAL_TYPES, CATEGORIES, DIFFICULTIES, capitalize } from "../../PetCareTips/tipTheme";
+import { coverUrl } from "../../../utils/coverImage";
 import "./AdminTipForm.css";
 
 const EMPTY_FORM = {
   title: "",
-  coverImage: "",
   body: "",
   animalType: "dog",
   category: "nutrition",
@@ -26,13 +27,14 @@ const AdminTipForm = () => {
   const navigate = useNavigate();
   const { addToast } = useToast();
   const [form, setForm] = useState(EMPTY_FORM);
-  const [sections, setSections] = useState([]); // [{ id, heading, body }]
+  const [cover, setCover] = useState([]); // [{ url, publicId }] (0 or 1)
+  const [sections, setSections] = useState([]); // [{ id, heading, body, images }]
   const [errors, setErrors] = useState({});
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(isEdit);
 
   const addSection = () =>
-    setSections((prev) => [...prev, { id: `sec-${Date.now()}`, heading: "", body: "" }]);
+    setSections((prev) => [...prev, { id: `sec-${Date.now()}`, heading: "", body: "", images: [] }]);
   const removeSection = (sid) =>
     setSections((prev) => prev.filter((s) => s.id !== sid));
   const updateSection = (sid, changes) =>
@@ -46,7 +48,6 @@ const AdminTipForm = () => {
         const t = res.data;
         setForm({
           title: t.title || "",
-          coverImage: t.coverImage || "",
           body: t.body || "",
           animalType: t.animalType || "dog",
           category: t.category || "nutrition",
@@ -55,9 +56,18 @@ const AdminTipForm = () => {
           featured: Boolean(t.featured),
           published: Boolean(t.published),
         });
+        const cu = coverUrl(t.coverImage);
+        setCover(cu ? [{ url: cu, publicId: t.coverImage?.publicId || "" }] : []);
         setSections(
           Array.isArray(t.sections)
-            ? t.sections.map((s, i) => ({ id: `sec-${Date.now()}-${i}`, heading: s.heading || "", body: s.body || "" }))
+            ? t.sections.map((s, i) => ({
+                id: `sec-${Date.now()}-${i}`,
+                heading: s.heading || "",
+                body: s.body || "",
+                images: Array.isArray(s.images)
+                  ? s.images.map((img) => (typeof img === "object" ? { url: img.url, publicId: img.publicId || "" } : { url: img, publicId: "" })).filter((x) => x.url && x.publicId)
+                  : [],
+              }))
             : []
         );
       } catch {
@@ -78,9 +88,6 @@ const AdminTipForm = () => {
     const errs = {};
     if (form.title.trim().length < 2) errs.title = "Title must be at least 2 characters";
     if (!form.body || form.body === "<p></p>") errs.body = "Tip body is required";
-    if (form.coverImage && !/^https?:\/\//.test(form.coverImage)) {
-      errs.coverImage = "Cover image must be a valid URL";
-    }
     setErrors(errs);
     return Object.keys(errs).length === 0;
   };
@@ -93,9 +100,15 @@ const AdminTipForm = () => {
       const payload = {
         ...form,
         breed: form.breed.trim(),
+        coverImage: cover[0] ? { url: cover[0].url, publicId: cover[0].publicId } : { url: "", publicId: "" },
         sections: sections
-          .filter((s) => (s.heading && s.heading.trim()) || (s.body && s.body !== "<p></p>"))
-          .map(({ heading, body }, order) => ({ heading: (heading || "").trim(), body: body || "", order })),
+          .filter((s) => (s.heading && s.heading.trim()) || (s.body && s.body !== "<p></p>") || (s.images && s.images.length))
+          .map(({ heading, body, images }, order) => ({
+            heading: (heading || "").trim(),
+            body: body || "",
+            order,
+            images: (images || []).map((img) => ({ url: img.url, publicId: img.publicId })),
+          })),
       };
       if (isEdit) {
         await tipsApi.updateTip(id, payload);
@@ -138,9 +151,14 @@ const AdminTipForm = () => {
         </div>
 
         <div className="atf-field">
-          <label htmlFor="atf-cover">Cover image URL (optional)</label>
-          <input id="atf-cover" type="url" value={form.coverImage} onChange={set("coverImage")} placeholder="https://…" />
-          {errors.coverImage && <p className="atf-error">{errors.coverImage}</p>}
+          <label>Cover image (optional)</label>
+          <ImageManager
+            value={cover}
+            onChange={setCover}
+            uploadUrl="/tips/upload-image"
+            max={1}
+            onError={(msg) => addToast(msg, "error")}
+          />
         </div>
 
         <div className="atf-row">
@@ -213,6 +231,16 @@ const AdminTipForm = () => {
                 placeholder="Section content…"
                 minHeight="160px"
               />
+              <div className="atf-section-images">
+                <label className="atf-section-images-label">Section images (optional, up to 8 — first is the lead)</label>
+                <ImageManager
+                  value={section.images || []}
+                  onChange={(imgs) => updateSection(section.id, { images: imgs })}
+                  uploadUrl="/tips/upload-image"
+                  max={8}
+                  onError={(msg) => addToast(msg, "error")}
+                />
+              </div>
             </div>
           ))}
         </div>
