@@ -1,31 +1,68 @@
-import { useState } from "react";
-import { FaStar, FaFilter } from "react-icons/fa";
+import { useState, useEffect } from "react";
+import { FaFilter } from "react-icons/fa";
+import ProductService from "../../Services/localServices/ProductService";
 import "./FilterComponent.css";
 
-const CATEGORIES = ["Dog", "Cat", "Bird", "Fish", "Small Pets", "General"];
-const RATINGS = [5, 4, 3, 2, 1];
+const titleCase = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : s);
+
+const ChipGroup = ({ title, items, selected, onToggle, format = titleCase }) => {
+  if (!items || items.length === 0) return null;
+  return (
+    <section className="filter-section">
+      <h4 className="filter-label">{title}</h4>
+      <div className="filter-chip-row">
+        {items.map((item) => (
+          <button
+            key={item}
+            type="button"
+            className={`filter-chip${selected.includes(item) ? " filter-chip--active" : ""}`}
+            onClick={() => onToggle(item)}
+          >
+            {format(item)}
+          </button>
+        ))}
+      </div>
+    </section>
+  );
+};
 
 const FilterComponent = ({ onApplyFilters }) => {
+  const [options, setOptions] = useState({ categories: [], colors: [], genders: [] });
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [rating, setRating] = useState("");
+  const [categories, setCategories] = useState([]);
+  const [colors, setColors] = useState([]);
+  const [genders, setGenders] = useState([]);
 
-  const toggleCategory = (cat) =>
-    setSelectedCategory((c) => (c === cat ? "" : cat));
+  // Options come from real product data so labels always match stored values.
+  useEffect(() => {
+    let active = true;
+    ProductService.fetchFilterOptions().then((o) => {
+      if (active) setOptions(o);
+    });
+    return () => { active = false; };
+  }, []);
+
+  const toggle = (setter, list, value) =>
+    setter(list.includes(value) ? list.filter((v) => v !== value) : [...list, value]);
 
   const apply = () => {
     onApplyFilters({
       minPrice: minPrice ? Number(minPrice) : 0,
       maxPrice: maxPrice ? Number(maxPrice) : Infinity,
-      categories: selectedCategory ? [selectedCategory] : [],
-      rating: rating ? Number(rating) : 0,
+      categories,
+      colors,
+      genders,
     });
   };
 
   const clear = () => {
-    setMinPrice(""); setMaxPrice(""); setSelectedCategory(""); setRating("");
-    onApplyFilters({ minPrice: 0, maxPrice: Infinity, categories: [], rating: 0 });
+    setMinPrice("");
+    setMaxPrice("");
+    setCategories([]);
+    setColors([]);
+    setGenders([]);
+    onApplyFilters({ minPrice: 0, maxPrice: Infinity, categories: [], colors: [], genders: [] });
   };
 
   return (
@@ -35,22 +72,12 @@ const FilterComponent = ({ onApplyFilters }) => {
         <h3 className="filter-card-title">Filter Products</h3>
       </div>
 
-      {/* Category */}
-      <section className="filter-section">
-        <h4 className="filter-label">Category</h4>
-        <div className="filter-chip-row">
-          {CATEGORIES.map((cat) => (
-            <button
-              key={cat}
-              type="button"
-              className={`filter-chip${selectedCategory === cat ? " filter-chip--active" : ""}`}
-              onClick={() => toggleCategory(cat)}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-      </section>
+      <ChipGroup
+        title="Category"
+        items={options.categories}
+        selected={categories}
+        onToggle={(v) => toggle(setCategories, categories, v)}
+      />
 
       {/* Price */}
       <section className="filter-section">
@@ -76,31 +103,20 @@ const FilterComponent = ({ onApplyFilters }) => {
         </div>
       </section>
 
-      {/* Rating */}
-      <section className="filter-section">
-        <h4 className="filter-label">Rating</h4>
-        <div className="filter-rating-list">
-          {RATINGS.map((v) => (
-            <button
-              key={v}
-              type="button"
-              className={`filter-rating-row${rating === String(v) ? " filter-rating-row--active" : ""}`}
-              onClick={() => setRating(rating === String(v) ? "" : String(v))}
-            >
-              <span className="filter-rating-stars">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <FaStar
-                    key={i}
-                    size={12}
-                    className={i < v ? "filter-star filter-star--on" : "filter-star"}
-                  />
-                ))}
-              </span>
-              <span className="filter-rating-label">&amp; up</span>
-            </button>
-          ))}
-        </div>
-      </section>
+      <ChipGroup
+        title="Color"
+        items={options.colors}
+        selected={colors}
+        onToggle={(v) => toggle(setColors, colors, v)}
+      />
+
+      <ChipGroup
+        title="Gender"
+        items={options.genders}
+        selected={genders}
+        onToggle={(v) => toggle(setGenders, genders, v)}
+        format={(s) => s}
+      />
 
       <div className="filter-actions">
         <button type="button" className="filter-btn filter-btn--primary" onClick={apply}>
