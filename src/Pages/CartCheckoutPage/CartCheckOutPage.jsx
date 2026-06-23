@@ -15,8 +15,12 @@ import { useCurrency } from "../../context/CurrencyContext";
 import ordersApi from "../../Services/api/ordersApi";
 import subscriptionsApi from "../../Services/api/subscriptionsApi";
 import cartApi from "../../Services/api/cartApi";
+import SubscriptionChooser from "../../Components/Subscriptions/SubscriptionChooser";
+import { isIntervalValid } from "../../utils/subscriptionPricing";
 import pawSvg from "@/assets/CartoonAssets/paw.svg";
 import "./CartCheckOutPage.css";
+
+const SUB_DISCOUNT = Number(import.meta.env.VITE_SUBSCRIPTION_DISCOUNT_PERCENT) || 10;
 
 const SHIPPING_FEE = 20;
 const EMPTY_ADDRESS = { street: "", city: "", state: "", country: "", zipCode: "" };
@@ -64,6 +68,11 @@ const CartCheckoutPage = () => {
   const handlePlaceOrder = async (e) => {
     e.preventDefault();
     setPlacing(true);
+    if (makeRecurring && !isIntervalValid(recurUnit, recurCount)) {
+      addToast("Minimum subscription interval is 7 days", "error");
+      setPlacing(false);
+      return;
+    }
     try {
       // Sync local cart → backend before creating the order
       await cartApi.clearCart();
@@ -366,30 +375,16 @@ const CartCheckoutPage = () => {
                 </div>
 
                 <div className="cart-recurring">
-                  <label className="cart-recurring-toggle">
-                    <input
-                      type="checkbox"
-                      checked={makeRecurring}
-                      onChange={(e) => setMakeRecurring(e.target.checked)}
-                    />
-                    <span>Make this a recurring order &amp; save</span>
-                  </label>
-                  {makeRecurring && (
-                    <div className="cart-recurring-row">
-                      <span>Every</span>
-                      <input
-                        type="number"
-                        min="1"
-                        value={recurCount}
-                        onChange={(e) => setRecurCount(e.target.value)}
-                        className="cart-recurring-count"
-                      />
-                      <select value={recurUnit} onChange={(e) => setRecurUnit(e.target.value)}>
-                        <option value="day">day(s)</option>
-                        <option value="week">week(s)</option>
-                      </select>
-                    </div>
-                  )}
+                  <SubscriptionChooser
+                    basePrice={subtotal}
+                    discountPercent={SUB_DISCOUNT}
+                    mode={makeRecurring ? "subscribe" : "onetime"}
+                    onModeChange={(m) => setMakeRecurring(m === "subscribe")}
+                    intervalCount={recurCount}
+                    intervalUnit={recurUnit}
+                    onIntervalCountChange={setRecurCount}
+                    onIntervalUnitChange={setRecurUnit}
+                  />
                 </div>
 
                 <motion.button
