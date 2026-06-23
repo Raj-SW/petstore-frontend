@@ -45,7 +45,7 @@ const AdminProducts = () => {
       setLoading(true);
       // Coverage is best-effort (admin-only); don't fail the list if it errors.
       const [response, coverage] = await Promise.all([
-        productsApi.getProducts({ limit: 1000 }),
+        productsApi.getProducts({ limit: 1000, isActive: 'all' }),
         subscriptionsApi.getProductCoverage().catch(() => ({})),
       ]);
       const raw = response.data || [];
