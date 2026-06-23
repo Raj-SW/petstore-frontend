@@ -1,3 +1,4 @@
+import { isValidElement } from "react";
 import { FiArrowRight, FiAward } from "react-icons/fi";
 import "./ProfessionalCard.css";
 
@@ -28,7 +29,8 @@ const ProfessionalCard = ({
         </div>
         {badgeLabel && (
           <span className="pro-card-chip">
-            {BadgeIcon ? <BadgeIcon aria-hidden="true" /> : null}
+            {/* badgeIcon may arrive as a JSX element (current callers) or a component */}
+            {isValidElement(BadgeIcon) ? BadgeIcon : (typeof BadgeIcon === "function" ? <BadgeIcon aria-hidden="true" /> : null)}
             {badgeLabel}
           </span>
         )}

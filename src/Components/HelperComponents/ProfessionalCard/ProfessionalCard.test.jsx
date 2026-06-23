@@ -1,9 +1,11 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
+import { FaUserMd } from "react-icons/fa";
 import ProfessionalCard from "./ProfessionalCard";
 
 describe("ProfessionalCard (Epic 4)", () => {
-  const base = { name: "Dr. Lee", specialty: "Feline medicine", experience: 8, badgeLabel: "Veterinarian" };
+  // badgeIcon is passed as a JSX ELEMENT by the real callers (ProfessionalList)
+  const base = { name: "Dr. Lee", specialty: "Feline medicine", experience: 8, badgeLabel: "Veterinarian", badgeIcon: <FaUserMd /> };
 
   it("shows name, specialty, experience and a View profile action", () => {
     const onBook = vi.fn();
