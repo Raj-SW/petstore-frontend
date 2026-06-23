@@ -255,6 +255,9 @@ const IndividualProductItemPage = () => {
       setSelectedVariant(inStock);
     }
   }, [product]);
+
+  // Reset the active thumbnail when the variant changes (its gallery may differ).
+  useEffect(() => { setActiveImage(0); }, [selectedVariant?._id]);
   const [quantity, setQuantity] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -425,9 +428,14 @@ const IndividualProductItemPage = () => {
   }
 
   const productName = product.title || product.name || "Product";
-  const images = product.images?.length
+  const productImages = product.images?.length
     ? product.images.map(img => (typeof img === "object" ? img.url : img)).filter(Boolean)
     : [product.imageUrl].filter(Boolean);
+  // When a variant with its own images is selected, show those; else the product gallery.
+  const variantImages = Array.isArray(selectedVariant?.images)
+    ? selectedVariant.images.map(img => (typeof img === "object" ? img.url : img)).filter(Boolean)
+    : [];
+  const images = variantImages.length ? variantImages : productImages;
   const stockQty = product.stock ?? product.quantity ?? null;
   const category = product.category || product.categories?.[0] || null;
 

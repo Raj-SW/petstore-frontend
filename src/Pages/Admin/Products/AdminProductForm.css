@@ -809,3 +809,20 @@
   border-radius: 8px; padding: 8px 12px; font-size: 13px; cursor: pointer; white-space: nowrap;
 }
 .apf-variant-remove:hover { background: #c0392b; color: #fff; }
+
+.apf-variant-block {
+  margin-top: 10px;
+  padding: 10px;
+  border: 1px solid rgba(201, 186, 168, 0.4);
+  border-radius: 12px;
+  background: rgba(250, 245, 241, 0.4);
+}
+.apf-variant-block .apf-variant-row { margin-top: 0; }
+.apf-variant-images { margin-top: 10px; }
+.apf-variant-images-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #5a5247;
+  margin-bottom: 6px;
+}
