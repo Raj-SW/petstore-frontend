@@ -150,10 +150,6 @@ const ProfessionalList = ({
           aValue = parseInt(a.experience) || 0;
           bValue = parseInt(b.experience) || 0;
           break;
-        case "rating":
-          aValue = parseFloat(a.rating) || 0;
-          bValue = parseFloat(b.rating) || 0;
-          break;
         default:
           return 0;
       }
@@ -275,8 +271,6 @@ const ProfessionalList = ({
                 <option value="name-desc">Name (Z-A)</option>
                 <option value="experience-desc">Most Experienced</option>
                 <option value="experience-asc">Least Experienced</option>
-                <option value="rating-desc">Highest Rated</option>
-                <option value="rating-asc">Lowest Rated</option>
               </Form.Select>
             )}
           </div>
