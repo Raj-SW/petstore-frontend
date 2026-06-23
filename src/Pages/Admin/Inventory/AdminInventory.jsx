@@ -99,7 +99,10 @@ export default function AdminInventory() {
     if (!units || units <= 0) { addToast("Enter a positive number of units", "error"); return; }
     setSubmitting(true);
     try {
-      await inventoryApi.restockProduct(restock.product._id, units, restock.note);
+      await inventoryApi.restockProduct(
+        restock.product._id, units, restock.note,
+        restock.product.variantId || null
+      );
       addToast(`Added ${units} unit${units !== 1 ? "s" : ""} to "${productName(restock.product)}"`, "success");
       setRestock(EMPTY_RESTOCK);
       fetchInventory();
@@ -123,7 +126,10 @@ export default function AdminInventory() {
     }
     setSubmitting(true);
     try {
-      await inventoryApi.adjustStock(adjust.product._id, newQty, adjust.note);
+      await inventoryApi.adjustStock(
+        adjust.product._id, newQty, adjust.note,
+        adjust.product.variantId || null
+      );
       addToast(`Stock for "${productName(adjust.product)}" adjusted to ${newQty}`, "success");
       setAdjust(EMPTY_ADJUST);
       fetchInventory();
@@ -139,7 +145,8 @@ export default function AdminInventory() {
   const openHistory = async (product) => {
     setHistory({ open: true, product, movements: [], loading: true });
     try {
-      const res = await inventoryApi.getMovements(product._id);
+      const params = product.variantId ? { variantId: product.variantId } : {};
+      const res = await inventoryApi.getMovements(product._id, params);
       setHistory(h => ({ ...h, movements: res.data || [], loading: false }));
     } catch {
       setHistory(h => ({ ...h, loading: false }));
@@ -238,6 +245,7 @@ export default function AdminInventory() {
               <thead>
                 <tr>
                   <th>Product</th>
+                  <th>Variant</th>
                   <th>Category</th>
                   <th>Qty</th>
                   <th>Status</th>
@@ -251,7 +259,7 @@ export default function AdminInventory() {
                     const badge = BADGE[p.stockStatus] || BADGE.in;
                     return (
                       <motion.tr
-                        key={p._id}
+                        key={`${p._id}_${p.variantId || "base"}`}
                         initial={{ opacity: 0, y: 6 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0 }}
@@ -267,6 +275,12 @@ export default function AdminInventory() {
                             />
                             <span className="inv-product-name">{productName(p)}</span>
                           </div>
+                        </td>
+                        <td>
+                          {p.variantLabel
+                            ? <span className="inv-variant-label">{p.variantLabel}</span>
+                            : <span className="inv-no-variant">—</span>
+                          }
                         </td>
                         <td>
                           <span className="inv-category">
@@ -507,9 +521,12 @@ export default function AdminInventory() {
                             <span className="inv-movement-qty">
                               &nbsp;({m.prevQty} → {m.newQty})
                             </span>
+                            {m.variantLabel && (
+                              <span className="inv-modal-variant-chip">{m.variantLabel}</span>
+                            )}
                           </span>
                           {m.note && (
-                            <span className="inv-movement-note">"{m.note}"</span>
+                            <span className="inv-movement-note">{m.note}</span>
                           )}
                           <span className="inv-movement-meta">
                             {m.createdBy?.name || "System"} ·{" "}
