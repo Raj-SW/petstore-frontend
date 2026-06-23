@@ -26,6 +26,16 @@ const subscriptionsApi = {
     const response = await api.patch(`/subscriptions/admin/${id}`, data);
     return response.data;
   },
+  // Admin — demand-vs-stock prediction across active subscriptions
+  getAnalytics: async (horizon = 30) => {
+    const response = await api.get(`/subscriptions/admin/analytics?horizon=${horizon}`);
+    return response.data?.data ?? response.data;
+  },
+  // Admin — productId -> { activeSubs, unitsPerCycle } for the product-list flag
+  getProductCoverage: async () => {
+    const response = await api.get("/subscriptions/admin/product-coverage");
+    return response.data?.data ?? response.data;
+  },
 };
 
 export default subscriptionsApi;

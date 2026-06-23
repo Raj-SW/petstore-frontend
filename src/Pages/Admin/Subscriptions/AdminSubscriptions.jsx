@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
-import { motion } from "framer-motion";
-import { FiRepeat, FiPlay, FiPause, FiXCircle } from "react-icons/fi";
+import { motion, AnimatePresence } from "framer-motion";
+import { FiRepeat, FiPlay, FiPause, FiXCircle, FiAlertTriangle, FiEye } from "react-icons/fi";
 import DataTable from "../../../Components/Admin/DataTable/DataTable";
 import subscriptionsApi from "../../../Services/api/subscriptionsApi";
 import { useToast } from "../../../context/ToastContext";
@@ -10,9 +10,13 @@ import "./AdminSubscriptions.css";
 const AdminSubscriptions = () => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [analytics, setAnalytics] = useState(null);
+  const [horizon, setHorizon] = useState(30);
+  const [viewed, setViewed] = useState(null);
   const { addToast } = useToast();
 
   useEffect(() => { fetchAll(); }, []);
+  useEffect(() => { fetchAnalytics(horizon); }, [horizon]);
 
   const fetchAll = async () => {
     try {
@@ -23,6 +27,15 @@ const AdminSubscriptions = () => {
       addToast("Failed to load subscriptions", "error");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchAnalytics = async (h) => {
+    try {
+      const data = await subscriptionsApi.getAnalytics(h);
+      setAnalytics(data);
+    } catch {
+      // analytics is non-critical; ignore
     }
   };
 
@@ -77,6 +90,7 @@ const AdminSubscriptions = () => {
       render: (value, item) => (
         <span className="aps-actions">
           <span className={`at-status ${value === "active" ? "published" : "draft"}`}>{value}</span>
+          <button title="View items" onClick={(e) => { e.stopPropagation(); setViewed(item); }}><FiEye /></button>
           {value === "active" && (
             <button title="Pause" onClick={(e) => { e.stopPropagation(); setStatus(item, "paused"); }}><FiPause /></button>
           )}
@@ -90,6 +104,8 @@ const AdminSubscriptions = () => {
       ),
     },
   ];
+
+  const atRisk = analytics?.rows?.filter((r) => r.restockNeeded) || [];
 
   return (
     <motion.div
@@ -113,7 +129,81 @@ const AdminSubscriptions = () => {
         </div>
       )}
 
+      {/* Demand prediction */}
+      <div className="aps-demand">
+        <div className="aps-demand-head">
+          <h2 className="admin-pf-section-title" style={{ margin: 0 }}>
+            <FiAlertTriangle style={{ verticalAlign: "-2px" }} /> Inventory demand forecast
+          </h2>
+          <label className="aps-horizon">
+            Horizon&nbsp;
+            <select value={horizon} onChange={(e) => setHorizon(Number(e.target.value))} className="admin-select">
+              <option value={30}>30 days</option>
+              <option value={60}>60 days</option>
+              <option value={90}>90 days</option>
+            </select>
+          </label>
+        </div>
+        {analytics ? (
+          <>
+            <p className="admin-page-subtitle" style={{ marginTop: 0 }}>
+              {analytics.totalActiveSubscriptions} active subscriptions · {analytics.productsAtRisk} product(s) need restock within {analytics.horizonDays} days.
+            </p>
+            {atRisk.length > 0 ? (
+              <table className="aps-demand-table">
+                <thead>
+                  <tr><th>Product</th><th>Variant</th><th>In stock</th><th>Projected demand</th><th>Shortfall</th></tr>
+                </thead>
+                <tbody>
+                  {atRisk.map((r, i) => (
+                    <tr key={i}>
+                      <td>{r.name}</td>
+                      <td>{r.variantLabel || "—"}</td>
+                      <td>{r.currentStock}</td>
+                      <td>{r.projectedDemand}</td>
+                      <td className="aps-shortfall">+{Math.max(0, r.shortfall)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <p className="aps-demand-ok">✓ Stock covers projected subscription demand for this horizon.</p>
+            )}
+          </>
+        ) : (
+          <p className="admin-page-subtitle">Loading forecast…</p>
+        )}
+      </div>
+
       <DataTable data={items} columns={columns} loading={loading} />
+
+      <AnimatePresence>
+        {viewed && (
+          <motion.div className="admin-modal-backdrop" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setViewed(null)}>
+            <motion.div className="admin-modal" initial={{ scale: 0.92, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.92, opacity: 0 }} onClick={(e) => e.stopPropagation()}>
+              <h3>Subscription — {viewed.user?.name || "Customer"}</h3>
+              <p className="admin-page-subtitle" style={{ marginTop: 0 }}>
+                Every {viewed.intervalCount} {viewed.intervalUnit}{viewed.intervalCount > 1 ? "s" : ""} · next run {viewed.nextRunAt ? new Date(viewed.nextRunAt).toLocaleDateString() : "—"} · {viewed.status}
+              </p>
+              <table className="aps-demand-table">
+                <thead><tr><th>Product</th><th>Variant</th><th>Qty</th></tr></thead>
+                <tbody>
+                  {(viewed.items || []).map((it, i) => (
+                    <tr key={i}>
+                      <td>{it.product?.name || it.productName || it.name || "Product"}</td>
+                      <td>{it.variantLabel || "—"}</td>
+                      <td>{it.quantity}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <div className="admin-modal-actions">
+                <button className="at-btn-secondary" onClick={() => setViewed(null)}>Close</button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 };

@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FiPlus, FiPackage, FiAlertCircle, FiXCircle, FiCheckCircle } from "react-icons/fi";
 import DataTable from "../../../Components/Admin/DataTable/DataTable";
 import productsApi from "../../../Services/api/productsApi";
+import subscriptionsApi from "../../../Services/api/subscriptionsApi";
 import { useToast } from "../../../context/ToastContext";
 import "./AdminProducts.css";
 
@@ -30,12 +31,17 @@ const AdminProducts = () => {
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      const response = await productsApi.getProducts({ limit: 1000 });
+      // Coverage is best-effort (admin-only); don't fail the list if it errors.
+      const [response, coverage] = await Promise.all([
+        productsApi.getProducts({ limit: 1000 }),
+        subscriptionsApi.getProductCoverage().catch(() => ({})),
+      ]);
       const raw = response.data || [];
       const normalized = raw.map((p) => ({
         ...p,
         name: p.name || p.title || "",
         _qty: resolveQty(p),
+        _subscribedCount: coverage?.[p._id]?.activeSubs || 0,
       }));
       setProducts(normalized);
     } catch {
@@ -169,6 +175,16 @@ const AdminProducts = () => {
         const cls = qty > 10 ? "in-stock" : qty > 0 ? "low-stock" : "out-of-stock";
         return <span className={`stock-badge ${cls}`}>{qty}</span>;
       },
+    },
+    {
+      header: "Subscribed",
+      accessor: "_subscribedCount",
+      sortable: false,
+      render: (value) => (
+        Number(value) > 0
+          ? <span className="status-badge active" title={`${value} active subscription(s)`}>🔁 {value}</span>
+          : <span className="stock-badge out-of-stock" style={{ opacity: 0.4 }}>—</span>
+      ),
     },
     {
       header: "Status",
