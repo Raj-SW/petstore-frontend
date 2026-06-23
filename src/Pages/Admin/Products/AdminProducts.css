@@ -202,6 +202,128 @@
   gap: 0.3rem;
 }
 
+/* ── Bulk action toolbar ── */
+.ap-bulk-bar {
+  position: sticky;
+  top: 0.5rem;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+  padding: 0.75rem 1.1rem;
+  background: var(--color-primary-forest);
+  border-radius: 14px;
+  box-shadow: 0 6px 20px rgba(0, 28, 16, 0.25);
+}
+
+.ap-bulk-count {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.ap-bulk-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  flex: 1;
+}
+
+.ap-bulk-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.82rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+
+.ap-bulk-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.22);
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+.ap-bulk-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.ap-bulk-btn--danger {
+  background: rgba(220, 38, 38, 0.85);
+  border-color: rgba(220, 38, 38, 0.9);
+}
+.ap-bulk-btn--danger:hover:not(:disabled) { background: #dc2626; }
+
+.ap-bulk-clear {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  border: none;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.ap-bulk-clear:hover { background: rgba(255, 255, 255, 0.25); }
+
+/* ── Bulk sale modal fields ── */
+.ap-sale-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.9rem;
+  margin: 0 0 1.5rem;
+}
+
+.ap-sale-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.ap-sale-field > span {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.ap-sale-field select,
+.ap-sale-field input {
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--color-border-taupe, #d6cfc2);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  background: #fff;
+}
+
+.ap-sale-field select:focus,
+.ap-sale-field input:focus {
+  outline: none;
+  border-color: var(--color-primary-forest);
+}
+
+.admin-modal-btn.confirm.ap-confirm-gold {
+  background: var(--color-accent-gold);
+  color: var(--color-primary-forest);
+}
+.admin-modal-btn.confirm.ap-confirm-gold:hover { background: #c48a24; }
+
+@media (max-width: 480px) {
+  .ap-sale-fields { grid-template-columns: 1fr; }
+}
+
 /* ── Shared admin modal ── */
 .admin-modal-backdrop {
   position: fixed;

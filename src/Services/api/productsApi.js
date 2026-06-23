@@ -34,6 +34,16 @@ const productsApi = {
     return response.data;
   },
 
+  // Bulk action on multiple products (Admin only).
+  // action: activate | deactivate | feature | unfeature | sale | clearSale | delete
+  // options is required only for the "sale" action.
+  bulkAction: async (action, ids, options) => {
+    const body = { action, ids };
+    if (options) body.options = options;
+    const response = await api.post("/products/bulk", body);
+    return response.data;
+  },
+
   // Get featured products
   getFeaturedProducts: async (limit = 8) => {
     const response = await api.get(`/products?isFeatured=true&limit=${limit}`);

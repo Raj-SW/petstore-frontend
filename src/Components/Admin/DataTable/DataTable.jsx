@@ -20,6 +20,10 @@ import "./DataTable.css";
  * @param {number} props.itemsPerPage - Items per page (default: 10)
  * @param {boolean} props.showActions - Show action buttons (default: true)
  * @param {Object} props.customActions - Custom action buttons
+ * @param {boolean} props.selectable - Show a row-selection checkbox column (default: false)
+ * @param {Array} props.selectedIds - Controlled list of selected row ids
+ * @param {Function} props.onSelectionChange - Called with the next array of selected ids
+ * @param {string} props.rowIdKey - Field used as the row id when selectable (default: "_id")
  */
 const DataTable = ({
   data = [],
@@ -32,6 +36,10 @@ const DataTable = ({
   showActions = true,
   customActions = null,
   hideSearch = false,
+  selectable = false,
+  selectedIds = [],
+  onSelectionChange,
+  rowIdKey = "_id",
 }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
@@ -107,6 +115,42 @@ const DataTable = ({
     setCurrentPage(page);
   };
 
+  // ── Row selection (opt-in via `selectable`) ──
+  const selectedSet = useMemo(() => new Set(selectedIds), [selectedIds]);
+  const filteredIds = useMemo(
+    () => sortedData.map((item) => item?.[rowIdKey]).filter((id) => id != null),
+    [sortedData, rowIdKey]
+  );
+  const allFilteredSelected =
+    filteredIds.length > 0 && filteredIds.every((id) => selectedSet.has(id));
+  const someFilteredSelected =
+    !allFilteredSelected && filteredIds.some((id) => selectedSet.has(id));
+
+  const toggleRow = (id) => {
+    if (!onSelectionChange) return;
+    const next = new Set(selectedSet);
+    if (next.has(id)) next.delete(id);
+    else next.add(id);
+    onSelectionChange([...next]);
+  };
+
+  const toggleAll = () => {
+    if (!onSelectionChange) return;
+    if (allFilteredSelected) {
+      // Deselect every row in the current (filtered) set, keep any others.
+      const next = new Set(selectedSet);
+      filteredIds.forEach((id) => next.delete(id));
+      onSelectionChange([...next]);
+    } else {
+      // Add all rows in the current (filtered) set to the selection.
+      onSelectionChange([...new Set([...selectedSet, ...filteredIds])]);
+    }
+  };
+
+  const setHeaderCheckboxRef = (el) => {
+    if (el) el.indeterminate = someFilteredSelected;
+  };
+
   const renderCellValue = (item, column) => {
     const value = column.accessor
       .split(".")
@@ -168,6 +212,18 @@ const DataTable = ({
         <table className="data-table" role="table">
           <thead>
             <tr role="row">
+              {selectable && (
+                <th className="select-header">
+                  <input
+                    type="checkbox"
+                    ref={setHeaderCheckboxRef}
+                    checked={allFilteredSelected}
+                    onChange={toggleAll}
+                    aria-label="Select all rows"
+                    className="dt-checkbox"
+                  />
+                </th>
+              )}
               {columns.map((column) => (
                 <th
                   key={column.accessor}
@@ -207,8 +263,22 @@ const DataTable = ({
           </thead>
           <tbody>
             {currentData.length > 0 ? (
-              currentData.map((item, index) => (
-                <tr key={item._id || index} role="row">
+              currentData.map((item, index) => {
+                const rowId = item?.[rowIdKey];
+                const rowSelected = selectable && selectedSet.has(rowId);
+                return (
+                <tr key={item._id || index} role="row" className={rowSelected ? "row-selected" : ""}>
+                  {selectable && (
+                    <td className="select-cell" role="cell">
+                      <input
+                        type="checkbox"
+                        checked={rowSelected}
+                        onChange={() => toggleRow(rowId)}
+                        aria-label={`Select ${item.name || item.title || "row"}`}
+                        className="dt-checkbox"
+                      />
+                    </td>
+                  )}
                   {columns.map((column) => (
                     <td key={column.accessor} role="cell">
                       {renderCellValue(item, column)}
@@ -257,11 +327,12 @@ const DataTable = ({
                     </td>
                   )}
                 </tr>
-              ))
+                );
+              })
             ) : (
               <tr>
                 <td
-                  colSpan={columns.length + (showActions ? 1 : 0)}
+                  colSpan={columns.length + (showActions ? 1 : 0) + (selectable ? 1 : 0)}
                   className="no-data-cell"
                 >
                   No data found
