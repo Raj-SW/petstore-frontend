@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useToast } from "../../../context/ToastContext";
+import settingsApi from "../../../Services/api/settingsApi";
 import "./AdminSettings.css";
 
-const TABS = ["General", "Appearance", "Notifications", "Security"];
+const TABS = ["General", "Store", "Appearance", "Notifications", "Security"];
 
 const THEME_OPTIONS = [
   { id: "forest", label: "Forest Green", color: "#001C10" },
@@ -45,6 +46,59 @@ const AdminSettings = () => {
     sessionTimeout: "60",
     twoFactorAuth: false,
   });
+
+  // Store (shipping + tax) — real backend via /api/settings
+  const [store, setStore] = useState({
+    shippingFlatFee: 0,
+    freeShippingThreshold: 0,
+    taxRatePercent: 15,
+    taxInclusive: true,
+  });
+  const [storeLoading, setStoreLoading] = useState(true);
+  const [storeSaving, setStoreSaving] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+    settingsApi
+      .getSettings()
+      .then((s) => {
+        if (!active || !s) return;
+        setStore({
+          shippingFlatFee: s.shippingFlatFee ?? 0,
+          freeShippingThreshold: s.freeShippingThreshold ?? 0,
+          taxRatePercent: s.taxRatePercent ?? 15,
+          taxInclusive: s.taxInclusive ?? true,
+        });
+      })
+      .catch(() => addToast("Failed to load store settings.", "error"))
+      .finally(() => active && setStoreLoading(false));
+    return () => { active = false; };
+  }, [addToast]);
+
+  const handleSaveStore = async () => {
+    try {
+      setStoreSaving(true);
+      const saved = await settingsApi.updateSettings({
+        shippingFlatFee: Number(store.shippingFlatFee) || 0,
+        freeShippingThreshold: Number(store.freeShippingThreshold) || 0,
+        taxRatePercent: Number(store.taxRatePercent) || 0,
+        taxInclusive: store.taxInclusive,
+      });
+      if (saved) {
+        setStore({
+          shippingFlatFee: saved.shippingFlatFee,
+          freeShippingThreshold: saved.freeShippingThreshold,
+          taxRatePercent: saved.taxRatePercent,
+          taxInclusive: saved.taxInclusive,
+        });
+      }
+      addToast("Store settings saved.", "success");
+    } catch (err) {
+      addToast(err?.message || "Failed to save store settings.", "error");
+    } finally {
+      setStoreSaving(false);
+    }
+  };
 
   // Password modal
   const [showPasswordModal, setShowPasswordModal] = useState(false);
@@ -203,6 +257,73 @@ const AdminSettings = () => {
                   Save Changes
                 </button>
               </div>
+            </div>
+          )}
+
+          {/* ── Store (Shipping & Tax) ── */}
+          {activeTab === "Store" && (
+            <div className="admin-card admin-settings-panel">
+              <h2 className="admin-settings-section-title">Shipping &amp; Tax</h2>
+              <p className="admin-page-subtitle" style={{ marginTop: 0 }}>
+                Drives checkout shipping and VAT. All amounts are in MUR (Rs).
+              </p>
+
+              {storeLoading ? (
+                <p>Loading…</p>
+              ) : (
+                <>
+                  <div className="admin-settings-two-col">
+                    <div className="admin-field">
+                      <label className="admin-label" htmlFor="shippingFlatFee">Flat shipping fee (Rs)</label>
+                      <input
+                        id="shippingFlatFee"
+                        className="admin-input"
+                        type="number" min="0" step="1"
+                        value={store.shippingFlatFee}
+                        onChange={(e) => setStore((s) => ({ ...s, shippingFlatFee: e.target.value }))}
+                      />
+                    </div>
+                    <div className="admin-field">
+                      <label className="admin-label" htmlFor="freeShippingThreshold">Free shipping over (Rs)</label>
+                      <input
+                        id="freeShippingThreshold"
+                        className="admin-input"
+                        type="number" min="0" step="1"
+                        value={store.freeShippingThreshold}
+                        onChange={(e) => setStore((s) => ({ ...s, freeShippingThreshold: e.target.value }))}
+                      />
+                    </div>
+                    <div className="admin-field">
+                      <label className="admin-label" htmlFor="taxRatePercent">VAT rate (%)</label>
+                      <input
+                        id="taxRatePercent"
+                        className="admin-input"
+                        type="number" min="0" max="100" step="0.1"
+                        value={store.taxRatePercent}
+                        onChange={(e) => setStore((s) => ({ ...s, taxRatePercent: e.target.value }))}
+                      />
+                    </div>
+                    <div className="admin-field">
+                      <label className="admin-label" htmlFor="taxInclusive">VAT mode</label>
+                      <select
+                        id="taxInclusive"
+                        className="admin-select"
+                        value={store.taxInclusive ? "inclusive" : "exclusive"}
+                        onChange={(e) => setStore((s) => ({ ...s, taxInclusive: e.target.value === "inclusive" }))}
+                      >
+                        <option value="inclusive">Inclusive (VAT already in prices)</option>
+                        <option value="exclusive">Exclusive (VAT added at checkout)</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="admin-settings-actions">
+                    <button className="admin-save-btn" onClick={handleSaveStore} disabled={storeSaving}>
+                      {storeSaving ? "Saving…" : "Save Changes"}
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
           )}
 
