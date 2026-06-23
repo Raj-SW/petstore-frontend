@@ -4,7 +4,7 @@ import { useCart } from "@/context/CartContext";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   FaFacebook, FaTwitter, FaInstagram, FaPlus, FaMinus,
-  FaShoppingCart, FaShieldAlt, FaCheckCircle, FaExclamationTriangle,
+  FaShieldAlt, FaCheckCircle, FaExclamationTriangle,
   FaTag,
 } from "react-icons/fa";
 import { FiShare2, FiChevronLeft, FiChevronDown, FiChevronRight, FiSearch, FiX } from "react-icons/fi";
@@ -614,20 +614,13 @@ const IndividualProductItemPage = () => {
                 </button>
               </div>
 
-              <button
-                type="button"
-                className="ip-btn ip-btn--primary ip-btn--cart"
-                onClick={handleAddToCart}
-                disabled={vStock === 0}
-              >
-                <FaShoppingCart size={15} />
-                {stockQty === 0 ? "Out of Stock" : "Add to Cart"}
-              </button>
-
               <SubscribeWidget
                 product={product}
                 quantity={quantity}
                 variantId={hasVariants ? selectedVariant?._id : null}
+                unitPrice={displayEffective}
+                onAddToCart={handleAddToCart}
+                outOfStock={vStock === 0}
               />
             </div>
 
