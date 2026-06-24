@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/Components/ui/select";
 import {
   FiX, FiUser, FiMapPin, FiCreditCard,
   FiPackage, FiTruck, FiFileText, FiSearch,
@@ -166,17 +167,20 @@ const AdminOrders = () => {
       >
         View
       </button>
-      <select
-        className="admin-status-select"
+      <Select
         value={order.status || "pending"}
-        onChange={(e) => handleStatusChange(order, e.target.value)}
+        onValueChange={(v) => handleStatusChange(order, v)}
         disabled={statusLoading[order._id]}
-        aria-label={`Change status for order ${order._id?.slice(-6)}`}
       >
-        {STATUS_OPTIONS.map((s) => (
-          <option key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</option>
-        ))}
-      </select>
+        <SelectTrigger className="h-8 w-auto text-sm" aria-label={`Change status for order ${order._id?.slice(-6)}`}>
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          {STATUS_OPTIONS.map((s) => (
+            <SelectItem key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
     </div>
   );
 
@@ -362,18 +366,22 @@ const AdminOrders = () => {
                     <span className={getStatusClass(drawerOrder.status)}>
                       {drawerOrder.status || "pending"}
                     </span>
-                    <select
-                      className="admin-status-select"
+                    <Select
                       value={drawerOrder.status || "pending"}
-                      onChange={(e) => handleStatusChange(drawerOrder, e.target.value)}
+                      onValueChange={(v) => handleStatusChange(drawerOrder, v)}
                       disabled={statusLoading[drawerOrder._id]}
                     >
-                      {STATUS_OPTIONS.map((s) => (
-                        <option key={s} value={s}>
-                          {s.charAt(0).toUpperCase() + s.slice(1)}
-                        </option>
-                      ))}
-                    </select>
+                      <SelectTrigger className="h-8 w-auto text-sm">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {STATUS_OPTIONS.map((s) => (
+                          <SelectItem key={s} value={s}>
+                            {s.charAt(0).toUpperCase() + s.slice(1)}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
 
