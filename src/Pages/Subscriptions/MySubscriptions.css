@@ -19,3 +19,12 @@
   padding: 6px 12px; font-size: 13px; cursor: pointer;
 }
 .ms-actions .ms-cancel { color: #c0392b; border-color: #e7c3bd; }
+.ms-item { display: flex; align-items: center; gap: 8px; }
+.ms-item-img { width: 32px; height: 32px; border-radius: 6px; object-fit: cover; }
+.ms-pricing { display: flex; align-items: baseline; gap: 8px; margin: 8px 0 4px; }
+.ms-percycle { font-size: 18px; font-weight: 800; color: #1d9e75; }
+.ms-percycle-label { color: #6b7b6b; font-size: 13px; }
+.ms-savings { color: #0f6b48; font-size: 12px; font-weight: 600; }
+.ms-history { margin: 6px 0; font-size: 13px; color: #4a544c; }
+.ms-history summary { cursor: pointer; font-weight: 600; }
+.ms-history ul { margin: 6px 0 0; padding-left: 16px; }

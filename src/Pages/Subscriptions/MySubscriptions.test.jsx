@@ -7,7 +7,9 @@ vi.mock("../../Services/api/subscriptionsApi", () => ({
       data: [{
         _id: "s1", status: "active", intervalUnit: "week", intervalCount: 2,
         nextRunAt: new Date(Date.now() + 86400000).toISOString(), discountPercent: 10,
-        items: [{ product: { _id: "p1", name: "Dog Food" }, quantity: 2 }],
+        perCycleTotal: 540, savings: 60, cadenceLabel: "every 2 weeks", nextRunInDays: 1,
+        items: [{ product: { _id: "p1", name: "Dog Food", images: [{ url: "http://img/x.jpg" }] }, quantity: 2 }],
+        orderHistory: [{ id: "o1", date: new Date("2026-06-01").toISOString(), total: 450, status: "paid" }],
       }],
     }),
     update: vi.fn().mockResolvedValue({ data: {} }),
@@ -27,6 +29,13 @@ describe("MySubscriptions", () => {
     render(<MySubscriptions />);
     await waitFor(() => expect(screen.getByText("Dog Food")).toBeInTheDocument());
     expect(screen.getByText(/every 2 week/i)).toBeInTheDocument();
+  });
+
+  it("shows per-cycle total and savings", async () => {
+    render(<MySubscriptions />);
+    await waitFor(() => expect(screen.getByText("Dog Food")).toBeInTheDocument());
+    expect(screen.getByText("Rs 540")).toBeInTheDocument();
+    expect(screen.getByText(/save rs 60/i)).toBeInTheDocument();
   });
 
   it("pauses a subscription", async () => {
