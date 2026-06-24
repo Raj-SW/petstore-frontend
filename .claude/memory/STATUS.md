@@ -1,7 +1,7 @@
 # Frontend Status
 
-**Active branch:** `feat/backlog-impl-2026-06-22`
-**Last updated:** 2026-06-23
+**Active branch:** `feat/epic2-select-migrations`
+**Last updated:** 2026-06-24
 **Stack:** React 18 + Vite, Tailwind 3.4, shadcn/ui, @dnd-kit, Framer Motion, Vitest + React Testing Library
 
 For the full cross-repo backlog (BE + FE), see `../backend/.claude/memory/STATUS.md`.
@@ -22,6 +22,7 @@ For the full cross-repo backlog (BE + FE), see `../backend/.claude/memory/STATUS
 | 7a | Homepage feedback — renders each testimonial's own photos; adaptive 0/1/2-3 layout | `Pages/HomePage/HomePageSections/StatsSection.jsx` |
 | 8 | AdminTipForm + AdminGalleryForm use ImageManager for cover + section images | `Pages/Admin/Tips/AdminTipForm.jsx`, `Pages/Admin/Gallery/AdminGalleryForm.jsx` |
 | 14 | Variant-aware inventory — Variant column, variantId in restock/adjust/history | `Pages/Admin/Inventory/AdminInventory.jsx` |
+| 2b | All 28 native `<select>` elements across 19 files migrated to shadcn Select; all dead CSS dropped; `/admin/ui-gallery` verification page added | `feat/epic2-select-migrations` branch |
 
 ---
 
@@ -29,7 +30,7 @@ For the full cross-repo backlog (BE + FE), see `../backend/.claude/memory/STATUS
 
 | Epic | What's left | Depends on |
 |------|-------------|------------|
-| 2 | 17 native `<select>` → shadcn `Select` migrations across all admin pages; `/admin/ui-gallery` verification page | — |
+| 2 | ✅ DONE — see row 2b above | — |
 | 4 | ProfessionalCard visual rebuild on design system; appointment list SearchBar | Epic 2 |
 | 9b | Typed announcements admin UI — type picker, per-type field sections (event date/location, CTA url, content ref picker) | Epic 9b BE ✅ |
 | 11 | `AdminSettings` page with StoreSettings controls (shipping fee, free-shipping threshold, tax rate/inclusive toggle) | Epic 11 BE ✅ |
