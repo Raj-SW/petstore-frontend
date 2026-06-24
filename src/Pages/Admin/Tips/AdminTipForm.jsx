@@ -1,5 +1,12 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/Components/ui/select";
 import { motion } from "framer-motion";
 import { FiArrowLeft, FiSave } from "react-icons/fi";
 import { RichTextEditor } from "../../../Components/RichText";
@@ -164,27 +171,36 @@ const AdminTipForm = () => {
         <div className="atf-row">
           <div className="atf-field">
             <label htmlFor="atf-animal">Animal</label>
-            <select id="atf-animal" value={form.animalType} onChange={set("animalType")}>
-              {ANIMAL_TYPES.map((a) => (
-                <option key={a.value} value={a.value}>{a.label}</option>
-              ))}
-            </select>
+            <Select value={form.animalType} onValueChange={set("animalType")}>
+              <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {ANIMAL_TYPES.map((a) => (
+                  <SelectItem key={a.value} value={a.value}>{a.label}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           <div className="atf-field">
             <label htmlFor="atf-category">Category</label>
-            <select id="atf-category" value={form.category} onChange={set("category")}>
-              {CATEGORIES.map((c) => (
-                <option key={c} value={c}>{capitalize(c)}</option>
-              ))}
-            </select>
+            <Select value={form.category} onValueChange={set("category")}>
+              <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {CATEGORIES.map((c) => (
+                  <SelectItem key={c} value={c}>{capitalize(c)}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           <div className="atf-field">
             <label htmlFor="atf-difficulty">Difficulty</label>
-            <select id="atf-difficulty" value={form.difficulty} onChange={set("difficulty")}>
-              {DIFFICULTIES.map((d) => (
-                <option key={d} value={d}>{capitalize(d)}</option>
-              ))}
-            </select>
+            <Select value={form.difficulty} onValueChange={set("difficulty")}>
+              <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {DIFFICULTIES.map((d) => (
+                  <SelectItem key={d} value={d}>{capitalize(d)}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           <div className="atf-field">
             <label htmlFor="atf-breed">Breed (optional)</label>
