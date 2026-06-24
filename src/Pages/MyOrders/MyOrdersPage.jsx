@@ -2,6 +2,7 @@
 import { useState, useEffect, useMemo } from "react";
 import Price from "../../Components/HelperComponents/Price/Price";
 import { useNavigate } from "react-router-dom";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/Components/ui/select";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   FaBox, FaTruck, FaCheckCircle, FaTimesCircle, FaSpinner,
@@ -144,10 +145,12 @@ function RefundModal({ order, onClose }) {
 
             <div className="mo-field">
               <label className="mo-label">Reason for return *</label>
-              <select className="mo-select" value={reason} onChange={e => setReason(e.target.value)} required>
-                <option value="">Select a reason</option>
-                {REFUND_REASONS.map(r => <option key={r} value={r}>{r}</option>)}
-              </select>
+              <Select value={reason || undefined} onValueChange={setReason}>
+                <SelectTrigger className="w-full"><SelectValue placeholder="Select a reason" /></SelectTrigger>
+                <SelectContent>
+                  {REFUND_REASONS.map(r => <SelectItem key={r} value={r}>{r}</SelectItem>)}
+                </SelectContent>
+              </Select>
             </div>
 
             <div className="mo-field">
