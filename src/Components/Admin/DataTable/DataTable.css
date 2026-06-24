@@ -70,15 +70,6 @@
     font-size: 0.875rem;
 }
 
-.items-select {
-    padding: 0.375rem 2rem 0.375rem 0.75rem;
-    border: 1px solid var(--color-border-taupe);
-    border-radius: 0.375rem;
-    background-color: var(--color-bg-cream);
-    cursor: pointer;
-    font-size: 0.875rem;
-}
-
 /* Table Wrapper */
 .table-wrapper {
     overflow-x: auto;
