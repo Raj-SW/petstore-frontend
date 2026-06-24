@@ -1,6 +1,13 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/Components/ui/select";
+import {
   FiBox, FiAlertTriangle, FiXCircle, FiDollarSign,
   FiRefreshCw, FiPlus, FiEdit3, FiClock, FiX,
 } from "react-icons/fi";
@@ -11,7 +18,7 @@ import "./AdminInventory.css";
 // ── Constants ──────────────────────────────────────────────────────
 
 const STATUS_OPTS = [
-  { value: "",    label: "All Stock" },
+  { value: "all", label: "All Stock" },
   { value: "in",  label: "In Stock" },
   { value: "low", label: "Low Stock" },
   { value: "out", label: "Out of Stock" },
@@ -44,7 +51,7 @@ export default function AdminInventory() {
   const [loading, setLoading]     = useState(true);
 
   const [search, setSearch]       = useState("");
-  const [statusFilter, setStatus] = useState("");
+  const [statusFilter, setStatus] = useState("all");
   const [threshold, setThreshold] = useState(10);
 
   const [restock,  setRestock]    = useState(EMPTY_RESTOCK);
@@ -59,7 +66,7 @@ export default function AdminInventory() {
       setLoading(true);
       const res = await inventoryApi.getInventory({
         search:    search      || undefined,
-        status:    statusFilter || undefined,
+        status:    statusFilter === "all" ? undefined : statusFilter,
         threshold: threshold !== 10 ? threshold : undefined,
         limit:     200,
       });
@@ -209,15 +216,16 @@ export default function AdminInventory() {
           value={search}
           onChange={e => setSearch(e.target.value)}
         />
-        <select
-          className="inv-select"
-          value={statusFilter}
-          onChange={e => setStatus(e.target.value)}
-        >
-          {STATUS_OPTS.map(o => (
-            <option key={o.value} value={o.value}>{o.label}</option>
-          ))}
-        </select>
+        <Select value={statusFilter} onValueChange={setStatus}>
+          <SelectTrigger className="w-auto">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {STATUS_OPTS.map(o => (
+              <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
         <div className="inv-threshold">
           <label htmlFor="inv-threshold">Low-stock at:</label>
           <input
