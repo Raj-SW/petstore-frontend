@@ -1,5 +1,12 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/Components/ui/select";
 import { motion } from "framer-motion";
 import { FiArrowLeft, FiSave } from "react-icons/fi";
 import { RichTextEditor } from "../../../Components/RichText";
@@ -163,11 +170,16 @@ const AdminGalleryForm = () => {
         <div className="atf-row">
           <div className="atf-field">
             <label htmlFor="agf-category">Category</label>
-            <select id="agf-category" value={form.category} onChange={set("category")}>
-              {GALLERY_CATEGORIES.map((c) => (
-                <option key={c.key} value={c.key}>{c.label}</option>
-              ))}
-            </select>
+            <Select value={form.category} onValueChange={set("category")}>
+              <SelectTrigger className="w-full">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {GALLERY_CATEGORIES.map((c) => (
+                  <SelectItem key={c.key} value={c.key}>{c.label}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           <div className="atf-field">
             <label htmlFor="agf-date">Event date</label>
