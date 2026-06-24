@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiX } from "react-icons/fi";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/Components/ui/select";
 import DataTable from "../../../Components/Admin/DataTable/DataTable";
 import appointmentsApi from "../../../Services/api/appointmentsApi";
 import { useToast } from "../../../context/ToastContext";
@@ -143,19 +144,22 @@ const AdminAppointments = () => {
           Notes
         </button>
       )}
-      <select
-        className="admin-status-select"
+      <Select
         value={appointment.status || "pending"}
-        onChange={(e) => handleStatusChange(appointment, e.target.value)}
+        onValueChange={(v) => handleStatusChange(appointment, v)}
         disabled={statusLoading[appointment._id]}
-        aria-label={`Change status for appointment ${appointment._id}`}
       >
-        {STATUS_OPTIONS.map((s) => (
-          <option key={s} value={s}>
-            {s.charAt(0).toUpperCase() + s.slice(1)}
-          </option>
-        ))}
-      </select>
+        <SelectTrigger className="h-8 w-auto text-sm" aria-label={`Change status for appointment ${appointment._id}`}>
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          {STATUS_OPTIONS.map((s) => (
+            <SelectItem key={s} value={s}>
+              {s.charAt(0).toUpperCase() + s.slice(1)}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
     </div>
   );
 
