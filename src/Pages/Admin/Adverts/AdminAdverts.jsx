@@ -1,5 +1,12 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/Components/ui/select";
 import { FiPlus, FiSave, FiUploadCloud } from "react-icons/fi";
 import DataTable from "../../../Components/Admin/DataTable/DataTable";
 import advertsApi from "../../../Services/api/advertsApi";
@@ -217,13 +224,21 @@ const AdminAdverts = () => {
               </div>
               <div className="aa-field">
                 <label htmlFor="aa-placement">Placement</label>
-                <select id="aa-placement" value={form.placement} onChange={set("placement")}>
-                  <option value="banner">Banner (between sections)</option>
-                  <option value="sponsored">Sponsored card (in grid)</option>
-                  <option value="hero">Homepage carousel (hero banner)</option>
-                  <option value="promo">Homepage engagement promo</option>
-                  <option value="shop">Pet Shop page banner</option>
-                </select>
+                <Select
+                  value={form.placement}
+                  onValueChange={(v) => setForm((f) => ({ ...f, placement: v }))}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="banner">Banner (between sections)</SelectItem>
+                    <SelectItem value="sponsored">Sponsored card (in grid)</SelectItem>
+                    <SelectItem value="hero">Homepage carousel (hero banner)</SelectItem>
+                    <SelectItem value="promo">Homepage engagement promo</SelectItem>
+                    <SelectItem value="shop">Pet Shop page banner</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <div className="aa-field">
                 <label>Image{["hero", "promo", "shop"].includes(form.placement) ? "" : " (optional)"}</label>
