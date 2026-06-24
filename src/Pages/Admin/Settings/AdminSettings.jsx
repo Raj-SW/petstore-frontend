@@ -1,5 +1,12 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/Components/ui/select";
 import { useToast } from "../../../context/ToastContext";
 import settingsApi from "../../../Services/api/settingsApi";
 import "./AdminSettings.css";
@@ -223,19 +230,20 @@ const AdminSettings = () => {
                 </div>
                 <div className="admin-field">
                   <label className="admin-label" htmlFor="currency">Currency</label>
-                  <select
-                    id="currency"
-                    className="admin-select"
+                  <Select
                     value={general.currency}
-                    onChange={(e) =>
-                      setGeneral((g) => ({ ...g, currency: e.target.value }))
-                    }
+                    onValueChange={(v) => setGeneral((g) => ({ ...g, currency: v }))}
                   >
-                    <option value="USD">USD — US Dollar</option>
-                    <option value="EUR">EUR — Euro</option>
-                    <option value="GBP">GBP — British Pound</option>
-                    <option value="AUD">AUD — Australian Dollar</option>
-                  </select>
+                    <SelectTrigger className="w-full">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="USD">USD — US Dollar</SelectItem>
+                      <SelectItem value="EUR">EUR — Euro</SelectItem>
+                      <SelectItem value="GBP">GBP — British Pound</SelectItem>
+                      <SelectItem value="AUD">AUD — Australian Dollar</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
 
@@ -305,15 +313,18 @@ const AdminSettings = () => {
                     </div>
                     <div className="admin-field">
                       <label className="admin-label" htmlFor="taxInclusive">VAT mode</label>
-                      <select
-                        id="taxInclusive"
-                        className="admin-select"
+                      <Select
                         value={store.taxInclusive ? "inclusive" : "exclusive"}
-                        onChange={(e) => setStore((s) => ({ ...s, taxInclusive: e.target.value === "inclusive" }))}
+                        onValueChange={(v) => setStore((s) => ({ ...s, taxInclusive: v === "inclusive" }))}
                       >
-                        <option value="inclusive">Inclusive (VAT already in prices)</option>
-                        <option value="exclusive">Exclusive (VAT added at checkout)</option>
-                      </select>
+                        <SelectTrigger className="w-full">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="inclusive">Inclusive (VAT already in prices)</SelectItem>
+                          <SelectItem value="exclusive">Exclusive (VAT added at checkout)</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
 
@@ -478,22 +489,20 @@ const AdminSettings = () => {
                   <label className="admin-label" htmlFor="sessionTimeout">
                     Session Timeout
                   </label>
-                  <select
-                    id="sessionTimeout"
-                    className="admin-select"
+                  <Select
                     value={security.sessionTimeout}
-                    onChange={(e) =>
-                      setSecurity((s) => ({
-                        ...s,
-                        sessionTimeout: e.target.value,
-                      }))
-                    }
+                    onValueChange={(v) => setSecurity((s) => ({ ...s, sessionTimeout: v }))}
                   >
-                    <option value="15">15 minutes</option>
-                    <option value="30">30 minutes</option>
-                    <option value="60">1 hour</option>
-                    <option value="240">4 hours</option>
-                  </select>
+                    <SelectTrigger className="w-full">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="15">15 minutes</SelectItem>
+                      <SelectItem value="30">30 minutes</SelectItem>
+                      <SelectItem value="60">1 hour</SelectItem>
+                      <SelectItem value="240">4 hours</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
 
