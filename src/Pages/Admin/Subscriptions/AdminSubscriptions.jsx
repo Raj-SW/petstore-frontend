@@ -7,12 +7,17 @@ import { useToast } from "../../../context/ToastContext";
 import "../Tips/AdminTips.css";
 import "./AdminSubscriptions.css";
 
+const fmtRs = (n) => `Rs ${Math.round(Number(n) || 0).toLocaleString()}`;
+
 const AdminSubscriptions = () => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [analytics, setAnalytics] = useState(null);
   const [horizon, setHorizon] = useState(30);
-  const [viewed, setViewed] = useState(null);
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [dueSoon, setDueSoon] = useState(false);
+  const [detail, setDetail] = useState(null);
+  const [detailLoading, setDetailLoading] = useState(false);
   const { addToast } = useToast();
 
   useEffect(() => { fetchAll(); }, []);
@@ -49,11 +54,31 @@ const AdminSubscriptions = () => {
     }
   };
 
+  const openDetail = async (id) => {
+    setDetailLoading(true);
+    setDetail({ _id: id });
+    try {
+      const res = await subscriptionsApi.getAdminOne(id);
+      setDetail(res.data);
+    } catch {
+      addToast("Failed to load subscription", "error");
+      setDetail(null);
+    } finally {
+      setDetailLoading(false);
+    }
+  };
+
   const stats = useMemo(() => ({
     total: items.length,
     active: items.filter((s) => s.status === "active").length,
     paused: items.filter((s) => s.status === "paused").length,
   }), [items]);
+
+  const filteredItems = useMemo(() => items.filter((s) => {
+    if (statusFilter !== "all" && s.status !== statusFilter) return false;
+    if (dueSoon && !(s.nextRunInDays != null && s.nextRunInDays <= 7)) return false;
+    return true;
+  }), [items, statusFilter, dueSoon]);
 
   const columns = [
     {
@@ -90,7 +115,7 @@ const AdminSubscriptions = () => {
       render: (value, item) => (
         <span className="aps-actions">
           <span className={`at-status ${value === "active" ? "published" : "draft"}`}>{value}</span>
-          <button title="View items" onClick={(e) => { e.stopPropagation(); setViewed(item); }}><FiEye /></button>
+          <button title="View items" onClick={(e) => { e.stopPropagation(); openDetail(item._id); }}><FiEye /></button>
           {value === "active" && (
             <button title="Pause" onClick={(e) => { e.stopPropagation(); setStatus(item, "paused"); }}><FiPause /></button>
           )}
@@ -175,30 +200,67 @@ const AdminSubscriptions = () => {
         )}
       </div>
 
-      <DataTable data={items} columns={columns} loading={loading} />
+      <div className="aps-filters">
+        <label>
+          Filter status&nbsp;
+          <select className="admin-select" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+            <option value="all">All</option>
+            <option value="active">Active</option>
+            <option value="paused">Paused</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+        </label>
+        <label className="aps-duesoon">
+          <input type="checkbox" checked={dueSoon} onChange={(e) => setDueSoon(e.target.checked)} />
+          &nbsp;Due within 7 days
+        </label>
+      </div>
+
+      <DataTable data={filteredItems} columns={columns} loading={loading} />
 
       <AnimatePresence>
-        {viewed && (
-          <motion.div className="admin-modal-backdrop" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setViewed(null)}>
+        {detail && (
+          <motion.div className="admin-modal-backdrop" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setDetail(null)}>
             <motion.div className="admin-modal" initial={{ scale: 0.92, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.92, opacity: 0 }} onClick={(e) => e.stopPropagation()}>
-              <h3>Subscription — {viewed.user?.name || "Customer"}</h3>
-              <p className="admin-page-subtitle" style={{ marginTop: 0 }}>
-                Every {viewed.intervalCount} {viewed.intervalUnit}{viewed.intervalCount > 1 ? "s" : ""} · next run {viewed.nextRunAt ? new Date(viewed.nextRunAt).toLocaleDateString() : "—"} · {viewed.status}
-              </p>
-              <table className="aps-demand-table">
-                <thead><tr><th>Product</th><th>Variant</th><th>Qty</th></tr></thead>
-                <tbody>
-                  {(viewed.items || []).map((it, i) => (
-                    <tr key={i}>
-                      <td>{it.product?.name || it.productName || it.name || "Product"}</td>
-                      <td>{it.variantLabel || "—"}</td>
-                      <td>{it.quantity}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <h3>Subscription — {detail.user?.name || "Customer"}</h3>
+              {detailLoading && <p className="admin-page-subtitle">Loading…</p>}
+              {!detailLoading && (
+                <>
+                  <p className="admin-page-subtitle" style={{ marginTop: 0 }}>
+                    {detail.cadenceLabel || `${detail.intervalCount} ${detail.intervalUnit}`} · next run in {detail.nextRunInDays ?? "—"} day(s) · {detail.status}
+                  </p>
+                  {detail.perCycleTotal != null && (
+                    <p className="aps-pricing">
+                      <strong>{fmtRs(detail.perCycleTotal)}</strong> / delivery
+                      {detail.savings > 0 && <span className="aps-savings"> · You save {fmtRs(detail.savings)}</span>}
+                    </p>
+                  )}
+                  <table className="aps-demand-table">
+                    <thead><tr><th>Product</th><th>Variant</th><th>Qty</th></tr></thead>
+                    <tbody>
+                      {(detail.items || []).map((it, i) => (
+                        <tr key={i}>
+                          <td>{it.product?.name || it.name || "Product"}</td>
+                          <td>{it.variantLabel || "—"}</td>
+                          <td>{it.quantity}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  {Array.isArray(detail.orderHistory) && detail.orderHistory.length > 0 && (
+                    <details className="aps-history" open>
+                      <summary>Past orders ({detail.orderHistory.length})</summary>
+                      <ul>
+                        {detail.orderHistory.map((o) => (
+                          <li key={o.id}>{new Date(o.date).toLocaleDateString()} · {fmtRs(o.total)} · {o.status}</li>
+                        ))}
+                      </ul>
+                    </details>
+                  )}
+                </>
+              )}
               <div className="admin-modal-actions">
-                <button className="at-btn-secondary" onClick={() => setViewed(null)}>Close</button>
+                <button className="at-btn-secondary" onClick={() => setDetail(null)}>Close</button>
               </div>
             </motion.div>
           </motion.div>
