@@ -13,3 +13,11 @@
 .aps-demand-table th { font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: #8a7f72; }
 .aps-shortfall { color: #c0392b; font-weight: 700; }
 .aps-demand-ok { color: #2e7d4f; font-weight: 600; margin: 6px 0 0; }
+.aps-filters { display: flex; align-items: center; gap: 18px; margin: 8px 0 14px; }
+.aps-duesoon { display: inline-flex; align-items: center; font-size: 14px; }
+.aps-pricing { margin: 4px 0 12px; font-size: 15px; }
+.aps-pricing strong { color: #1d9e75; font-size: 18px; }
+.aps-savings { color: #0f6b48; font-weight: 600; }
+.aps-history { margin-top: 12px; font-size: 13px; }
+.aps-history summary { cursor: pointer; font-weight: 600; }
+.aps-history ul { margin: 6px 0 0; padding-left: 16px; }

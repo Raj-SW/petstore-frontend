@@ -9,6 +9,10 @@ const subscriptionsApi = {
     const response = await api.get("/subscriptions/mine");
     return response.data;
   },
+  getMineOne: async (id) => {
+    const response = await api.get(`/subscriptions/mine/${id}`);
+    return response.data;
+  },
   update: async (id, data) => {
     const response = await api.patch(`/subscriptions/${id}`, data);
     return response.data;
@@ -20,6 +24,10 @@ const subscriptionsApi = {
   // Admin
   getAllAdmin: async () => {
     const response = await api.get("/subscriptions/admin");
+    return response.data;
+  },
+  getAdminOne: async (id) => {
+    const response = await api.get(`/subscriptions/admin/${id}`);
     return response.data;
   },
   updateAdmin: async (id, data) => {

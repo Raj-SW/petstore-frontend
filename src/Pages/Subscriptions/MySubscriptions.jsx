@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { FiPause, FiPlay, FiSkipForward, FiX } from "react-icons/fi";
 import subscriptionsApi from "../../Services/api/subscriptionsApi";
 import { useToast } from "../../context/ToastContext";
+import { useCurrency } from "../../context/CurrencyContext";
 import "./MySubscriptions.css";
 
 const intervalLabel = (unit, count) => `Every ${count} ${unit}${count > 1 ? "s" : ""}`;
@@ -11,6 +12,7 @@ const MySubscriptions = () => {
   const [subs, setSubs] = useState([]);
   const [loading, setLoading] = useState(true);
   const { addToast } = useToast();
+  const { formatPrice } = useCurrency();
 
   useEffect(() => { fetchSubs(); }, []);
 
@@ -64,19 +66,42 @@ const MySubscriptions = () => {
           <div key={s._id} className={`ms-card ms-${s.status}`}>
             <div className="ms-card-head">
               <span className={`ms-status ms-status-${s.status}`}>{s.status}</span>
-              <span className="ms-interval">{intervalLabel(s.intervalUnit, s.intervalCount)}</span>
+              <span className="ms-interval">{s.cadenceLabel || intervalLabel(s.intervalUnit, s.intervalCount)}</span>
             </div>
             <ul className="ms-items">
               {s.items.map((it, i) => (
-                <li key={i}>
-                  <span className="ms-item-name">{(it.product?.name) || "Item"}</span>{it.variantLabel ? ` · ${it.variantLabel}` : ""} × {it.quantity}
+                <li key={i} className="ms-item">
+                  {it.product?.images?.[0]?.url && (
+                    <img className="ms-item-img" src={it.product.images[0].url} alt="" />
+                  )}
+                  <span className="ms-item-name">{(it.product?.name) || "Item"}</span>
+                  {it.variantLabel ? ` · ${it.variantLabel}` : ""} × {it.quantity}
                 </li>
               ))}
             </ul>
+            {s.perCycleTotal != null && (
+              <p className="ms-pricing">
+                <span className="ms-percycle">{formatPrice(s.perCycleTotal)}</span>
+                <span className="ms-percycle-label"> / delivery</span>
+                {s.savings > 0 && <span className="ms-savings">You save {formatPrice(s.savings)}</span>}
+              </p>
+            )}
             <p className="ms-next">
               Next order: {s.nextRunAt ? new Date(s.nextRunAt).toLocaleDateString() : "—"}
               {s.discountPercent ? ` · ${s.discountPercent}% off` : ""}
             </p>
+            {Array.isArray(s.orderHistory) && s.orderHistory.length > 0 && (
+              <details className="ms-history">
+                <summary>Past orders ({s.orderHistory.length})</summary>
+                <ul>
+                  {s.orderHistory.map((o) => (
+                    <li key={o.id}>
+                      {new Date(o.date).toLocaleDateString()} · {formatPrice(o.total)} · {o.status}
+                    </li>
+                  ))}
+                </ul>
+              </details>
+            )}
             <div className="ms-actions">
               {s.status === "active" ? (
                 <button onClick={() => act(s._id, { status: "paused" }, "Paused")}>
