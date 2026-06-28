@@ -24,10 +24,19 @@ jobs:
       - run: npm ci
 
       - name: Run unit tests
-        # --reporter=junit sets the test reporter for the test-results report.
+        # --coverage emits coverage/coverage-final.json (the mergeable artifact the
+        # report job consumes); --reporter=junit sets the test-results reporter.
         run: |
-          mkdir -p reports
-          npm run test:unit -- --reporter=junit --outputFile=reports/junit-unit.xml
+          mkdir -p coverage reports
+          npm run test:unit -- --coverage --reporter=junit --outputFile=reports/junit-unit.xml
+
+      - name: Upload unit coverage
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cov-unit
+          path: coverage/coverage-final.json
+          if-no-files-found: error
 
       - name: Upload unit junit
         if: always()
@@ -50,10 +59,19 @@ jobs:
       - run: npm ci
 
       - name: Run integration tests
-        # --reporter=junit sets the test reporter for the test-results report.
+        # --coverage emits coverage/coverage-final.json (the mergeable artifact the
+        # report job consumes); --reporter=junit sets the test-results reporter.
         run: |
-          mkdir -p reports
-          npm run test:integration -- --reporter=junit --outputFile=reports/junit-integration.xml
+          mkdir -p coverage reports
+          npm run test:integration -- --coverage --reporter=junit --outputFile=reports/junit-integration.xml
+
+      - name: Upload integration coverage
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cov-integration
+          path: coverage/coverage-final.json
+          if-no-files-found: error
 
       - name: Upload integration junit
         if: always()
