@@ -30,3 +30,10 @@ coverage/
 # Graphify scratch output (graph lives in the parent repo)
 graphify-out/
 src/graphify-out/
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+reports/

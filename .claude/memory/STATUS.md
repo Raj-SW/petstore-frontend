@@ -43,9 +43,23 @@ For the full cross-repo backlog (BE + FE), see `../backend/.claude/memory/STATUS
 
 ## Test setup
 
-- **Runner:** Vitest (`npx vitest run`)
-- **Helpers:** React Testing Library, `@testing-library/jest-dom`
-- **Mock pattern:** `vi.mock(...)` is hoisted — define all fixture data **inside** the factory function, never as top-level `const` before `vi.mock`
-- **Current coverage:** 89 tests across 20 files — all passing
+- **Pyramid (Vitest projects + Playwright):**
+  - `unit` — co-located `src/**/*.test.{js,jsx}`, jsdom, deps mocked. `npm run test:unit`
+  - `integration` — `tests/integration/**`, React Router + MSW. `npm run test:integration`
+  - `e2e` — `tests/e2e/**/*.spec.js`, Playwright vs. the production build. `npm run test:e2e`
+- **Config:** `vitest.config.js` (unit+integration projects, shared coverage), `playwright.config.js`.
+- **Helpers:** `tests/helpers/` — `render.jsx` (renderWithProviders = MemoryRouter + CurrencyProvider), `server.js` + `handlers.js` (MSW), `setup.unit.js` / `setup.integration.js`.
+- **Mock pattern (unit):** `vi.mock(...)` is hoisted — define fixtures **inside** the factory.
+- **Current coverage:** 337 tests across 62 files (335 unit + 2 integration) + 1 e2e smoke — all passing.
+  - Logic layer fully covered: API wrappers ~96%, hooks ~91%, utils ~90%, contexts ~67%.
+  - Components/pages (~135 files) are deliberately left to the integration (MSW) + e2e (Playwright) layers, not blanket unit tests — so the repo-wide line % is low by design.
+  - API wrappers mock `@/core/api/apiClient` (named `api`, or `default` for invoice/transaction). axios-based localServices mock `axios` directly.
 
-Run before every commit: `npx vitest run && npx vite build`
+### CI (`.github/workflows/`)
+
+- `ci.yml` — unit → integration → e2e → report → reviewdog; partial coverage from unit+integration is `nyc merge`d into one report + PR comment.
+- `codeql.yml`, `sonarcloud.yml`, `labeler.yml` (+ `.github/labeler.yml`), `ai-summary.yml`.
+- **Already configured** (pre-existing on main): SonarCloud project `Raj-SW_petstore-frontend` + `SONAR_CUBE_TOKEN` secret.
+- **Manual post-merge:** create the repo labels `tests`/`ci`/`documentation`/`dependencies`/`frontend` (labeler uses `sync-labels: true`); optionally require the test checks on `main`.
+
+Run before every commit: `npm run test:all && npm run build`

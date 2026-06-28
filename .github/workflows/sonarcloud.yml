@@ -16,13 +16,15 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
 
-      - run: npm install --legacy-peer-deps
+      - run: npm ci
 
-      - name: Run tests with coverage
-        run: npx vitest run --coverage
+      # A single coverage run over unit+integration auto-merges into
+      # coverage/lcov.info (the path sonar-project.properties points at).
+      - name: Generate coverage
+        run: npm run test:coverage
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
