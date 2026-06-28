@@ -186,7 +186,10 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           reporter: github-pr-review
-          eslint_flags: ". --ext .js,.jsx"
+          # No --ext: ESLint 9 flat config (eslint.config.js) removed that flag
+          # (passing it makes eslint exit 2 and fails the job). The flat config's
+          # `files: ['**/*.{js,jsx}']` already scopes which files are linted.
+          eslint_flags: "."
           filter_mode: diff_context
           fail_level: none
           level: warning
