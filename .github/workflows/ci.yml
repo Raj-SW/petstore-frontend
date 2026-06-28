@@ -24,7 +24,10 @@ jobs:
       - run: npm ci
 
       - name: Run unit tests
-        run: npm run test:unit -- --coverage --coverage.reporter=json --reporter=junit --outputFile=reports/junit-unit.xml
+        # Coverage reporters come from vitest.config.js (incl. "json" →
+        # coverage/coverage-final.json, the mergeable artifact). --reporter=junit
+        # sets the test reporter for the test-results report.
+        run: npm run test:unit -- --coverage --reporter=junit --outputFile=reports/junit-unit.xml
 
       - name: Upload unit coverage
         if: always()
@@ -55,7 +58,8 @@ jobs:
       - run: npm ci
 
       - name: Run integration tests
-        run: npm run test:integration -- --coverage --coverage.reporter=json --reporter=junit --outputFile=reports/junit-integration.xml
+        # Coverage reporters (incl. "json") come from vitest.config.js.
+        run: npm run test:integration -- --coverage --reporter=junit --outputFile=reports/junit-integration.xml
 
       - name: Upload integration coverage
         if: always()
