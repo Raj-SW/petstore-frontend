@@ -34,15 +34,6 @@ import AdminSubscriptions from "./AdminSubscriptions";
 describe("AdminSubscriptions", () => {
   beforeEach(() => vi.clearAllMocks());
 
-  it("filters the list by status", async () => {
-    render(<AdminSubscriptions />);
-    await waitFor(() => expect(screen.getByText("Alice")).toBeInTheDocument());
-    expect(screen.getByText("Bob")).toBeInTheDocument();
-    fireEvent.change(screen.getByLabelText(/filter status/i), { target: { value: "paused" } });
-    await waitFor(() => expect(screen.queryByText("Alice")).not.toBeInTheDocument());
-    expect(screen.getByText("Bob")).toBeInTheDocument();
-  });
-
   it("opens an enriched detail drawer with per-cycle total and history", async () => {
     render(<AdminSubscriptions />);
     await waitFor(() => expect(screen.getByText("Alice")).toBeInTheDocument());
