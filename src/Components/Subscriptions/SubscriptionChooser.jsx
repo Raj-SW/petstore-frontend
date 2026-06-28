@@ -1,4 +1,5 @@
 import { computeSavings, isIntervalValid } from "../../utils/subscriptionPricing";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/Components/ui/select";
 import "./SubscriptionChooser.css";
 
 const defaultFormat = (n) => `Rs ${Math.round(n).toLocaleString()}`;
@@ -76,14 +77,15 @@ const SubscriptionChooser = ({
               className="subchooser-freq-count"
               aria-label="Interval count"
             />
-            <select
-              id="subchooser-freq-select"
-              value={intervalUnit}
-              onChange={(e) => onIntervalUnitChange(e.target.value)}
-            >
-              <option value="day">day(s)</option>
-              <option value="week">week(s)</option>
-            </select>
+            <Select value={intervalUnit} onValueChange={onIntervalUnitChange}>
+              <SelectTrigger id="subchooser-freq-select" className="h-8 w-auto text-sm">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="day">day(s)</SelectItem>
+                <SelectItem value="week">week(s)</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           {!intervalOk && (
             <p className="subchooser-warn">Minimum interval is 7 days.</p>

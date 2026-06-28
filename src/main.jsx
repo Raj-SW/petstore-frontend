@@ -56,6 +56,7 @@ import AdminFeedback from "./Pages/Admin/Feedback/AdminFeedback";
 import AdminAnnouncements from "./Pages/Admin/Announcements/AdminAnnouncements";
 import AdminFaqs from "./Pages/Admin/Faqs/AdminFaqs";
 import AdminSubscriptions from "./Pages/Admin/Subscriptions/AdminSubscriptions";
+import AdminUIGallery from "./Pages/Admin/UIGallery/AdminUIGallery";
 
 const router = createBrowserRouter([
   {
@@ -283,6 +284,10 @@ const router = createBrowserRouter([
       {
         path: "settings",
         element: <AdminSettings />,
+      },
+      {
+        path: "ui-gallery",
+        element: <AdminUIGallery />,
       },
     ],
   },

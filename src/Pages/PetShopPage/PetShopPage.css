@@ -166,17 +166,6 @@
   color: #666;
 }
 
-.ps-perpage select {
-  font-family: var(--font-body);
-  font-size: 0.85rem;
-  padding: 0.35rem 0.5rem;
-  border: 1.5px solid #e3dccf;
-  border-radius: 8px;
-  background: #fff;
-  color: var(--color-primary-forest, #001c10);
-  cursor: pointer;
-}
-
 .ps-filter-mobile-btn {
   display: none;
   align-items: center;

@@ -1,6 +1,13 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/Components/ui/select";
+import {
   FiTrendingUp, FiTrendingDown, FiActivity, FiRefreshCw,
 } from "react-icons/fi";
 import transactionApi from "../../../Services/api/transactionApi";
@@ -8,13 +15,13 @@ import { useToast } from "../../../context/ToastContext";
 import "./AdminTransactions.css";
 
 const TYPE_OPTS = [
-  { value: "",        label: "All Types" },
+  { value: "all",     label: "All Types" },
   { value: "payment", label: "Payments" },
   { value: "refund",  label: "Refunds" },
 ];
 
 const METHOD_OPTS = [
-  { value: "",            label: "All Methods" },
+  { value: "all",         label: "All Methods" },
   { value: "stripe",      label: "Stripe" },
   { value: "paypal",      label: "PayPal" },
   { value: "credit_card", label: "Credit Card" },
@@ -31,15 +38,15 @@ export default function AdminTransactions() {
   const [transactions, setTransactions] = useState([]);
   const [stats,   setStats]   = useState({ totalRevenue: 0, totalRefunds: 0, netRevenue: 0 });
   const [loading, setLoading] = useState(true);
-  const [type,    setType]    = useState("");
-  const [method,  setMethod]  = useState("");
+  const [type,    setType]    = useState("all");
+  const [method,  setMethod]  = useState("all");
 
   const fetchTransactions = useCallback(async () => {
     try {
       setLoading(true);
       const res = await transactionApi.getTransactions({
-        type:          type   || undefined,
-        paymentMethod: method || undefined,
+        type:          type === "all"   ? undefined : type,
+        paymentMethod: method === "all" ? undefined : method,
         limit: 100,
       });
       setTransactions(res.data  || []);
@@ -92,12 +99,26 @@ export default function AdminTransactions() {
 
       {/* Toolbar */}
       <div className="admin-card invc-toolbar">
-        <select className="inv-select" value={type} onChange={e => setType(e.target.value)}>
-          {TYPE_OPTS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-        </select>
-        <select className="inv-select" value={method} onChange={e => setMethod(e.target.value)}>
-          {METHOD_OPTS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-        </select>
+        <Select value={type} onValueChange={setType}>
+          <SelectTrigger className="w-auto">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {TYPE_OPTS.map(o => (
+              <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Select value={method} onValueChange={setMethod}>
+          <SelectTrigger className="w-auto">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {METHOD_OPTS.map(o => (
+              <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       {/* Table */}

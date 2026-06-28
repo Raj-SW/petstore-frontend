@@ -167,30 +167,6 @@
   cursor: not-allowed;
 }
 
-/* Role select dropdown */
-.admin-role-select {
-  font-family: var(--font-body);
-  font-size: 0.8rem;
-  color: var(--color-text-default);
-  background: var(--color-bg-warm-ivory);
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  padding: 0.3rem 0.5rem;
-  cursor: pointer;
-  transition: border-color 0.18s;
-  max-width: 130px;
-}
-
-.admin-role-select:focus {
-  outline: none;
-  border-color: var(--color-accent-gold);
-}
-
-.admin-role-select:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
 /* Modal */
 .admin-modal-backdrop {
   position: fixed;
@@ -269,10 +245,6 @@
 
   .admin-user-actions {
     flex-wrap: wrap;
-  }
-
-  .admin-role-select {
-    max-width: 110px;
   }
 
   .admin-modal-actions {

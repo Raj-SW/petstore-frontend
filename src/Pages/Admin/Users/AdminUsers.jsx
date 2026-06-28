@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiUserX, FiUserCheck, FiTrash2 } from "react-icons/fi";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/Components/ui/select";
 import DataTable from "../../../Components/Admin/DataTable/DataTable";
 import usersApi from "../../../Services/api/usersApi";
 import { useToast } from "../../../context/ToastContext";
@@ -164,17 +165,20 @@ const AdminUsers = () => {
       >
         {user.isActive !== false ? <FiUserX size={15} /> : <FiUserCheck size={15} />}
       </button>
-      <select
-        className="admin-role-select"
+      <Select
         value={user.role || "user"}
-        onChange={(e) => handleRoleChange(user, e.target.value)}
+        onValueChange={(v) => handleRoleChange(user, v)}
         disabled={actionLoading[`role-${user._id}`]}
-        aria-label={`Change role for ${user.name || user.email}`}
       >
-        {ROLE_OPTIONS.map((r) => (
-          <option key={r} value={r}>{r}</option>
-        ))}
-      </select>
+        <SelectTrigger className="h-8 w-auto text-sm" aria-label={`Change role for ${user.name || user.email}`}>
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          {ROLE_OPTIONS.map((r) => (
+            <SelectItem key={r} value={r}>{r}</SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
       <button
         className="admin-action-btn admin-action-btn--delete"
         onClick={() => setDeleteModal(user)}

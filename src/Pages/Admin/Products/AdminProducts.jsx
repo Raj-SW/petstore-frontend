@@ -1,5 +1,12 @@
 import { useState, useEffect, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/Components/ui/select";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   FiPlus, FiPackage, FiAlertCircle, FiXCircle, FiCheckCircle,
@@ -468,16 +475,21 @@ const AdminProducts = () => {
             >
               <h3 className="admin-modal-title">Put {selectedIds.length} product(s) on sale</h3>
               <div className="ap-sale-fields">
-                <label className="ap-sale-field">
+                <div className="ap-sale-field">
                   <span>Discount type</span>
-                  <select
+                  <Select
                     value={saleForm.discountType}
-                    onChange={(e) => setSaleForm((f) => ({ ...f, discountType: e.target.value }))}
+                    onValueChange={(v) => setSaleForm((f) => ({ ...f, discountType: v }))}
                   >
-                    <option value="percent">Percent (%)</option>
-                    <option value="amount">Amount (Rs)</option>
-                  </select>
-                </label>
+                    <SelectTrigger className="w-full">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="percent">Percent (%)</SelectItem>
+                      <SelectItem value="amount">Amount (Rs)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
                 <label className="ap-sale-field">
                   <span>Discount value</span>
                   <input

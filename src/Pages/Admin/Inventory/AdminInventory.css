@@ -105,21 +105,6 @@
 
 .inv-search:focus { border-color: var(--color-accent-gold); }
 
-.inv-select {
-  font-family: var(--font-body);
-  font-size: 0.88rem;
-  padding: 0.6rem 0.9rem;
-  border: 1.5px solid #ddd;
-  border-radius: 10px;
-  outline: none;
-  background: #fff;
-  cursor: pointer;
-  transition: border-color 0.2s;
-  color: var(--color-text-default);
-}
-
-.inv-select:focus { border-color: var(--color-accent-gold); }
-
 .inv-threshold {
   display: flex;
   align-items: center;

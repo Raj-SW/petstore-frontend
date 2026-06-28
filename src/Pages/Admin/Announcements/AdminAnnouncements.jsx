@@ -1,5 +1,12 @@
 import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/Components/ui/select";
 import { FiSend, FiTag, FiUsers } from "react-icons/fi";
 import DataTable from "../../../Components/Admin/DataTable/DataTable";
 import announcementsApi from "../../../Services/api/announcementsApi";
@@ -179,16 +186,16 @@ const AdminAnnouncements = () => {
       <div className="aa-composer">
         <div className="aa-field">
           <label className="admin-label" htmlFor="aa-type">Announcement type</label>
-          <select
-            id="aa-type"
-            className="admin-select"
-            value={type}
-            onChange={(e) => setType(e.target.value)}
-          >
-            {TYPE_OPTIONS.map((t) => (
-              <option key={t.value} value={t.value}>{t.label}</option>
-            ))}
-          </select>
+          <Select value={type} onValueChange={setType}>
+            <SelectTrigger className="w-full">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {TYPE_OPTIONS.map((t) => (
+                <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         <input
@@ -238,12 +245,16 @@ const AdminAnnouncements = () => {
         {group === "content" && (
           <div className="aa-field">
             <label className="admin-label" htmlFor="aa-content">Select {type === "new_tip" ? "a care tip" : "a gallery post"}</label>
-            <select id="aa-content" className="admin-select" value={contentId} onChange={(e) => setContentId(e.target.value)}>
-              <option value="">— choose —</option>
-              {contentItems.map((c) => (
-                <option key={c._id} value={c._id}>{c.title}</option>
-              ))}
-            </select>
+            <Select value={contentId || undefined} onValueChange={setContentId}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="— choose —" />
+              </SelectTrigger>
+              <SelectContent>
+                {contentItems.map((c) => (
+                  <SelectItem key={c._id} value={c._id}>{c.title}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         )}
 

@@ -1,6 +1,13 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/Components/ui/select";
+import {
   FiFileText, FiDollarSign, FiRotateCcw,
   FiDownload, FiEye, FiX, FiRefreshCw, FiSearch,
 } from "react-icons/fi";
@@ -9,7 +16,7 @@ import { useToast } from "../../../context/ToastContext";
 import "./AdminInvoices.css";
 
 const STATUS_OPTS = [
-  { value: "",         label: "All Statuses" },
+  { value: "all",      label: "All Statuses" },
   { value: "issued",   label: "Issued" },
   { value: "refunded", label: "Refunded" },
 ];
@@ -28,7 +35,7 @@ export default function AdminInvoices() {
   const [stats,       setStats]       = useState({ totalIssued: 0, totalRevenue: 0, totalRefunded: 0 });
   const [loading,     setLoading]     = useState(true);
   const [search,      setSearch]      = useState("");
-  const [status,      setStatus]      = useState("");
+  const [status,      setStatus]      = useState("all");
   const [drawer,      setDrawer]      = useState(EMPTY_DRAWER);
   const [pdfLoading,  setPdfLoading]  = useState(null);
 
@@ -37,7 +44,7 @@ export default function AdminInvoices() {
       setLoading(true);
       const res = await invoiceApi.getInvoices({
         search: search || undefined,
-        status: status || undefined,
+        status: status === "all" ? undefined : status,
         limit: 100,
       });
       setInvoices(res.data  || []);
@@ -111,9 +118,16 @@ export default function AdminInvoices() {
             onChange={e => setSearch(e.target.value)}
           />
         </div>
-        <select className="inv-select" value={status} onChange={e => setStatus(e.target.value)}>
-          {STATUS_OPTS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-        </select>
+        <Select value={status} onValueChange={setStatus}>
+          <SelectTrigger className="w-auto">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {STATUS_OPTS.map(o => (
+              <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       {/* Table */}
