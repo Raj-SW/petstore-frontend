@@ -203,7 +203,7 @@ const AdminSubscriptions = () => {
       <div className="aps-filters">
         <label>
           Filter status&nbsp;
-          <select className="admin-select" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+          <select aria-label="Filter status" className="admin-select" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
             <option value="all">All</option>
             <option value="active">Active</option>
             <option value="paused">Paused</option>
