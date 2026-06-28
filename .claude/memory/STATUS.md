@@ -49,7 +49,10 @@ For the full cross-repo backlog (BE + FE), see `../backend/.claude/memory/STATUS
 - **Config:** `vitest.config.js` (unit+integration projects, shared coverage), `playwright.config.js`.
 - **Helpers:** `tests/helpers/` — `render.jsx` (renderWithProviders = MemoryRouter + CurrencyProvider), `server.js` + `handlers.js` (MSW), `setup.unit.js` / `setup.integration.js`.
 - **Mock pattern (unit):** `vi.mock(...)` is hoisted — define fixtures **inside** the factory.
-- **Current coverage:** 103 tests (101 unit + 2 integration) across 24 files + 1 e2e smoke — all passing.
+- **Current coverage:** 337 tests across 62 files (335 unit + 2 integration) + 1 e2e smoke — all passing.
+  - Logic layer fully covered: API wrappers ~96%, hooks ~91%, utils ~90%, contexts ~67%.
+  - Components/pages (~135 files) are deliberately left to the integration (MSW) + e2e (Playwright) layers, not blanket unit tests — so the repo-wide line % is low by design.
+  - API wrappers mock `@/core/api/apiClient` (named `api`, or `default` for invoice/transaction). axios-based localServices mock `axios` directly.
 
 ### CI (`.github/workflows/`)
 
