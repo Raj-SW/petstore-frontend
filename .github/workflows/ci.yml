@@ -24,20 +24,10 @@ jobs:
       - run: npm ci
 
       - name: Run unit tests
-        # Coverage reporters come from vitest.config.js (incl. "json" →
-        # coverage/coverage-final.json, the mergeable artifact). --reporter=junit
-        # sets the test reporter for the test-results report.
+        # --reporter=junit sets the test reporter for the test-results report.
         run: |
-          mkdir -p coverage reports
-          npm run test:unit -- --coverage --reporter=junit --outputFile=reports/junit-unit.xml
-
-      - name: Upload unit coverage
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: cov-unit
-          path: coverage/coverage-final.json
-          if-no-files-found: error
+          mkdir -p reports
+          npm run test:unit -- --reporter=junit --outputFile=reports/junit-unit.xml
 
       - name: Upload unit junit
         if: always()
@@ -60,18 +50,10 @@ jobs:
       - run: npm ci
 
       - name: Run integration tests
-        # Coverage reporters (incl. "json") come from vitest.config.js.
+        # --reporter=junit sets the test reporter for the test-results report.
         run: |
-          mkdir -p coverage reports
-          npm run test:integration -- --coverage --reporter=junit --outputFile=reports/junit-integration.xml
-
-      - name: Upload integration coverage
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: cov-integration
-          path: coverage/coverage-final.json
-          if-no-files-found: error
+          mkdir -p reports
+          npm run test:integration -- --reporter=junit --outputFile=reports/junit-integration.xml
 
       - name: Upload integration junit
         if: always()
