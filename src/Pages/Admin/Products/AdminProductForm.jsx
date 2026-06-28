@@ -1,5 +1,12 @@
 import { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/Components/ui/select";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiArrowLeft, FiX, FiPlus } from "react-icons/fi";
 import { MdDragIndicator } from "react-icons/md";
@@ -701,16 +708,21 @@ const AdminProductForm = () => {
               {form.onSale && (
                 <div className="admin-pf-sale">
                   <div className="admin-pf-sale-row">
-                    <label className="admin-pf-sale-field">
+                    <div className="admin-pf-sale-field">
                       <span>Discount type</span>
-                      <select
+                      <Select
                         value={form.discountType}
-                        onChange={(e) => setField("discountType", e.target.value)}
+                        onValueChange={(v) => setField("discountType", v)}
                       >
-                        <option value="percent">Percentage (%)</option>
-                        <option value="amount">Fixed sale price (Rs)</option>
-                      </select>
-                    </label>
+                        <SelectTrigger className="w-full">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="percent">Percentage (%)</SelectItem>
+                          <SelectItem value="amount">Fixed sale price (Rs)</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
                     <label className="admin-pf-sale-field">
                       <span>{form.discountType === "percent" ? "Percent off" : "Sale price (Rs)"}</span>
                       <input

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaFilter, FaTimes, FaSearch } from "react-icons/fa";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/Components/ui/select";
 
 import ProductCard from "../../Components/HelperComponents/ProductCard/ProductCardV2";
 import SortDropDown from "@/Components/HelperComponents/SortDropDown/SortDropDown";
@@ -269,21 +270,25 @@ const PetShopPage = () => {
                 </span>
               </div>
               <div className="ps-toolbar-right">
-                <label className="ps-perpage">
+                <div className="ps-perpage">
                   <span>Show</span>
-                  <select
-                    value={perPage}
-                    onChange={(e) => {
-                      setPerPage(Number(e.target.value));
+                  <Select
+                    value={String(perPage)}
+                    onValueChange={(v) => {
+                      setPerPage(Number(v));
                       setCurrentPage(1);
                     }}
-                    aria-label="Products per page"
                   >
-                    {PER_PAGE_OPTIONS.map((n) => (
-                      <option key={n} value={n}>{n}</option>
-                    ))}
-                  </select>
-                </label>
+                    <SelectTrigger className="h-8 w-auto text-sm" aria-label="Products per page">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {PER_PAGE_OPTIONS.map((n) => (
+                        <SelectItem key={n} value={String(n)}>{n}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
                 <SortDropDown onSort={handleSort} />
                 <button
                   type="button"

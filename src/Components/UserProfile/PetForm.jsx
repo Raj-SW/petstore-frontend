@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { FaTimes, FaPaw } from "react-icons/fa";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/Components/ui/select";
 import "./ProfileModals.css";
 
 const EMPTY_FORM = {
@@ -84,21 +85,20 @@ const PetForm = ({ show, onHide, onSubmit, initialData, isLoading }) => {
                   </div>
                   <div className="pm-field">
                     <label className="pm-label">Type *</label>
-                    <select
-                      className="pm-select"
-                      name="type"
-                      value={formData.type}
-                      onChange={handleChange}
-                      required
+                    <Select
+                      value={formData.type || undefined}
+                      onValueChange={(v) => setFormData(prev => ({ ...prev, type: v }))}
                     >
-                      <option value="">Select type</option>
-                      <option value="Dog">Dog</option>
-                      <option value="Cat">Cat</option>
-                      <option value="Bird">Bird</option>
-                      <option value="Fish">Fish</option>
-                      <option value="Small Pets">Small Pets</option>
-                      <option value="Other">Other</option>
-                    </select>
+                      <SelectTrigger className="w-full"><SelectValue placeholder="Select type" /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Dog">Dog</SelectItem>
+                        <SelectItem value="Cat">Cat</SelectItem>
+                        <SelectItem value="Bird">Bird</SelectItem>
+                        <SelectItem value="Fish">Fish</SelectItem>
+                        <SelectItem value="Small Pets">Small Pets</SelectItem>
+                        <SelectItem value="Other">Other</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
 
@@ -146,18 +146,17 @@ const PetForm = ({ show, onHide, onSubmit, initialData, isLoading }) => {
                   </div>
                   <div className="pm-field">
                     <label className="pm-label">Gender *</label>
-                    <select
-                      className="pm-select"
-                      name="gender"
-                      value={formData.gender}
-                      onChange={handleChange}
-                      required
+                    <Select
+                      value={formData.gender || undefined}
+                      onValueChange={(v) => setFormData(prev => ({ ...prev, gender: v }))}
                     >
-                      <option value="">Select gender</option>
-                      <option value="male">Male</option>
-                      <option value="female">Female</option>
-                      <option value="other">Other</option>
-                    </select>
+                      <SelectTrigger className="w-full"><SelectValue placeholder="Select gender" /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="male">Male</SelectItem>
+                        <SelectItem value="female">Female</SelectItem>
+                        <SelectItem value="other">Other</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
 

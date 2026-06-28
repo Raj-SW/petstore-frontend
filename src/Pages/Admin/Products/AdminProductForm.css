@@ -80,7 +80,6 @@
 }
 
 .admin-input,
-.admin-select,
 .admin-textarea {
   font-family: var(--font-body);
   font-size: 0.95rem;
@@ -96,7 +95,6 @@
 }
 
 .admin-input:focus,
-.admin-select:focus,
 .admin-textarea:focus {
   border-color: var(--color-accent-gold);
 }

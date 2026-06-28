@@ -1,5 +1,12 @@
 import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/Components/ui/select";
 import { FiRepeat, FiPlay, FiPause, FiXCircle, FiAlertTriangle, FiEye } from "react-icons/fi";
 import DataTable from "../../../Components/Admin/DataTable/DataTable";
 import subscriptionsApi from "../../../Services/api/subscriptionsApi";
@@ -160,14 +167,19 @@ const AdminSubscriptions = () => {
           <h2 className="admin-pf-section-title" style={{ margin: 0 }}>
             <FiAlertTriangle style={{ verticalAlign: "-2px" }} /> Inventory demand forecast
           </h2>
-          <label className="aps-horizon">
+          <span className="aps-horizon">
             Horizon&nbsp;
-            <select value={horizon} onChange={(e) => setHorizon(Number(e.target.value))} className="admin-select">
-              <option value={30}>30 days</option>
-              <option value={60}>60 days</option>
-              <option value={90}>90 days</option>
-            </select>
-          </label>
+            <Select value={String(horizon)} onValueChange={(v) => setHorizon(Number(v))}>
+              <SelectTrigger className="w-auto">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="30">30 days</SelectItem>
+                <SelectItem value="60">60 days</SelectItem>
+                <SelectItem value="90">90 days</SelectItem>
+              </SelectContent>
+            </Select>
+          </span>
         </div>
         {analytics ? (
           <>
@@ -201,15 +213,20 @@ const AdminSubscriptions = () => {
       </div>
 
       <div className="aps-filters">
-        <label>
+        <span>
           Filter status&nbsp;
-          <select aria-label="Filter status" className="admin-select" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
-            <option value="all">All</option>
-            <option value="active">Active</option>
-            <option value="paused">Paused</option>
-            <option value="cancelled">Cancelled</option>
-          </select>
-        </label>
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="w-auto">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All</SelectItem>
+              <SelectItem value="active">Active</SelectItem>
+              <SelectItem value="paused">Paused</SelectItem>
+              <SelectItem value="cancelled">Cancelled</SelectItem>
+            </SelectContent>
+          </Select>
+        </span>
         <label className="aps-duesoon">
           <input type="checkbox" checked={dueSoon} onChange={(e) => setDueSoon(e.target.checked)} />
           &nbsp;Due within 7 days

@@ -674,7 +674,6 @@
   letter-spacing: 0.05em;
 }
 
-.mo-select,
 .mo-textarea {
   padding: 0.7rem 0.95rem;
   border: 1.5px solid #e8e8e8;
@@ -689,7 +688,6 @@
   box-sizing: border-box;
 }
 
-.mo-select:focus,
 .mo-textarea:focus {
   border-color: var(--color-accent-gold, #d99a2b);
   box-shadow: 0 0 0 3px rgba(217, 154, 43, 0.12);

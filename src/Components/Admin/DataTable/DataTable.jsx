@@ -6,6 +6,7 @@ import {
   FiTrash2,
   FiEye,
 } from "react-icons/fi";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/Components/ui/select";
 import "./DataTable.css";
 
 /**
@@ -189,21 +190,24 @@ const DataTable = ({
           </div>
         )}
         <div className="items-per-page">
-          <label htmlFor="items-per-page">Show:</label>
-          <select
-            id="items-per-page"
-            value={itemsPerPageState}
-            onChange={(e) => {
-              setItemsPerPageState(Number(e.target.value));
+          <span>Show:</span>
+          <Select
+            value={String(itemsPerPageState)}
+            onValueChange={(v) => {
+              setItemsPerPageState(Number(v));
               setCurrentPage(1);
             }}
-            className="items-select"
           >
-            <option value={5}>5</option>
-            <option value={10}>10</option>
-            <option value={25}>25</option>
-            <option value={50}>50</option>
-          </select>
+            <SelectTrigger className="h-8 w-auto text-sm" aria-label="Items per page">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="5">5</SelectItem>
+              <SelectItem value="10">10</SelectItem>
+              <SelectItem value="25">25</SelectItem>
+              <SelectItem value="50">50</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
 
