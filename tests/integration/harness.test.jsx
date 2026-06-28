@@ -37,7 +37,7 @@ describe("integration harness", () => {
     expect(screen.getByText("Bella")).toBeInTheDocument();
   });
 
-  it("fails loudly on an unmocked request", async () => {
+  it("loads the default handler set (GET /api/health)", async () => {
     // /api/health is in the default handlers, so this resolves; asserts the
     // default handler set is actually loaded.
     const res = await axios.get("/api/health");
