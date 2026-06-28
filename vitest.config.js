@@ -19,6 +19,9 @@ export default defineConfig({
       provider: "v8",
       reporter: ["text", "text-summary", "lcov", "json", "json-summary"],
       reportsDirectory: "./coverage",
+      // Emit the coverage report even when tests fail, so CI's coverage-artifact
+      // upload doesn't ALSO fail (which would mask the real test failure).
+      reportOnFailure: true,
       include: ["src/**/*.{js,jsx}"],
       exclude: [
         "node_modules/**",
