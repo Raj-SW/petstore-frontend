@@ -83,4 +83,24 @@ describe("appointmentsApi", () => {
     await appointmentsApi.getAllAppointments({ page: 2 });
     expect(api.get).toHaveBeenCalledWith("/admin/appointments?page=2");
   });
+
+  it("getProfessionalPublicAppointments gets the public per-pro route", async () => {
+    api.get.mockResolvedValue({ data: [] });
+    await appointmentsApi.getProfessionalPublicAppointments("pro1");
+    expect(api.get).toHaveBeenCalledWith("/appointments/professional/pro1");
+  });
+
+  it("addAppointmentNotes patches notes", async () => {
+    api.patch.mockResolvedValue({ data: {} });
+    await appointmentsApi.addAppointmentNotes("9", "note text");
+    expect(api.patch).toHaveBeenCalledWith("/appointments/9/notes", {
+      notes: "note text",
+    });
+  });
+
+  it("getAppointmentStats builds a stats query", async () => {
+    api.get.mockResolvedValue({ data: {} });
+    await appointmentsApi.getAppointmentStats({ range: "week" });
+    expect(api.get).toHaveBeenCalledWith("/appointments/stats?range=week");
+  });
 });
