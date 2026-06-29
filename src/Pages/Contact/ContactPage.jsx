@@ -142,7 +142,7 @@ const ContactPage = () => {
         <div className="ct-connect-inner">
           <div className="ct-form-col">
             <h2 className="ct-connect-title">Connecting You with Care for Your Beloved Pets</h2>
-            <p className="ct-connect-sub">We're here to answer your questions and provide support.</p>
+            <p className="ct-connect-sub">We&apos;re here to answer your questions and provide support.</p>
 
             <form className="ct-form" onSubmit={handleSubmit}>
               <label className="ct-label" htmlFor="ct-name">Your Name</label>
