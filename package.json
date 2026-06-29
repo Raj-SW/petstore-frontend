@@ -17,7 +17,10 @@
     "test:all": "npm run test:unit && npm run test:integration",
     "test:coverage": "vitest run --coverage",
     "test:watch": "vitest",
-    "test:ui": "vitest --ui"
+    "test:ui": "vitest --ui",
+    "issues:fetch": "node scripts/fetch-issues.mjs",
+    "issues:json": "node scripts/fetch-issues.mjs --json",
+    "issues:plan": "node scripts/fetch-issues.mjs --fix-plan"
   },
   "dependencies": {
     "@aldabil/react-scheduler": "^2.9.5",
