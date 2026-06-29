@@ -34,14 +34,14 @@ const AddToCart = ({ currentItem }) => {
     <>
       <IconContext.Provider value={{ size: "1.6rem" }}>
         {/* Set icon size here */}
-        <div className="cartWrapper" onClick={handleCartClick}>
+        <button type="button" className="cartWrapper" aria-label="Open cart" onClick={handleCartClick}>
           <FaCartShopping className="cartIcon" />
           {totalItems > 0 && (
             <div className={`cartBadge ${isAnimating ? "animate" : ""}`}>
               {totalItems}
             </div>
           )}
-        </div>
+        </button>
       </IconContext.Provider>
 
       <CartModal show={showCartModal} onHide={() => setShowCartModal(false)} />

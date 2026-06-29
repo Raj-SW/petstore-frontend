@@ -193,7 +193,7 @@ const AdminSubscriptions = () => {
                 </thead>
                 <tbody>
                   {atRisk.map((r, i) => (
-                    <tr key={i}>
+                    <tr key={r.name ? `${r.name}-${r.variantLabel || i}` : i}>
                       <td>{r.name}</td>
                       <td>{r.variantLabel || "—"}</td>
                       <td>{r.currentStock}</td>
@@ -228,8 +228,8 @@ const AdminSubscriptions = () => {
           </Select>
         </span>
         <label className="aps-duesoon">
-          <input type="checkbox" checked={dueSoon} onChange={(e) => setDueSoon(e.target.checked)} />
-          &nbsp;Due within 7 days
+          <input type="checkbox" checked={dueSoon} onChange={(e) => setDueSoon(e.target.checked)} />{" "}
+          Due within 7 days
         </label>
       </div>
 
@@ -256,7 +256,7 @@ const AdminSubscriptions = () => {
                     <thead><tr><th>Product</th><th>Variant</th><th>Qty</th></tr></thead>
                     <tbody>
                       {(detail.items || []).map((it, i) => (
-                        <tr key={i}>
+                        <tr key={it.product?._id ? `${it.product._id}-${i}` : i}>
                           <td>{it.product?.name || it.name || "Product"}</td>
                           <td>{it.variantLabel || "—"}</td>
                           <td>{it.quantity}</td>

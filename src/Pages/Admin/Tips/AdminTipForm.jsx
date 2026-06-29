@@ -87,7 +87,14 @@ const AdminTipForm = () => {
   }, [id, isEdit, addToast, navigate]);
 
   const set = (field) => (e) => {
-    const value = e?.target ? (e.target.type === "checkbox" ? e.target.checked : e.target.value) : e;
+    let value;
+    if (!e?.target) {
+      value = e;
+    } else if (e.target.type === "checkbox") {
+      value = e.target.checked;
+    } else {
+      value = e.target.value;
+    }
     setForm((f) => ({ ...f, [field]: value }));
   };
 
@@ -134,6 +141,8 @@ const AdminTipForm = () => {
 
   if (loading) return <div className="admin-page"><p>Loading…</p></div>;
 
+  const saveBtnLabel = saving ? "Saving…" : (isEdit ? "Save changes" : "Create tip");
+
   return (
     <motion.div
       className="admin-page"
@@ -158,7 +167,7 @@ const AdminTipForm = () => {
         </div>
 
         <div className="atf-field">
-          <label>Cover image (optional)</label>
+          <p className="atf-field-desc">Cover image (optional)</p>
           <ImageManager
             value={cover}
             onChange={setCover}
@@ -170,7 +179,7 @@ const AdminTipForm = () => {
 
         <div className="atf-row">
           <div className="atf-field">
-            <label htmlFor="atf-animal">Animal</label>
+            <p className="atf-field-desc">Animal</p>
             <Select value={form.animalType} onValueChange={set("animalType")}>
               <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
               <SelectContent>
@@ -181,7 +190,7 @@ const AdminTipForm = () => {
             </Select>
           </div>
           <div className="atf-field">
-            <label htmlFor="atf-category">Category</label>
+            <p className="atf-field-desc">Category</p>
             <Select value={form.category} onValueChange={set("category")}>
               <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
               <SelectContent>
@@ -192,7 +201,7 @@ const AdminTipForm = () => {
             </Select>
           </div>
           <div className="atf-field">
-            <label htmlFor="atf-difficulty">Difficulty</label>
+            <p className="atf-field-desc">Difficulty</p>
             <Select value={form.difficulty} onValueChange={set("difficulty")}>
               <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
               <SelectContent>
@@ -221,7 +230,7 @@ const AdminTipForm = () => {
         <div className="atf-sections">
           <div className="atf-sections-head">
             <div>
-              <label>Sections (optional)</label>
+              <p className="atf-field-desc">Sections (optional)</p>
               <p className="atf-sections-hint">Add ordered headed sections shown below the body on the tip page.</p>
             </div>
             <button type="button" className="at-btn-secondary" onClick={addSection}>+ Add section</button>
@@ -248,7 +257,7 @@ const AdminTipForm = () => {
                 minHeight="160px"
               />
               <div className="atf-section-images">
-                <label className="atf-section-images-label">Section images (optional, up to 8 — first is the lead)</label>
+                <p className="atf-section-images-label">Section images (optional, up to 8 — first is the lead)</p>
                 <ImageManager
                   value={section.images || []}
                   onChange={(imgs) => updateSection(section.id, { images: imgs })}
@@ -263,11 +272,11 @@ const AdminTipForm = () => {
 
         <div className="atf-toggles">
           <label className="atf-check">
-            <input type="checkbox" checked={form.featured} onChange={set("featured")} />
+            <input type="checkbox" checked={form.featured} onChange={set("featured")} />{" "}
             Featured (shows in the featured section)
           </label>
           <label className="atf-check">
-            <input type="checkbox" checked={form.published} onChange={set("published")} />
+            <input type="checkbox" checked={form.published} onChange={set("published")} />{" "}
             Published (visible to users)
           </label>
         </div>
@@ -275,7 +284,7 @@ const AdminTipForm = () => {
         <div className="atf-actions">
           <Link to="/admin/tips" className="at-btn-secondary">Cancel</Link>
           <button type="submit" className="atf-submit" disabled={saving}>
-            <FiSave size={15} /> {saving ? "Saving…" : isEdit ? "Save changes" : "Create tip"}
+            <FiSave size={15} /> {saveBtnLabel}
           </button>
         </div>
       </form>

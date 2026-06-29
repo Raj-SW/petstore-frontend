@@ -17,7 +17,7 @@ const getRoleBadgeClass = (role) => {
 };
 
 const getInitials = (name = "", email = "") => {
-  if (name && name.trim()) {
+  if (name?.trim()) {
     const parts = name.trim().split(" ");
     return parts.length >= 2
       ? `${parts[0][0]}${parts[1][0]}`.toUpperCase()
@@ -143,8 +143,8 @@ const AdminUsers = () => {
       header: "Status",
       accessor: "isActive",
       render: (value) => (
-        <span className={`admin-status-badge ${value !== false ? "admin-status-badge--active" : "admin-status-badge--inactive"}`}>
-          {value !== false ? "Active" : "Inactive"}
+        <span className={`admin-status-badge ${value === false ? "admin-status-badge--inactive" : "admin-status-badge--active"}`}>
+          {value === false ? "Inactive" : "Active"}
         </span>
       ),
     },
@@ -158,12 +158,12 @@ const AdminUsers = () => {
   const customActions = (user) => (
     <div className="admin-user-actions">
       <button
-        className={`admin-action-btn admin-action-btn--toggle ${user.isActive !== false ? "admin-action-btn--deactivate" : "admin-action-btn--activate"}`}
+        className={`admin-action-btn admin-action-btn--toggle ${user.isActive === false ? "admin-action-btn--activate" : "admin-action-btn--deactivate"}`}
         onClick={() => handleToggleStatus(user)}
         disabled={actionLoading[`status-${user._id}`]}
-        title={user.isActive !== false ? "Deactivate user" : "Activate user"}
+        title={user.isActive === false ? "Activate user" : "Deactivate user"}
       >
-        {user.isActive !== false ? <FiUserX size={15} /> : <FiUserCheck size={15} />}
+        {user.isActive === false ? <FiUserCheck size={15} /> : <FiUserX size={15} />}
       </button>
       <Select
         value={user.role || "user"}

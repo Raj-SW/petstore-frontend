@@ -59,7 +59,9 @@ const SortDropDown = ({ onSort }) => {
                 role="option"
                 aria-selected={selected?.key === opt.key}
                 className={`sort-item${selected?.key === opt.key ? " sort-item--active" : ""}`}
+                tabIndex={0}
                 onClick={() => pick(opt)}
+                onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pick(opt); } }}
               >
                 {opt.label}
               </li>

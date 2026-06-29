@@ -16,7 +16,7 @@ const ProductCard = ({ id, imageUrl, title, price }) => {
   };
 
   return (
-    <div className="pc-card" onClick={() => navigate(`/petshop/${id}`)}>
+    <button type="button" className="pc-card" onClick={() => navigate(`/petshop/${id}`)}>
       <img src={imageUrl} alt={title} className="pc-img" />
 
       <div className="pc-tint" />
@@ -45,7 +45,7 @@ const ProductCard = ({ id, imageUrl, title, price }) => {
           </button>
         </div>
       </div>
-    </div>
+    </button>
   );
 };
 

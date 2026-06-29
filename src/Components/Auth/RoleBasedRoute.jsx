@@ -18,7 +18,7 @@ const RoleBasedRoute = ({
   redirectTo = "/home",
   fallback = null,
 }) => {
-  const { user, loading, isAuthenticated, hasRole, hasAnyRole, hasPermission } =
+  const { loading, isAuthenticated, hasAnyRole, hasPermission } =
     useAuth();
 
   // Show loading state

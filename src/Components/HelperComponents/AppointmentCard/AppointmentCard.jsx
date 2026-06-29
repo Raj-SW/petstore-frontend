@@ -1,7 +1,6 @@
 import { format, parseISO } from "date-fns";
 import { Button, ButtonGroup } from "react-bootstrap";
 import {
-  FaEdit,
   FaTrash,
   FaClock,
   FaMapMarkerAlt,

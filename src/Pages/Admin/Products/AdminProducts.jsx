@@ -82,7 +82,14 @@ const AdminProducts = () => {
   const allCategories = useMemo(() => {
     const cats = new Set();
     products.forEach((p) => {
-      const arr = Array.isArray(p.categories) ? p.categories : p.category ? [p.category] : [];
+      let arr;
+      if (Array.isArray(p.categories)) {
+        arr = p.categories;
+      } else if (p.category) {
+        arr = [p.category];
+      } else {
+        arr = [];
+      }
       arr.forEach((c) => cats.add(c));
     });
     return [...cats].sort();
@@ -96,7 +103,14 @@ const AdminProducts = () => {
     if (filterStock  === "low" && !(p._qty > 0 && p._qty <= 10)) return false;
     if (filterStock  === "in"  && p._qty <= 10)               return false;
     if (filterCategory !== "all") {
-      const cats = Array.isArray(p.categories) ? p.categories : p.category ? [p.category] : [];
+      let cats;
+      if (Array.isArray(p.categories)) {
+        cats = p.categories;
+      } else if (p.category) {
+        cats = [p.category];
+      } else {
+        cats = [];
+      }
       if (!cats.includes(filterCategory)) return false;
     }
     return true;
@@ -172,10 +186,12 @@ const AdminProducts = () => {
       sortable: false,
       searchable: false,
       render: (value, item) => {
-        const src =
-          Array.isArray(value) && value[0]
-            ? (typeof value[0] === "object" ? value[0].url : value[0])
-            : item.imageUrl || "https://placehold.co/50x50";
+        let src;
+        if (Array.isArray(value) && value[0]) {
+          src = typeof value[0] === "object" ? value[0].url : value[0];
+        } else {
+          src = item.imageUrl || "https://placehold.co/50x50";
+        }
         return (
           <div className="product-image-cell">
             <img
@@ -199,9 +215,14 @@ const AdminProducts = () => {
       header: "Category",
       accessor: "categories",
       render: (value, item) => {
-        const cats = Array.isArray(value) && value.length > 0
-          ? value
-          : item.category ? [item.category] : [];
+        let cats;
+        if (Array.isArray(value) && value.length > 0) {
+          cats = value;
+        } else if (item.category) {
+          cats = [item.category];
+        } else {
+          cats = [];
+        }
         return cats.length > 0 ? (
           <div className="product-cats">
             {cats.map((c) => (
@@ -236,7 +257,14 @@ const AdminProducts = () => {
       accessor: "_qty",
       render: (value) => {
         const qty = Number(value ?? 0);
-        const cls = qty > 10 ? "in-stock" : qty > 0 ? "low-stock" : "out-of-stock";
+        let cls;
+        if (qty > 10) {
+          cls = "in-stock";
+        } else if (qty > 0) {
+          cls = "low-stock";
+        } else {
+          cls = "out-of-stock";
+        }
         return <span className={`stock-badge ${cls}`}>{qty}</span>;
       },
     },

@@ -62,7 +62,22 @@ const MySubscriptions = () => {
       )}
 
       <div className="ms-list">
-        {subs.map((s) => (
+        {subs.map((s) => {
+          let statusAction = null;
+          if (s.status === "active") {
+            statusAction = (
+              <button onClick={() => act(s._id, { status: "paused" }, "Paused")}>
+                <FiPause /> Pause
+              </button>
+            );
+          } else if (s.status === "paused") {
+            statusAction = (
+              <button onClick={() => act(s._id, { status: "active" }, "Resumed")}>
+                <FiPlay /> Resume
+              </button>
+            );
+          }
+          return (
           <div key={s._id} className={`ms-card ms-${s.status}`}>
             <div className="ms-card-head">
               <span className={`ms-status ms-status-${s.status}`}>{s.status}</span>
@@ -70,7 +85,7 @@ const MySubscriptions = () => {
             </div>
             <ul className="ms-items">
               {s.items.map((it, i) => (
-                <li key={i} className="ms-item">
+                <li key={it.product?._id ? `${it.product._id}-${i}` : i} className="ms-item">
                   {it.product?.images?.[0]?.url && (
                     <img className="ms-item-img" src={it.product.images[0].url} alt="" />
                   )}
@@ -103,15 +118,7 @@ const MySubscriptions = () => {
               </details>
             )}
             <div className="ms-actions">
-              {s.status === "active" ? (
-                <button onClick={() => act(s._id, { status: "paused" }, "Paused")}>
-                  <FiPause /> Pause
-                </button>
-              ) : s.status === "paused" ? (
-                <button onClick={() => act(s._id, { status: "active" }, "Resumed")}>
-                  <FiPlay /> Resume
-                </button>
-              ) : null}
+              {statusAction}
               <button onClick={() => act(s._id, { action: "skip" }, "Skipped next order")}>
                 <FiSkipForward /> Skip next
               </button>
@@ -120,7 +127,8 @@ const MySubscriptions = () => {
               </button>
             </div>
           </div>
-        ))}
+          );
+        })}
       </div>
     </motion.div>
   );

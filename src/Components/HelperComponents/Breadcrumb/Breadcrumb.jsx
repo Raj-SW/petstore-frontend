@@ -22,7 +22,7 @@ const Breadcrumb = ({ items }) => {
         const active = isActive(item.path, index);
         const isHome = index === 0 && /^home$/i.test(item.label || "");
         return (
-          <React.Fragment key={index}>
+          <React.Fragment key={item.path || item.label || index}>
             <button
               type="button"
               className={`breadcrumb-text${active ? " active" : ""}`}

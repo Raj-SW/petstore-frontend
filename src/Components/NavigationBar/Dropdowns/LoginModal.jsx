@@ -102,9 +102,9 @@ const LoginModal = ({
             error={errors.password}
             required
             rightAdornment={
-              <span onClick={togglePasswordVisibility}>
+              <button type="button" aria-label={showPassword ? "Hide password" : "Show password"} onClick={togglePasswordVisibility}>
                 {showPassword ? <FaEyeSlash /> : <FaEye />}
-              </span>
+              </button>
             }
           />
 
@@ -114,7 +114,7 @@ const LoginModal = ({
                 type="checkbox"
                 checked={remember}
                 onChange={(e) => setRemember(e.target.checked)}
-              />
+              />{" "}
               Remember me
             </label>
             <button
@@ -129,12 +129,12 @@ const LoginModal = ({
           <button type="submit" className="auth-submit" disabled={loading}>
             {loading ? (
               <>
-                <span className="auth-spinner" />
+                <span className="auth-spinner" />{" "}
                 Logging in...
               </>
             ) : (
               <>
-                <FaSignInAlt />
+                <FaSignInAlt />{" "}
                 Log In
               </>
             )}
@@ -142,7 +142,7 @@ const LoginModal = ({
         </form>
 
         <p className="auth-footer">
-          Don't have an account?
+          {"Don't have an account?"}{" "}
           <button type="button" className="auth-link" onClick={onSignUpClick}>
             Sign up
           </button>

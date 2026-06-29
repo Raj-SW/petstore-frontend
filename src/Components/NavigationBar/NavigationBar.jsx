@@ -134,9 +134,10 @@ const NavigationBar = () => {
 
           {/* Desktop nav links */}
           <ul className="nav-links">
-            {NAV_LINKS.map(({ label, href, hasDropdown }) => (
-              <li key={label} className={hasDropdown ? "nav-link-services-wrap" : ""}>
-                {hasDropdown ? (
+            {NAV_LINKS.map(({ label, href, hasDropdown }) => {
+              let linkElement;
+              if (hasDropdown) {
+                linkElement = (
                   <div className="nav-services-trigger-wrap" ref={servicesWrapRef}>
                     <button
                       type="button"
@@ -156,7 +157,9 @@ const NavigationBar = () => {
                       onClose={() => setServicesOpen(false)}
                     />
                   </div>
-                ) : href ? (
+                );
+              } else if (href) {
+                linkElement = (
                   <a
                     href={href}
                     onClick={handleNav(href)}
@@ -164,11 +167,16 @@ const NavigationBar = () => {
                   >
                     {label}
                   </a>
-                ) : (
-                  <span className="nav-link-item nav-link-disabled">{label}</span>
-                )}
-              </li>
-            ))}
+                );
+              } else {
+                linkElement = <span className="nav-link-item nav-link-disabled">{label}</span>;
+              }
+              return (
+                <li key={label} className={hasDropdown ? "nav-link-services-wrap" : ""}>
+                  {linkElement}
+                </li>
+              );
+            })}
           </ul>
 
           {/* Right-side actions */}
@@ -263,7 +271,11 @@ const NavigationBar = () => {
       {/* Mobile slide-in menu */}
       <div
         className={`mobile-menu-overlay${mobileMenuOpen ? " open" : ""}`}
+        role="button"
+        tabIndex={mobileMenuOpen ? 0 : -1}
+        aria-label="Close menu"
         onClick={handleOverlayClick}
+        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); handleOverlayClick(e); } }}
         aria-hidden={!mobileMenuOpen}
       >
         <nav

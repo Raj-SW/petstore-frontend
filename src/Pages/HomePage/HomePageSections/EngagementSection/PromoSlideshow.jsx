@@ -104,9 +104,9 @@ const PromoSlideshow = () => {
             {slide.desc && <p className="cs-promo-desc">{slide.desc}</p>}
 
             <div className="cs-promo-dots">
-              {slides.map((_, i) => (
+              {slides.map((s, i) => (
                 <button
-                  key={i}
+                  key={s.id ?? s._id ?? i}
                   className={`cs-promo-dot${i === active ? " cs-promo-dot--active" : ""}`}
                   onClick={(e) => { e.preventDefault(); goTo(i); }}
                   aria-label={`Slide ${i + 1}`}

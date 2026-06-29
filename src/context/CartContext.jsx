@@ -6,6 +6,10 @@ import cartApi from "../Services/api/cartApi";
 
 const CartSyncCtx = createContext(null);
 
+// Extracted to module level to avoid exceeding 4 function-nesting levels (Sonar S2004)
+const pushCartItemToBackend = (item) =>
+  cartApi.addToCart(item.productId || item.id, item.quantity, item.variantId || null).catch(() => {});
+
 /**
  * Inner layer — has access to both useAuth and react-use-cart.
  * Intercepts every mutation to also sync with the backend cart.
@@ -47,9 +51,7 @@ function CartSyncLayer({ children }) {
           ruc.setItems(converted);
         } else if (ruc.items?.length) {
           // Backend is empty but local cart has items (added before login) → push up
-          ruc.items.forEach((item) => {
-            cartApi.addToCart(item.productId || item.id, item.quantity, item.variantId || null).catch(() => {});
-          });
+          ruc.items.forEach(pushCartItemToBackend);
         }
       })
       .catch(() => {

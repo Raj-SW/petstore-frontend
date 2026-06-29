@@ -74,6 +74,52 @@ const FeaturedProductSection = () => {
 
   const currentProducts = products[activeTab];
 
+  let carouselContent;
+  if (loading) {
+    carouselContent = (
+      <div className="fp-skeleton-row">
+        {Array(3).fill(null).map((_, i) => (
+          <div key={`skeleton-${i}`} className="fp-skeleton" />
+        ))}
+      </div>
+    );
+  } else if (currentProducts.length === 0) {
+    carouselContent = <p className="fp-empty">No products available right now.</p>;
+  } else {
+    carouselContent = (
+      <Carousel
+        className="fp-carousel"
+        opts={{ align: "start" }}
+        plugins={plugins}
+        setApi={setEmblaApi}
+      >
+        <CarouselContent>
+          {currentProducts.map((product) => (
+            <CarouselItem
+              key={product._id || product.id}
+              className="basis-[83%] sm:basis-1/2 lg:basis-1/3"
+            >
+              <ProductCard
+                id={product._id || product.id}
+                imageUrl={product.images?.[0]?.url || product.images?.[0] || product.imageUrl}
+                title={product.name || product.title}
+                price={product.price}
+                description={product.description}
+                salePrice={product.salePrice}
+                isOnSaleNow={product.isOnSaleNow}
+                discountPercentLabel={product.discountPercentLabel}
+                effectivePrice={product.effectivePrice}
+                variantsView={product.variantsView}
+              />
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+        <CarouselPrevious className="fp-arrow fp-arrow-prev" />
+        <CarouselNext className="fp-arrow fp-arrow-next" />
+      </Carousel>
+    );
+  }
+
   return (
     <section className="fp-section">
       {/* Header */}
@@ -126,54 +172,15 @@ const FeaturedProductSection = () => {
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
           >
-            {loading ? (
-              <div className="fp-skeleton-row">
-                {Array(3).fill(null).map((_, i) => (
-                  <div key={i} className="fp-skeleton" />
-                ))}
-              </div>
-            ) : currentProducts.length === 0 ? (
-              <p className="fp-empty">No products available right now.</p>
-            ) : (
-              <Carousel
-                className="fp-carousel"
-                opts={{ align: "start" }}
-                plugins={plugins}
-                setApi={setEmblaApi}
-              >
-                <CarouselContent>
-                  {currentProducts.map((product) => (
-                    <CarouselItem
-                      key={product._id || product.id}
-                      className="basis-[83%] sm:basis-1/2 lg:basis-1/3"
-                    >
-                      <ProductCard
-                        id={product._id || product.id}
-                        imageUrl={product.images?.[0]?.url || product.images?.[0] || product.imageUrl}
-                        title={product.name || product.title}
-                        price={product.price}
-                        description={product.description}
-                        salePrice={product.salePrice}
-                        isOnSaleNow={product.isOnSaleNow}
-                        discountPercentLabel={product.discountPercentLabel}
-                        effectivePrice={product.effectivePrice}
-                        variantsView={product.variantsView}
-                      />
-                    </CarouselItem>
-                  ))}
-                </CarouselContent>
-                <CarouselPrevious className="fp-arrow fp-arrow-prev" />
-                <CarouselNext className="fp-arrow fp-arrow-next" />
-              </Carousel>
-            )}
+            {carouselContent}
           </motion.div>
         </AnimatePresence>
 
         {!loading && currentProducts.length > 0 && snaps.length > 1 && (
           <div className="fp-dots">
-            {snaps.map((_, i) => (
+            {snaps.map((snap, i) => (
               <button
-                key={i}
+                key={`snap-${snap ?? i}`}
                 type="button"
                 className={`fp-dot${i === selected ? " fp-dot-active" : ""}`}
                 aria-label={`Go to slide ${i + 1}`}

@@ -113,12 +113,12 @@ const TipDetailPage = () => {
               {[...tip.sections]
                 .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
                 .map((s, i) => (
-                  <section key={i} className="ptd-section">
+                  <section key={s.heading ? `${s.heading}-${i}` : i} className="ptd-section">
                     {s.heading && <h2 className="ptd-section-heading">{s.heading}</h2>}
                     {Array.isArray(s.images) && s.images.length > 0 && (
                       <div className="ptd-section-images">
                         {s.images.map((img, j) => (
-                          <img key={j} src={typeof img === "object" ? img.url : img} alt={s.heading || `Section image ${j + 1}`} loading="lazy" />
+                          <img key={typeof img === "object" ? img.url || j : img} src={typeof img === "object" ? img.url : img} alt={s.heading || `Section image ${j + 1}`} loading="lazy" />
                         ))}
                       </div>
                     )}

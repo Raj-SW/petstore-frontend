@@ -309,7 +309,11 @@ const AdminAnnouncements = () => {
                 <FiUsers /> Send this announcement?
               </h3>
               <p>
-                &ldquo;{subject}&rdquo;{group === "product" ? ` featuring ${selectedProducts.length} product${selectedProducts.length === 1 ? "" : "s"}` : ""} will be emailed to every customer subscribed to this kind of update.
+                {(() => {
+                  const productSuffix = selectedProducts.length === 1 ? "" : "s";
+                  const productClause = group === "product" ? ` featuring ${selectedProducts.length} product${productSuffix}` : "";
+                  return `“${subject}”${productClause} will be emailed to every customer subscribed to this kind of update.`;
+                })()}
               </p>
               <div className="admin-modal-actions">
                 <button className="at-btn-secondary" onClick={() => setConfirmOpen(false)}>

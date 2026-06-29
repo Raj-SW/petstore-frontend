@@ -82,8 +82,8 @@ const BannerCarousel = ({ deviceType }) => {
       nextLabel="Next"
       className="h-1"
     >
-      {imagePaths.map((image, index) => (
-        <Carousel.Item key={index} className="">
+      {imagePaths.map((image) => (
+        <Carousel.Item key={image} className="">
           <Image
             src={image}
             className="d-block w-100 "

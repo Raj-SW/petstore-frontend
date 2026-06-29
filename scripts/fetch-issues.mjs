@@ -21,7 +21,24 @@
  *   node scripts/fetch-issues.mjs --fix-plan   # write fix-plan.md (AI-ready)
  */
 
-import { writeFileSync } from "fs";
+import { writeFileSync, readFileSync, existsSync } from "fs";
+import { resolve } from "path";
+
+// Auto-load .env from project root (strips inline # comments, trims whitespace)
+const envPath = resolve(process.cwd(), ".env");
+if (existsSync(envPath)) {
+  for (const line of readFileSync(envPath, "utf8").split("\n")) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith("#")) continue;
+    const eq = trimmed.indexOf("=");
+    if (eq === -1) continue;
+    const key = trimmed.slice(0, eq).trim();
+    const raw = trimmed.slice(eq + 1).trim();
+    // Strip inline comments (everything from first unquoted # onwards)
+    const value = raw.replace(/\s+#.*$/, "").replace(/^["']|["']$/g, "");
+    if (key && !(key in process.env)) process.env[key] = value;
+  }
+}
 
 // ─── Config ─────────────────────────────────────────────────────────────────
 

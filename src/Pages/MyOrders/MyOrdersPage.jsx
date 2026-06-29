@@ -144,7 +144,7 @@ function RefundModal({ order, onClose }) {
             <p className="mo-modal-order-ref">Order #{order._id.slice(-8).toUpperCase()}</p>
 
             <div className="mo-field">
-              <label className="mo-label">Reason for return *</label>
+              <p className="mo-label">Reason for return *</p>
               <Select value={reason || undefined} onValueChange={setReason}>
                 <SelectTrigger className="w-full"><SelectValue placeholder="Select a reason" /></SelectTrigger>
                 <SelectContent>
@@ -154,8 +154,9 @@ function RefundModal({ order, onClose }) {
             </div>
 
             <div className="mo-field">
-              <label className="mo-label">Additional notes</label>
+              <label className="mo-label" htmlFor="mo-notes">Additional notes</label>
               <textarea
+                id="mo-notes"
                 className="mo-textarea"
                 value={notes}
                 onChange={e => setNotes(e.target.value)}
@@ -246,7 +247,7 @@ export default function MyOrdersPage() {
       }, item.quantity);
       added++;
     }
-    if (added) addToast(`${added} item${added !== 1 ? "s" : ""} added to cart.`, "success");
+    if (added) addToast(`${added} item${added === 1 ? "" : "s"} added to cart.`, "success");
   };
 
   // ── Loading ──
@@ -279,7 +280,7 @@ export default function MyOrdersPage() {
 
       <div className="my-orders-header">
         <h1>My Orders</h1>
-        <p>{orders.length} order{orders.length !== 1 ? "s" : ""}</p>
+        <p>{orders.length} order{orders.length === 1 ? "" : "s"}</p>
       </div>
 
       {/* ── Search + Filter ── */}
@@ -296,7 +297,7 @@ export default function MyOrdersPage() {
         </div>
         <div className="mo-filter-tabs">
           {FILTER_TABS.map(tab => {
-            const count = tab.key !== "all" ? orders.filter(o => o.status === tab.key).length : null;
+            const count = tab.key === "all" ? null : orders.filter(o => o.status === tab.key).length;
             return (
               <button
                 key={tab.key}
@@ -340,7 +341,8 @@ export default function MyOrdersPage() {
                 transition={{ delay: i * 0.06, duration: 0.35 }}
               >
                 {/* ── Card header — clickable to expand ── */}
-                <div
+                <button
+                  type="button"
                   className="orders-card-header orders-card-header--clickable"
                   onClick={() => toggleExpand(order._id)}
                 >
@@ -363,7 +365,7 @@ export default function MyOrdersPage() {
                   >
                     <FaChevronDown size={12} />
                   </motion.span>
-                </div>
+                </button>
 
                 {/* ── Items ── */}
                 <div className="orders-card-items">
@@ -373,8 +375,9 @@ export default function MyOrdersPage() {
                     const name    = item.variantLabel ? `${baseName} · ${item.variantLabel}` : baseName;
                     const img     = product?.images?.[0]?.url || product?.imageUrl;
                     return (
-                      <div
+                      <button
                         key={item._id}
+                        type="button"
                         className="orders-item-row orders-item-row--clickable"
                         onClick={() => { const pid = product?._id || product?.id; if (pid) navigate(`/product/${pid}`); }}
                       >
@@ -386,7 +389,7 @@ export default function MyOrdersPage() {
                         <span className="orders-item-price">
                           <Price amount={item.price * item.quantity} />
                         </span>
-                      </div>
+                      </button>
                     );
                   })}
                 </div>

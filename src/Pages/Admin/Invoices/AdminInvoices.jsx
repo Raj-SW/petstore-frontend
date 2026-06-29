@@ -69,6 +69,75 @@ export default function AdminInvoices() {
     }
   };
 
+  let invoicesTableContent;
+  if (loading) {
+    invoicesTableContent = <div className="inv-loading">Loading invoices…</div>;
+  } else if (invoices.length === 0) {
+    invoicesTableContent = <div className="inv-empty">No invoices found.</div>;
+  } else {
+    invoicesTableContent = (
+      <div className="inv-table-wrap">
+        <table className="inv-table">
+          <thead>
+            <tr>
+              <th>Invoice #</th>
+              <th>Customer</th>
+              <th>Date</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <AnimatePresence initial={false}>
+              {invoices.map((inv, i) => {
+                const badge = STATUS_BADGE[inv.status] || STATUS_BADGE.issued;
+                return (
+                  <motion.tr key={inv._id}
+                    initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ delay: Math.min(i * 0.02, 0.3) }}
+                  >
+                    <td><code className="invc-number">{inv.invoiceNumber}</code></td>
+                    <td>
+                      <div className="invc-customer">
+                        <span className="invc-customer-name">{inv.user?.name || "—"}</span>
+                        <span className="invc-customer-email">{inv.user?.email || ""}</span>
+                      </div>
+                    </td>
+                    <td>{new Date(inv.paidAt).toLocaleDateString()}</td>
+                    <td><strong>Rs {Math.round(inv.total || 0).toLocaleString('en-US')}</strong></td>
+                    <td>
+                      <span className={`invc-status-badge ${badge.cls}`}>{badge.label}</span>
+                    </td>
+                    <td>
+                      <div className="invc-actions">
+                        <button
+                          className="inv-action-btn inv-action-btn--history"
+                          onClick={() => setDrawer({ open: true, invoice: inv })}
+                        >
+                          <FiEye size={12} /> View
+                        </button>
+                        <button
+                          className="inv-action-btn inv-action-btn--restock"
+                          onClick={() => handlePDF(inv)}
+                          disabled={pdfLoading === inv._id}
+                        >
+                          <FiDownload size={12} />
+                          {pdfLoading === inv._id ? "…" : "PDF"}
+                        </button>
+                      </div>
+                    </td>
+                  </motion.tr>
+                );
+              })}
+            </AnimatePresence>
+          </tbody>
+        </table>
+      </div>
+    );
+  }
+
   return (
     <motion.div
       className="admin-page"
@@ -132,71 +201,7 @@ export default function AdminInvoices() {
 
       {/* Table */}
       <div className="admin-card">
-        {loading ? (
-          <div className="inv-loading">Loading invoices…</div>
-        ) : invoices.length === 0 ? (
-          <div className="inv-empty">No invoices found.</div>
-        ) : (
-          <div className="inv-table-wrap">
-            <table className="inv-table">
-              <thead>
-                <tr>
-                  <th>Invoice #</th>
-                  <th>Customer</th>
-                  <th>Date</th>
-                  <th>Amount</th>
-                  <th>Status</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                <AnimatePresence initial={false}>
-                  {invoices.map((inv, i) => {
-                    const badge = STATUS_BADGE[inv.status] || STATUS_BADGE.issued;
-                    return (
-                      <motion.tr key={inv._id}
-                        initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ delay: Math.min(i * 0.02, 0.3) }}
-                      >
-                        <td><code className="invc-number">{inv.invoiceNumber}</code></td>
-                        <td>
-                          <div className="invc-customer">
-                            <span className="invc-customer-name">{inv.user?.name || "—"}</span>
-                            <span className="invc-customer-email">{inv.user?.email || ""}</span>
-                          </div>
-                        </td>
-                        <td>{new Date(inv.paidAt).toLocaleDateString()}</td>
-                        <td><strong>Rs {Math.round(inv.total || 0).toLocaleString('en-US')}</strong></td>
-                        <td>
-                          <span className={`invc-status-badge ${badge.cls}`}>{badge.label}</span>
-                        </td>
-                        <td>
-                          <div className="invc-actions">
-                            <button
-                              className="inv-action-btn inv-action-btn--history"
-                              onClick={() => setDrawer({ open: true, invoice: inv })}
-                            >
-                              <FiEye size={12} /> View
-                            </button>
-                            <button
-                              className="inv-action-btn inv-action-btn--restock"
-                              onClick={() => handlePDF(inv)}
-                              disabled={pdfLoading === inv._id}
-                            >
-                              <FiDownload size={12} />
-                              {pdfLoading === inv._id ? "…" : "PDF"}
-                            </button>
-                          </div>
-                        </td>
-                      </motion.tr>
-                    );
-                  })}
-                </AnimatePresence>
-              </tbody>
-            </table>
-          </div>
-        )}
+        {invoicesTableContent}
       </div>
 
       {/* Detail Drawer */}
@@ -245,7 +250,7 @@ export default function AdminInvoices() {
                     </thead>
                     <tbody>
                       {(drawer.invoice.lineItems || []).map((li, idx) => (
-                        <tr key={idx}>
+                        <tr key={li.name ? `${li.name}-${idx}` : idx}>
                           <td>{li.name}</td>
                           <td>{li.quantity}</td>
                           <td>Rs {Math.round(li.unitPrice || 0).toLocaleString('en-US')}</td>

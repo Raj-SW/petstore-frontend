@@ -15,6 +15,17 @@ const CheckoutStepper = ({ currentStep }) => (
       const { id, label, Icon } = step;
       const done   = currentStep > id;
       const active = currentStep === id;
+      let nodeModifier;
+      if (done) nodeModifier = " done";
+      else if (active) nodeModifier = " active";
+      else nodeModifier = " pending";
+      const nodeClass = `cstepper-node${nodeModifier}`;
+
+      let labelModifier;
+      if (done) labelModifier = " done";
+      else if (active) labelModifier = " active";
+      else labelModifier = "";
+      const labelClass = `cstepper-label${labelModifier}`;
 
       return (
         <React.Fragment key={id}>
@@ -35,7 +46,7 @@ const CheckoutStepper = ({ currentStep }) => (
             aria-current={active ? "step" : undefined}
           >
             <motion.div
-              className={`cstepper-node${done ? " done" : active ? " active" : " pending"}`}
+              className={nodeClass}
               animate={{ scale: active ? 1.12 : 1 }}
               transition={{ type: "spring", stiffness: 400, damping: 14 }}
             >
@@ -64,7 +75,7 @@ const CheckoutStepper = ({ currentStep }) => (
               </AnimatePresence>
             </motion.div>
 
-            <span className={`cstepper-label${done ? " done" : active ? " active" : ""}`}>
+            <span className={labelClass}>
               {label}
             </span>
           </div>

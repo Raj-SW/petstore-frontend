@@ -20,8 +20,6 @@ const MONTHLY_PLACEHOLDER = [
   { month: "Dec", revenue: 9400, orders: 80 },
 ];
 
-const CATEGORIES = ["dogs", "cats", "fish", "birds", "general", "apparel"];
-
 const AdminAnalytics = () => {
   const { addToast } = useToast();
 
@@ -111,6 +109,56 @@ const AdminAnalytics = () => {
 
   const maxRevenue = Math.max(...MONTHLY_PLACEHOLDER.map((m) => m.revenue));
   const maxOrders = Math.max(...MONTHLY_PLACEHOLDER.map((m) => m.orders));
+
+  let topProductsContent;
+  if (loading) {
+    topProductsContent = <p className="admin-no-data">Loading…</p>;
+  } else if (topProducts.length === 0) {
+    topProductsContent = <p className="admin-no-data">No products found.</p>;
+  } else {
+    topProductsContent = (
+      <div className="admin-table-wrap">
+        <table className="admin-analytics-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Product Name</th>
+              <th>Category</th>
+              <th>Price</th>
+              <th>Stock</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {topProducts.map((product, i) => (
+              <tr key={product._id}>
+                <td className="admin-table-idx">{i + 1}</td>
+                <td className="admin-table-name">{product.name || product.title || "—"}</td>
+                <td>
+                  <span className="admin-category-badge">
+                    {product.category || "—"}
+                  </span>
+                </td>
+                <td className="admin-table-price">
+                  ${(product.price ?? 0).toFixed(2)}
+                </td>
+                <td>{product.stock ?? product.quantity ?? "—"}</td>
+                <td>
+                  <span
+                    className={`admin-status-dot ${
+                      product.isActive ? "active" : "inactive"
+                    }`}
+                  >
+                    {product.isActive ? "Active" : "Inactive"}
+                  </span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
+  }
 
   return (
     <motion.div
@@ -240,52 +288,7 @@ const AdminAnalytics = () => {
           <h2 className="admin-chart-title">Top Products</h2>
           <span className="admin-chart-note">Sorted by newest</span>
         </div>
-        {loading ? (
-          <p className="admin-no-data">Loading…</p>
-        ) : topProducts.length === 0 ? (
-          <p className="admin-no-data">No products found.</p>
-        ) : (
-          <div className="admin-table-wrap">
-            <table className="admin-analytics-table">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Product Name</th>
-                  <th>Category</th>
-                  <th>Price</th>
-                  <th>Stock</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {topProducts.map((product, i) => (
-                  <tr key={product._id}>
-                    <td className="admin-table-idx">{i + 1}</td>
-                    <td className="admin-table-name">{product.name || product.title || "—"}</td>
-                    <td>
-                      <span className="admin-category-badge">
-                        {product.category || "—"}
-                      </span>
-                    </td>
-                    <td className="admin-table-price">
-                      ${(product.price ?? 0).toFixed(2)}
-                    </td>
-                    <td>{product.stock ?? product.quantity ?? "—"}</td>
-                    <td>
-                      <span
-                        className={`admin-status-dot ${
-                          product.isActive ? "active" : "inactive"
-                        }`}
-                      >
-                        {product.isActive ? "Active" : "Inactive"}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+        {topProductsContent}
       </div>
     </motion.div>
   );

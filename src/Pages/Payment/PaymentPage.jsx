@@ -9,7 +9,7 @@ import {
   useElements,
 } from "@stripe/react-stripe-js";
 import { motion } from "framer-motion";
-import { FaLock, FaSpinner, FaCheckCircle, FaShieldAlt } from "react-icons/fa";
+import { FaLock, FaSpinner, FaShieldAlt } from "react-icons/fa";
 import paymentsApi from "../../Services/api/paymentsApi";
 import { useToast } from "../../context/ToastContext";
 import CheckoutStepper from "../../Components/HelperComponents/CheckoutStepper/CheckoutStepper";
@@ -77,7 +77,7 @@ function CheckoutForm({ orderId, clientSecret, orderSummary }) {
   return (
     <form className="pmt-form" onSubmit={handleSubmit}>
       <div className="pmt-card-field-wrap">
-        <label className="pmt-card-label">Card details</label>
+        <p className="pmt-card-label">Card details</p>
         <div className="pmt-card-element">
           <CardElement options={CARD_ELEMENT_OPTIONS} />
         </div>
@@ -93,8 +93,8 @@ function CheckoutForm({ orderId, clientSecret, orderSummary }) {
         type="submit"
         className="pmt-pay-btn"
         disabled={!stripe || processing}
-        whileHover={!processing ? { y: -4 } : {}}
-        whileTap={!processing ? { scale: 0.96, y: 0 } : {}}
+        whileHover={processing ? {} : { y: -4 }}
+        whileTap={processing ? {} : { scale: 0.96, y: 0 }}
         transition={{ type: "spring", stiffness: 420, damping: 14 }}
       >
         {processing ? (

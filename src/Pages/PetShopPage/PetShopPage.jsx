@@ -145,7 +145,7 @@ const PetShopPage = () => {
       return (
         <div className="ps-grid">
           {Array.from({ length: 8 }).map((_, i) => (
-            <div key={i} className="ps-skeleton" />
+            <div key={`skeleton-${i}`} className="ps-skeleton" />
           ))}
         </div>
       );
@@ -319,7 +319,7 @@ const PetShopPage = () => {
 
                 {buildPaginationItems().map((item, idx) =>
                   item === "ellipsis" ? (
-                    <span key={`e-${idx}`} className="ps-page-ellipsis">…</span>
+                    <span key={`ellipsis-${idx}`} className="ps-page-ellipsis">…</span>
                   ) : (
                     <button
                       key={item}

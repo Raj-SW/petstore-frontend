@@ -73,7 +73,7 @@ const ForgotPasswordModal = ({ show, onHide, onLoginClick }) => {
             <button type="submit" className="auth-submit" disabled={loading}>
               {loading ? (
                 <>
-                  <span className="auth-spinner" />
+                  <span className="auth-spinner" />{" "}
                   Sending...
                 </>
               ) : (

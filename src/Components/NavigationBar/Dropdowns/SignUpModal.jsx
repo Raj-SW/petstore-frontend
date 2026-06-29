@@ -117,9 +117,9 @@ const SignUpModal = ({
           placeholder="Password"
           value={formData.password} onChange={onChange} error={errors.password} required
           rightAdornment={
-            <span onClick={togglePasswordVisibility}>
+            <button type="button" aria-label={showPassword ? "Hide password" : "Show password"} onClick={togglePasswordVisibility}>
               {showPassword ? <FaEyeSlash /> : <FaEye />}
-            </span>
+            </button>
           }
         />
 
@@ -128,9 +128,9 @@ const SignUpModal = ({
           placeholder="Confirm password"
           value={formData.confirmPassword} onChange={onChange} error={errors.confirmPassword} required
           rightAdornment={
-            <span onClick={() => setShowConfirm((p) => !p)}>
+            <button type="button" aria-label={showConfirm ? "Hide confirm password" : "Show confirm password"} onClick={() => setShowConfirm((p) => !p)}>
               {showConfirm ? <FaEyeSlash /> : <FaEye />}
-            </span>
+            </button>
           }
         />
 
@@ -139,7 +139,7 @@ const SignUpModal = ({
             type="checkbox"
             checked={terms}
             onChange={(e) => setTerms(e.target.checked)}
-          />
+          />{" "}
           I agree to all <a href="#" className="auth-link" style={{ marginLeft: 4 }}>Terms &amp; Conditions</a>
         </label>
         {errors.terms && <span className="auth-field-error">{errors.terms}</span>}
@@ -147,12 +147,12 @@ const SignUpModal = ({
         <button type="submit" className="auth-submit auth-submit--accent" disabled={loading}>
           {loading ? (
             <>
-              <span className="auth-spinner" />
+              <span className="auth-spinner" />{" "}
               Creating account...
             </>
           ) : (
             <>
-              <FaUserPlus />
+              <FaUserPlus />{" "}
               Sign Up
             </>
           )}
@@ -160,7 +160,7 @@ const SignUpModal = ({
       </form>
 
       <p className="auth-footer">
-        Already have an account?
+        {"Already have an account?"}{" "}
         <button type="button" className="auth-link" onClick={onLoginClick}>
           Log in
         </button>
