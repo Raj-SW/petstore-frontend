@@ -93,6 +93,12 @@ const EMPTY_FORM = {
   saleEndsAt:    "",
 };
 
+const resolveCategories = (p) => {
+  if (Array.isArray(p.categories) && p.categories.length > 0) return p.categories;
+  if (p.category) return [p.category];
+  return ["general"];
+};
+
 const AdminProductForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -155,11 +161,7 @@ const AdminProductForm = () => {
           description:p.description ?? "",
           price:      p.price       ?? "",
           quantity:   p.quantity    ?? p.stock ?? "",
-          categories: (() => {
-            if (Array.isArray(p.categories) && p.categories.length > 0) return p.categories;
-            if (p.category) return [p.category];
-            return ["general"];
-          })(),
+          categories: resolveCategories(p),
           colors:    Array.isArray(p.colors)  ? p.colors  : [],
           genders:   Array.isArray(p.genders) ? p.genders : [],
           isActive:  p.isActive  ?? true,

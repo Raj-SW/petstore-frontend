@@ -759,7 +759,7 @@ const IndividualProductItemPage = () => {
               onClick={(e) => e.stopPropagation()}
             />
             {images.length > 1 && (
-              <div className="ip-lightbox-thumbs" role="presentation">
+              <div className="ip-lightbox-thumbs">
                 {images.map((img, i) => (
                   <button
                     key={img || i}

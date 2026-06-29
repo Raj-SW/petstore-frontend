@@ -230,12 +230,14 @@ const DataTable = ({
               )}
               {columns.map((column) => {
                 const isActiveSort = sortConfig.key === column.accessor;
-                const ariaSortValue = isActiveSort
-                  ? (sortConfig.direction === "asc" ? "ascending" : "descending")
-                  : "none";
-                const sortIcon = isActiveSort
-                  ? (sortConfig.direction === "asc" ? <FiChevronUp /> : <FiChevronDown />)
-                  : <span className="sort-placeholder" />;
+                let ariaSortValue = "none";
+                if (isActiveSort) {
+                  ariaSortValue = sortConfig.direction === "asc" ? "ascending" : "descending";
+                }
+                let sortIcon = <span className="sort-placeholder" />;
+                if (isActiveSort) {
+                  sortIcon = sortConfig.direction === "asc" ? <FiChevronUp /> : <FiChevronDown />;
+                }
                 return (
                   <th
                     key={column.accessor}

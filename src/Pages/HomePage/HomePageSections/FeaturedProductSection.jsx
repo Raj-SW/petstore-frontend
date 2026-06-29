@@ -78,8 +78,8 @@ const FeaturedProductSection = () => {
   if (loading) {
     carouselContent = (
       <div className="fp-skeleton-row">
-        {Array(3).fill(null).map((_, i) => (
-          <div key={`skeleton-${i}`} className="fp-skeleton" />
+        {[1,2,3].map((n) => (
+          <div key={n} className="fp-skeleton" />
         ))}
       </div>
     );

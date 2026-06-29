@@ -141,7 +141,8 @@ const AdminTipForm = () => {
 
   if (loading) return <div className="admin-page"><p>Loading…</p></div>;
 
-  const saveBtnLabel = saving ? "Saving…" : (isEdit ? "Save changes" : "Create tip");
+  const saveActionLabel = isEdit ? "Save changes" : "Create tip";
+  const saveBtnLabel = saving ? "Saving…" : saveActionLabel;
 
   return (
     <motion.div

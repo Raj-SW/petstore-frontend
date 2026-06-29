@@ -151,7 +151,8 @@ const AdminGalleryForm = () => {
 
   if (loading) return <div className="admin-page"><p>Loading…</p></div>;
 
-  const saveBtnLabel = saving ? "Saving…" : (isEdit ? "Save changes" : "Create post");
+  const saveActionLabel = isEdit ? "Save changes" : "Create post";
+  const saveBtnLabel = saving ? "Saving…" : saveActionLabel;
 
   return (
     <motion.div

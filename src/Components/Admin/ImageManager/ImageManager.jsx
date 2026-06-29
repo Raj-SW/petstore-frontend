@@ -137,13 +137,11 @@ const ImageManager = ({ value = [], onChange, uploadUrl, max = 10, onError, labe
       )}
 
       {!full && (
-        <div
+        <button
+          type="button"
           className={`im-dropzone${uploading ? " im-dropzone--busy" : ""}`}
-          role="button"
-          tabIndex={0}
           aria-label="Upload images"
           onClick={() => !uploading && fileRef.current?.click()}
-          onKeyDown={(e) => { if ((e.key === "Enter" || e.key === " ") && !uploading) { e.preventDefault(); fileRef.current?.click(); } }}
           onDragOver={(e) => e.preventDefault()}
           onDrop={(e) => { e.preventDefault(); if (!uploading) handleFiles(e.dataTransfer.files); }}
         >
@@ -154,7 +152,7 @@ const ImageManager = ({ value = [], onChange, uploadUrl, max = 10, onError, labe
           <p className="im-dropzone-hint">
             PNG, JPG, WEBP · max {MAX_MB} MB · {value.length}/{max}
           </p>
-        </div>
+        </button>
       )}
 
       <input

@@ -269,13 +269,12 @@ const NavigationBar = () => {
       </nav>
 
       {/* Mobile slide-in menu */}
-      <div
+      <button
+        type="button"
         className={`mobile-menu-overlay${mobileMenuOpen ? " open" : ""}`}
-        role="button"
         tabIndex={mobileMenuOpen ? 0 : -1}
         aria-label="Close menu"
         onClick={handleOverlayClick}
-        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); handleOverlayClick(e); } }}
         aria-hidden={!mobileMenuOpen}
       >
         <nav
@@ -437,7 +436,7 @@ const NavigationBar = () => {
             )}
           </div>
         </nav>
-      </div>
+      </button>
     </>
   );
 };
