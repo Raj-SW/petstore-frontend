@@ -89,8 +89,9 @@ const ContactSection = () => {
 
           <form className="cs-form" onSubmit={handleSubmit}>
             <div className="cs-field">
-              <label className="cs-label">Your Name</label>
+              <label className="cs-label" htmlFor="cs-name">Your Name</label>
               <input
+                id="cs-name"
                 className="cs-input"
                 type="text"
                 name="name"
@@ -102,8 +103,9 @@ const ContactSection = () => {
             </div>
 
             <div className="cs-field">
-              <label className="cs-label">Your Email Address</label>
+              <label className="cs-label" htmlFor="cs-email">Your Email Address</label>
               <input
+                id="cs-email"
                 className="cs-input"
                 type="email"
                 name="email"
@@ -115,8 +117,9 @@ const ContactSection = () => {
             </div>
 
             <div className="cs-field">
-              <label className="cs-label">Message</label>
+              <label className="cs-label" htmlFor="cs-message">Message</label>
               <textarea
+                id="cs-message"
                 className="cs-input cs-textarea"
                 name="message"
                 value={form.message}
@@ -133,7 +136,7 @@ const ContactSection = () => {
             >
               {status === "loading" ? (
                 <>
-                  <span className="cs-spinner" />
+                  <span className="cs-spinner" />{" "}
                   Sending…
                 </>
               ) : "Send Message"}
@@ -190,9 +193,9 @@ const ContactSection = () => {
 
                   {/* Dots */}
                   <div className="cs-promo-dots">
-                    {PROMO_SLIDES.map((_, i) => (
+                    {PROMO_SLIDES.map((slide, i) => (
                       <button
-                        key={i}
+                        key={slide.id ?? i}
                         className={`cs-promo-dot${i === activeSlide ? " cs-promo-dot--active" : ""}`}
                         onClick={() => goTo(i)}
                         aria-label={`Slide ${i + 1}`}

@@ -44,7 +44,7 @@ const PetList = ({ pets, onEdit, onDelete, onManagePhotos }) => {
             <div className="pl-info">
               <h4 className="pl-name">{pet.name}</h4>
               <p className="pl-meta">
-                {[pet.breed, pet.age != null && `${pet.age} yr${pet.age !== 1 ? "s" : ""}`, pet.type]
+                {[pet.breed, pet.age != null && `${pet.age} yr${pet.age === 1 ? "" : "s"}`, pet.type]
                   .filter(Boolean)
                   .join(" · ")}
               </p>

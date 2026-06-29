@@ -94,6 +94,23 @@ const GalleryPage = () => {
 
   const showFeatured = !debouncedSearch && !category && featured;
 
+  let galleryContent;
+  if (loading) {
+    galleryContent = (
+      <div className="gal-grid">
+        {Array(6).fill(null).map((_, i) => <div key={`skeleton-${i}`} className="gal-skeleton" />)}
+      </div>
+    );
+  } else if (posts.length === 0) {
+    galleryContent = <div className="gal-empty">No posts found — try a different filter or search term.</div>;
+  } else {
+    galleryContent = (
+      <div className="gal-grid">
+        {posts.map((post) => <GalleryCard key={post._id} post={post} />)}
+      </div>
+    );
+  }
+
   return (
     <div className="gal-page">
       <div className="gal-breadcrumb" style={{ maxWidth: "1200px", margin: "0 auto", padding: "1rem 1.5rem 0" }}>
@@ -141,17 +158,7 @@ const GalleryPage = () => {
         {bannerAd && <AdvertBanner advert={bannerAd} />}
 
         <section className="gal-section">
-          {loading ? (
-            <div className="gal-grid">
-              {Array(6).fill(null).map((_, i) => <div key={i} className="gal-skeleton" />)}
-            </div>
-          ) : posts.length === 0 ? (
-            <div className="gal-empty">No posts found — try a different filter or search term.</div>
-          ) : (
-            <div className="gal-grid">
-              {posts.map((post) => <GalleryCard key={post._id} post={post} />)}
-            </div>
-          )}
+          {galleryContent}
         </section>
       </div>
     </div>

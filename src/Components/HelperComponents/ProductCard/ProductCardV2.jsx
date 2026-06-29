@@ -107,7 +107,7 @@ const ProductCardV2 = ({
               </button>
             ) : (
               <>
-                <div className="pcv2-qty" onClick={(e) => e.stopPropagation()}>
+                <div className="pcv2-qty" role="presentation">
                   <button
                     type="button"
                     className="pcv2-qty-btn"

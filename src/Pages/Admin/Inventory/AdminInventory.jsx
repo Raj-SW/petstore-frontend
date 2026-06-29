@@ -67,7 +67,7 @@ export default function AdminInventory() {
       const res = await inventoryApi.getInventory({
         search:    search      || undefined,
         status:    statusFilter === "all" ? undefined : statusFilter,
-        threshold: threshold !== 10 ? threshold : undefined,
+        threshold: threshold === 10 ? undefined : threshold,
         limit:     200,
       });
       setProducts(res.data   || []);
@@ -110,7 +110,7 @@ export default function AdminInventory() {
         restock.product._id, units, restock.note,
         restock.product.variantId || null
       );
-      addToast(`Added ${units} unit${units !== 1 ? "s" : ""} to "${productName(restock.product)}"`, "success");
+      addToast(`Added ${units} unit${units === 1 ? "" : "s"} to "${productName(restock.product)}"`, "success");
       setRestock(EMPTY_RESTOCK);
       fetchInventory();
     } catch (err) {
@@ -162,6 +162,110 @@ export default function AdminInventory() {
   };
 
   // ── Render ─────────────────────────────────────────────────────
+
+  let inventoryTableContent;
+  if (loading) {
+    inventoryTableContent = <div className="inv-loading">Loading inventory…</div>;
+  } else if (products.length === 0) {
+    inventoryTableContent = <div className="inv-empty">No products match your filters.</div>;
+  } else {
+    inventoryTableContent = (
+      <div className="inv-table-wrap">
+        <table className="inv-table">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Variant</th>
+              <th>Category</th>
+              <th>Qty</th>
+              <th>Status</th>
+              <th>Active</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <AnimatePresence initial={false}>
+              {products.map((p, i) => {
+                const badge = BADGE[p.stockStatus] || BADGE.in;
+                return (
+                  <motion.tr
+                    key={`${p._id}_${p.variantId || "base"}`}
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ delay: Math.min(i * 0.022, 0.3) }}
+                  >
+                    <td>
+                      <div className="inv-product-cell">
+                        <img
+                          src={productImg(p) || "https://placehold.co/48x48"}
+                          alt={productName(p)}
+                          className="inv-product-img"
+                          onError={e => { e.target.src = "https://placehold.co/48x48"; }}
+                        />
+                        <span className="inv-product-name">{productName(p)}</span>
+                      </div>
+                    </td>
+                    <td>
+                      {p.variantLabel
+                        ? <span className="inv-variant-label">{p.variantLabel}</span>
+                        : <span className="inv-no-variant">—</span>
+                      }
+                    </td>
+                    <td>
+                      <span className="inv-category">
+                        {productCategory(p)}
+                      </span>
+                    </td>
+                    <td>
+                      <span className={`inv-qty${p.stockStatus === "out" ? " inv-qty--zero" : ""}`}>
+                        {p.quantity}
+                      </span>
+                    </td>
+                    <td>
+                      <span className={`inv-badge ${badge.cls}`}>
+                        {badge.label}
+                      </span>
+                    </td>
+                    <td>
+                      <span className={`inv-active ${p.isActive ? "inv-active--yes" : "inv-active--no"}`}>
+                        {p.isActive ? "Active" : "Inactive"}
+                      </span>
+                    </td>
+                    <td>
+                      <div className="inv-actions">
+                        <button
+                          className="inv-action-btn inv-action-btn--restock"
+                          onClick={() => setRestock({ open: true, product: p, units: "", note: "" })}
+                          title="Add stock"
+                        >
+                          <FiPlus size={12} /> Restock
+                        </button>
+                        <button
+                          className="inv-action-btn inv-action-btn--adjust"
+                          onClick={() => setAdjust({ open: true, product: p, newQty: String(p.quantity), note: "" })}
+                          title="Manual adjust"
+                        >
+                          <FiEdit3 size={12} /> Adjust
+                        </button>
+                        <button
+                          className="inv-action-btn inv-action-btn--history"
+                          onClick={() => openHistory(p)}
+                          title="View history"
+                        >
+                          <FiClock size={12} /> History
+                        </button>
+                      </div>
+                    </td>
+                  </motion.tr>
+                );
+              })}
+            </AnimatePresence>
+          </tbody>
+        </table>
+      </div>
+    );
+  }
 
   return (
     <motion.div
@@ -243,106 +347,7 @@ export default function AdminInventory() {
 
       {/* Table */}
       <div className="admin-card">
-        {loading ? (
-          <div className="inv-loading">Loading inventory…</div>
-        ) : products.length === 0 ? (
-          <div className="inv-empty">No products match your filters.</div>
-        ) : (
-          <div className="inv-table-wrap">
-            <table className="inv-table">
-              <thead>
-                <tr>
-                  <th>Product</th>
-                  <th>Variant</th>
-                  <th>Category</th>
-                  <th>Qty</th>
-                  <th>Status</th>
-                  <th>Active</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                <AnimatePresence initial={false}>
-                  {products.map((p, i) => {
-                    const badge = BADGE[p.stockStatus] || BADGE.in;
-                    return (
-                      <motion.tr
-                        key={`${p._id}_${p.variantId || "base"}`}
-                        initial={{ opacity: 0, y: 6 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ delay: Math.min(i * 0.022, 0.3) }}
-                      >
-                        <td>
-                          <div className="inv-product-cell">
-                            <img
-                              src={productImg(p) || "https://placehold.co/48x48"}
-                              alt={productName(p)}
-                              className="inv-product-img"
-                              onError={e => { e.target.src = "https://placehold.co/48x48"; }}
-                            />
-                            <span className="inv-product-name">{productName(p)}</span>
-                          </div>
-                        </td>
-                        <td>
-                          {p.variantLabel
-                            ? <span className="inv-variant-label">{p.variantLabel}</span>
-                            : <span className="inv-no-variant">—</span>
-                          }
-                        </td>
-                        <td>
-                          <span className="inv-category">
-                            {productCategory(p)}
-                          </span>
-                        </td>
-                        <td>
-                          <span className={`inv-qty${p.stockStatus === "out" ? " inv-qty--zero" : ""}`}>
-                            {p.quantity}
-                          </span>
-                        </td>
-                        <td>
-                          <span className={`inv-badge ${badge.cls}`}>
-                            {badge.label}
-                          </span>
-                        </td>
-                        <td>
-                          <span className={`inv-active ${p.isActive ? "inv-active--yes" : "inv-active--no"}`}>
-                            {p.isActive ? "Active" : "Inactive"}
-                          </span>
-                        </td>
-                        <td>
-                          <div className="inv-actions">
-                            <button
-                              className="inv-action-btn inv-action-btn--restock"
-                              onClick={() => setRestock({ open: true, product: p, units: "", note: "" })}
-                              title="Add stock"
-                            >
-                              <FiPlus size={12} /> Restock
-                            </button>
-                            <button
-                              className="inv-action-btn inv-action-btn--adjust"
-                              onClick={() => setAdjust({ open: true, product: p, newQty: String(p.quantity), note: "" })}
-                              title="Manual adjust"
-                            >
-                              <FiEdit3 size={12} /> Adjust
-                            </button>
-                            <button
-                              className="inv-action-btn inv-action-btn--history"
-                              onClick={() => openHistory(p)}
-                              title="View history"
-                            >
-                              <FiClock size={12} /> History
-                            </button>
-                          </div>
-                        </td>
-                      </motion.tr>
-                    );
-                  })}
-                </AnimatePresence>
-              </tbody>
-            </table>
-          </div>
-        )}
+        {inventoryTableContent}
       </div>
 
       {/* ── Restock modal ── */}
@@ -367,10 +372,11 @@ export default function AdminInventory() {
               </p>
               <form onSubmit={handleRestock}>
                 <div className="inv-modal-field">
-                  <label>
+                  <label htmlFor="inv-restock-units">
                     Units to add <span className="admin-required">*</span>
                   </label>
                   <input
+                    id="inv-restock-units"
                     type="number" min={1}
                     className="admin-input"
                     placeholder="e.g. 50"
@@ -380,8 +386,9 @@ export default function AdminInventory() {
                   />
                 </div>
                 <div className="inv-modal-field">
-                  <label>Note (optional)</label>
+                  <label htmlFor="inv-restock-note">Note (optional)</label>
                   <input
+                    id="inv-restock-note"
                     type="text"
                     className="admin-input"
                     placeholder="e.g. Monthly supplier delivery"
@@ -434,10 +441,11 @@ export default function AdminInventory() {
               </p>
               <form onSubmit={handleAdjust}>
                 <div className="inv-modal-field">
-                  <label>
+                  <label htmlFor="inv-adjust-qty">
                     New quantity <span className="admin-required">*</span>
                   </label>
                   <input
+                    id="inv-adjust-qty"
                     type="number" min={0}
                     className="admin-input"
                     value={adjust.newQty}
@@ -446,10 +454,11 @@ export default function AdminInventory() {
                   />
                 </div>
                 <div className="inv-modal-field">
-                  <label>
+                  <label htmlFor="inv-adjust-reason">
                     Reason for adjustment <span className="admin-required">*</span>
                   </label>
                   <input
+                    id="inv-adjust-reason"
                     type="text"
                     className="admin-input"
                     placeholder="e.g. Damaged goods written off"
@@ -512,39 +521,43 @@ export default function AdminInventory() {
               </div>
 
               <div className="inv-drawer-body">
-                {history.loading ? (
-                  <div className="inv-drawer-state">Loading history…</div>
-                ) : history.movements.length === 0 ? (
-                  <div className="inv-drawer-state">No movements recorded yet.</div>
-                ) : (
-                  <div className="inv-movement-list">
-                    {history.movements.map((m) => (
-                      <div key={m._id} className="inv-movement-item">
-                        <div className={`inv-movement-type-badge ${MOVEMENT_TYPE_COLORS[m.type] || ""}`}>
-                          {m.type}
-                        </div>
-                        <div className="inv-movement-info">
-                          <span className="inv-movement-delta">
-                            {m.delta > 0 ? `+${m.delta}` : m.delta} units
-                            <span className="inv-movement-qty">
-                              &nbsp;({m.prevQty} → {m.newQty})
+                {(() => {
+                  if (history.loading) {
+                    return <div className="inv-drawer-state">Loading history…</div>;
+                  }
+                  if (history.movements.length === 0) {
+                    return <div className="inv-drawer-state">No movements recorded yet.</div>;
+                  }
+                  return (
+                    <div className="inv-movement-list">
+                      {history.movements.map((m) => (
+                        <div key={m._id} className="inv-movement-item">
+                          <div className={`inv-movement-type-badge ${MOVEMENT_TYPE_COLORS[m.type] || ""}`}>
+                            {m.type}
+                          </div>
+                          <div className="inv-movement-info">
+                            <span className="inv-movement-delta">
+                              {m.delta > 0 ? `+${m.delta}` : m.delta} units
+                              <span className="inv-movement-qty">
+                                &nbsp;({m.prevQty} → {m.newQty})
+                              </span>
+                              {m.variantLabel && (
+                                <span className="inv-modal-variant-chip">{m.variantLabel}</span>
+                              )}
                             </span>
-                            {m.variantLabel && (
-                              <span className="inv-modal-variant-chip">{m.variantLabel}</span>
+                            {m.note && (
+                              <span className="inv-movement-note">{m.note}</span>
                             )}
-                          </span>
-                          {m.note && (
-                            <span className="inv-movement-note">{m.note}</span>
-                          )}
-                          <span className="inv-movement-meta">
-                            {m.createdBy?.name || "System"} ·{" "}
-                            {new Date(m.createdAt).toLocaleString()}
-                          </span>
+                            <span className="inv-movement-meta">
+                              {m.createdBy?.name || "System"} ·{" "}
+                              {new Date(m.createdAt).toLocaleString()}
+                            </span>
+                          </div>
                         </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
+                      ))}
+                    </div>
+                  );
+                })()}
               </div>
             </motion.aside>
           </>

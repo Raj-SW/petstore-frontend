@@ -80,8 +80,9 @@ const PasswordChangeForm = ({ show, onHide, onSubmit, isLoading }) => {
                 )}
 
                 <div className="pm-field">
-                  <label className="pm-label">Current Password</label>
+                  <label className="pm-label" htmlFor="pcf-current-password">Current Password</label>
                   <input
+                    id="pcf-current-password"
                     className="pm-input"
                     type="password"
                     name="currentPassword"
@@ -96,8 +97,9 @@ const PasswordChangeForm = ({ show, onHide, onSubmit, isLoading }) => {
                 <p className="pm-section">New Password</p>
 
                 <div className="pm-field">
-                  <label className="pm-label">New Password</label>
+                  <label className="pm-label" htmlFor="pcf-new-password">New Password</label>
                   <input
+                    id="pcf-new-password"
                     className="pm-input"
                     type="password"
                     name="newPassword"
@@ -111,8 +113,9 @@ const PasswordChangeForm = ({ show, onHide, onSubmit, isLoading }) => {
                 </div>
 
                 <div className="pm-field">
-                  <label className="pm-label">Confirm New Password</label>
+                  <label className="pm-label" htmlFor="pcf-confirm-password">Confirm New Password</label>
                   <input
+                    id="pcf-confirm-password"
                     className="pm-input"
                     type="password"
                     name="confirmPassword"

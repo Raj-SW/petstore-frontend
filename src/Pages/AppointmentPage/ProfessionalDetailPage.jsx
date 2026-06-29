@@ -118,7 +118,7 @@ const ProfessionalDetailPage = () => {
             <section className="pd-section">
               <h2 className="pd-section-title"><FiAward /> Qualifications</h2>
               <ul className="pd-quals">
-                {qualifications.map((q, i) => <li key={i}>{q}</li>)}
+                {qualifications.map((q, i) => <li key={`${q}-${i}`}>{q}</li>)}
               </ul>
             </section>
           )}
@@ -128,7 +128,7 @@ const ProfessionalDetailPage = () => {
               <h2 className="pd-section-title">Services</h2>
               <div className="pd-services">
                 {services.map((s, i) => (
-                  <div key={i} className="pd-service">
+                  <div key={s.name ? `${s.name}-${i}` : i} className="pd-service">
                     <p className="pd-service-name"><FiCheckCircle /> {s.name}</p>
                     {s.description && <p className="pd-service-desc">{s.description}</p>}
                   </div>

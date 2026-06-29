@@ -6,7 +6,6 @@ import {
   FiShoppingCart,
   FiCalendar,
   FiDollarSign,
-  FiTrendingUp,
   FiActivity,
   FiUserCheck,
 } from "react-icons/fi";
@@ -125,9 +124,9 @@ const AdminDashboard = () => {
 
       {/* Statistics Grid */}
       <div className="admin-stats-grid">
-        {statCards.map((stat, index) => (
+        {statCards.map((stat) => (
           <Link
-            key={index}
+            key={stat.title}
             to={stat.link}
             className="stat-card-link"
             aria-label={`View ${stat.title}`}

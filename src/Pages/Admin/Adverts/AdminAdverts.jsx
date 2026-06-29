@@ -290,7 +290,7 @@ const AdminAdverts = () => {
                 <input id="aa-order" type="number" min="0" value={form.order} onChange={set("order")} />
               </div>
               <label className="aa-check">
-                <input type="checkbox" checked={form.active} onChange={set("active")} />
+                <input type="checkbox" checked={form.active} onChange={set("active")} />{" "}
                 Active
               </label>
 

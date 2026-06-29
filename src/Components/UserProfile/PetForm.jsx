@@ -37,6 +37,10 @@ const PetForm = ({ show, onHide, onSubmit, initialData, isLoading }) => {
     onSubmit({ ...formData, age: Number(formData.age) });
   };
 
+  const petFormBtnLabel = isLoading
+    ? <><span className="pm-spinner" /> Saving…</>
+    : (initialData ? "Save Changes" : "Add Pet");
+
   return createPortal(
     <AnimatePresence>
       {show && (
@@ -72,8 +76,9 @@ const PetForm = ({ show, onHide, onSubmit, initialData, isLoading }) => {
 
                 <div className="pm-field-row">
                   <div className="pm-field">
-                    <label className="pm-label">Pet Name *</label>
+                    <label className="pm-label" htmlFor="pf-name">Pet Name *</label>
                     <input
+                      id="pf-name"
                       className="pm-input"
                       type="text"
                       name="name"
@@ -84,7 +89,7 @@ const PetForm = ({ show, onHide, onSubmit, initialData, isLoading }) => {
                     />
                   </div>
                   <div className="pm-field">
-                    <label className="pm-label">Type *</label>
+                    <p className="pm-label">Type *</p>
                     <Select
                       value={formData.type || undefined}
                       onValueChange={(v) => setFormData(prev => ({ ...prev, type: v }))}
@@ -104,8 +109,9 @@ const PetForm = ({ show, onHide, onSubmit, initialData, isLoading }) => {
 
                 <div className="pm-field-row">
                   <div className="pm-field">
-                    <label className="pm-label">Breed *</label>
+                    <label className="pm-label" htmlFor="pf-breed">Breed *</label>
                     <input
+                      id="pf-breed"
                       className="pm-input"
                       type="text"
                       name="breed"
@@ -116,8 +122,9 @@ const PetForm = ({ show, onHide, onSubmit, initialData, isLoading }) => {
                     />
                   </div>
                   <div className="pm-field">
-                    <label className="pm-label">Color *</label>
+                    <label className="pm-label" htmlFor="pf-color">Color *</label>
                     <input
+                      id="pf-color"
                       className="pm-input"
                       type="text"
                       name="color"
@@ -131,8 +138,9 @@ const PetForm = ({ show, onHide, onSubmit, initialData, isLoading }) => {
 
                 <div className="pm-field-row">
                   <div className="pm-field">
-                    <label className="pm-label">Age (years) *</label>
+                    <label className="pm-label" htmlFor="pf-age">Age (years) *</label>
                     <input
+                      id="pf-age"
                       className="pm-input"
                       type="number"
                       name="age"
@@ -145,7 +153,7 @@ const PetForm = ({ show, onHide, onSubmit, initialData, isLoading }) => {
                     />
                   </div>
                   <div className="pm-field">
-                    <label className="pm-label">Gender *</label>
+                    <p className="pm-label">Gender *</p>
                     <Select
                       value={formData.gender || undefined}
                       onValueChange={(v) => setFormData(prev => ({ ...prev, gender: v }))}
@@ -161,8 +169,9 @@ const PetForm = ({ show, onHide, onSubmit, initialData, isLoading }) => {
                 </div>
 
                 <div className="pm-field">
-                  <label className="pm-label">Description</label>
+                  <label className="pm-label" htmlFor="pf-description">Description</label>
                   <textarea
+                    id="pf-description"
                     className="pm-textarea"
                     name="description"
                     value={formData.description}
@@ -178,10 +187,7 @@ const PetForm = ({ show, onHide, onSubmit, initialData, isLoading }) => {
                   Cancel
                 </button>
                 <button type="submit" className="pm-btn pm-btn--primary" disabled={isLoading}>
-                  {isLoading
-                    ? <><span className="pm-spinner" /> Saving…</>
-                    : initialData ? "Save Changes" : "Add Pet"
-                  }
+                  {petFormBtnLabel}
                 </button>
               </div>
             </form>

@@ -65,7 +65,7 @@ const CartModal = ({ show, onHide }) => {
             <header className="cm-header">
               <div className="cm-header-title">
                 <h3>Shopping Cart</h3>
-                <span className="cm-count">{totalItems} item{totalItems !== 1 ? "s" : ""}</span>
+                <span className="cm-count">{totalItems} item{totalItems === 1 ? "" : "s"}</span>
               </div>
               <button
                 type="button"

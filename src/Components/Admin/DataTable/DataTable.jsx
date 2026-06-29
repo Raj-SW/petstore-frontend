@@ -228,40 +228,35 @@ const DataTable = ({
                   />
                 </th>
               )}
-              {columns.map((column) => (
-                <th
-                  key={column.accessor}
-                  onClick={() =>
-                    column.sortable !== false && handleSort(column.accessor)
-                  }
-                  className={column.sortable !== false ? "sortable" : ""}
-                  role="columnheader"
-                  aria-sort={
-                    sortConfig.key === column.accessor
-                      ? sortConfig.direction === "asc"
-                        ? "ascending"
-                        : "descending"
-                      : "none"
-                  }
-                >
-                  <div className="th-content">
-                    <span>{column.header}</span>
-                    {column.sortable !== false && (
-                      <span className="sort-icon">
-                        {sortConfig.key === column.accessor ? (
-                          sortConfig.direction === "asc" ? (
-                            <FiChevronUp />
-                          ) : (
-                            <FiChevronDown />
-                          )
-                        ) : (
-                          <span className="sort-placeholder" />
-                        )}
-                      </span>
-                    )}
-                  </div>
-                </th>
-              ))}
+              {columns.map((column) => {
+                const isActiveSort = sortConfig.key === column.accessor;
+                const ariaSortValue = isActiveSort
+                  ? (sortConfig.direction === "asc" ? "ascending" : "descending")
+                  : "none";
+                const sortIcon = isActiveSort
+                  ? (sortConfig.direction === "asc" ? <FiChevronUp /> : <FiChevronDown />)
+                  : <span className="sort-placeholder" />;
+                return (
+                  <th
+                    key={column.accessor}
+                    onClick={() =>
+                      column.sortable !== false && handleSort(column.accessor)
+                    }
+                    className={column.sortable === false ? "" : "sortable"}
+                    role="columnheader"
+                    aria-sort={ariaSortValue}
+                  >
+                    <div className="th-content">
+                      <span>{column.header}</span>
+                      {column.sortable !== false && (
+                        <span className="sort-icon">
+                          {sortIcon}
+                        </span>
+                      )}
+                    </div>
+                  </th>
+                );
+              })}
               {showActions && <th className="actions-header">Actions</th>}
             </tr>
           </thead>

@@ -108,7 +108,7 @@ const ProductSectionTabs = ({ sections = [] }) => {
                 >
                   {validSections.map((tab, i) => (
                     <button
-                      key={i}
+                      key={tab.title ? `${tab.title}-${i}` : i}
                       role="tab"
                       aria-selected={activeTab === i}
                       onClick={() => setActiveTab(i)}
@@ -179,7 +179,7 @@ const ProductSectionTabs = ({ sections = [] }) => {
         {/* ── Mobile: accordion ── */}
         <div className="md:hidden">
           {validSections.map((tab, i) => (
-            <div key={i} style={{ borderBottom: i < validSections.length - 1 ? "1px solid rgba(201,186,168,0.4)" : "none" }}>
+            <div key={tab.title ? `${tab.title}-${i}` : i} style={{ borderBottom: i < validSections.length - 1 ? "1px solid rgba(201,186,168,0.4)" : "none" }}>
               <button
                 onClick={() => toggleAccordion(i)}
                 aria-expanded={openAccordion === i}
@@ -500,7 +500,7 @@ const IndividualProductItemPage = () => {
               <div className="ip-gallery-thumbs">
                 {images.map((img, i) => (
                   <button
-                    key={i}
+                    key={img || i}
                     type="button"
                     className={`ip-thumb${i === activeImage ? " ip-thumb--active" : ""}`}
                     onClick={() => setActiveImage(i)}
@@ -759,13 +759,13 @@ const IndividualProductItemPage = () => {
               onClick={(e) => e.stopPropagation()}
             />
             {images.length > 1 && (
-              <div className="ip-lightbox-thumbs" onClick={(e) => e.stopPropagation()}>
+              <div className="ip-lightbox-thumbs" role="presentation">
                 {images.map((img, i) => (
                   <button
-                    key={i}
+                    key={img || i}
                     type="button"
                     className={`ip-lightbox-thumb${i === activeImage ? " ip-lightbox-thumb--active" : ""}`}
-                    onClick={() => setActiveImage(i)}
+                    onClick={(e) => { e.stopPropagation(); setActiveImage(i); }}
                     aria-label={`View image ${i + 1}`}
                   >
                     <img src={img} alt="" />

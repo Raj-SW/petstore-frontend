@@ -42,8 +42,8 @@ const HeroSection = () => (
         </p>
 
         <div className="hero-features">
-          {FEATURES.map((f, i) => (
-            <div key={i} className="hero-feature-item">
+          {FEATURES.map((f) => (
+            <div key={f.label} className="hero-feature-item">
               <FaHome className="hero-feature-icon" />
               <div>
                 <p className="hero-feature-label">{f.label}</p>

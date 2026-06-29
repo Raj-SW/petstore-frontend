@@ -806,8 +806,7 @@ const ExportImportForm = () => {
                               rel="noopener noreferrer"
                             >
                               Privacy Policy
-                            </a>
-                            .
+                            </a>{"."}
                           </div>
                         </div>
                       </Col>
@@ -832,7 +831,7 @@ const ExportImportForm = () => {
                             >
                               {form.uploadDocs.map((file, idx) => (
                                 <li
-                                  key={idx}
+                                  key={file.name ? `${file.name}-${idx}` : idx}
                                   className="d-flex align-items-center gap-2 mb-1"
                                 >
                                   <span className="text-success">

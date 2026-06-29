@@ -5,7 +5,7 @@ const CategoryChips = ({ selected, onSelect }) => (
     <button
       role="tab"
       aria-selected={!selected}
-      className={`pct-chip ${!selected ? "on" : ""}`}
+      className={`pct-chip ${selected ? "" : "on"}`}
       onClick={() => onSelect("")}
     >
       All categories

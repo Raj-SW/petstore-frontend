@@ -50,6 +50,13 @@ const ProductReviewFormModal = ({ showReviewModal, onClose, productId, onReviewS
     }
   };
 
+  let submitBtnContent;
+  if (submitting) {
+    submitBtnContent = <><FaSpinner className="spin" size={13} /> {isEditing ? "Saving…" : "Submitting…"}</>;
+  } else {
+    submitBtnContent = isEditing ? "Save Changes" : "Submit Review";
+  }
+
   return createPortal(
     <AnimatePresence>
       {showReviewModal && (
@@ -82,13 +89,13 @@ const ProductReviewFormModal = ({ showReviewModal, onClose, productId, onReviewS
               <div className="prfm-body">
                 {/* Reviewer name (read-only) */}
                 <div className="prfm-field">
-                  <label className="prfm-label">Reviewing as</label>
+                  <p className="prfm-label">Reviewing as</p>
                   <p className="prfm-user">{user?.name}</p>
                 </div>
 
                 {/* Star rating */}
                 <div className="prfm-field">
-                  <label className="prfm-label">Your rating *</label>
+                  <p className="prfm-label">Your rating *</p>
                   <div className="prfm-stars">
                     {[1, 2, 3, 4, 5].map(star => (
                       <button
@@ -98,7 +105,7 @@ const ProductReviewFormModal = ({ showReviewModal, onClose, productId, onReviewS
                         onClick={() => setRating(star)}
                         onMouseEnter={() => setHovered(star)}
                         onMouseLeave={() => setHovered(0)}
-                        aria-label={`Rate ${star} star${star !== 1 ? "s" : ""}`}
+                        aria-label={`Rate ${star} star${star === 1 ? "" : "s"}`}
                       >
                         <FaStar size={26} />
                       </button>
@@ -111,8 +118,9 @@ const ProductReviewFormModal = ({ showReviewModal, onClose, productId, onReviewS
 
                 {/* Comment */}
                 <div className="prfm-field">
-                  <label className="prfm-label">Your review *</label>
+                  <label className="prfm-label" htmlFor="prfm-review">Your review *</label>
                   <textarea
+                    id="prfm-review"
                     className="prfm-textarea"
                     value={comment}
                     onChange={e => setComment(e.target.value)}
@@ -145,9 +153,7 @@ const ProductReviewFormModal = ({ showReviewModal, onClose, productId, onReviewS
                   className="prfm-btn prfm-btn--primary"
                   disabled={submitting || !comment.trim()}
                 >
-                  {submitting
-                    ? <><FaSpinner className="spin" size={13} /> {isEditing ? "Saving…" : "Submitting…"}</>
-                    : isEditing ? "Save Changes" : "Submit Review"}
+                  {submitBtnContent}
                 </button>
               </div>
             </form>

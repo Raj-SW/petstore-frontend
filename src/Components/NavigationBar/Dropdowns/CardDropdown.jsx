@@ -15,20 +15,6 @@ import Communityimg2 from "../../../assets/NavigationBarAssets/Community/img2.we
 import Communityimg3 from "../../../assets/NavigationBarAssets/Community/img3.webp";
 import { Image } from "react-bootstrap";
 
-// Navigation menu configuration
-const MENU_ITEMS = [
-  {
-    title: "Services",
-    images: [Serviceimg1, Serviceimg2, Serviceimg3],
-    links: [
-      { title: "Veterinary Appointment", href: "/vet" },
-      { title: "Pet Taxi Appointment", href: "/taxi" },
-      { title: "Grooming Appointment", href: "/grooming" },
-      { title: "Pet Relocation", href: "/relocation" },
-    ],
-  },
-];
-
 // Reusable carousel component
 const NavigationCarousel = ({ images }) => (
   <Carousel
@@ -40,7 +26,7 @@ const NavigationCarousel = ({ images }) => (
     wrap={true}
   >
     {images.map((image, index) => (
-      <Carousel.Item key={index}>
+      <Carousel.Item key={image}>
         <Image
           src={image}
           style={{

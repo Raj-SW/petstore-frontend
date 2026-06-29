@@ -161,7 +161,7 @@ const AdminLayout = () => {
                   className={({ isActive }) =>
                     `nav-link ${isActive ? "active" : ""}`
                   }
-                  title={!sidebarOpen ? item.title : ""}
+                  title={sidebarOpen ? "" : item.title}
                 >
                   {item.icon}
                   {sidebarOpen && (

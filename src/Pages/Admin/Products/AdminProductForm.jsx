@@ -155,9 +155,11 @@ const AdminProductForm = () => {
           description:p.description ?? "",
           price:      p.price       ?? "",
           quantity:   p.quantity    ?? p.stock ?? "",
-          categories: Array.isArray(p.categories) && p.categories.length > 0
-            ? p.categories
-            : p.category ? [p.category] : ["general"],
+          categories: (() => {
+            if (Array.isArray(p.categories) && p.categories.length > 0) return p.categories;
+            if (p.category) return [p.category];
+            return ["general"];
+          })(),
           colors:    Array.isArray(p.colors)  ? p.colors  : [],
           genders:   Array.isArray(p.genders) ? p.genders : [],
           isActive:  p.isActive  ?? true,
@@ -259,8 +261,9 @@ const AdminProductForm = () => {
       addToast("Product name must be at least 2 characters.", "error");
       return false;
     }
-    // Strip HTML tags to get plain text length for validation
-    const descPlain = form.description.replace(/<[^>]*>/g, "").trim();
+    const descPlain = (
+      new DOMParser().parseFromString(form.description, "text/html").body.textContent ?? ""
+    ).trim();
     if (!descPlain || descPlain.length < 10) {
       addToast("Description must be at least 10 characters.", "error");
       return false;
@@ -391,10 +394,19 @@ const AdminProductForm = () => {
     form.discountType === "percent"
       ? Math.round(priceNum * (1 - Math.min(100, Math.max(0, valNum)) / 100) * 100) / 100
       : valNum;
-  const previewPct =
-    form.discountType === "percent"
-      ? Math.round(valNum)
-      : priceNum > 0 ? Math.round(((priceNum - valNum) / priceNum) * 100) : 0;
+  let previewPct;
+  if (form.discountType === "percent") {
+    previewPct = Math.round(valNum);
+  } else {
+    previewPct = priceNum > 0 ? Math.round(((priceNum - valNum) / priceNum) * 100) : 0;
+  }
+
+  let submitBtnLabel;
+  if (submitting) {
+    submitBtnLabel = isEditMode ? "Saving…" : "Creating…";
+  } else {
+    submitBtnLabel = isEditMode ? "Save Changes" : "Create Product";
+  }
 
   return (
     <motion.div
@@ -451,9 +463,9 @@ const AdminProductForm = () => {
 
               {/* Description */}
               <div className="admin-field">
-                <label className="admin-label">
+                <p className="admin-label">
                   Description <span className="admin-required">*</span>
-                </label>
+                </p>
                 <RichTextEditor
                   preset="standard"
                   value={form.description}
@@ -517,7 +529,7 @@ const AdminProductForm = () => {
                   <p className="apf-hint">Price &amp; stock are set per variant — the top-level price/stock are derived automatically.</p>
                 )}
                 {variants.map((v, i) => (
-                  <div key={i} className="apf-variant-block">
+                  <div key={v.label ? `${v.label}-${i}` : i} className="apf-variant-block">
                     <div className="apf-variant-row">
                       <input
                         className="admin-input"
@@ -781,9 +793,7 @@ const AdminProductForm = () => {
                   className="admin-save-btn admin-pf-submit-btn"
                   disabled={submitting}
                 >
-                  {submitting
-                    ? (isEditMode ? "Saving…" : "Creating…")
-                    : (isEditMode ? "Save Changes" : "Create Product")}
+                  {submitBtnLabel}
                 </button>
               </div>
             </div>

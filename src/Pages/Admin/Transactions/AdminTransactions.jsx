@@ -60,6 +60,70 @@ export default function AdminTransactions() {
 
   useEffect(() => { fetchTransactions(); }, [fetchTransactions]);
 
+  let transactionsTableContent;
+  if (loading) {
+    transactionsTableContent = <div className="inv-loading">Loading transactions…</div>;
+  } else if (transactions.length === 0) {
+    transactionsTableContent = <div className="inv-empty">No transactions found.</div>;
+  } else {
+    transactionsTableContent = (
+      <div className="inv-table-wrap">
+        <table className="inv-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Customer</th>
+              <th>Type</th>
+              <th>Amount</th>
+              <th>Method</th>
+              <th>Invoice</th>
+              <th>Transaction ID</th>
+            </tr>
+          </thead>
+          <tbody>
+            <AnimatePresence initial={false}>
+              {transactions.map((tx, i) => {
+                const badge = TYPE_BADGE[tx.type] || TYPE_BADGE.payment;
+                return (
+                  <motion.tr key={tx._id}
+                    initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ delay: Math.min(i * 0.02, 0.3) }}
+                  >
+                    <td>{new Date(tx.createdAt).toLocaleDateString()}</td>
+                    <td>
+                      <div className="invc-customer">
+                        <span className="invc-customer-name">{tx.user?.name || "—"}</span>
+                        <span className="invc-customer-email">{tx.user?.email || ""}</span>
+                      </div>
+                    </td>
+                    <td>
+                      <span className={`txn-badge ${badge.cls}`}>{badge.label}</span>
+                    </td>
+                    <td>
+                      <span className={tx.type === "refund" ? "txn-amount--refund" : "txn-amount--payment"}>
+                        {tx.type === "refund" ? "-" : "+"}Rs {Math.round(tx.amount || 0).toLocaleString('en-US')}
+                      </span>
+                    </td>
+                    <td>{tx.paymentMethod?.replace("_", " ") || "—"}</td>
+                    <td>
+                      {tx.invoice
+                        ? <code className="invc-number">{tx.invoice.invoiceNumber}</code>
+                        : <span className="txn-na">—</span>}
+                    </td>
+                    <td>
+                      <span className="txn-txid">{tx.transactionId || "—"}</span>
+                    </td>
+                  </motion.tr>
+                );
+              })}
+            </AnimatePresence>
+          </tbody>
+        </table>
+      </div>
+    );
+  }
+
   return (
     <motion.div
       className="admin-page"
@@ -123,66 +187,7 @@ export default function AdminTransactions() {
 
       {/* Table */}
       <div className="admin-card">
-        {loading ? (
-          <div className="inv-loading">Loading transactions…</div>
-        ) : transactions.length === 0 ? (
-          <div className="inv-empty">No transactions found.</div>
-        ) : (
-          <div className="inv-table-wrap">
-            <table className="inv-table">
-              <thead>
-                <tr>
-                  <th>Date</th>
-                  <th>Customer</th>
-                  <th>Type</th>
-                  <th>Amount</th>
-                  <th>Method</th>
-                  <th>Invoice</th>
-                  <th>Transaction ID</th>
-                </tr>
-              </thead>
-              <tbody>
-                <AnimatePresence initial={false}>
-                  {transactions.map((tx, i) => {
-                    const badge = TYPE_BADGE[tx.type] || TYPE_BADGE.payment;
-                    return (
-                      <motion.tr key={tx._id}
-                        initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ delay: Math.min(i * 0.02, 0.3) }}
-                      >
-                        <td>{new Date(tx.createdAt).toLocaleDateString()}</td>
-                        <td>
-                          <div className="invc-customer">
-                            <span className="invc-customer-name">{tx.user?.name || "—"}</span>
-                            <span className="invc-customer-email">{tx.user?.email || ""}</span>
-                          </div>
-                        </td>
-                        <td>
-                          <span className={`txn-badge ${badge.cls}`}>{badge.label}</span>
-                        </td>
-                        <td>
-                          <span className={tx.type === "refund" ? "txn-amount--refund" : "txn-amount--payment"}>
-                            {tx.type === "refund" ? "-" : "+"}Rs {Math.round(tx.amount || 0).toLocaleString('en-US')}
-                          </span>
-                        </td>
-                        <td>{tx.paymentMethod?.replace("_", " ") || "—"}</td>
-                        <td>
-                          {tx.invoice
-                            ? <code className="invc-number">{tx.invoice.invoiceNumber}</code>
-                            : <span className="txn-na">—</span>}
-                        </td>
-                        <td>
-                          <span className="txn-txid">{tx.transactionId || "—"}</span>
-                        </td>
-                      </motion.tr>
-                    );
-                  })}
-                </AnimatePresence>
-              </tbody>
-            </table>
-          </div>
-        )}
+        {transactionsTableContent}
       </div>
     </motion.div>
   );

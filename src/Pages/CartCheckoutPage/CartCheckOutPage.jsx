@@ -177,7 +177,7 @@ const CartCheckoutPage = () => {
                 <div className="cart-items-header">
                   <h1 className="cart-items-title">Shopping Cart</h1>
                   <span className="cart-items-count">
-                    {totalItems} item{totalItems !== 1 ? "s" : ""}
+                    {totalItems} item{totalItems === 1 ? "" : "s"}
                   </span>
                 </div>
 
@@ -392,8 +392,8 @@ const CartCheckoutPage = () => {
                   form="shipping-form"
                   className="cart-btn cart-btn--primary cart-btn--block"
                   disabled={placing}
-                  whileHover={!placing ? { y: -4 } : {}}
-                  whileTap={!placing ? { scale: 0.96, y: 0 } : {}}
+                  whileHover={placing ? {} : { y: -4 }}
+                  whileTap={placing ? {} : { scale: 0.96, y: 0 }}
                   transition={btnSpring}
                 >
                   {placing ? (

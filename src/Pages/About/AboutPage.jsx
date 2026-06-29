@@ -13,12 +13,6 @@ import {
 import "./AboutPage.css";
 
 /* ── Animation helpers ── */
-const fadeUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 36 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.6, delay, ease: [0.25, 0.46, 0.45, 0.94] },
-});
-
 const FadeInWhenVisible = ({ children, delay = 0, className = "" }) => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, amount: 0.15 });

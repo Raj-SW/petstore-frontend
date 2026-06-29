@@ -30,7 +30,11 @@ const ProfessionalCard = ({
         {badgeLabel && (
           <span className="pro-card-chip">
             {/* badgeIcon may arrive as a JSX element (current callers) or a component */}
-            {isValidElement(BadgeIcon) ? BadgeIcon : (typeof BadgeIcon === "function" ? <BadgeIcon aria-hidden="true" /> : null)}
+            {(() => {
+              if (isValidElement(BadgeIcon)) return BadgeIcon;
+              if (typeof BadgeIcon === "function") return <BadgeIcon aria-hidden="true" />;
+              return null;
+            })()}
             {badgeLabel}
           </span>
         )}

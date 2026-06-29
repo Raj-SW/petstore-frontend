@@ -86,6 +86,29 @@ const PetCareTipsPage = () => {
     return items;
   }, [tips, sponsoredAds]);
 
+  let tipsGridContent;
+  if (loading) {
+    tipsGridContent = <div className="pct-empty">Loading tips…</div>;
+  } else if (gridItems.length === 0) {
+    tipsGridContent = (
+      <div className="pct-empty">
+        No tips found — try a different filter or search term.
+      </div>
+    );
+  } else {
+    tipsGridContent = (
+      <div className="pct-grid">
+        {gridItems.map((item, i) =>
+          item.type === "tip" ? (
+            <TipCard key={item.data._id} tip={item.data} />
+          ) : (
+            <SponsoredCard key={item.data?._id ? `ad-${item.data._id}` : `ad-${i}`} advert={item.data} />
+          )
+        )}
+      </div>
+    );
+  }
+
   return (
     <div className="pct-page">
       {/* Hero */}
@@ -146,23 +169,7 @@ const PetCareTipsPage = () => {
           <div className="pct-eyebrow">Browse all tips</div>
           <CategoryChips selected={category} onSelect={setCategory} />
 
-          {loading ? (
-            <div className="pct-empty">Loading tips…</div>
-          ) : gridItems.length === 0 ? (
-            <div className="pct-empty">
-              No tips found — try a different filter or search term.
-            </div>
-          ) : (
-            <div className="pct-grid">
-              {gridItems.map((item, i) =>
-                item.type === "tip" ? (
-                  <TipCard key={item.data._id} tip={item.data} />
-                ) : (
-                  <SponsoredCard key={`ad-${i}`} advert={item.data} />
-                )
-              )}
-            </div>
-          )}
+          {tipsGridContent}
         </section>
       </div>
     </div>

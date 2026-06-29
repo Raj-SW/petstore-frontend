@@ -118,7 +118,7 @@ const FeedbackForm = () => {
 
       {/* Star rating */}
       <div className="ff-field">
-        <label className="ff-label">Rating</label>
+        <p className="ff-label">Rating</p>
         <div
           className="ff-stars"
           role="group"
@@ -130,7 +130,7 @@ const FeedbackForm = () => {
               key={star}
               type="button"
               className={`ff-star${displayRating >= star ? " ff-star-filled" : ""}`}
-              aria-label={`${star} star${star !== 1 ? "s" : ""}`}
+              aria-label={`${star} star${star === 1 ? "" : "s"}`}
               onClick={() => setRating(star)}
               onMouseEnter={() => setHovered(star)}
             >
@@ -184,7 +184,7 @@ const FeedbackForm = () => {
         {/* File picker — hidden when cap reached */}
         {photos.length < MAX_PHOTOS && (
           <label className="ff-upload-btn">
-            + Add Photo
+            {"+ Add Photo"}
             <input
               type="file"
               accept="image/*"
@@ -203,7 +203,7 @@ const FeedbackForm = () => {
       <button className="ff-submit" type="submit" disabled={submitting}>
         {submitting ? (
           <>
-            <span className="ff-spinner" />
+            <span className="ff-spinner" />{" "}
             Submitting&hellip;
           </>
         ) : (

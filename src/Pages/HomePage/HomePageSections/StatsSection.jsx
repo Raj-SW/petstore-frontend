@@ -14,6 +14,8 @@ import slide3b from "../../../assets/StatsSection/slide-3-b.jpg";
 import slide3c from "../../../assets/StatsSection/slide-3-c.png";
 import "./StatsSection.css";
 
+const toPhotoUrl = (p) => (typeof p === "string" ? p : p?.url);
+
 const STATS = [
   { value: "90K",  label: "Satisfied User" },
   { value: "150K", label: "Download" },
@@ -82,9 +84,7 @@ const StatsSection = () => {
               text: fb.message,
               rating: fb.rating,
               // each testimonial carries ONLY its own photos (string URL or {url})
-              photos: (fb.photos || [])
-                .map((p) => (typeof p === "string" ? p : p?.url))
-                .filter(Boolean),
+              photos: (fb.photos || []).map(toPhotoUrl).filter(Boolean),
             }))
           );
           setUsingDbData(true);
@@ -287,9 +287,9 @@ const StatsSection = () => {
 
           {/* Dot indicators */}
           <div className="ss-dots">
-            {testimonials.map((_, i) => (
+            {testimonials.map((t, i) => (
               <button
-                key={i}
+                key={t.id ?? t._id ?? i}
                 className={`ss-dot${i === activeIdx ? " ss-dot--active" : ""}`}
                 onClick={() => go(i)}
                 aria-label={`Go to testimonial ${i + 1}`}

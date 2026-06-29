@@ -145,14 +145,14 @@ const ContactPage = () => {
             <p className="ct-connect-sub">We're here to answer your questions and provide support.</p>
 
             <form className="ct-form" onSubmit={handleSubmit}>
-              <label className="ct-label">Your Name</label>
-              <input className="ct-input" type="text" value={form.name} onChange={set("name")} placeholder="Your name" maxLength={100} />
+              <label className="ct-label" htmlFor="ct-name">Your Name</label>
+              <input id="ct-name" className="ct-input" type="text" value={form.name} onChange={set("name")} placeholder="Your name" maxLength={100} />
 
-              <label className="ct-label">Your Email Address</label>
-              <input className="ct-input" type="email" value={form.email} onChange={set("email")} placeholder="you@example.com" />
+              <label className="ct-label" htmlFor="ct-email">Your Email Address</label>
+              <input id="ct-email" className="ct-input" type="email" value={form.email} onChange={set("email")} placeholder="you@example.com" />
 
-              <label className="ct-label">Message</label>
-              <textarea className="ct-input ct-textarea" rows={5} value={form.message} onChange={set("message")} placeholder="How can we help?" maxLength={2000} />
+              <label className="ct-label" htmlFor="ct-message">Message</label>
+              <textarea id="ct-message" className="ct-input ct-textarea" rows={5} value={form.message} onChange={set("message")} placeholder="How can we help?" maxLength={2000} />
 
               <button type="submit" className="ct-submit" disabled={sending}>
                 <FiSend size={15} /> {sending ? "Sending…" : "Send Message"}

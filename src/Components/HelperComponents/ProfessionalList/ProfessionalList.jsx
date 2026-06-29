@@ -155,9 +155,13 @@ const ProfessionalList = ({
       }
 
       if (sortOrder === "asc") {
-        return aValue > bValue ? 1 : aValue < bValue ? -1 : 0;
+        if (aValue > bValue) return 1;
+        if (aValue < bValue) return -1;
+        return 0;
       } else {
-        return aValue < bValue ? 1 : aValue > bValue ? -1 : 0;
+        if (aValue < bValue) return 1;
+        if (aValue > bValue) return -1;
+        return 0;
       }
     });
   }, [filteredProfessionals, sortBy, sortOrder]);
@@ -178,18 +182,6 @@ const ProfessionalList = ({
   const handleSearchChange = useCallback((e) => {
     setSearchQuery(e.target.value);
   }, []);
-
-  const handleSortChange = useCallback(
-    (field) => {
-      if (sortBy === field) {
-        setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
-      } else {
-        setSortBy(field);
-        setSortOrder("asc");
-      }
-    },
-    [sortBy]
-  );
 
   const handleBook = useCallback(
     (professional) => {

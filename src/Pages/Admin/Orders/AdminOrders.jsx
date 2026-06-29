@@ -477,7 +477,7 @@ const AdminOrders = () => {
                         const unitPrice = item.price || 0;
                         const qty = item.quantity || 1;
                         return (
-                          <li key={idx} className="aod-item">
+                          <li key={item.product?._id ? `${item.product._id}-${idx}` : `item-${idx}`} className="aod-item">
                             {img ? (
                               <img src={img} alt={name} className="aod-item-img" />
                             ) : (

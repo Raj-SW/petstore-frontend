@@ -64,8 +64,9 @@ const ProfileForm = ({ show, onHide, onSubmit, initialData, isLoading }) => {
             <form onSubmit={handleSubmit}>
               <div className="pm-body">
                 <div className="pm-field">
-                  <label className="pm-label">Full Name</label>
+                  <label className="pm-label" htmlFor="prof-name">Full Name</label>
                   <input
+                    id="prof-name"
                     className="pm-input"
                     type="text"
                     name="name"
@@ -77,8 +78,9 @@ const ProfileForm = ({ show, onHide, onSubmit, initialData, isLoading }) => {
                 </div>
 
                 <div className="pm-field">
-                  <label className="pm-label">Email Address</label>
+                  <label className="pm-label" htmlFor="prof-email">Email Address</label>
                   <input
+                    id="prof-email"
                     className="pm-input"
                     type="email"
                     name="email"
@@ -91,8 +93,9 @@ const ProfileForm = ({ show, onHide, onSubmit, initialData, isLoading }) => {
 
                 <div className="pm-field-row">
                   <div className="pm-field">
-                    <label className="pm-label">Phone Number</label>
+                    <label className="pm-label" htmlFor="prof-phone">Phone Number</label>
                     <input
+                      id="prof-phone"
                       className="pm-input"
                       type="tel"
                       name="phoneNumber"
@@ -102,8 +105,9 @@ const ProfileForm = ({ show, onHide, onSubmit, initialData, isLoading }) => {
                     />
                   </div>
                   <div className="pm-field">
-                    <label className="pm-label">Address</label>
+                    <label className="pm-label" htmlFor="prof-address">Address</label>
                     <input
+                      id="prof-address"
                       className="pm-input"
                       type="text"
                       name="address"

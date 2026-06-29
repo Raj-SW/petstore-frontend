@@ -93,7 +93,7 @@ const CommunitySection = () => {
             <ul className="list-unstyled">
               {["Perk 1", "Perk 2", "Perk 3", "Perk 4"].map((perk, index) => (
                 <motion.li
-                  key={index}
+                  key={perk}
                   custom={index}
                   variants={perkVariants}
                   whileHover={{ x: 10 }}

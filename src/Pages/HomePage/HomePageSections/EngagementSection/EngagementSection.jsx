@@ -114,8 +114,9 @@ const EngagementSection = () => {
 
                         <form className="es-form" onSubmit={handleContactSubmit}>
                           <div className="es-field">
-                            <label className="es-label">Your Name</label>
+                            <label className="es-label" htmlFor="es-name">Your Name</label>
                             <input
+                              id="es-name"
                               className="es-input"
                               type="text"
                               name="name"
@@ -127,8 +128,9 @@ const EngagementSection = () => {
                           </div>
 
                           <div className="es-field">
-                            <label className="es-label">Your Email Address</label>
+                            <label className="es-label" htmlFor="es-email">Your Email Address</label>
                             <input
+                              id="es-email"
                               className="es-input"
                               type="email"
                               name="email"
@@ -140,8 +142,9 @@ const EngagementSection = () => {
                           </div>
 
                           <div className="es-field">
-                            <label className="es-label">Message</label>
+                            <label className="es-label" htmlFor="es-message">Message</label>
                             <textarea
+                              id="es-message"
                               className="es-input es-textarea"
                               name="message"
                               value={form.message}
@@ -158,7 +161,7 @@ const EngagementSection = () => {
                           >
                             {status === "loading" ? (
                               <>
-                                <span className="es-spinner" />
+                                <span className="es-spinner" />{" "}
                                 Sending&hellip;
                               </>
                             ) : (

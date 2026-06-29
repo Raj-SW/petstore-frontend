@@ -79,7 +79,7 @@ const RichTextEditor = ({
 
   return (
     <div className={`rte-wrapper ${error ? "rte-has-error" : ""} ${readOnly ? "rte-read-only" : ""} ${className}`}>
-      {label && <label className="rte-label">{label}</label>}
+      {label && <p className="rte-label">{label}</p>}
 
       <div className="rte-container">
         {!readOnly && <Toolbar editor={editor} preset={preset} onImageUpload={onImageUpload} />}

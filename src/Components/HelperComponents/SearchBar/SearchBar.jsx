@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, useMemo, useCallback } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
-import { Search, CircleDot } from "lucide-react"
+import { Search } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { cn } from "@/lib/utils"
 
@@ -132,6 +132,24 @@ const SearchBar = ({
       ))
     : null
 
+  let boxShadowValue;
+  if (isClicked) {
+    boxShadowValue = "0 0 40px rgba(139,92,246,0.5), 0 0 15px rgba(236,72,153,0.7) inset";
+  } else if (isFocused) {
+    boxShadowValue = "0 15px 35px rgba(0,0,0,0.3)";
+  } else {
+    boxShadowValue = "0 0 0 rgba(0,0,0,0)";
+  }
+
+  let searchIconClass;
+  if (isAnimating) {
+    searchIconClass = "text-purple-400";
+  } else if (isFocused) {
+    searchIconClass = "text-white";
+  } else {
+    searchIconClass = "text-white/70";
+  }
+
   return (
     <div className="relative w-full max-w-lg">
       <GooeyFilter />
@@ -151,11 +169,7 @@ const SearchBar = ({
               : "border-white/20 bg-white/10"
           )}
           animate={{
-            boxShadow: isClicked
-              ? "0 0 40px rgba(139,92,246,0.5), 0 0 15px rgba(236,72,153,0.7) inset"
-              : isFocused
-              ? "0 15px 35px rgba(0,0,0,0.3)"
-              : "0 0 0 rgba(0,0,0,0)",
+            boxShadow: boxShadowValue,
           }}
           onClick={handleClick}
         >
@@ -208,7 +222,7 @@ const SearchBar = ({
               strokeWidth={isFocused ? 2.5 : 2}
               className={cn(
                 "transition-all duration-300",
-                isAnimating ? "text-purple-400" : isFocused ? "text-white" : "text-white/70"
+                searchIconClass
               )}
             />
           </motion.div>

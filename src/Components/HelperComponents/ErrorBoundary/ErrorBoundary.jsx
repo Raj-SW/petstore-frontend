@@ -35,9 +35,9 @@ class ErrorBoundary extends Component {
             <details className="mt-3">
               <summary>Error Details</summary>
               <pre className="error-details">
-                {this.state.error && this.state.error.toString()}
+                {this.state.error?.toString()}
                 <br />
-                {this.state.errorInfo && this.state.errorInfo.componentStack}
+                {this.state.errorInfo?.componentStack}
               </pre>
             </details>
           )}
