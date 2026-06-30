@@ -234,19 +234,26 @@ const DataTable = ({
                 if (isActiveSort) {
                   sortIcon = sortConfig.direction === "asc" ? <FiChevronUp /> : <FiChevronDown />;
                 }
+                const isSortable = column.sortable !== false;
+                const triggerSort = () => isSortable && handleSort(column.accessor);
                 return (
                   <th
                     key={column.accessor}
-                    onClick={() =>
-                      column.sortable !== false && handleSort(column.accessor)
-                    }
-                    className={column.sortable === false ? "" : "sortable"}
+                    onClick={triggerSort}
+                    onKeyDown={(e) => {
+                      if (isSortable && (e.key === "Enter" || e.key === " ")) {
+                        e.preventDefault();
+                        triggerSort();
+                      }
+                    }}
+                    tabIndex={isSortable ? 0 : undefined}
+                    className={isSortable ? "sortable" : ""}
                     role="columnheader"
                     aria-sort={ariaSortValue}
                   >
                     <div className="th-content">
                       <span>{column.header}</span>
-                      {column.sortable !== false && (
+                      {isSortable && (
                         <span className="sort-icon">
                           {sortIcon}
                         </span>

@@ -130,18 +130,18 @@ const AdminFaqs = () => {
         {formOpen && (
           <motion.div className="admin-modal-backdrop" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setFormOpen(false)}>
             <motion.div className="admin-modal" initial={{ scale: 0.92, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.92, opacity: 0 }} onClick={(e) => e.stopPropagation()}>
-              <h3><FiHelpCircle /> {editing ? "Edit FAQ" : "New FAQ"}</h3>
+              <h3><FiHelpCircle />{" "}{editing ? "Edit FAQ" : "New FAQ"}</h3>
               <label className="af-field-label" htmlFor="af-question">Question</label>
               <input id="af-question" className="es-input" value={form.question} onChange={set("question")} placeholder="e.g. Do you deliver island-wide?" />
               <label className="af-field-label" htmlFor="af-answer">Answer</label>
               <textarea id="af-answer" className="es-input es-textarea" style={{ minHeight: 110 }} value={form.answer} onChange={set("answer")} placeholder="The answer customers will see…" />
               <div style={{ display: "flex", gap: "16px", alignItems: "center", marginTop: 8 }}>
                 <label className="af-field-label" style={{ margin: 0 }}>
-                  Order
+                  Order{' '}
                   <input type="number" className="es-input" style={{ width: 90, marginLeft: 8 }} value={form.order} onChange={set("order")} />
                 </label>
                 <label style={{ display: "flex", gap: 6, alignItems: "center" }}>
-                  <input type="checkbox" checked={form.active} onChange={set("active")} /> Active
+                  <input type="checkbox" checked={form.active} onChange={set("active")} />{' '}Active
                 </label>
               </div>
               <div className="admin-modal-actions">

@@ -77,8 +77,8 @@ const FeaturedProductSection = () => {
   if (loading) {
     carouselContent = (
       <div className="fp-skeleton-row">
-        {[1,2,3].map((n) => (
-          <div key={n} className="fp-skeleton" />
+        {Array.from({ length: 3 }, (_, i) => (
+          <div key={`fp-skel-${i}`} className="fp-skeleton" />
         ))}
       </div>
     );

@@ -21,6 +21,8 @@ const normalizeImage = (img) =>
   typeof img === "object"
     ? { url: img.url, publicId: img.publicId || "" }
     : { url: img, publicId: "" };
+const normalizeSectionImages = (images) =>
+  Array.isArray(images) ? images.map(normalizeImage).filter((x) => x.url && x.publicId) : [];
 
 const EMPTY_FORM = {
   title: "",
@@ -76,9 +78,7 @@ const AdminTipForm = () => {
                 id: `sec-${Date.now()}-${i}`,
                 heading: s.heading || "",
                 body: s.body || "",
-                images: Array.isArray(s.images)
-                  ? s.images.map(normalizeImage).filter((x) => x.url && x.publicId)
-                  : [],
+                images: normalizeSectionImages(s.images),
               }))
             : []
         );
@@ -123,10 +123,10 @@ const AdminTipForm = () => {
         sections: sections
           .filter((s) => s.heading?.trim() || (s.body && s.body !== "<p></p>") || s.images?.length)
           .map(({ heading, body, images }, order) => ({
-            heading: (heading || "").trim(),
+            heading: heading?.trim() ?? "",
             body: body || "",
             order,
-            images: (images || []).map((img) => ({ url: img.url, publicId: img.publicId })),
+            images: images?.map((img) => ({ url: img.url, publicId: img.publicId })) ?? [],
           })),
       };
       if (isEdit) {

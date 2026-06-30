@@ -98,7 +98,7 @@ const GalleryPage = () => {
   if (loading) {
     galleryContent = (
       <div className="gal-grid">
-        {[1,2,3,4,5,6].map((n) => <div key={n} className="gal-skeleton" />)}
+        {Array.from({ length: 6 }, (_, i) => <div key={`skel-${i}`} className="gal-skeleton" />)}
       </div>
     );
   } else if (posts.length === 0) {

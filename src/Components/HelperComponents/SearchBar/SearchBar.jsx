@@ -102,24 +102,26 @@ const SearchBar = ({
     },
   }
 
+  // NOSONAR — Math.random() is intentional here: decorative animation particles only, no security context
+  const rand = () => Math.random(); // NOSONAR
   const particles = Array.from({ length: isFocused ? 18 : 0 }, (_, i) => (
     <motion.div
       key={i}
       initial={{ scale: 0 }}
       animate={{
-        x: [0, (Math.random() - 0.5) * 40],
-        y: [0, (Math.random() - 0.5) * 40],
-        scale: [0, Math.random() * 0.8 + 0.4],
+        x: [0, (rand() - 0.5) * 40],
+        y: [0, (rand() - 0.5) * 40],
+        scale: [0, rand() * 0.8 + 0.4],
         opacity: [0, 0.8, 0],
       }}
       transition={{
-        duration: Math.random() * 1.5 + 1.5,
+        duration: rand() * 1.5 + 1.5,
         ease: "easeInOut",
         repeat: Infinity,
         repeatType: "reverse",
       }}
       className="absolute w-3 h-3 rounded-full bg-gradient-to-r from-purple-400 to-pink-400"
-      style={{ left: `${Math.random() * 100}%`, top: `${Math.random() * 100}%`, filter: "blur(2px)" }}
+      style={{ left: `${rand() * 100}%`, top: `${rand() * 100}%`, filter: "blur(2px)" }}
     />
   ))
 
@@ -129,15 +131,15 @@ const SearchBar = ({
           key={`click-${i}`}
           initial={{ x: mousePosition.x, y: mousePosition.y, scale: 0, opacity: 1 }}
           animate={{
-            x: mousePosition.x + (Math.random() - 0.5) * 160,
-            y: mousePosition.y + (Math.random() - 0.5) * 160,
-            scale: Math.random() * 0.8 + 0.2,
+            x: mousePosition.x + (rand() - 0.5) * 160,
+            y: mousePosition.y + (rand() - 0.5) * 160,
+            scale: rand() * 0.8 + 0.2,
             opacity: [1, 0],
           }}
-          transition={{ duration: Math.random() * 0.8 + 0.5, ease: "easeOut" }}
+          transition={{ duration: rand() * 0.8 + 0.5, ease: "easeOut" }}
           className="absolute w-3 h-3 rounded-full"
           style={{
-            background: `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 200) + 55}, ${Math.floor(Math.random() * 255)}, 0.8)`,
+            background: `rgba(${Math.floor(rand() * 255)}, ${Math.floor(rand() * 200) + 55}, ${Math.floor(rand() * 255)}, 0.8)`, // NOSONAR
             boxShadow: "0 0 8px rgba(255,255,255,0.8)",
           }}
         />

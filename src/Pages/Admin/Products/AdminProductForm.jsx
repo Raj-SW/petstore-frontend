@@ -30,9 +30,11 @@ const normalizeImage = (img) =>
   typeof img === "object"
     ? { url: img.url, publicId: img.publicId || "" }
     : { url: img, publicId: "" };
+const normalizeImages = (images) =>
+  Array.isArray(images) ? images.map(normalizeImage).filter((img) => img.url && img.publicId) : [];
 
 /* ─── Section card (sortable) ────────────────────────────────────────────── */
-const SectionCard = ({ section, index, total, onUpdate, onRemove }) => {
+const SectionCard = ({ section, index, onUpdate, onRemove }) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
     useSortable({ id: section.id });
 
@@ -184,9 +186,7 @@ const AdminProductForm = () => {
                 label: v.label,
                 price: v.price,
                 quantity: v.quantity,
-                images: Array.isArray(v.images)
-                  ? v.images.map(normalizeImage).filter((img) => img.url && img.publicId)
-                  : [],
+                images: normalizeImages(v.images),
               }))
             : []
         );
@@ -196,9 +196,7 @@ const AdminProductForm = () => {
             : []
         );
 
-        const imgs = Array.isArray(p.images) && p.images.length > 0
-          ? p.images.map(normalizeImage).filter((img) => img.url && img.publicId)
-          : [];
+        const imgs = normalizeImages(p.images);
         setImages(imgs);
       } catch {
         addToast("Failed to load product data.", "error");

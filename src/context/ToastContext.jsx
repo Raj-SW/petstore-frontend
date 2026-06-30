@@ -32,7 +32,7 @@ export const ToastProvider = ({ children }) => {
   // that lists addToast in its deps re-runs — an error toast in such an effect
   // then loops infinitely (see PetCareTipsPage grid fetch).
   const addToast = useCallback((message, type = "success", icon = null) => {
-    const id = Date.now() + Math.random();
+    const id = crypto.randomUUID();
     setToasts((prev) => [...prev, { id, message, type, icon }]);
   }, []);
 
