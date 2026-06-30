@@ -51,7 +51,7 @@ export default function AdminInventory() {
   const [loading, setLoading]     = useState(true);
 
   const [search, setSearch]       = useState("");
-  const [statusFilter, setStatus] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
   const [threshold, setThreshold] = useState(10);
 
   const [restock,  setRestock]    = useState(EMPTY_RESTOCK);
@@ -102,7 +102,7 @@ export default function AdminInventory() {
 
   const handleRestock = async (e) => {
     e.preventDefault();
-    const units = parseInt(restock.units, 10);
+    const units = Number.parseInt(restock.units, 10);
     if (!units || units <= 0) { addToast("Enter a positive number of units", "error"); return; }
     setSubmitting(true);
     try {
@@ -124,8 +124,8 @@ export default function AdminInventory() {
 
   const handleAdjust = async (e) => {
     e.preventDefault();
-    const newQty = parseInt(adjust.newQty, 10);
-    if (newQty == null || isNaN(newQty) || newQty < 0) {
+    const newQty = Number.parseInt(adjust.newQty, 10);
+    if (newQty == null || Number.isNaN(newQty) || newQty < 0) {
       addToast("Enter a valid quantity (≥ 0)", "error"); return;
     }
     if (!adjust.note.trim()) {
@@ -320,7 +320,7 @@ export default function AdminInventory() {
           value={search}
           onChange={e => setSearch(e.target.value)}
         />
-        <Select value={statusFilter} onValueChange={setStatus}>
+        <Select value={statusFilter} onValueChange={setStatusFilter}>
           <SelectTrigger className="w-auto">
             <SelectValue />
           </SelectTrigger>

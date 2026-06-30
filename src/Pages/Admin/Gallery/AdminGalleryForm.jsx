@@ -36,6 +36,11 @@ const toDateInput = (value) => {
   return d.toISOString().slice(0, 10);
 };
 
+const normalizeImage = (img) =>
+  typeof img === "object"
+    ? { url: img.url, publicId: img.publicId || "" }
+    : { url: img, publicId: "" };
+
 const AdminGalleryForm = () => {
   const { id } = useParams();
   const isEdit = Boolean(id);
@@ -80,7 +85,7 @@ const AdminGalleryForm = () => {
                 heading: s.heading || "",
                 body: s.body || "",
                 images: Array.isArray(s.images)
-                  ? s.images.map((img) => (typeof img === "object" ? { url: img.url, publicId: img.publicId || "" } : { url: img, publicId: "" })).filter((x) => x.url && x.publicId)
+                  ? s.images.map(normalizeImage).filter((x) => x.url && x.publicId)
                   : [],
               }))
             : []
@@ -126,7 +131,7 @@ const AdminGalleryForm = () => {
         tags: form.tags.split(",").map((t) => t.trim()).filter(Boolean),
         coverImage: cover[0] ? { url: cover[0].url, publicId: cover[0].publicId } : { url: "", publicId: "" },
         sections: sections
-          .filter((s) => (s.heading && s.heading.trim()) || (s.body && s.body !== "<p></p>") || (s.images && s.images.length))
+          .filter((s) => s.heading?.trim() || (s.body && s.body !== "<p></p>") || s.images?.length)
           .map(({ heading, body, images }, order) => ({
             heading: (heading || "").trim(),
             body: body || "",
@@ -151,8 +156,14 @@ const AdminGalleryForm = () => {
 
   if (loading) return <div className="admin-page"><p>Loading…</p></div>;
 
-  const saveActionLabel = isEdit ? "Save changes" : "Create post";
-  const saveBtnLabel = saving ? "Saving…" : saveActionLabel;
+  let saveBtnLabel;
+  if (saving) {
+    saveBtnLabel = "Saving…";
+  } else if (isEdit) {
+    saveBtnLabel = "Save changes";
+  } else {
+    saveBtnLabel = "Create post";
+  }
 
   return (
     <motion.div

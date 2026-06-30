@@ -5,7 +5,7 @@ const usersApi = {
   getUsers: async (params = {}) => {
     const queryString = new URLSearchParams(params).toString();
     const response = await api.get(
-      `/admin/users${queryString ? `?${queryString}` : ""}`
+      `/admin/users${queryString ? "?" + queryString : ""}`
     );
     return response.data;
   },

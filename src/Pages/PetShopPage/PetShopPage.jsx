@@ -86,16 +86,16 @@ const PetShopPage = () => {
 
     // Surface the chosen category in the toolbar title
     setActiveCat(
-      categories && categories.length
+      categories?.length
         ? categories.map((c) => c.charAt(0).toUpperCase() + c.slice(1)).join(", ")
         : "All"
     );
 
     ProductService.fetchProductsWithFilters(
       {
-        categories: categories && categories.length ? categories : undefined,
-        colors: colors && colors.length ? colors : undefined,
-        genders: genders && genders.length ? genders : undefined,
+        categories: categories?.length ? categories : undefined,
+        colors: colors?.length ? colors : undefined,
+        genders: genders?.length ? genders : undefined,
         ...priceFilters,
       },
       { page: 1, limit: perPage }
@@ -144,8 +144,8 @@ const PetShopPage = () => {
     if (isLoading) {
       return (
         <div className="ps-grid">
-          {Array.from({ length: 8 }).map((_, i) => (
-            <div key={`skeleton-${i}`} className="ps-skeleton" />
+          {[1,2,3,4,5,6,7,8].map((n) => (
+            <div key={`skeleton-${n}`} className="ps-skeleton" />
           ))}
         </div>
       );
@@ -319,7 +319,7 @@ const PetShopPage = () => {
 
                 {buildPaginationItems().map((item, idx) =>
                   item === "ellipsis" ? (
-                    <span key={`ellipsis-${idx}`} className="ps-page-ellipsis">…</span>
+                    <span key={`ellipsis-at-${idx}`} className="ps-page-ellipsis">…</span>
                   ) : (
                     <button
                       key={item}

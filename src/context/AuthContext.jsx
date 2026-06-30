@@ -5,6 +5,7 @@ import {
   useState,
   useEffect,
   useCallback,
+  useMemo,
 } from "react";
 import authApi from "../Services/api/authApi";
 import {
@@ -39,8 +40,8 @@ export const AuthProvider = ({ children }) => {
       localStorage.removeItem("vp_user");
       setUser(null);
     };
-    window.addEventListener("auth:logout", handleLogout);
-    return () => window.removeEventListener("auth:logout", handleLogout);
+    globalThis.addEventListener("auth:logout", handleLogout);
+    return () => globalThis.removeEventListener("auth:logout", handleLogout);
   }, []);
 
   // Check auth status on mount — synchronous, no API call needed
@@ -240,7 +241,7 @@ export const AuthProvider = ({ children }) => {
   const isUserProfessional = useCallback(() => isProfessional(user), [user]);
   const isUserAdmin = useCallback(() => isAdmin(user), [user]);
 
-  const value = {
+  const value = useMemo(() => ({
     // State
     user,
     loading,
@@ -270,7 +271,27 @@ export const AuthProvider = ({ children }) => {
     hasAnyRole: checkAnyRole,
     isProfessional: isUserProfessional,
     isAdmin: isUserAdmin,
-  };
+  }), [
+    user,
+    loading,
+    error,
+    login,
+    signup,
+    logout,
+    checkAuthStatus,
+    updateProfile,
+    updateUser,
+    changePassword,
+    deleteAccount,
+    requestPasswordReset,
+    resetPassword,
+    resendVerificationEmail,
+    checkPermission,
+    checkRole,
+    checkAnyRole,
+    isUserProfessional,
+    isUserAdmin,
+  ]);
 
   return (
     <AuthContext.Provider value={value}>

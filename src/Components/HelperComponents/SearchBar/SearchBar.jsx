@@ -6,6 +6,18 @@ import { Search } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { cn } from "@/lib/utils"
 
+const getBoxShadow = (isClicked, isFocused) => {
+  if (isClicked) return "0 0 40px rgba(139,92,246,0.5), 0 0 15px rgba(236,72,153,0.7) inset";
+  if (isFocused) return "0 15px 35px rgba(0,0,0,0.3)";
+  return "0 0 0 rgba(0,0,0,0)";
+};
+
+const getSearchIconClass = (isAnimating, isFocused) => {
+  if (isAnimating) return "text-purple-400";
+  if (isFocused) return "text-white";
+  return "text-white/70";
+};
+
 const GooeyFilter = () => (
   <svg style={{ position: "absolute", width: 0, height: 0 }} aria-hidden="true">
     <defs>
@@ -132,23 +144,8 @@ const SearchBar = ({
       ))
     : null
 
-  let boxShadowValue;
-  if (isClicked) {
-    boxShadowValue = "0 0 40px rgba(139,92,246,0.5), 0 0 15px rgba(236,72,153,0.7) inset";
-  } else if (isFocused) {
-    boxShadowValue = "0 15px 35px rgba(0,0,0,0.3)";
-  } else {
-    boxShadowValue = "0 0 0 rgba(0,0,0,0)";
-  }
-
-  let searchIconClass;
-  if (isAnimating) {
-    searchIconClass = "text-purple-400";
-  } else if (isFocused) {
-    searchIconClass = "text-white";
-  } else {
-    searchIconClass = "text-white/70";
-  }
+  const boxShadowValue = getBoxShadow(isClicked, isFocused);
+  const searchIconClass = getSearchIconClass(isAnimating, isFocused);
 
   return (
     <div className="relative w-full max-w-lg">

@@ -48,10 +48,10 @@ const ForgotPasswordModal = ({ show, onHide, onLoginClick }) => {
 
       {success ? (
         <>
-          <div className="auth-alert auth-alert--success" role="status">
+          <output className="auth-alert auth-alert--success">
             <FaCheckCircle size={16} style={{ flexShrink: 0 }} />
             <span>Password reset instructions have been sent to your email.</span>
-          </div>
+          </output>
           <button type="button" className="auth-link" onClick={onLoginClick} style={{ alignSelf: "center" }}>
             Back to Login
           </button>

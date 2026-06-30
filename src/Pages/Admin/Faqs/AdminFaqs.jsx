@@ -141,7 +141,7 @@ const AdminFaqs = () => {
                   <input type="number" className="es-input" style={{ width: 90, marginLeft: 8 }} value={form.order} onChange={set("order")} />
                 </label>
                 <label style={{ display: "flex", gap: 6, alignItems: "center" }}>
-                  <input type="checkbox" checked={form.active} onChange={set("active")} />{" "}Active
+                  <input type="checkbox" checked={form.active} onChange={set("active")} /> Active
                 </label>
               </div>
               <div className="admin-modal-actions">

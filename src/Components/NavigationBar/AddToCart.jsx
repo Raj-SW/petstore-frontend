@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import "./AddToCart.css";
 //Component import
 import { FaCartShopping } from "react-icons/fa6";
@@ -30,9 +30,11 @@ const AddToCart = ({ currentItem }) => {
     setShowCartModal(true);
   };
 
+  const iconContextValue = useMemo(() => ({ size: "1.6rem" }), []);
+
   return (
     <>
-      <IconContext.Provider value={{ size: "1.6rem" }}>
+      <IconContext.Provider value={iconContextValue}>
         {/* Set icon size here */}
         <button type="button" className="cartWrapper" aria-label="Open cart" onClick={handleCartClick}>
           <FaCartShopping className="cartIcon" />

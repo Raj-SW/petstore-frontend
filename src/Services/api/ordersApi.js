@@ -11,7 +11,7 @@ const ordersApi = {
   getMyOrders: async (params = {}) => {
     const queryString = new URLSearchParams(params).toString();
     const response = await api.get(
-      `/orders/my-orders${queryString ? `?${queryString}` : ""}`
+      `/orders/my-orders${queryString ? "?" + queryString : ""}`
     );
     return response.data;
   },
@@ -20,7 +20,7 @@ const ordersApi = {
   getAllOrders: async (params = {}) => {
     const queryString = new URLSearchParams(params).toString();
     const response = await api.get(
-      `/orders${queryString ? `?${queryString}` : ""}`
+      `/orders${queryString ? "?" + queryString : ""}`
     );
     return response.data;
   },

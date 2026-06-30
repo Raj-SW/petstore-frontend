@@ -122,11 +122,9 @@ p {
     transform-origin: top center;
     margin-top: 10px;
     width: 100%;
-    /* width: fit-content; */
     background-color: white;
     border-radius: 6px;
     overflow: hidden;
-    /* box-shadow: hsl(206 22% 7% / 35%) 0px 10px 38px -10px, hsl(206 22% 7% / 20%) 0px 10px 20px -15px; */
     height: var(--radix-navigation-menu-viewport-height);
     transition: width, height, 300ms ease;
 }
@@ -240,7 +238,6 @@ p {
     position: absolute;
     display: flex;
     justify-content: center;
-    /* width: 100%; */
     width: fit-content;
     top: 100%;
     left: 0;

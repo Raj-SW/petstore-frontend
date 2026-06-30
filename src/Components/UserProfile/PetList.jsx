@@ -87,4 +87,4 @@ const PetList = ({ pets, onEdit, onDelete, onManagePhotos }) => {
   );
 };
 
-export { PetList as default };
+export default PetList;

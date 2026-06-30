@@ -22,6 +22,17 @@ import CurrencySelector from "../HelperComponents/CurrencySelector/CurrencySelec
 import ServicesDropdown from "./Dropdowns/ServicesDropdown";
 import "./NavigationBar.css";
 
+const SERVICES_PATHS = ["/services", "/appointments", "/import-export-service"];
+
+const isPathActive = (pathname, href) => {
+  if (!href) return false;
+  if (href === "/home") return pathname === "/" || pathname === "/home";
+  return pathname.startsWith(href);
+};
+
+const isServicesPathActive = (pathname) =>
+  SERVICES_PATHS.some((p) => pathname.startsWith(p));
+
 const MOBILE_SERVICE_ITEMS = [
   { label: "All Services", href: "/services", icon: FaThLarge },
   { label: "Find a Professional", href: "/appointments", icon: FaStethoscope },
@@ -94,16 +105,8 @@ const NavigationBar = () => {
     if (e.target.classList.contains("mobile-menu-overlay")) setMobileMenuOpen(false);
   };
 
-  const isActive = (href) => {
-    if (!href) return false;
-    if (href === "/home") return location.pathname === "/" || location.pathname === "/home";
-    return location.pathname.startsWith(href);
-  };
-
-  const isServicesActive = () =>
-    ["/services", "/appointments", "/import-export-service"].some((p) =>
-      location.pathname.startsWith(p)
-    );
+  const isActive = (href) => isPathActive(location.pathname, href);
+  const isServicesActive = () => isServicesPathActive(location.pathname);
 
   const handleNav = (href) => (e) => {
     e.preventDefault();
@@ -280,7 +283,7 @@ const NavigationBar = () => {
         <nav
           className={`mobile-slide-menu${mobileMenuOpen ? " open" : ""}`}
           ref={mobileMenuRef}
-          tabIndex={mobileMenuOpen ? 0 : -1}
+          tabIndex={-1}
           aria-label="Mobile navigation"
         >
           <div className="mobile-menu-header">

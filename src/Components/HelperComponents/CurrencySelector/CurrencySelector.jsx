@@ -39,31 +39,31 @@ const CurrencySelector = () => {
       </button>
 
       {open && (
-        <div className="currency-dropdown" role="listbox" aria-label="Currency options">
+        <ul className="currency-dropdown" aria-label="Currency options">
           {currencies.map(c => (
-            <button
-              key={c.code}
-              role="option"
-              type="button"
-              aria-selected={c.code === selectedCurrency}
-              className={`currency-option ${c.code === selectedCurrency ? 'active' : ''}`}
-              onClick={() => { setCurrency(c.code); setOpen(false); }}
-            >
-              <span className="currency-option-flag-wrap">
-                <img
-                  src={`https://flagcdn.com/w40/${c.country}.png`}
-                  alt={c.name}
-                  className="currency-option-flag-img"
-                />
-              </span>
-              <span className="currency-option-code">{c.code}</span>
-              <span className="currency-option-name">{c.name}</span>
-              {c.code === selectedCurrency && (
-                <span className="currency-option-check">✓</span>
-              )}
-            </button>
+            <li key={c.code}>
+              <button
+                type="button"
+                aria-selected={c.code === selectedCurrency}
+                className={`currency-option ${c.code === selectedCurrency ? 'active' : ''}`}
+                onClick={() => { setCurrency(c.code); setOpen(false); }}
+              >
+                <span className="currency-option-flag-wrap">
+                  <img
+                    src={`https://flagcdn.com/w40/${c.country}.png`}
+                    alt={c.name}
+                    className="currency-option-flag-img"
+                  />
+                </span>
+                <span className="currency-option-code">{c.code}</span>
+                <span className="currency-option-name">{c.name}</span>
+                {c.code === selectedCurrency && (
+                  <span className="currency-option-check">✓</span>
+                )}
+              </button>
+            </li>
           ))}
-        </div>
+        </ul>
       )}
     </div>
   );

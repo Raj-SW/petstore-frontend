@@ -2,9 +2,9 @@ import Autoplay from "embla-carousel-autoplay";
 
 export function prefersReducedMotion() {
   return (
-    typeof window !== "undefined" &&
-    typeof window.matchMedia === "function" &&
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    typeof globalThis.window !== "undefined" &&
+    typeof globalThis.window.matchMedia === "function" &&
+    globalThis.window.matchMedia("(prefers-reduced-motion: reduce)").matches
   );
 }
 

@@ -17,6 +17,11 @@ import { ANIMAL_TYPES, CATEGORIES, DIFFICULTIES, capitalize } from "../../PetCar
 import { coverUrl } from "../../../utils/coverImage";
 import "./AdminTipForm.css";
 
+const normalizeImage = (img) =>
+  typeof img === "object"
+    ? { url: img.url, publicId: img.publicId || "" }
+    : { url: img, publicId: "" };
+
 const EMPTY_FORM = {
   title: "",
   body: "",
@@ -72,7 +77,7 @@ const AdminTipForm = () => {
                 heading: s.heading || "",
                 body: s.body || "",
                 images: Array.isArray(s.images)
-                  ? s.images.map((img) => (typeof img === "object" ? { url: img.url, publicId: img.publicId || "" } : { url: img, publicId: "" })).filter((x) => x.url && x.publicId)
+                  ? s.images.map(normalizeImage).filter((x) => x.url && x.publicId)
                   : [],
               }))
             : []
@@ -116,7 +121,7 @@ const AdminTipForm = () => {
         breed: form.breed.trim(),
         coverImage: cover[0] ? { url: cover[0].url, publicId: cover[0].publicId } : { url: "", publicId: "" },
         sections: sections
-          .filter((s) => (s.heading && s.heading.trim()) || (s.body && s.body !== "<p></p>") || (s.images && s.images.length))
+          .filter((s) => s.heading?.trim() || (s.body && s.body !== "<p></p>") || s.images?.length)
           .map(({ heading, body, images }, order) => ({
             heading: (heading || "").trim(),
             body: body || "",
@@ -141,8 +146,14 @@ const AdminTipForm = () => {
 
   if (loading) return <div className="admin-page"><p>Loading…</p></div>;
 
-  const saveActionLabel = isEdit ? "Save changes" : "Create tip";
-  const saveBtnLabel = saving ? "Saving…" : saveActionLabel;
+  let saveBtnLabel;
+  if (saving) {
+    saveBtnLabel = "Saving…";
+  } else if (isEdit) {
+    saveBtnLabel = "Save changes";
+  } else {
+    saveBtnLabel = "Create tip";
+  }
 
   return (
     <motion.div

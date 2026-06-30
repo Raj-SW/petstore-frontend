@@ -26,6 +26,11 @@ import ImageManager from "../../../Components/Admin/ImageManager/ImageManager";
 import announcementsApi from "../../../Services/api/announcementsApi";
 import "./AdminProductForm.css";
 
+const normalizeImage = (img) =>
+  typeof img === "object"
+    ? { url: img.url, publicId: img.publicId || "" }
+    : { url: img, publicId: "" };
+
 /* ─── Section card (sortable) ────────────────────────────────────────────── */
 const SectionCard = ({ section, index, total, onUpdate, onRemove }) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
@@ -180,9 +185,7 @@ const AdminProductForm = () => {
                 price: v.price,
                 quantity: v.quantity,
                 images: Array.isArray(v.images)
-                  ? v.images
-                      .map((img) => (typeof img === "object" ? { url: img.url, publicId: img.publicId || "" } : { url: img, publicId: "" }))
-                      .filter((img) => img.url && img.publicId)
+                  ? v.images.map(normalizeImage).filter((img) => img.url && img.publicId)
                   : [],
               }))
             : []
@@ -194,14 +197,10 @@ const AdminProductForm = () => {
         );
 
         const imgs = Array.isArray(p.images) && p.images.length > 0
-          ? p.images
-              .map((img) => typeof img === "object"
-                ? { url: img.url, publicId: img.publicId || "" }
-                : { url: img, publicId: "" })
-              .filter((img) => img.url && img.publicId)
+          ? p.images.map(normalizeImage).filter((img) => img.url && img.publicId)
           : [];
         setImages(imgs);
-      } catch (err) {
+      } catch {
         addToast("Failed to load product data.", "error");
       } finally {
         setLoading(false);
@@ -257,6 +256,9 @@ const AdminProductForm = () => {
   const updateVariant = (i, changes) =>
     setVariants((vs) => vs.map((x, j) => (j === i ? { ...x, ...changes } : x)));
 
+  const removeVariant = (i) =>
+    setVariants((vs) => vs.filter((_, j) => j !== i));
+
   // ── Validation ──────────────────────────────────────────────────────────────
   const validate = () => {
     if (!form.name.trim() || form.name.trim().length < 2) {
@@ -271,17 +273,17 @@ const AdminProductForm = () => {
       return false;
     }
     if (variants.length > 0) {
-      const bad = variants.find((v) => !v.label.trim() || v.price === "" || Number(v.price) < 0 || v.quantity === "" || Number(v.quantity) < 0);
+      const bad = variants.some((v) => !v.label.trim() || v.price === "" || Number(v.price) < 0 || v.quantity === "" || Number(v.quantity) < 0);
       if (bad) {
         addToast("Each variant needs a label, price and stock.", "error");
         return false;
       }
     } else {
-      if (form.price === "" || isNaN(Number(form.price)) || Number(form.price) < 0) {
+      if (form.price === "" || Number.isNaN(Number(form.price)) || Number(form.price) < 0) {
         addToast("Please enter a valid price.", "error");
         return false;
       }
-      if (form.quantity === "" || isNaN(Number(form.quantity)) || Number(form.quantity) < 0) {
+      if (form.quantity === "" || Number.isNaN(Number(form.quantity)) || Number(form.quantity) < 0) {
         addToast("Please enter a valid stock quantity.", "error");
         return false;
       }
@@ -554,7 +556,7 @@ const AdminProductForm = () => {
                       <button
                         type="button"
                         className="apf-variant-remove"
-                        onClick={() => setVariants((vs) => vs.filter((_, j) => j !== i))}
+                        onClick={() => removeVariant(i)}
                       >
                         Remove
                       </button>

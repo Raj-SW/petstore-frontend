@@ -40,12 +40,12 @@ apiClient.interceptors.response.use(
 
       if (status === 401) {
         // Token expired or invalid — trigger logout across the app
-        window.dispatchEvent(new CustomEvent("auth:logout"));
+        globalThis.window.dispatchEvent(new CustomEvent("auth:logout"));
       }
 
       if (status === 403 && data?.message?.includes('deactivated')) {
         // Account deactivated by admin — force logout
-        window.dispatchEvent(new CustomEvent("auth:logout"));
+        globalThis.window.dispatchEvent(new CustomEvent("auth:logout"));
       }
 
       // 413 from Vercel/nginx comes back as HTML with no JSON body
@@ -54,27 +54,24 @@ apiClient.interceptors.response.use(
           ? "File too large. Please use images under 4 MB and try again."
           : data?.message || data?.error || "An error occurred";
 
-      return Promise.reject({
-        status,
-        message,
-        data: data,
-        originalError: error,
-      });
+      const apiError = new Error(message);
+      apiError.status = status;
+      apiError.data = data;
+      apiError.originalError = error;
+      return Promise.reject(apiError);
     }
 
     if (error.request) {
-      return Promise.reject({
-        status: 0,
-        message: "Network error - please check your connection",
-        originalError: error,
-      });
+      const networkError = new Error("Network error - please check your connection");
+      networkError.status = 0;
+      networkError.originalError = error;
+      return Promise.reject(networkError);
     }
 
-    return Promise.reject({
-      status: -1,
-      message: error.message || "An unexpected error occurred",
-      originalError: error,
-    });
+    const unexpectedError = new Error(error.message || "An unexpected error occurred");
+    unexpectedError.status = -1;
+    unexpectedError.originalError = error;
+    return Promise.reject(unexpectedError);
   }
 );
 

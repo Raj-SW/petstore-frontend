@@ -30,7 +30,7 @@ const LoginModal = ({
   const validate = () => {
     const e = {};
     if (!formData.email) e.email = "Email is required";
-    else if (!/\S+@\S+\.\S+/.test(formData.email)) e.email = "Enter a valid email";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) e.email = "Enter a valid email";
     if (!formData.password) e.password = "Password is required";
     setErrors(e);
     return Object.keys(e).length === 0;

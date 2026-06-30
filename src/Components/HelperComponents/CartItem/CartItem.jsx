@@ -55,7 +55,7 @@ export const CartItem = ({
             onClick={() => onDecreaseQuantity(item.id)}
             disabled={item.quantity <= 1}
             aria-label="Decrease quantity"
-            whileTap={{ scale: 0.80 }}
+            whileTap={{ scale: 0.8 }}
             transition={btnSpring}
           >
             <FaMinus size={9} />
@@ -65,7 +65,7 @@ export const CartItem = ({
             type="button"
             onClick={() => onIncreaseQuantity(item.id)}
             aria-label="Increase quantity"
-            whileTap={{ scale: 0.80 }}
+            whileTap={{ scale: 0.8 }}
             transition={btnSpring}
           >
             <FaPlus size={9} />

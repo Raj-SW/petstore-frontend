@@ -13,7 +13,7 @@ const contactApi = {
       Object.entries(params).filter(([, v]) => v !== undefined && v !== null && v !== "")
     );
     const qs = new URLSearchParams(clean).toString();
-    const response = await api.get(`/contact/admin/all${qs ? `?${qs}` : ""}`);
+    const response = await api.get(`/contact/admin/all${qs ? "?" + qs : ""}`);
     return response.data;
   },
 

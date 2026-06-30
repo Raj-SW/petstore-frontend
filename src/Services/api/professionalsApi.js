@@ -5,7 +5,7 @@ const professionalsApi = {
   getProfessionals: async (params = {}) => {
     const queryString = new URLSearchParams(params).toString();
     const response = await api.get(
-      `/professionals${queryString ? `?${queryString}` : ""}`
+      `/professionals${queryString ? "?" + queryString : ""}`
     );
     return response.data;
   },
@@ -20,7 +20,7 @@ const professionalsApi = {
   getAvailableProfessionals: async (params = {}) => {
     const queryString = new URLSearchParams(params).toString();
     const response = await api.get(
-      `/professionals/available${queryString ? `?${queryString}` : ""}`
+      `/professionals/available${queryString ? "?" + queryString : ""}`
     );
     return response.data;
   },
@@ -66,7 +66,7 @@ const professionalsApi = {
   getProfessionalAppointments: async (id, params = {}) => {
     const queryString = new URLSearchParams(params).toString();
     const response = await api.get(
-      `/appointments/professional/${id}${queryString ? `?${queryString}` : ""}`
+      `/appointments/professional/${id}${queryString ? "?" + queryString : ""}`
     );
     return response.data;
   },

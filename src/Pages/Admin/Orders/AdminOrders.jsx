@@ -398,7 +398,7 @@ const AdminOrders = () => {
                     <div className="aod-row">
                       <span className="aod-label">Method</span>
                       <span className="aod-value">
-                        {drawerOrder.paymentMethod?.replace(/_/g, " ") || "—"}
+                        {drawerOrder.paymentMethod?.replaceAll("_", " ") || "—"}
                       </span>
                     </div>
                     {drawerOrder.paymentDetails?.transactionId && (

@@ -15,7 +15,7 @@ const feedbackApi = {
       Object.entries(params).filter(([, v]) => v !== undefined && v !== null && v !== "")
     );
     const qs = new URLSearchParams(clean).toString();
-    const response = await api.get(`/feedback${qs ? `?${qs}` : ""}`);
+    const response = await api.get(`/feedback${qs ? "?" + qs : ""}`);
     return response.data;
   },
 

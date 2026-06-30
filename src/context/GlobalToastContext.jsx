@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useMemo, useCallback } from "react";
 import { Toast, ToastContainer } from "react-bootstrap";
 
 const GlobalToastContext = createContext();
@@ -10,14 +10,16 @@ export const GlobalToastProvider = ({ children }) => {
     bg: "warning",
   });
 
-  const showToast = (message, bg = "warning") => {
+  const showToast = useCallback((message, bg = "warning") => {
     setToast({ show: true, message, bg });
-  };
+  }, []);
 
   const handleClose = () => setToast({ ...toast, show: false });
 
+  const contextValue = useMemo(() => ({ showToast }), [showToast]);
+
   return (
-    <GlobalToastContext.Provider value={{ showToast }}>
+    <GlobalToastContext.Provider value={contextValue}>
       {children}
       <ToastContainer position="top-center" className="mt-5">
         <Toast

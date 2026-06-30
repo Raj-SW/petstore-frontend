@@ -25,6 +25,6 @@ export const CATEGORIES = [
 export const DIFFICULTIES = ["beginner", "intermediate", "advanced"];
 
 export const getAnimalTheme = (value) =>
-  ANIMAL_TYPES.find((a) => a.value === value) || ANIMAL_TYPES[ANIMAL_TYPES.length - 1];
+  ANIMAL_TYPES.find((a) => a.value === value) || ANIMAL_TYPES.at(-1);
 
 export const capitalize = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : "");

@@ -1,5 +1,5 @@
 // frontend/src/context/CartContext.jsx
-import { createContext, useContext, useEffect, useCallback, useRef } from "react";
+import { createContext, useContext, useEffect, useCallback, useRef, useMemo } from "react";
 import { CartProvider as RUCProvider, useCart as useRUCCart } from "react-use-cart";
 import { useAuth } from "./AuthContext";
 import cartApi from "../Services/api/cartApi";
@@ -124,13 +124,13 @@ function CartSyncLayer({ children }) {
     [user?.id]
   );
 
-  const value = {
+  const value = useMemo(() => ({
     ...ruc,
     addItem,
     removeItem,
     updateItemQuantity,
     emptyCart,
-  };
+  }), [ruc, addItem, removeItem, updateItemQuantity, emptyCart]);
 
   return <CartSyncCtx.Provider value={value}>{children}</CartSyncCtx.Provider>;
 }

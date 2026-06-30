@@ -16,6 +16,7 @@
 
 .subscribeButton {
     width: fit-content;
+    background-color: var(--primary-blue-color);
 }
 
 .subscribeInputContainer {
@@ -27,10 +28,6 @@
 .emailInput {
     width: 25rem;
     border-width: 0.05rem;
-}
-
-.subscribeButton {
-    background-color: var(--primary-blue-color);
 }
 
 .subscribeButton:hover {
@@ -53,11 +50,6 @@
     font-size: smaller;
 }
 
-.downloadLinksWrapper {}
-
-.qrWrapper {}
-
-
 .storeContainer {
     max-width: 7rem;
 }
@@ -69,8 +61,6 @@
 .storeContainer img {
     max-width: 7rem;
 }
-
-.footerBrandSection {}
 
 .rightsReserved {
     width: fit-content;

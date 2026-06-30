@@ -33,13 +33,18 @@ const SignUpModal = ({
     const e = {};
     if (!formData.name.trim()) e.name = "Name is required";
     if (!formData.email) e.email = "Email is required";
-    else if (!/\S+@\S+\.\S+/.test(formData.email)) e.email = "Enter a valid email";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) e.email = "Enter a valid email";
     if (!formData.phoneNumber) e.phoneNumber = "Phone number is required";
     else if (!/^\+?[\d\s-]{8,}$/.test(formData.phoneNumber)) e.phoneNumber = "Enter a valid phone number";
     if (!formData.address.trim()) e.address = "Address is required";
     if (!formData.password) e.password = "Password is required";
     else if (formData.password.length < 8) e.password = "Password must be at least 8 characters";
-    else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])/.test(formData.password))
+    else if (
+      !/[a-z]/.test(formData.password) ||
+      !/[A-Z]/.test(formData.password) ||
+      !/\d/.test(formData.password) ||
+      !/[!@#$%^&*]/.test(formData.password)
+    )
       e.password = "Must include uppercase, lowercase, number, and special character";
     if (!formData.confirmPassword) e.confirmPassword = "Please confirm your password";
     else if (formData.password !== formData.confirmPassword) e.confirmPassword = "Passwords do not match";
