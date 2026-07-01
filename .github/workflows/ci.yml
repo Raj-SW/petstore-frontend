@@ -15,6 +15,17 @@ jobs:
   unit:
     name: Unit tests
     runs-on: ubuntu-latest
+    # Coverage-instrumented jsdom test runs accumulate memory across test
+    # files within a single process (confirmed: heap use scales with
+    # whatever --max-old-space-size ceiling is set, i.e. genuine growth, not
+    # a fixed-size crash) and eventually hit "JavaScript heap out of memory"
+    # partway through the ~100-file unit suite. Sharding across a matrix
+    # gives each shard a fresh process/heap instead of raising the ceiling
+    # indefinitely, which only delays the same crash.
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -23,27 +34,27 @@ jobs:
           cache: npm
       - run: npm ci
 
-      - name: Run unit tests
+      - name: Run unit tests (shard ${{ matrix.shard }}/3)
         # --coverage emits coverage/coverage-final.json (the mergeable artifact the
         # report job consumes); --reporter=junit sets the test-results reporter.
         run: |
           mkdir -p coverage reports
-          npm run test:unit -- --coverage --reporter=junit --outputFile=reports/junit-unit.xml
+          npm run test:unit -- --coverage --shard=${{ matrix.shard }}/3 --reporter=junit --outputFile=reports/junit-unit-${{ matrix.shard }}.xml
 
-      - name: Upload unit coverage
+      - name: Upload unit coverage (shard ${{ matrix.shard }})
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: cov-unit
+          name: cov-unit-${{ matrix.shard }}
           path: coverage/coverage-final.json
           if-no-files-found: error
 
-      - name: Upload unit junit
+      - name: Upload unit junit (shard ${{ matrix.shard }})
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: junit-unit
-          path: reports/junit-unit.xml
+          name: junit-unit-${{ matrix.shard }}
+          path: reports/junit-unit-${{ matrix.shard }}.xml
           if-no-files-found: error
 
   integration:
@@ -128,11 +139,13 @@ jobs:
         with:
           path: _artifacts
 
-      # Merge the two partial coverage runs into one whole-codebase report.
+      # Merge the sharded unit runs + integration run into one whole-codebase report.
       - name: Merge coverage
         run: |
           mkdir -p _merge .nyc_output coverage
-          cp _artifacts/cov-unit/coverage-final.json _merge/unit.json
+          cp _artifacts/cov-unit-1/coverage-final.json _merge/unit-1.json
+          cp _artifacts/cov-unit-2/coverage-final.json _merge/unit-2.json
+          cp _artifacts/cov-unit-3/coverage-final.json _merge/unit-3.json
           cp _artifacts/cov-integration/coverage-final.json _merge/integration.json
           npx nyc merge _merge .nyc_output/out.json
           npx nyc report --reporter=lcov --reporter=json-summary --reporter=text-summary --report-dir=coverage
@@ -140,7 +153,7 @@ jobs:
       - name: Merge test results
         run: |
           mkdir -p reports
-          npx jrm reports/merged.xml "_artifacts/junit-unit/junit-unit.xml" "_artifacts/junit-integration/junit-integration.xml"
+          npx jrm reports/merged.xml "_artifacts/junit-unit-1/junit-unit-1.xml" "_artifacts/junit-unit-2/junit-unit-2.xml" "_artifacts/junit-unit-3/junit-unit-3.xml" "_artifacts/junit-integration/junit-integration.xml"
 
       - name: PR comment — coverage & tests
         uses: MishaKav/jest-coverage-comment@main

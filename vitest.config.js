@@ -12,6 +12,18 @@ export default defineConfig({
     alias: { "@": path.resolve(__dirname, "./src") },
   },
   test: {
+    // Cap worker forks so coverage-instrumented runs (~100 files, heavy
+    // framer-motion/jsdom mocks per file) don't exhaust CI runner memory.
+    // (Vitest 4 flattened poolOptions.forks.* into top-level options.)
+    pool: "forks",
+    maxWorkers: 2,
+    // jsdom + coverage instrumentation accumulate native heap across test
+    // files within the same forked worker (observed: heap climbs to V8's
+    // ~4GB default old-space ceiling -> "JavaScript heap out of memory" /
+    // "Worker exited unexpectedly", even with maxWorkers capped). Passing
+    // --expose-gc lets Vitest force a GC pass between test files in each
+    // worker, which is the documented mitigation for this class of leak.
+    execArgv: ["--expose-gc"],
     // Shared coverage config — applies across whichever projects run in a
     // single --coverage pass. json (coverage-final) is the mergeable raw data
     // for the CI nyc-merge; json-summary feeds the PR comment; lcov feeds Sonar.
