@@ -21,16 +21,21 @@ jobs:
     # a fixed-size crash) and eventually hit "JavaScript heap out of memory"
     # partway through the ~100-file unit suite. Sharding across a matrix
     # gives each shard a fresh process/heap instead of raising the ceiling
-    # indefinitely, which only delays the same crash. 3 shards still OOM'd
-    # on one shard in CI (GitHub-hosted runners have much less RAM than a
-    # local dev machine, and vitest's shard split is by file count, not by
-    # cost — a shard can land a disproportionate share of the heaviest
-    # admin-form/page test files). Bumped to 6 shards for a smaller,
-    # safer per-shard footprint.
+    # indefinitely, which only delays the same crash.
+    #
+    # 3 shards: 1 of 3 OOM'd in CI (GitHub-hosted runners have much less RAM
+    # than a local dev machine). 6 shards: 1 of 6 STILL OOM'd — vitest's
+    # default shard split is a contiguous slice of the sorted file list, not
+    # cost-aware, and the heaviest admin-form test files (AdminProductForm,
+    # AdminGalleryForm, AdminTipForm, AdminSettings, ...) sort adjacently
+    # under src/Pages/Admin/**, so they keep landing in the same shard.
+    # Bumped to 12 shards: matrix jobs run in parallel, so this costs runner
+    # slots, not wall-clock time, and roughly halves the odds of multiple
+    # heavy files clustering in one shard again.
     strategy:
       fail-fast: false
       matrix:
-        shard: [1, 2, 3, 4, 5, 6]
+        shard: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -39,12 +44,12 @@ jobs:
           cache: npm
       - run: npm ci
 
-      - name: Run unit tests (shard ${{ matrix.shard }}/6)
+      - name: Run unit tests (shard ${{ matrix.shard }}/12)
         # --coverage emits coverage/coverage-final.json (the mergeable artifact the
         # report job consumes); --reporter=junit sets the test-results reporter.
         run: |
           mkdir -p coverage reports
-          npm run test:unit -- --coverage --shard=${{ matrix.shard }}/6 --reporter=junit --outputFile=reports/junit-unit-${{ matrix.shard }}.xml
+          npm run test:unit -- --coverage --shard=${{ matrix.shard }}/12 --reporter=junit --outputFile=reports/junit-unit-${{ matrix.shard }}.xml
 
       - name: Upload unit coverage (shard ${{ matrix.shard }})
         if: always()
@@ -148,7 +153,7 @@ jobs:
       - name: Merge coverage
         run: |
           mkdir -p _merge .nyc_output coverage
-          for n in 1 2 3 4 5 6; do
+          for n in 1 2 3 4 5 6 7 8 9 10 11 12; do
             cp "_artifacts/cov-unit-$n/coverage-final.json" "_merge/unit-$n.json"
           done
           cp _artifacts/cov-integration/coverage-final.json _merge/integration.json
@@ -158,14 +163,12 @@ jobs:
       - name: Merge test results
         run: |
           mkdir -p reports
-          npx jrm reports/merged.xml \
-            "_artifacts/junit-unit-1/junit-unit-1.xml" \
-            "_artifacts/junit-unit-2/junit-unit-2.xml" \
-            "_artifacts/junit-unit-3/junit-unit-3.xml" \
-            "_artifacts/junit-unit-4/junit-unit-4.xml" \
-            "_artifacts/junit-unit-5/junit-unit-5.xml" \
-            "_artifacts/junit-unit-6/junit-unit-6.xml" \
-            "_artifacts/junit-integration/junit-integration.xml"
+          files=()
+          for n in 1 2 3 4 5 6 7 8 9 10 11 12; do
+            files+=("_artifacts/junit-unit-$n/junit-unit-$n.xml")
+          done
+          files+=("_artifacts/junit-integration/junit-integration.xml")
+          npx jrm reports/merged.xml "${files[@]}"
 
       - name: PR comment — coverage & tests
         uses: MishaKav/jest-coverage-comment@main
