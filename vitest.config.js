@@ -12,22 +12,13 @@ export default defineConfig({
     alias: { "@": path.resolve(__dirname, "./src") },
   },
   test: {
-    // Cap worker forks so coverage-instrumented runs (~100 files, heavy
-    // framer-motion/jsdom mocks per file) don't exhaust CI runner memory.
-    // (Vitest 4 flattened poolOptions.forks.* into top-level options.)
-    // maxWorkers:1 keeps each CI shard single-process — GitHub-hosted
-    // runners have far less RAM than local dev machines, and 2 concurrent
-    // forks per shard was still enough to OOM one of 3 shards in CI even
-    // though every shard ran fine locally.
-    pool: "forks",
-    maxWorkers: 1,
-    // jsdom + coverage instrumentation accumulate native heap across test
-    // files within the same forked worker (observed: heap climbs to V8's
-    // ~4GB default old-space ceiling -> "JavaScript heap out of memory" /
-    // "Worker exited unexpectedly", even with maxWorkers capped). Passing
-    // --expose-gc lets Vitest force a GC pass between test files in each
-    // worker, which is the documented mitigation for this class of leak.
-    execArgv: ["--expose-gc"],
+    // Default (5000ms) is tight for userEvent.type()-heavy interaction tests
+    // once vitest's fork pool runs many worker processes truly concurrently
+    // (real CPU contention, not a bug) — observed one such test occasionally
+    // timing out under full-suite parallel load despite passing in ~1.5s
+    // when run in isolation. Some headroom avoids flaky failures without
+    // masking genuine hangs.
+    testTimeout: 10000,
     // Shared coverage config — applies across whichever projects run in a
     // single --coverage pass. json (coverage-final) is the mergeable raw data
     // for the CI nyc-merge; json-summary feeds the PR comment; lcov feeds Sonar.

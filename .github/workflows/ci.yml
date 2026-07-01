@@ -15,27 +15,6 @@ jobs:
   unit:
     name: Unit tests
     runs-on: ubuntu-latest
-    # Coverage-instrumented jsdom test runs accumulate memory across test
-    # files within a single process (confirmed: heap use scales with
-    # whatever --max-old-space-size ceiling is set, i.e. genuine growth, not
-    # a fixed-size crash) and eventually hit "JavaScript heap out of memory"
-    # partway through the ~100-file unit suite. Sharding across a matrix
-    # gives each shard a fresh process/heap instead of raising the ceiling
-    # indefinitely, which only delays the same crash.
-    #
-    # 3 shards: 1 of 3 OOM'd in CI (GitHub-hosted runners have much less RAM
-    # than a local dev machine). 6 shards: 1 of 6 STILL OOM'd — vitest's
-    # default shard split is a contiguous slice of the sorted file list, not
-    # cost-aware, and the heaviest admin-form test files (AdminProductForm,
-    # AdminGalleryForm, AdminTipForm, AdminSettings, ...) sort adjacently
-    # under src/Pages/Admin/**, so they keep landing in the same shard.
-    # Bumped to 12 shards: matrix jobs run in parallel, so this costs runner
-    # slots, not wall-clock time, and roughly halves the odds of multiple
-    # heavy files clustering in one shard again.
-    strategy:
-      fail-fast: false
-      matrix:
-        shard: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -44,27 +23,30 @@ jobs:
           cache: npm
       - run: npm ci
 
-      - name: Run unit tests (shard ${{ matrix.shard }}/12)
+      - name: Run unit tests
         # --coverage emits coverage/coverage-final.json (the mergeable artifact the
         # report job consumes); --reporter=junit sets the test-results reporter.
+        # Vitest parallelizes across its own forked worker pool internally
+        # (pool: "forks" in vitest.config.js, auto-sized to the runner's CPU
+        # count) — no need to shard across separate CI jobs for this.
         run: |
           mkdir -p coverage reports
-          npm run test:unit -- --coverage --shard=${{ matrix.shard }}/12 --reporter=junit --outputFile=reports/junit-unit-${{ matrix.shard }}.xml
+          npm run test:unit -- --coverage --reporter=junit --outputFile=reports/junit-unit.xml
 
-      - name: Upload unit coverage (shard ${{ matrix.shard }})
+      - name: Upload unit coverage
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: cov-unit-${{ matrix.shard }}
+          name: cov-unit
           path: coverage/coverage-final.json
           if-no-files-found: error
 
-      - name: Upload unit junit (shard ${{ matrix.shard }})
+      - name: Upload unit junit
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: junit-unit-${{ matrix.shard }}
-          path: reports/junit-unit-${{ matrix.shard }}.xml
+          name: junit-unit
+          path: reports/junit-unit.xml
           if-no-files-found: error
 
   integration:
@@ -149,13 +131,11 @@ jobs:
         with:
           path: _artifacts
 
-      # Merge the sharded unit runs + integration run into one whole-codebase report.
+      # Merge the two partial coverage runs into one whole-codebase report.
       - name: Merge coverage
         run: |
           mkdir -p _merge .nyc_output coverage
-          for n in 1 2 3 4 5 6 7 8 9 10 11 12; do
-            cp "_artifacts/cov-unit-$n/coverage-final.json" "_merge/unit-$n.json"
-          done
+          cp _artifacts/cov-unit/coverage-final.json _merge/unit.json
           cp _artifacts/cov-integration/coverage-final.json _merge/integration.json
           npx nyc merge _merge .nyc_output/out.json
           npx nyc report --reporter=lcov --reporter=json-summary --reporter=text-summary --report-dir=coverage
@@ -163,12 +143,7 @@ jobs:
       - name: Merge test results
         run: |
           mkdir -p reports
-          files=()
-          for n in 1 2 3 4 5 6 7 8 9 10 11 12; do
-            files+=("_artifacts/junit-unit-$n/junit-unit-$n.xml")
-          done
-          files+=("_artifacts/junit-integration/junit-integration.xml")
-          npx jrm reports/merged.xml "${files[@]}"
+          npx jrm reports/merged.xml "_artifacts/junit-unit/junit-unit.xml" "_artifacts/junit-integration/junit-integration.xml"
 
       - name: PR comment — coverage & tests
         uses: MishaKav/jest-coverage-comment@main
