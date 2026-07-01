@@ -23,7 +23,7 @@ const RoleBasedRoute = ({
 
   // Show loading state
   if (loading) {
-    return fallback || <LoadingSpinner />;
+    return fallback ?? <LoadingSpinner />;
   }
 
   // Check if user is authenticated

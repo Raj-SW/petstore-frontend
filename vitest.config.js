@@ -12,6 +12,13 @@ export default defineConfig({
     alias: { "@": path.resolve(__dirname, "./src") },
   },
   test: {
+    // Default (5000ms) is tight for userEvent.type()-heavy interaction tests
+    // once vitest's fork pool runs many worker processes truly concurrently
+    // (real CPU contention, not a bug) — observed one such test occasionally
+    // timing out under full-suite parallel load despite passing in ~1.5s
+    // when run in isolation. Some headroom avoids flaky failures without
+    // masking genuine hangs.
+    testTimeout: 10000,
     // Shared coverage config — applies across whichever projects run in a
     // single --coverage pass. json (coverage-final) is the mergeable raw data
     // for the CI nyc-merge; json-summary feeds the PR comment; lcov feeds Sonar.

@@ -53,6 +53,8 @@ const TipDetailPage = () => {
     );
   }
 
+  if (!tip) return null;
+
   const theme = getAnimalTheme(tip.animalType);
   const Icon = theme.icon;
 

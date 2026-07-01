@@ -21,7 +21,7 @@ const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 const availabilityRows = (availability) => {
   if (!availability || typeof availability !== "object") return [];
   return DAY_ORDER
-    .filter((d) => availability[d] && availability[d].isAvailable)
+    .filter((d) => availability[d]?.isAvailable)
     .map((d) => ({
       day: cap(d),
       hours: `${availability[d].startTime || "—"} – ${availability[d].endTime || "—"}`,

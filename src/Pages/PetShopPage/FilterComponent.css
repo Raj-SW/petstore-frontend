@@ -98,6 +98,7 @@
   outline: none;
   min-width: 0;
   transition: border-color 0.2s, background 0.2s;
+  -moz-appearance: textfield;
 }
 
 .filter-price-input:focus {
@@ -110,8 +111,6 @@
   -webkit-appearance: none;
   margin: 0;
 }
-
-.filter-price-input { -moz-appearance: textfield; }
 
 .filter-price-divider {
   color: #ccc;

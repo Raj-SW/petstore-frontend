@@ -9,6 +9,8 @@ import {
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/Components/ui/select";
 import "./DataTable.css";
 
+const getNestedValue = (obj, path) => path.split(".").reduce((acc, key) => acc?.[key], obj);
+
 /**
  * Reusable DataTable component for admin pages
  * @param {Object} props
@@ -59,9 +61,7 @@ const DataTable = ({
     return data.filter((item) => {
       return columns.some((column) => {
         if (column.searchable === false) return false;
-        const value = column.accessor
-          .split(".")
-          .reduce((obj, key) => obj?.[key], item);
+        const value = getNestedValue(item, column.accessor);
         return value
           ?.toString()
           .toLowerCase()
@@ -75,12 +75,8 @@ const DataTable = ({
     if (!sortConfig.key) return filteredData;
 
     return [...filteredData].sort((a, b) => {
-      const aValue = sortConfig.key
-        .split(".")
-        .reduce((obj, key) => obj?.[key], a);
-      const bValue = sortConfig.key
-        .split(".")
-        .reduce((obj, key) => obj?.[key], b);
+      const aValue = getNestedValue(a, sortConfig.key);
+      const bValue = getNestedValue(b, sortConfig.key);
 
       if (aValue === null || aValue === undefined) return 1;
       if (bValue === null || bValue === undefined) return -1;
@@ -230,25 +226,34 @@ const DataTable = ({
               )}
               {columns.map((column) => {
                 const isActiveSort = sortConfig.key === column.accessor;
-                const ariaSortValue = isActiveSort
-                  ? (sortConfig.direction === "asc" ? "ascending" : "descending")
-                  : "none";
-                const sortIcon = isActiveSort
-                  ? (sortConfig.direction === "asc" ? <FiChevronUp /> : <FiChevronDown />)
-                  : <span className="sort-placeholder" />;
+                let ariaSortValue = "none";
+                if (isActiveSort) {
+                  ariaSortValue = sortConfig.direction === "asc" ? "ascending" : "descending";
+                }
+                let sortIcon = <span className="sort-placeholder" />;
+                if (isActiveSort) {
+                  sortIcon = sortConfig.direction === "asc" ? <FiChevronUp /> : <FiChevronDown />;
+                }
+                const isSortable = column.sortable !== false;
+                const triggerSort = () => isSortable && handleSort(column.accessor);
                 return (
                   <th
                     key={column.accessor}
-                    onClick={() =>
-                      column.sortable !== false && handleSort(column.accessor)
-                    }
-                    className={column.sortable === false ? "" : "sortable"}
+                    onClick={triggerSort}
+                    onKeyDown={(e) => {
+                      if (isSortable && (e.key === "Enter" || e.key === " ")) {
+                        e.preventDefault();
+                        triggerSort();
+                      }
+                    }}
+                    tabIndex={isSortable ? 0 : undefined}
+                    className={isSortable ? "sortable" : ""}
                     role="columnheader"
                     aria-sort={ariaSortValue}
                   >
                     <div className="th-content">
                       <span>{column.header}</span>
-                      {column.sortable !== false && (
+                      {isSortable && (
                         <span className="sort-icon">
                           {sortIcon}
                         </span>
@@ -266,9 +271,9 @@ const DataTable = ({
                 const rowId = item?.[rowIdKey];
                 const rowSelected = selectable && selectedSet.has(rowId);
                 return (
-                <tr key={item._id || index} role="row" className={rowSelected ? "row-selected" : ""}>
+                <tr key={item._id || index} className={rowSelected ? "row-selected" : ""}>
                   {selectable && (
-                    <td className="select-cell" role="cell">
+                    <td className="select-cell">
                       <input
                         type="checkbox"
                         checked={rowSelected}
@@ -279,12 +284,12 @@ const DataTable = ({
                     </td>
                   )}
                   {columns.map((column) => (
-                    <td key={column.accessor} role="cell">
+                    <td key={column.accessor}>
                       {renderCellValue(item, column)}
                     </td>
                   ))}
                   {showActions && (
-                    <td className="actions-cell" role="cell">
+                    <td className="actions-cell">
                       <div className="action-buttons">
                         {customActions ? (
                           customActions(item)

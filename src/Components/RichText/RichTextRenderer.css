@@ -1,7 +1,7 @@
 /* ─── Base wrapper ─────────────────────────────────────────────────────── */
 .rte-renderer {
   color: var(--color-text-default, #1a2e1a);
-  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .rte-renderer-empty {

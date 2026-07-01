@@ -26,6 +26,9 @@ jobs:
       - name: Run unit tests
         # --coverage emits coverage/coverage-final.json (the mergeable artifact the
         # report job consumes); --reporter=junit sets the test-results reporter.
+        # Vitest parallelizes across its own forked worker pool internally
+        # (pool: "forks" in vitest.config.js, auto-sized to the runner's CPU
+        # count) — no need to shard across separate CI jobs for this.
         run: |
           mkdir -p coverage reports
           npm run test:unit -- --coverage --reporter=junit --outputFile=reports/junit-unit.xml

@@ -80,7 +80,7 @@ const appointmentsApi = {
   getAllAppointments: async (params = {}) => {
     const queryString = new URLSearchParams(params).toString();
     const response = await api.get(
-      `/admin/appointments${queryString ? `?${queryString}` : ""}`
+      `/admin/appointments${queryString ? "?" + queryString : ""}`
     );
     return response.data;
   },
@@ -89,7 +89,7 @@ const appointmentsApi = {
   getAppointmentStats: async (params = {}) => {
     const queryString = new URLSearchParams(params).toString();
     const response = await api.get(
-      `/appointments/stats${queryString ? `?${queryString}` : ""}`
+      `/appointments/stats${queryString ? "?" + queryString : ""}`
     );
     return response.data;
   },

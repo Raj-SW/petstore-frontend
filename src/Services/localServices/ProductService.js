@@ -367,7 +367,10 @@ class ProductService {
       queryParams.set("sort", params.sort || "-createdAt");
 
       const appendArray = (key, val) => {
-        const arr = Array.isArray(val) ? val : val == null ? [] : [val];
+        let arr;
+        if (Array.isArray(val)) arr = val;
+        else if (val == null) arr = [];
+        else arr = [val];
         arr
           .filter((v) => v !== undefined && v !== null && v !== "")
           .forEach((v) => queryParams.append(key, v));

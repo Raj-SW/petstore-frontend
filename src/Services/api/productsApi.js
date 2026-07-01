@@ -5,7 +5,7 @@ const productsApi = {
   getProducts: async (params = {}) => {
     const queryString = new URLSearchParams(params).toString();
     const response = await api.get(
-      `/products${queryString ? `?${queryString}` : ""}`
+      `/products${queryString ? "?" + queryString : ""}`
     );
     return response.data;
   },

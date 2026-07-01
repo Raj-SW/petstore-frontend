@@ -96,13 +96,14 @@ const AdminAnnouncements = () => {
   const toggleProduct = (id) =>
     setSelectedIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
 
-  const targetReady = (() => {
+  const getTargetReady = () => {
     if (group === "product") return selectedIds.length > 0;
     if (group === "content") return Boolean(contentId);
-    if (group === "event") return event.title.trim() && event.startsAt;
-    if (group === "general") return message.trim() || cta.url.trim();
+    if (group === "event") return Boolean(event.title.trim() && event.startsAt);
+    if (group === "general") return Boolean(message.trim() || cta.url.trim());
     return false;
-  })();
+  };
+  const targetReady = getTargetReady();
 
   const canSend = subject.trim().length >= 2 && targetReady && !sending;
 

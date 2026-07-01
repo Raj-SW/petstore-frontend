@@ -140,8 +140,6 @@
     background-color: var(--white-color);
 }
 
-.search-bar:focus-within {}
-
 /* Appointment Card */
 .appointment-card {
     background: var(--white-color);
@@ -220,8 +218,6 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    .calendar-container {}
-
     .fc .fc-toolbar {
         flex-direction: column;
         gap: 1rem;

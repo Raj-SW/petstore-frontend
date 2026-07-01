@@ -37,9 +37,8 @@ const PetForm = ({ show, onHide, onSubmit, initialData, isLoading }) => {
     onSubmit({ ...formData, age: Number(formData.age) });
   };
 
-  const petFormBtnLabel = isLoading
-    ? <><span className="pm-spinner" /> Saving…</>
-    : (initialData ? "Save Changes" : "Add Pet");
+  const petBtnText = initialData ? "Save Changes" : "Add Pet";
+  const petFormBtnLabel = isLoading ? <><span className="pm-spinner" /> Saving…</> : petBtnText;
 
   return createPortal(
     <AnimatePresence>

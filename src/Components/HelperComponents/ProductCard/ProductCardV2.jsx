@@ -107,7 +107,7 @@ const ProductCardV2 = ({
               </button>
             ) : (
               <>
-                <div className="pcv2-qty" role="presentation">
+                <div className="pcv2-qty">
                   <button
                     type="button"
                     className="pcv2-qty-btn"

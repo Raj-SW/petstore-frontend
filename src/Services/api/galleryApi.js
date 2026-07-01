@@ -7,7 +7,7 @@ const galleryApi = {
       Object.entries(params).filter(([, v]) => v !== undefined && v !== null && v !== "")
     );
     const qs = new URLSearchParams(clean).toString();
-    const response = await api.get(`/gallery${qs ? `?${qs}` : ""}`);
+    const response = await api.get(`/gallery${qs ? "?" + qs : ""}`);
     return response.data;
   },
 

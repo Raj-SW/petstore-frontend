@@ -33,7 +33,7 @@ export const validationRules = {
   },
 
   phoneNumber: (value) => {
-    const phoneRegex = /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/;
+    const phoneRegex = /^\+?\(?\d{3}\)?[-\s.]?\d{3}[-\s.]?\d{4,6}$/;
     return !value || phoneRegex.test(value);
   },
 

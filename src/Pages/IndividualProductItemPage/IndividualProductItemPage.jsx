@@ -24,6 +24,18 @@ import productsApi from "@/Services/api/productsApi";
 import { useToast } from "@/context/ToastContext";
 import { useAuth } from "@/context/AuthContext";
 
+const toImageUrl = (img) => (typeof img === "object" ? img.url : img);
+
+const resolveProductImages = (product, selectedVariant) => {
+  const productImages = product.images?.length
+    ? product.images.map(toImageUrl).filter(Boolean)
+    : [product.imageUrl].filter(Boolean);
+  const variantImages = Array.isArray(selectedVariant?.images)
+    ? selectedVariant.images.map(toImageUrl).filter(Boolean)
+    : [];
+  return variantImages.length ? variantImages : productImages;
+};
+
 /* ─── Product Section Tabs ───────────────────────────────────────────────── */
 const ProductSectionTabs = ({ sections = [] }) => {
   const validSections = sections.filter((s) => s.title && s.body);
@@ -335,7 +347,7 @@ const IndividualProductItemPage = () => {
           variantId,
           variantLabel,
           name: product.name?.trim() || product.title?.trim() || "Untitled Product",
-          price: parseFloat(unitPrice) || 0,
+          price: Number.parseFloat(unitPrice) || 0,
           image: product.images?.[0]?.url || product.imageUrl || "",
         },
         quantity
@@ -428,14 +440,8 @@ const IndividualProductItemPage = () => {
   }
 
   const productName = product.title || product.name || "Product";
-  const productImages = product.images?.length
-    ? product.images.map(img => (typeof img === "object" ? img.url : img)).filter(Boolean)
-    : [product.imageUrl].filter(Boolean);
   // When a variant with its own images is selected, show those; else the product gallery.
-  const variantImages = Array.isArray(selectedVariant?.images)
-    ? selectedVariant.images.map(img => (typeof img === "object" ? img.url : img)).filter(Boolean)
-    : [];
-  const images = variantImages.length ? variantImages : productImages;
+  const images = resolveProductImages(product, selectedVariant);
   const stockQty = product.stock ?? product.quantity ?? null;
   const category = product.category || product.categories?.[0] || null;
 
@@ -471,13 +477,11 @@ const IndividualProductItemPage = () => {
         >
           {/* Left — gallery */}
           <div className="ip-gallery">
-            <div
+            <button
+              type="button"
               className="ip-gallery-main"
               onClick={() => setLightboxOpen(true)}
-              role="button"
-              tabIndex={0}
               aria-label="Expand image"
-              onKeyDown={(e) => { if (e.key === "Enter") setLightboxOpen(true); }}
             >
               <AnimatePresence mode="wait">
                 <motion.img
@@ -494,7 +498,7 @@ const IndividualProductItemPage = () => {
               <span className="ip-gallery-zoom-hint" aria-hidden="true">
                 <FiSearch size={16} />
               </span>
-            </div>
+            </button>
 
             {images.length > 1 && (
               <div className="ip-gallery-thumbs">
@@ -524,9 +528,9 @@ const IndividualProductItemPage = () => {
             <div className="ip-share">
               <FiShare2 size={15} />
               <span>Share:</span>
-              <a href="#" aria-label="Facebook"><FaFacebook /></a>
-              <a href="#" aria-label="Twitter"><FaTwitter /></a>
-              <a href="#" aria-label="Instagram"><FaInstagram /></a>
+              <button type="button" aria-label="Facebook"><FaFacebook /></button>
+              <button type="button" aria-label="Twitter"><FaTwitter /></button>
+              <button type="button" aria-label="Instagram"><FaInstagram /></button>
             </div>
           </div>
 
@@ -759,7 +763,7 @@ const IndividualProductItemPage = () => {
               onClick={(e) => e.stopPropagation()}
             />
             {images.length > 1 && (
-              <div className="ip-lightbox-thumbs" role="presentation">
+              <div className="ip-lightbox-thumbs">
                 {images.map((img, i) => (
                   <button
                     key={img || i}

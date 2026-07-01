@@ -4,9 +4,9 @@ const LoadingSpinner = () => {
   return (
     <div className="loading-spinner-container">
       <div className="loading-spinner">
-        <div className="spinner-border text-primary" role="status">
+        <output className="spinner-border text-primary">
           <span className="visually-hidden">Loading...</span>
-        </div>
+        </output>
       </div>
     </div>
   );

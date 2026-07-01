@@ -58,12 +58,11 @@ const FeaturedProductSection = () => {
 
   useEffect(() => {
     let resolved = 0;
+    const setTabProducts = (key) => (data) => setProducts((prev) => ({ ...prev, [key]: data }));
     TABS.forEach(({ key }) => {
       productsApi
         .getFeaturedByCategory(key, FEATURED_LIMIT)
-        .then((data) => {
-          setProducts((prev) => ({ ...prev, [key]: data }));
-        })
+        .then(setTabProducts(key))
         .catch((err) => console.error(`Error fetching featured ${key}:`, err))
         .finally(() => {
           resolved++;
@@ -78,8 +77,8 @@ const FeaturedProductSection = () => {
   if (loading) {
     carouselContent = (
       <div className="fp-skeleton-row">
-        {Array(3).fill(null).map((_, i) => (
-          <div key={`skeleton-${i}`} className="fp-skeleton" />
+        {Array.from({ length: 3 }, (_, i) => (
+          <div key={`fp-skel-${i}`} className="fp-skeleton" />
         ))}
       </div>
     );

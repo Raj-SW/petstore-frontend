@@ -40,6 +40,8 @@ const ExportImportForm = () => {
 
   const handleNext = () => setStep((s) => s + 1);
   const handlePrev = () => setStep((s) => s - 1);
+  const removeUploadDoc = (idx) =>
+    setForm((f) => ({ ...f, uploadDocs: f.uploadDocs.filter((_, i) => i !== idx) }));
   const handleSubmit = (e) => {
     e.preventDefault();
     if(user==null){
@@ -857,14 +859,7 @@ const ExportImportForm = () => {
                                       e.currentTarget.style.boxShadow =
                                         "0 2px 4px rgba(0,0,0,0.1)";
                                     }}
-                                    onClick={() => {
-                                      setForm((f) => ({
-                                        ...f,
-                                        uploadDocs: f.uploadDocs.filter(
-                                          (_, i) => i !== idx
-                                        ),
-                                      }));
-                                    }}
+                                    onClick={() => removeUploadDoc(idx)}
                                   >
                                     Remove
                                   </Button>

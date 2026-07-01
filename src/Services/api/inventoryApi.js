@@ -9,7 +9,7 @@ const inventoryApi = {
         Object.entries(params).filter(([, v]) => v != null && v !== "")
       )
     ).toString();
-    const response = await api.get(`/admin/inventory${qs ? `?${qs}` : ""}`);
+    const response = await api.get(`/admin/inventory${qs ? "?" + qs : ""}`);
     return response.data;
   },
 
@@ -25,7 +25,7 @@ const inventoryApi = {
   getMovements: async (productId, params = {}) => {
     const qs = new URLSearchParams(params).toString();
     const response = await api.get(
-      `/admin/inventory/${productId}/movements${qs ? `?${qs}` : ""}`
+      `/admin/inventory/${productId}/movements${qs ? "?" + qs : ""}`
     );
     return response.data;
   },

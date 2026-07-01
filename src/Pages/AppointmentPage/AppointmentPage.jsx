@@ -17,7 +17,7 @@ const TABS = [
   { key: "petTaxi",       label: "Pet Taxi",      icon: FaTaxi },
 ];
 
-const VALID_TABS = TABS.map((t) => t.key);
+const VALID_TABS = new Set(TABS.map((t) => t.key));
 
 const AppointmentPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -29,7 +29,7 @@ const AppointmentPage = () => {
   // Keep the active tab in sync with the URL (?tab=)
   useEffect(() => {
     const urlTab = searchParams.get("tab");
-    if (urlTab && urlTab !== activeTab && VALID_TABS.includes(urlTab)) {
+    if (urlTab && urlTab !== activeTab && VALID_TABS.has(urlTab)) {
       setActiveTab(urlTab);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -71,7 +71,7 @@ const AppointmentPage = () => {
             <p className="ap-sidebar-subtitle">Browse our certified pet-care team</p>
           </div>
 
-          <nav className="ap-tabs" role="tablist">
+          <div className="ap-tabs" role="tablist">
             {visibleTabs.map(({ key, label, icon: Icon }) => (
               <button
                 key={key}
@@ -85,7 +85,7 @@ const AppointmentPage = () => {
                 <span>{label}</span>
               </button>
             ))}
-          </nav>
+          </div>
 
           <div className="ap-user-card">
             <div className="ap-avatar">

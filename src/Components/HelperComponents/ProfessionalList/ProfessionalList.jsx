@@ -147,8 +147,8 @@ const ProfessionalList = ({
           bValue = b.name?.toLowerCase() || "";
           break;
         case "experience":
-          aValue = parseInt(a.experience) || 0;
-          bValue = parseInt(b.experience) || 0;
+          aValue = Number.parseInt(a.experience) || 0;
+          bValue = Number.parseInt(b.experience) || 0;
           break;
         default:
           return 0;

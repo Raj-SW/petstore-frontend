@@ -40,7 +40,7 @@ const PromoCard = ({ adverts }) => {
       className="ct-promo"
       style={ad?.image ? { backgroundImage: `url(${ad.image})` } : undefined}
     >
-      <span className="ct-promo-pill">{ad?.title?.match(/\d+%/) ? ad.title : "Get 50% Discount"}</span>
+      <span className="ct-promo-pill">{ad?.title?.match(/\d+%/u) ? ad.title : "Get 50% Discount"}</span>
       <div className="ct-promo-overlay">
         <h3>{ad?.title || "Celebrate the Joy of Christmas with Your Pets!"}</h3>
         <p>This holiday season, let's make it special for every member of the family — including your furry friends!</p>

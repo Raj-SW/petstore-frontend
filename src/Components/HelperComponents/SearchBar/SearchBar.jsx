@@ -6,6 +6,18 @@ import { Search } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { cn } from "@/lib/utils"
 
+const getBoxShadow = (isClicked, isFocused) => {
+  if (isClicked) return "0 0 40px rgba(139,92,246,0.5), 0 0 15px rgba(236,72,153,0.7) inset";
+  if (isFocused) return "0 15px 35px rgba(0,0,0,0.3)";
+  return "0 0 0 rgba(0,0,0,0)";
+};
+
+const getSearchIconClass = (isAnimating, isFocused) => {
+  if (isAnimating) return "text-purple-400";
+  if (isFocused) return "text-white";
+  return "text-white/70";
+};
+
 const GooeyFilter = () => (
   <svg style={{ position: "absolute", width: 0, height: 0 }} aria-hidden="true">
     <defs>
@@ -90,24 +102,26 @@ const SearchBar = ({
     },
   }
 
+  // NOSONAR — Math.random() is intentional here: decorative animation particles only, no security context
+  const rand = () => Math.random(); // NOSONAR
   const particles = Array.from({ length: isFocused ? 18 : 0 }, (_, i) => (
     <motion.div
       key={i}
       initial={{ scale: 0 }}
       animate={{
-        x: [0, (Math.random() - 0.5) * 40],
-        y: [0, (Math.random() - 0.5) * 40],
-        scale: [0, Math.random() * 0.8 + 0.4],
+        x: [0, (rand() - 0.5) * 40],
+        y: [0, (rand() - 0.5) * 40],
+        scale: [0, rand() * 0.8 + 0.4],
         opacity: [0, 0.8, 0],
       }}
       transition={{
-        duration: Math.random() * 1.5 + 1.5,
+        duration: rand() * 1.5 + 1.5,
         ease: "easeInOut",
         repeat: Infinity,
         repeatType: "reverse",
       }}
       className="absolute w-3 h-3 rounded-full bg-gradient-to-r from-purple-400 to-pink-400"
-      style={{ left: `${Math.random() * 100}%`, top: `${Math.random() * 100}%`, filter: "blur(2px)" }}
+      style={{ left: `${rand() * 100}%`, top: `${rand() * 100}%`, filter: "blur(2px)" }}
     />
   ))
 
@@ -117,38 +131,23 @@ const SearchBar = ({
           key={`click-${i}`}
           initial={{ x: mousePosition.x, y: mousePosition.y, scale: 0, opacity: 1 }}
           animate={{
-            x: mousePosition.x + (Math.random() - 0.5) * 160,
-            y: mousePosition.y + (Math.random() - 0.5) * 160,
-            scale: Math.random() * 0.8 + 0.2,
+            x: mousePosition.x + (rand() - 0.5) * 160,
+            y: mousePosition.y + (rand() - 0.5) * 160,
+            scale: rand() * 0.8 + 0.2,
             opacity: [1, 0],
           }}
-          transition={{ duration: Math.random() * 0.8 + 0.5, ease: "easeOut" }}
+          transition={{ duration: rand() * 0.8 + 0.5, ease: "easeOut" }}
           className="absolute w-3 h-3 rounded-full"
           style={{
-            background: `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 200) + 55}, ${Math.floor(Math.random() * 255)}, 0.8)`,
+            background: `rgba(${Math.floor(rand() * 255)}, ${Math.floor(rand() * 200) + 55}, ${Math.floor(rand() * 255)}, 0.8)`, // NOSONAR
             boxShadow: "0 0 8px rgba(255,255,255,0.8)",
           }}
         />
       ))
     : null
 
-  let boxShadowValue;
-  if (isClicked) {
-    boxShadowValue = "0 0 40px rgba(139,92,246,0.5), 0 0 15px rgba(236,72,153,0.7) inset";
-  } else if (isFocused) {
-    boxShadowValue = "0 15px 35px rgba(0,0,0,0.3)";
-  } else {
-    boxShadowValue = "0 0 0 rgba(0,0,0,0)";
-  }
-
-  let searchIconClass;
-  if (isAnimating) {
-    searchIconClass = "text-purple-400";
-  } else if (isFocused) {
-    searchIconClass = "text-white";
-  } else {
-    searchIconClass = "text-white/70";
-  }
+  const boxShadowValue = getBoxShadow(isClicked, isFocused);
+  const searchIconClass = getSearchIconClass(isAnimating, isFocused);
 
   return (
     <div className="relative w-full max-w-lg">

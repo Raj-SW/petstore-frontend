@@ -1,4 +1,3 @@
-import "./CartModalComponent.css";
 const CartModalComponent = () => {
   return <div>CartModalComponent</div>;
 };

@@ -32,7 +32,7 @@ const AppointmentCard = ({
 
     try {
       const parsed = parseISO(dateTime);
-      if (isNaN(parsed.getTime())) {
+      if (Number.isNaN(parsed.getTime())) {
         console.log("Invalid dateTime format:", dateTime);
         return "Invalid date";
       }

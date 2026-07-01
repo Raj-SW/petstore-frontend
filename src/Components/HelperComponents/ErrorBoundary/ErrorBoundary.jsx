@@ -27,7 +27,7 @@ class ErrorBoundary extends Component {
           <h2>Something went wrong.</h2>
           <button
             className="btn btn-primary mt-3"
-            onClick={() => window.location.reload()}
+            onClick={() => globalThis.window.location.reload()}
           >
             Reload Page
           </button>

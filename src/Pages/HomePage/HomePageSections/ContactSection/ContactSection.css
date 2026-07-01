@@ -108,6 +108,10 @@
   cursor: pointer;
   margin-top: 0.25rem;
   transition: opacity 0.2s, transform 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
 }
 
 .cs-submit:hover {
@@ -123,13 +127,6 @@
   opacity: 0.75;
   cursor: not-allowed;
   transform: none;
-}
-
-.cs-submit {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
 }
 
 .cs-spinner {

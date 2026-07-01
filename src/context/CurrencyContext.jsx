@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 import { fetchRates, detectCurrency, detectCurrencyByIP, SUPPORTED_CURRENCIES } from '../Services/api/exchangeRatesService';
 
 const CurrencyContext = createContext(null);
@@ -37,7 +37,7 @@ export const CurrencyProvider = ({ children }) => {
 
   // Convert a MUR amount to the selected currency
   const convert = useCallback((murAmount) => {
-    if (murAmount === null || murAmount === undefined || isNaN(murAmount)) return 0;
+    if (murAmount === null || murAmount === undefined || Number.isNaN(murAmount)) return 0;
     const rate = rates[selectedCurrency] ?? 1;
     return murAmount * rate;
   }, [rates, selectedCurrency]);
@@ -57,16 +57,18 @@ export const CurrencyProvider = ({ children }) => {
     return `${symbol} ${formatted}`;
   }, [convert, selectedCurrency]);
 
+  const contextValue = useMemo(() => ({
+    selectedCurrency,
+    setCurrency,
+    rates,
+    loading,
+    convert,
+    formatPrice,
+    currencies: SUPPORTED_CURRENCIES,
+  }), [selectedCurrency, setCurrency, rates, loading, convert, formatPrice]);
+
   return (
-    <CurrencyContext.Provider value={{
-      selectedCurrency,
-      setCurrency,
-      rates,
-      loading,
-      convert,
-      formatPrice,
-      currencies: SUPPORTED_CURRENCIES,
-    }}>
+    <CurrencyContext.Provider value={contextValue}>
       {children}
     </CurrencyContext.Provider>
   );

@@ -41,7 +41,7 @@ const Thumb = ({ img, index, onRemove, onMakeCover }) => {
   };
   return (
     <div ref={setNodeRef} style={style} className={`im-thumb${index === 0 ? " im-thumb--cover" : ""}`}>
-      <img src={img.url} alt={`Image ${index + 1}`} className="im-thumb-img" />
+      <img src={img.url} alt={`Uploaded thumbnail ${index + 1}`} className="im-thumb-img" />
 
       <button type="button" className="im-thumb-drag" {...attributes} {...listeners} title="Drag to reorder" aria-label="Drag to reorder">
         <MdDragIndicator />
@@ -60,6 +60,16 @@ const Thumb = ({ img, index, onRemove, onMakeCover }) => {
       </button>
     </div>
   );
+};
+
+const filterValidFiles = (files, fail) => {
+  const valid = [];
+  for (const f of files) {
+    if (!f.type.startsWith("image/")) { fail(`"${f.name}" is not an image.`); continue; }
+    if (f.size > MAX_BYTES) { fail(`"${f.name}" exceeds the ${MAX_MB} MB limit.`); continue; }
+    valid.push(f);
+  }
+  return valid;
 };
 
 const ImageManager = ({ value = [], onChange, uploadUrl, max = 10, onError, label }) => {
@@ -81,12 +91,7 @@ const ImageManager = ({ value = [], onChange, uploadUrl, max = 10, onError, labe
     if (room <= 0) { fail(`You can attach at most ${max} image${max === 1 ? "" : "s"}.`); return; }
     const toUpload = files.slice(0, room);
 
-    const valid = [];
-    for (const f of toUpload) {
-      if (!f.type.startsWith("image/")) { fail(`"${f.name}" is not an image.`); continue; }
-      if (f.size > MAX_BYTES) { fail(`"${f.name}" exceeds the ${MAX_MB} MB limit.`); continue; }
-      valid.push(f);
-    }
+    const valid = filterValidFiles(toUpload, fail);
     if (!valid.length) return;
 
     setUploading(true);
@@ -137,13 +142,11 @@ const ImageManager = ({ value = [], onChange, uploadUrl, max = 10, onError, labe
       )}
 
       {!full && (
-        <div
+        <button
+          type="button"
           className={`im-dropzone${uploading ? " im-dropzone--busy" : ""}`}
-          role="button"
-          tabIndex={0}
           aria-label="Upload images"
           onClick={() => !uploading && fileRef.current?.click()}
-          onKeyDown={(e) => { if ((e.key === "Enter" || e.key === " ") && !uploading) { e.preventDefault(); fileRef.current?.click(); } }}
           onDragOver={(e) => e.preventDefault()}
           onDrop={(e) => { e.preventDefault(); if (!uploading) handleFiles(e.dataTransfer.files); }}
         >
@@ -154,7 +157,7 @@ const ImageManager = ({ value = [], onChange, uploadUrl, max = 10, onError, labe
           <p className="im-dropzone-hint">
             PNG, JPG, WEBP · max {MAX_MB} MB · {value.length}/{max}
           </p>
-        </div>
+        </button>
       )}
 
       <input

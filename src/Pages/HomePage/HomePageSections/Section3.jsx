@@ -6,23 +6,28 @@ import member1Img from "../../assets/MainPageTeamSectioningAssets/teammember1.pn
 import member2Img from "../../assets/MainPageTeamSectioningAssets/teammember2.png";
 import member3Img from "../../assets/MainPageTeamSectioningAssets/teammember3.png";
 import member4Img from "../../assets/MainPageTeamSectioningAssets/teammember4.png";
-import { FaTwitter } from "react-icons/fa";
-import { FaLinkedin } from "react-icons/fa";
+import { FaTwitter, FaLinkedin } from "react-icons/fa";
 import { IoLogoWhatsapp } from "react-icons/io";
 import { IconContext } from "react-icons";
+
+const HEADER_ICON_CTX = {
+  color: "black",
+  size: "2.2rem",
+  style: { padding: "0.1rem" },
+};
+
+const CARD_ICON_CTX = {
+  color: "black",
+  size: "1.5rem",
+  style: { padding: "0.1rem" },
+};
 
 const Section3 = () => {
   return (
     <Container className=" ">
       <Row>
         <div className="d-flex teamHeaderWrapper">
-          <IconContext.Provider
-            value={{
-              color: "black",
-              size: "2.2rem",
-              style: { padding: "0.1rem" },
-            }}
-          >
+          <IconContext.Provider value={HEADER_ICON_CTX}>
             <LiaPawSolid />
           </IconContext.Provider>
           <h3>Our Team</h3>
@@ -36,13 +41,7 @@ const Section3 = () => {
             <Card.Text>Specilist dns tel zafr</Card.Text>
           </Card.Body>
           <Card.Footer className="p-2">
-            <IconContext.Provider
-              value={{
-                color: "black",
-                size: "1.5rem",
-                style: { padding: "0.1rem" },
-              }}
-            >
+            <IconContext.Provider value={CARD_ICON_CTX}>
               <FaTwitter />
               <FaLinkedin />
               <IoLogoWhatsapp />
@@ -56,13 +55,7 @@ const Section3 = () => {
             <Card.Text>Specilist dns tel zafr</Card.Text>
           </Card.Body>
           <Card.Footer className="p-2">
-            <IconContext.Provider
-              value={{
-                color: "black",
-                size: "1.5rem",
-                style: { padding: "0.1rem" },
-              }}
-            >
+            <IconContext.Provider value={CARD_ICON_CTX}>
               <FaTwitter />
               <FaLinkedin />
               <IoLogoWhatsapp />
@@ -76,13 +69,7 @@ const Section3 = () => {
             <Card.Text>Specilist dns tel zafr</Card.Text>
           </Card.Body>
           <Card.Footer className="p-2">
-            <IconContext.Provider
-              value={{
-                color: "black",
-                size: "1.5rem",
-                style: { padding: "0.1rem" },
-              }}
-            >
+            <IconContext.Provider value={CARD_ICON_CTX}>
               <FaTwitter />
               <FaLinkedin />
               <IoLogoWhatsapp />
@@ -96,13 +83,7 @@ const Section3 = () => {
             <Card.Text>Specilist dns tel zafr</Card.Text>
           </Card.Body>
           <Card.Footer className="p-2">
-            <IconContext.Provider
-              value={{
-                color: "black",
-                size: "1.5rem",
-                style: { padding: "0.1rem" },
-              }}
-            >
+            <IconContext.Provider value={CARD_ICON_CTX}>
               <FaTwitter />
               <FaLinkedin />
               <IoLogoWhatsapp />

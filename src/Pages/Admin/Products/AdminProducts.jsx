@@ -24,6 +24,19 @@ const resolveQty = (p) => {
   return 0;
 };
 
+const getProductCategories = (p) => {
+  if (Array.isArray(p.categories)) return p.categories;
+  if (p.category) return [p.category];
+  return [];
+};
+
+const matchesStockFilter = (filterStock, qty) => {
+  if (filterStock === "out") return qty === 0;
+  if (filterStock === "low") return qty > 0 && qty <= 10;
+  if (filterStock === "in")  return qty > 10;
+  return true;
+};
+
 const AdminProducts = () => {
   const [products, setProducts]               = useState([]);
   const [loading, setLoading]                 = useState(true);
@@ -81,38 +94,16 @@ const AdminProducts = () => {
   // ── Category list for filter chips ──
   const allCategories = useMemo(() => {
     const cats = new Set();
-    products.forEach((p) => {
-      let arr;
-      if (Array.isArray(p.categories)) {
-        arr = p.categories;
-      } else if (p.category) {
-        arr = [p.category];
-      } else {
-        arr = [];
-      }
-      arr.forEach((c) => cats.add(c));
-    });
-    return [...cats].sort();
+    products.forEach((p) => getProductCategories(p).forEach((c) => cats.add(c)));
+    return [...cats].sort((a, b) => a.localeCompare(b));
   }, [products]);
 
   // ── Filtered rows ──
   const filteredProducts = useMemo(() => products.filter((p) => {
     if (filterStatus === "active"   && !p.isActive) return false;
     if (filterStatus === "inactive" &&  p.isActive) return false;
-    if (filterStock  === "out" && p._qty !== 0)               return false;
-    if (filterStock  === "low" && !(p._qty > 0 && p._qty <= 10)) return false;
-    if (filterStock  === "in"  && p._qty <= 10)               return false;
-    if (filterCategory !== "all") {
-      let cats;
-      if (Array.isArray(p.categories)) {
-        cats = p.categories;
-      } else if (p.category) {
-        cats = [p.category];
-      } else {
-        cats = [];
-      }
-      if (!cats.includes(filterCategory)) return false;
-    }
+    if (!matchesStockFilter(filterStock, p._qty)) return false;
+    if (filterCategory !== "all" && !getProductCategories(p).includes(filterCategory)) return false;
     return true;
   }), [products, filterStatus, filterStock, filterCategory]);
 
@@ -158,7 +149,7 @@ const AdminProducts = () => {
 
   const submitBulkSale = () => {
     const value = Number(saleForm.discountValue);
-    if (!(value > 0)) {
+    if (value <= 0) {
       addToast("Enter a discount value greater than 0", "error");
       return;
     }
