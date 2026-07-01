@@ -15,8 +15,12 @@ export default defineConfig({
     // Cap worker forks so coverage-instrumented runs (~100 files, heavy
     // framer-motion/jsdom mocks per file) don't exhaust CI runner memory.
     // (Vitest 4 flattened poolOptions.forks.* into top-level options.)
+    // maxWorkers:1 keeps each CI shard single-process — GitHub-hosted
+    // runners have far less RAM than local dev machines, and 2 concurrent
+    // forks per shard was still enough to OOM one of 3 shards in CI even
+    // though every shard ran fine locally.
     pool: "forks",
-    maxWorkers: 2,
+    maxWorkers: 1,
     // jsdom + coverage instrumentation accumulate native heap across test
     // files within the same forked worker (observed: heap climbs to V8's
     // ~4GB default old-space ceiling -> "JavaScript heap out of memory" /

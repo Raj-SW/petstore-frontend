@@ -21,11 +21,16 @@ jobs:
     # a fixed-size crash) and eventually hit "JavaScript heap out of memory"
     # partway through the ~100-file unit suite. Sharding across a matrix
     # gives each shard a fresh process/heap instead of raising the ceiling
-    # indefinitely, which only delays the same crash.
+    # indefinitely, which only delays the same crash. 3 shards still OOM'd
+    # on one shard in CI (GitHub-hosted runners have much less RAM than a
+    # local dev machine, and vitest's shard split is by file count, not by
+    # cost — a shard can land a disproportionate share of the heaviest
+    # admin-form/page test files). Bumped to 6 shards for a smaller,
+    # safer per-shard footprint.
     strategy:
       fail-fast: false
       matrix:
-        shard: [1, 2, 3]
+        shard: [1, 2, 3, 4, 5, 6]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -34,12 +39,12 @@ jobs:
           cache: npm
       - run: npm ci
 
-      - name: Run unit tests (shard ${{ matrix.shard }}/3)
+      - name: Run unit tests (shard ${{ matrix.shard }}/6)
         # --coverage emits coverage/coverage-final.json (the mergeable artifact the
         # report job consumes); --reporter=junit sets the test-results reporter.
         run: |
           mkdir -p coverage reports
-          npm run test:unit -- --coverage --shard=${{ matrix.shard }}/3 --reporter=junit --outputFile=reports/junit-unit-${{ matrix.shard }}.xml
+          npm run test:unit -- --coverage --shard=${{ matrix.shard }}/6 --reporter=junit --outputFile=reports/junit-unit-${{ matrix.shard }}.xml
 
       - name: Upload unit coverage (shard ${{ matrix.shard }})
         if: always()
@@ -143,9 +148,9 @@ jobs:
       - name: Merge coverage
         run: |
           mkdir -p _merge .nyc_output coverage
-          cp _artifacts/cov-unit-1/coverage-final.json _merge/unit-1.json
-          cp _artifacts/cov-unit-2/coverage-final.json _merge/unit-2.json
-          cp _artifacts/cov-unit-3/coverage-final.json _merge/unit-3.json
+          for n in 1 2 3 4 5 6; do
+            cp "_artifacts/cov-unit-$n/coverage-final.json" "_merge/unit-$n.json"
+          done
           cp _artifacts/cov-integration/coverage-final.json _merge/integration.json
           npx nyc merge _merge .nyc_output/out.json
           npx nyc report --reporter=lcov --reporter=json-summary --reporter=text-summary --report-dir=coverage
@@ -153,7 +158,14 @@ jobs:
       - name: Merge test results
         run: |
           mkdir -p reports
-          npx jrm reports/merged.xml "_artifacts/junit-unit-1/junit-unit-1.xml" "_artifacts/junit-unit-2/junit-unit-2.xml" "_artifacts/junit-unit-3/junit-unit-3.xml" "_artifacts/junit-integration/junit-integration.xml"
+          npx jrm reports/merged.xml \
+            "_artifacts/junit-unit-1/junit-unit-1.xml" \
+            "_artifacts/junit-unit-2/junit-unit-2.xml" \
+            "_artifacts/junit-unit-3/junit-unit-3.xml" \
+            "_artifacts/junit-unit-4/junit-unit-4.xml" \
+            "_artifacts/junit-unit-5/junit-unit-5.xml" \
+            "_artifacts/junit-unit-6/junit-unit-6.xml" \
+            "_artifacts/junit-integration/junit-integration.xml"
 
       - name: PR comment — coverage & tests
         uses: MishaKav/jest-coverage-comment@main
