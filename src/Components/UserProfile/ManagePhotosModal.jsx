@@ -21,6 +21,8 @@ const ManagePhotosModal = ({ pet, onClose, onChange }) => {
     if (onChange) onChange(updatedPet);
   };
 
+  const MAX_BYTES = 15 * 1024 * 1024; // 15 MB — matches server limit
+
   const onAdd = async (e) => {
     // Snapshot into an array BEFORE clearing the input — e.target.files is a
     // live FileList that resetting value="" empties, which would drop the files.
@@ -28,7 +30,12 @@ const ManagePhotosModal = ({ pet, onClose, onChange }) => {
     e.target.value = "";
     if (files.length === 0) return;
     if (images.length + files.length > MAX) {
-      addToast(`A pet can have at most ${MAX} photos`, "error");
+      addToast(`A pet can have at most ${MAX} photos.`, "error");
+      return;
+    }
+    const oversized = files.find((f) => f.size > MAX_BYTES);
+    if (oversized) {
+      addToast(`"${oversized.name}" is too large. Please use images under 15 MB.`, "error");
       return;
     }
     try {

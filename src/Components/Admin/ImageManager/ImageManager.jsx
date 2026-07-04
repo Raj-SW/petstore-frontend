@@ -27,7 +27,7 @@ import "./ImageManager.css";
  *   onError    (msg) => void         optional toast hook
  *   label      string               optional heading
  */
-const MAX_MB = 4;
+const MAX_MB = 15;
 const MAX_BYTES = MAX_MB * 1024 * 1024;
 
 const Thumb = ({ img, index, onRemove, onMakeCover }) => {

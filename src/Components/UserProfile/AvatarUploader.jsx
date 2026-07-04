@@ -16,12 +16,18 @@ const AvatarUploader = () => {
 
   const url = user?.profileImage?.url || user?.profileImage || null;
 
+  const MAX_BYTES = 15 * 1024 * 1024; // 15 MB — matches server limit
+
   const onPick = async (e) => {
     const file = e.target.files?.[0];
     e.target.value = "";
     if (!file) return;
     if (!file.type.startsWith("image/")) {
-      addToast("Please choose an image file", "error");
+      addToast("Please choose an image file.", "error");
+      return;
+    }
+    if (file.size > MAX_BYTES) {
+      addToast("Photo is too large. Please use an image under 15 MB.", "error");
       return;
     }
     try {

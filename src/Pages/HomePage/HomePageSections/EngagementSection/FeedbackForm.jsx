@@ -19,9 +19,21 @@ const FeedbackForm = () => {
   const handleChange = (e) =>
     setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
 
+  const MAX_PHOTO_BYTES = 15 * 1024 * 1024; // 15 MB — matches server limit
+
   const handlePhotoChange = (e) => {
     const files = Array.from(e.target.files || []);
+    e.target.value = "";
     if (!files.length) return;
+
+    const oversized = files.filter((f) => f.size > MAX_PHOTO_BYTES);
+    if (oversized.length > 0) {
+      addToast(
+        `"${oversized[0].name}" is too large. Please use images under 15 MB.`,
+        "error"
+      );
+      return;
+    }
 
     const remaining = MAX_PHOTOS - photos.length;
     const toAdd = files.slice(0, remaining).map((file) => ({
@@ -29,9 +41,6 @@ const FeedbackForm = () => {
       preview: URL.createObjectURL(file),
     }));
     setPhotos((prev) => [...prev, ...toAdd]);
-
-    // Reset the input so re-selecting the same file triggers onChange
-    e.target.value = "";
   };
 
   const removePhoto = (index) => {
@@ -71,8 +80,8 @@ const FeedbackForm = () => {
       setHovered(0);
       photos.forEach(({ preview }) => URL.revokeObjectURL(preview));
       setPhotos([]);
-    } catch {
-      addToast("Failed to submit feedback. Please try again.", "error");
+    } catch (err) {
+      addToast(err?.message || "Failed to submit feedback. Please try again.", "error");
     } finally {
       setSubmitting(false);
     }

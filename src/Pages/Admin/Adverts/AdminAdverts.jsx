@@ -65,16 +65,22 @@ const AdminAdverts = () => {
     setForm((f) => ({ ...f, [field]: value }));
   };
 
+  const MAX_IMAGE_BYTES = 15 * 1024 * 1024; // 15 MB — matches server limit
+
   const handleImagePick = async (e) => {
     const file = e.target.files?.[0];
     e.target.value = "";
     if (!file) return;
+    if (file.size > MAX_IMAGE_BYTES) {
+      addToast("Image is too large. Please use an image under 15 MB.", "error");
+      return;
+    }
     setUploadingImage(true);
     try {
       const url = await advertsApi.uploadImage(file);
       if (url) setForm((f) => ({ ...f, image: url }));
-    } catch {
-      addToast("Image upload failed", "error");
+    } catch (err) {
+      addToast(err?.message || "Image upload failed.", "error");
     } finally {
       setUploadingImage(false);
     }

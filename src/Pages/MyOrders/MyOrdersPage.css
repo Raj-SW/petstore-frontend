@@ -186,6 +186,15 @@
 
 /* Card header */
 .orders-card-header {
+  /* This element is a <button> — reset the UA button chrome (outset border,
+     system font, center-align, shrink-to-fit width) so it lays out like the
+     full-width card header it's meant to be. */
+  width: 100%;
+  appearance: none;
+  border: none;
+  font: inherit;
+  text-align: left;
+  color: inherit;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -279,6 +288,14 @@
 }
 
 .orders-item-row {
+  /* Also a <button> — same UA reset so rows are full-width and un-chromed. */
+  width: 100%;
+  appearance: none;
+  border: none;
+  background: none;
+  font: inherit;
+  text-align: left;
+  color: inherit;
   display: flex;
   align-items: center;
   gap: 0.85rem;
