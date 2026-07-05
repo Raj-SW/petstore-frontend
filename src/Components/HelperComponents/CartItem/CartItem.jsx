@@ -26,6 +26,7 @@ export const CartItem = ({
       src={item.image}
       alt={item.name}
       className="cart-item-image"
+      loading="lazy"
       onError={(e) => { e.target.src = "https://placehold.co/72x72"; }}
     />
 

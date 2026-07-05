@@ -190,6 +190,7 @@ export default function PaymentPage() {
                       src={item.image}
                       alt={item.name || item.title}
                       className="pmt-summary-item-img"
+                      loading="lazy"
                     />
                   )}
                   <div className="pmt-summary-item-info">

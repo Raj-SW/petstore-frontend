@@ -1,27 +1,7 @@
+import { lazy, Suspense } from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
 import "./index.css";
-import HomePage from "./Pages/HomePage/HomePage.jsx";
-import IndividualProductItemPage from "./Pages/IndividualProductItemPage/IndividualProductItemPage.jsx";
-import PetShopPage from "./Pages/PetShopPage/PetShopPage.jsx";
-import ServicePage from "./Pages/ServicePage/ServicePage.jsx";
-import AppointmentPage from "./Pages/AppointmentPage/AppointmentPage.jsx";
-import ProfessionalDetailPage from "./Pages/AppointmentPage/ProfessionalDetailPage.jsx";
-import CartCheckOutPage from "./Pages/CartCheckoutPage/CartCheckOutPage.jsx";
-import ImportExportServicePage from "./Pages/ImportExport/ImportExportServicePage.jsx";
-import ExportImportForm from "./Pages/ImportExport/Import/ImportPage.jsx";
-import UserProfile from "./Pages/UserProfile.jsx";
-import ResetPassword from "./Components/Auth/ResetPassword.jsx";
-import PaymentPage from "./Pages/Payment/PaymentPage.jsx";
-import MyOrdersPage from "./Pages/MyOrders/MyOrdersPage.jsx";
-import OrderConfirmedPage from "./Pages/OrderConfirmed/OrderConfirmedPage.jsx";
-import PetCareTipsPage from "./Pages/PetCareTips/PetCareTipsPage.jsx";
-import TipDetailPage from "./Pages/PetCareTips/TipDetailPage.jsx";
-import GalleryPage from "./Pages/Gallery/GalleryPage.jsx";
-import GalleryDetailPage from "./Pages/Gallery/GalleryDetailPage.jsx";
-import ContactPage from "./Pages/Contact/ContactPage.jsx";
-import AboutPage from "./Pages/About/AboutPage.jsx";
-import MySubscriptions from "./Pages/Subscriptions/MySubscriptions.jsx";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import ProtectedRoute from "./Components/Auth/ProtectedRoute";
 import RoleBasedRoute from "./Components/Auth/RoleBasedRoute";
@@ -32,31 +12,64 @@ import { ToastProvider } from "./context/ToastContext";
 import { CurrencyProvider } from "./context/CurrencyContext";
 import "./context/ToastContext.css";
 import { USER_ROLES } from "./constants/userConstants";
+import LoadingSpinner from "./Components/HelperComponents/LoadingSpinner/LoadingSpinner";
 
-// Admin imports
+// Admin layout stays eager — always needed the instant any /admin/* route
+// matches (sidebar/shell). Every admin PAGE below is lazy: none of this
+// bundle (Tiptap, dnd-kit, chart libs, etc.) should load for a storefront visit.
 import AdminLayout from "./Components/Admin/AdminLayout";
-import AdminDashboard from "./Pages/Admin/Dashboard/AdminDashboard";
-import AdminProducts from "./Pages/Admin/Products/AdminProducts";
-import AdminProductForm from "./Pages/Admin/Products/AdminProductForm";
-import AdminUsers from "./Pages/Admin/Users/AdminUsers";
-import AdminOrders from "./Pages/Admin/Orders/AdminOrders";
-import AdminAppointments from "./Pages/Admin/Appointments/AdminAppointments";
-import AdminAnalytics from "./Pages/Admin/Analytics/AdminAnalytics";
-import AdminSettings from "./Pages/Admin/Settings/AdminSettings";
-import AdminInventory     from "./Pages/Admin/Inventory/AdminInventory.jsx";
-import AdminInvoices     from "./Pages/Admin/Invoices/AdminInvoices.jsx";
-import AdminTransactions from "./Pages/Admin/Transactions/AdminTransactions.jsx";
-import AdminTips from "./Pages/Admin/Tips/AdminTips";
-import AdminTipForm from "./Pages/Admin/Tips/AdminTipForm";
-import AdminGallery from "./Pages/Admin/Gallery/AdminGallery";
-import AdminGalleryForm from "./Pages/Admin/Gallery/AdminGalleryForm";
-import AdminContacts from "./Pages/Admin/Contacts/AdminContacts";
-import AdminAdverts from "./Pages/Admin/Adverts/AdminAdverts";
-import AdminFeedback from "./Pages/Admin/Feedback/AdminFeedback";
-import AdminAnnouncements from "./Pages/Admin/Announcements/AdminAnnouncements";
-import AdminFaqs from "./Pages/Admin/Faqs/AdminFaqs";
-import AdminSubscriptions from "./Pages/Admin/Subscriptions/AdminSubscriptions";
-import AdminUIGallery from "./Pages/Admin/UIGallery/AdminUIGallery";
+
+// ── Storefront pages (route-based code splitting) ───────────────────────────
+const HomePage                  = lazy(() => import("./Pages/HomePage/HomePage.jsx"));
+const IndividualProductItemPage = lazy(() => import("./Pages/IndividualProductItemPage/IndividualProductItemPage.jsx"));
+const PetShopPage               = lazy(() => import("./Pages/PetShopPage/PetShopPage.jsx"));
+const ServicePage               = lazy(() => import("./Pages/ServicePage/ServicePage.jsx"));
+const AppointmentPage           = lazy(() => import("./Pages/AppointmentPage/AppointmentPage.jsx"));
+const ProfessionalDetailPage    = lazy(() => import("./Pages/AppointmentPage/ProfessionalDetailPage.jsx"));
+const CartCheckOutPage          = lazy(() => import("./Pages/CartCheckoutPage/CartCheckOutPage.jsx"));
+const ImportExportServicePage   = lazy(() => import("./Pages/ImportExport/ImportExportServicePage.jsx"));
+const ExportImportForm          = lazy(() => import("./Pages/ImportExport/Import/ImportPage.jsx"));
+const UserProfile               = lazy(() => import("./Pages/UserProfile.jsx"));
+const ResetPassword             = lazy(() => import("./Components/Auth/ResetPassword.jsx"));
+const PaymentPage               = lazy(() => import("./Pages/Payment/PaymentPage.jsx"));
+const MyOrdersPage              = lazy(() => import("./Pages/MyOrders/MyOrdersPage.jsx"));
+const OrderConfirmedPage        = lazy(() => import("./Pages/OrderConfirmed/OrderConfirmedPage.jsx"));
+const PetCareTipsPage           = lazy(() => import("./Pages/PetCareTips/PetCareTipsPage.jsx"));
+const TipDetailPage             = lazy(() => import("./Pages/PetCareTips/TipDetailPage.jsx"));
+const GalleryPage               = lazy(() => import("./Pages/Gallery/GalleryPage.jsx"));
+const GalleryDetailPage         = lazy(() => import("./Pages/Gallery/GalleryDetailPage.jsx"));
+const ContactPage               = lazy(() => import("./Pages/Contact/ContactPage.jsx"));
+const AboutPage                 = lazy(() => import("./Pages/About/AboutPage.jsx"));
+const MySubscriptions           = lazy(() => import("./Pages/Subscriptions/MySubscriptions.jsx"));
+
+// ── Admin pages (route-based code splitting) ────────────────────────────────
+const AdminDashboard      = lazy(() => import("./Pages/Admin/Dashboard/AdminDashboard"));
+const AdminProducts       = lazy(() => import("./Pages/Admin/Products/AdminProducts"));
+const AdminProductForm    = lazy(() => import("./Pages/Admin/Products/AdminProductForm"));
+const AdminUsers          = lazy(() => import("./Pages/Admin/Users/AdminUsers"));
+const AdminOrders         = lazy(() => import("./Pages/Admin/Orders/AdminOrders"));
+const AdminAppointments   = lazy(() => import("./Pages/Admin/Appointments/AdminAppointments"));
+const AdminAnalytics      = lazy(() => import("./Pages/Admin/Analytics/AdminAnalytics"));
+const AdminSettings       = lazy(() => import("./Pages/Admin/Settings/AdminSettings"));
+const AdminInventory      = lazy(() => import("./Pages/Admin/Inventory/AdminInventory.jsx"));
+const AdminInvoices       = lazy(() => import("./Pages/Admin/Invoices/AdminInvoices.jsx"));
+const AdminTransactions   = lazy(() => import("./Pages/Admin/Transactions/AdminTransactions.jsx"));
+const AdminTips           = lazy(() => import("./Pages/Admin/Tips/AdminTips"));
+const AdminTipForm        = lazy(() => import("./Pages/Admin/Tips/AdminTipForm"));
+const AdminGallery        = lazy(() => import("./Pages/Admin/Gallery/AdminGallery"));
+const AdminGalleryForm    = lazy(() => import("./Pages/Admin/Gallery/AdminGalleryForm"));
+const AdminContacts       = lazy(() => import("./Pages/Admin/Contacts/AdminContacts"));
+const AdminAdverts        = lazy(() => import("./Pages/Admin/Adverts/AdminAdverts"));
+const AdminFeedback       = lazy(() => import("./Pages/Admin/Feedback/AdminFeedback"));
+const AdminAnnouncements  = lazy(() => import("./Pages/Admin/Announcements/AdminAnnouncements"));
+const AdminFaqs           = lazy(() => import("./Pages/Admin/Faqs/AdminFaqs"));
+const AdminSubscriptions  = lazy(() => import("./Pages/Admin/Subscriptions/AdminSubscriptions"));
+const AdminUIGallery      = lazy(() => import("./Pages/Admin/UIGallery/AdminUIGallery"));
+
+// Every lazy page is wrapped in the same Suspense boundary so route
+// transitions show one consistent fallback instead of each page needing
+// its own — cheap to add per-element, keeps main.jsx from growing 3x.
+const P = (el) => <Suspense fallback={<LoadingSpinner />}>{el}</Suspense>;
 
 const router = createBrowserRouter([
   {
@@ -65,59 +78,59 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <HomePage />,
+        element: P(<HomePage />),
       },
       {
         path: "home",
-        element: <HomePage />,
+        element: P(<HomePage />),
       },
       {
         path: "product/:id",
-        element: <IndividualProductItemPage />,
+        element: P(<IndividualProductItemPage />),
       },
       {
         path: "petshop",
-        element: <PetShopPage />,
+        element: P(<PetShopPage />),
       },
       {
         path: "services",
-        element: <ServicePage />,
+        element: P(<ServicePage />),
       },
       {
         path: "appointments",
-        element: <AppointmentPage />,
+        element: P(<AppointmentPage />),
       },
       {
         path: "appointments/professional/:id",
-        element: <ProfessionalDetailPage />,
+        element: P(<ProfessionalDetailPage />),
       },
       {
         path: "pet-care-tips",
-        element: <PetCareTipsPage />,
+        element: P(<PetCareTipsPage />),
       },
       {
         path: "pet-care-tips/:slug",
-        element: <TipDetailPage />,
+        element: P(<TipDetailPage />),
       },
       {
         path: "gallery",
-        element: <GalleryPage />,
+        element: P(<GalleryPage />),
       },
       {
         path: "gallery/:slug",
-        element: <GalleryDetailPage />,
+        element: P(<GalleryDetailPage />),
       },
       {
         path: "contact",
-        element: <ContactPage />,
+        element: P(<ContactPage />),
       },
       {
         path: "about",
-        element: <AboutPage />,
+        element: P(<AboutPage />),
       },
       {
         path: "checkout",
-        element: (
+        element: P(
           <ProtectedRoute>
             <CartCheckOutPage />
           </ProtectedRoute>
@@ -125,7 +138,7 @@ const router = createBrowserRouter([
       },
       {
         path: "payment/:orderId",
-        element: (
+        element: P(
           <ProtectedRoute>
             <PaymentPage />
           </ProtectedRoute>
@@ -133,7 +146,7 @@ const router = createBrowserRouter([
       },
       {
         path: "my-orders",
-        element: (
+        element: P(
           <ProtectedRoute>
             <MyOrdersPage />
           </ProtectedRoute>
@@ -141,7 +154,7 @@ const router = createBrowserRouter([
       },
       {
         path: "my-subscriptions",
-        element: (
+        element: P(
           <ProtectedRoute>
             <MySubscriptions />
           </ProtectedRoute>
@@ -149,7 +162,7 @@ const router = createBrowserRouter([
       },
       {
         path: "order-confirmed/:orderId",
-        element: (
+        element: P(
           <ProtectedRoute>
             <OrderConfirmedPage />
           </ProtectedRoute>
@@ -157,15 +170,15 @@ const router = createBrowserRouter([
       },
       {
         path: "import-export-service",
-        element: <ImportExportServicePage />,
+        element: P(<ImportExportServicePage />),
       },
       {
         path: "import-page",
-        element: <ExportImportForm />,
+        element: P(<ExportImportForm />),
       },
       {
         path: "profile",
-        element: (
+        element: P(
           <ProtectedRoute>
             <UserProfile />
           </ProtectedRoute>
@@ -173,7 +186,7 @@ const router = createBrowserRouter([
       },
       {
         path: "reset-password",
-        element: <ResetPassword />,
+        element: P(<ResetPassword />),
       },
     ],
   },
@@ -187,83 +200,83 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <AdminDashboard />,
+        element: P(<AdminDashboard />),
       },
       {
         path: "products",
-        element: <AdminProducts />,
+        element: P(<AdminProducts />),
       },
       {
         path: "products/new",
-        element: <AdminProductForm />,
+        element: P(<AdminProductForm />),
       },
       {
         path: "products/edit/:id",
-        element: <AdminProductForm />,
+        element: P(<AdminProductForm />),
       },
       {
         path: "tips",
-        element: <AdminTips />,
+        element: P(<AdminTips />),
       },
       {
         path: "tips/new",
-        element: <AdminTipForm />,
+        element: P(<AdminTipForm />),
       },
       {
         path: "tips/edit/:id",
-        element: <AdminTipForm />,
+        element: P(<AdminTipForm />),
       },
       {
         path: "gallery",
-        element: <AdminGallery />,
+        element: P(<AdminGallery />),
       },
       {
         path: "gallery/new",
-        element: <AdminGalleryForm />,
+        element: P(<AdminGalleryForm />),
       },
       {
         path: "gallery/edit/:id",
-        element: <AdminGalleryForm />,
+        element: P(<AdminGalleryForm />),
       },
       {
         path: "contacts",
-        element: <AdminContacts />,
+        element: P(<AdminContacts />),
       },
       {
         path: "adverts",
-        element: <AdminAdverts />,
+        element: P(<AdminAdverts />),
       },
       {
         path: "feedback",
-        element: <AdminFeedback />,
+        element: P(<AdminFeedback />),
       },
       {
         path: "announcements",
-        element: <AdminAnnouncements />,
+        element: P(<AdminAnnouncements />),
       },
       {
         path: "faqs",
-        element: <AdminFaqs />,
+        element: P(<AdminFaqs />),
       },
       {
         path: "subscriptions",
-        element: <AdminSubscriptions />,
+        element: P(<AdminSubscriptions />),
       },
       {
         path: "inventory",
-        element: <AdminInventory />,
+        element: P(<AdminInventory />),
       },
       {
         path: "invoices",
-        element: <AdminInvoices />,
+        element: P(<AdminInvoices />),
       },
       {
         path: "transactions",
-        element: <AdminTransactions />,
+        element: P(<AdminTransactions />),
       },
       {
         path: "users",
-        element: <AdminUsers />,
+        element: P(<AdminUsers />),
       },
       {
         path: "professionals",
@@ -271,23 +284,23 @@ const router = createBrowserRouter([
       },
       {
         path: "orders",
-        element: <AdminOrders />,
+        element: P(<AdminOrders />),
       },
       {
         path: "appointments",
-        element: <AdminAppointments />,
+        element: P(<AdminAppointments />),
       },
       {
         path: "analytics",
-        element: <AdminAnalytics />,
+        element: P(<AdminAnalytics />),
       },
       {
         path: "settings",
-        element: <AdminSettings />,
+        element: P(<AdminSettings />),
       },
       {
         path: "ui-gallery",
-        element: <AdminUIGallery />,
+        element: P(<AdminUIGallery />),
       },
     ],
   },

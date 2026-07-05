@@ -13,7 +13,7 @@ const variants = {
 
 // Wrap a slide image in a link when the banner has one.
 const SlideMedia = ({ slide }) => {
-  const img = <img src={slide.image} alt={slide.alt} className="pbc-img" />;
+  const img = <img src={slide.image} alt={slide.alt} className="pbc-img" loading="lazy" />;
   if (!slide.link) return img;
   const external = slide.link.startsWith("http");
   return (

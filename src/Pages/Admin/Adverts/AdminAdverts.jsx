@@ -249,7 +249,7 @@ const AdminAdverts = () => {
               <div className="aa-field">
                 <label>Image{["hero", "promo", "shop"].includes(form.placement) ? "" : " (optional)"}</label>
                 {form.image && (
-                  <img src={form.image} alt="Advert preview" className="aa-image-preview" />
+                  <img src={form.image} alt="Advert preview" className="aa-image-preview" loading="lazy" />
                 )}
                 <div className="aa-image-upload">
                   <button

@@ -510,7 +510,7 @@ const IndividualProductItemPage = () => {
                     onClick={() => setActiveImage(i)}
                     aria-label={`View image ${i + 1}`}
                   >
-                    <img src={img} alt={`${productName} ${i + 1}`} />
+                    <img src={img} alt={`${productName} ${i + 1}`} loading="lazy" />
                   </button>
                 ))}
               </div>
@@ -524,31 +524,37 @@ const IndividualProductItemPage = () => {
                 <FaCheckCircle /> Verified Product
               </div>
             </div>
-
-            <div className="ip-share">
-              <FiShare2 size={15} />
-              <span>Share:</span>
-              <button type="button" aria-label="Facebook"><FaFacebook /></button>
-              <button type="button" aria-label="Twitter"><FaTwitter /></button>
-              <button type="button" aria-label="Instagram"><FaInstagram /></button>
-            </div>
           </div>
 
           {/* Right — info */}
           <div className="ip-info">
             {/* Category + Stock badges */}
             <div className="ip-badges">
-              {category && (
-                <span className="ip-badge ip-badge--cat">
-                  <FaTag size={10} /> {category}
-                </span>
-              )}
+              {(product.categories?.length ? product.categories : [category])
+                .filter(Boolean)
+                .map((cat) => (
+                  <span key={cat} className="ip-badge ip-badge--cat">
+                    <FaTag size={10} /> {cat}
+                  </span>
+                ))}
               {vStock !== null && (
                 <span className={`ip-badge ${vStock > 0 ? "ip-badge--stock" : "ip-badge--out"}`}>
                   {vStock > 0 ? "In Stock" : "Out of Stock"}
                 </span>
               )}
             </div>
+
+            {/* Suitable for (free-form tags set in admin) */}
+            {Array.isArray(product.genders) && product.genders.length > 0 && (
+              <div className="ip-suitable">
+                <span className="ip-suitable-label">Suitable for</span>
+                <div className="ip-suitable-tags">
+                  {product.genders.map((g) => (
+                    <span key={g} className="ip-suitable-tag">{g}</span>
+                  ))}
+                </div>
+              </div>
+            )}
 
             <h1 className="ip-title">{productName}</h1>
             <div className="ip-price-row">
@@ -772,7 +778,7 @@ const IndividualProductItemPage = () => {
                     onClick={(e) => { e.stopPropagation(); setActiveImage(i); }}
                     aria-label={`View image ${i + 1}`}
                   >
-                    <img src={img} alt="" />
+                    <img src={img} alt="" loading="lazy" />
                   </button>
                 ))}
               </div>

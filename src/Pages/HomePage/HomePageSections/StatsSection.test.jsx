@@ -34,15 +34,15 @@ vi.mock("framer-motion", async () => {
 // Vite image imports resolve to URLs in real builds; jest/vitest returns the
 // module path string. Stub them so the component can render without real files.
 vi.mock("../../../assets/StatsSection/vet-with-dog.jpg", () => ({ default: "vet-with-dog.jpg" }));
-vi.mock("../../../assets/StatsSection/slide-1-a.jpg",   () => ({ default: "slide-1-a.jpg" }));
-vi.mock("../../../assets/StatsSection/slide-1-b.jpg",   () => ({ default: "slide-1-b.jpg" }));
-vi.mock("../../../assets/StatsSection/slide-1-c.jpg",   () => ({ default: "slide-1-c.jpg" }));
-vi.mock("../../../assets/StatsSection/slide-2-a.jpg",   () => ({ default: "slide-2-a.jpg" }));
-vi.mock("../../../assets/StatsSection/slide-2-b.jpg",   () => ({ default: "slide-2-b.jpg" }));
-vi.mock("../../../assets/StatsSection/slide-2-c.png",   () => ({ default: "slide-2-c.png" }));
-vi.mock("../../../assets/StatsSection/slide-3-a.jpg",   () => ({ default: "slide-3-a.jpg" }));
-vi.mock("../../../assets/StatsSection/slide-3-b.jpg",   () => ({ default: "slide-3-b.jpg" }));
-vi.mock("../../../assets/StatsSection/slide-3-c.png",   () => ({ default: "slide-3-c.png" }));
+vi.mock("../../../assets/StatsSection/slide-1-a.webp",  () => ({ default: "slide-1-a.webp" }));
+vi.mock("../../../assets/StatsSection/slide-1-b.webp",  () => ({ default: "slide-1-b.webp" }));
+vi.mock("../../../assets/StatsSection/slide-1-c.webp",  () => ({ default: "slide-1-c.webp" }));
+vi.mock("../../../assets/StatsSection/slide-2-a.webp",  () => ({ default: "slide-2-a.webp" }));
+vi.mock("../../../assets/StatsSection/slide-2-b.webp",  () => ({ default: "slide-2-b.webp" }));
+vi.mock("../../../assets/StatsSection/slide-2-c.webp",  () => ({ default: "slide-2-c.webp" }));
+vi.mock("../../../assets/StatsSection/slide-3-a.webp",  () => ({ default: "slide-3-a.webp" }));
+vi.mock("../../../assets/StatsSection/slide-3-b.webp",  () => ({ default: "slide-3-b.webp" }));
+vi.mock("../../../assets/StatsSection/slide-3-c.webp",  () => ({ default: "slide-3-c.webp" }));
 
 // ── feedbackApi stub ──────────────────────────────────────────────────────────
 vi.mock("../../../Services/api/feedbackApi", () => ({

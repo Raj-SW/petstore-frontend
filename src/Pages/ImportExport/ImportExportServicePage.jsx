@@ -2,7 +2,8 @@ import { useState, useRef } from "react";
 import { Container, Row, Col, Button, Card } from "react-bootstrap";
 import Breadcrumb from "@/Components/HelperComponents/Breadcrumb/Breadcrumb";
 import "./ImportExportServicePage.css";
-import catflying from "../../assets/ExportImport/catflying.png";
+// Re-encoded as WebP — original was a 3MB PNG at unchanged pixel dimensions.
+import catflying from "../../assets/ExportImport/catflying.webp";
 import { useToast } from "../../context/ToastContext";
 import { useAuth } from "../../context/AuthContext";
 import ExportImportForm from "./Import/ImportPage";

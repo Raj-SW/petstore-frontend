@@ -9,11 +9,13 @@ import {
   FaHeart,
   FaPaw,
 } from "react-icons/fa";
-import imgVeterinary from "../../../assets/Services Sections Assets/veterinary-service.png";
-import imgGrooming from "../../../assets/Services Sections Assets/grooming-service.png";
-import imgBoarding from "../../../assets/Services Sections Assets/boarding-service.png";
-import imgTraining from "../../../assets/Services Sections Assets/training-sevice.png";
-import imgAdoption from "../../../assets/Services Sections Assets/adoption-service.png";
+// Re-encoded as WebP — originals were 2MB+ PNGs (a poor lossless format choice
+// for photographic content) at the same pixel dimensions.
+import imgVeterinary from "../../../assets/Services Sections Assets/veterinary-service.webp";
+import imgGrooming from "../../../assets/Services Sections Assets/grooming-service.webp";
+import imgBoarding from "../../../assets/Services Sections Assets/boarding-service.webp";
+import imgTraining from "../../../assets/Services Sections Assets/training-sevice.webp";
+import imgAdoption from "../../../assets/Services Sections Assets/adoption-service.webp";
 import "./ServicesSection.css";
 
 const SERVICES = [
@@ -91,7 +93,7 @@ const ServiceCard = ({ label, icon: Icon, image, href, status = "live", delay })
       onClick={go}
       style={comingSoon ? { cursor: "default" } : undefined}
     >
-      <img src={image} alt={label} className="sc-image" />
+      <img src={image} alt={label} className="sc-image" loading="lazy" />
 
       <div className="sc-bottom-gradient" />
 

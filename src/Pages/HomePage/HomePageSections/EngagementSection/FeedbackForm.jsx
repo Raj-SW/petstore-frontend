@@ -176,7 +176,7 @@ const FeedbackForm = () => {
           <div className="ff-previews">
             {photos.map(({ preview }, i) => (
               <div key={preview} className="ff-preview-wrap">
-                <img src={preview} alt={`Preview ${i + 1}`} className="ff-preview-img" />
+                <img src={preview} alt={`Preview ${i + 1}`} className="ff-preview-img" loading="lazy" />
                 <button
                   type="button"
                   className="ff-remove-photo"

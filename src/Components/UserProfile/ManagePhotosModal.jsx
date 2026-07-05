@@ -103,7 +103,7 @@ const ManagePhotosModal = ({ pet, onClose, onChange }) => {
             <div className="mpm-grid">
               {images.map((img, i) => (
                 <div key={img.publicId} className={`mpm-thumb${i === 0 ? " mpm-thumb-cover" : ""}`}>
-                  <img src={img.url} alt="" />
+                  <img src={img.url} alt="" loading="lazy" />
                   {i === 0 && <span className="mpm-cover-tag">Cover</span>}
                   <div className="mpm-thumb-actions">
                     {i !== 0 && (
