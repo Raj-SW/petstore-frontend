@@ -37,3 +37,6 @@ src/graphify-out/
 /blob-report/
 /playwright/.cache/
 reports/
+
+# Superpowers brainstorming companion scratch output
+.superpowers/

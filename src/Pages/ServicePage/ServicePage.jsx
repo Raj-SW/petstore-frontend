@@ -14,15 +14,17 @@ import {
   FaCheckCircle,
 } from "react-icons/fa";
 
-import imgVeterinary from "../../assets/Services Sections Assets/veterinary-service.png";
-import imgGrooming   from "../../assets/Services Sections Assets/grooming-service.png";
-import imgBoarding   from "../../assets/Services Sections Assets/boarding-service.png";
-import imgTraining   from "../../assets/Services Sections Assets/training-sevice.png";
-import imgAdoption   from "../../assets/Services Sections Assets/adoption-service.png";
-import imgImport     from "../../assets/ExportImport/catflying.png";
-import imgTaxi       from "../../assets/ServicePageAssets/dogHug.png";
-import imgHero       from "../../assets/ServicePageAssets/petFamily.png";
-import imgWhy        from "../../assets/ServicePageAssets/catKiss.png";
+// Re-encoded as WebP — originals were 0.5-2.3MB PNGs (a poor lossless format
+// choice for photographic content) at unchanged pixel dimensions.
+import imgVeterinary from "../../assets/Services Sections Assets/veterinary-service.webp";
+import imgGrooming   from "../../assets/Services Sections Assets/grooming-service.webp";
+import imgBoarding   from "../../assets/Services Sections Assets/boarding-service.webp";
+import imgTraining   from "../../assets/Services Sections Assets/training-sevice.webp";
+import imgAdoption   from "../../assets/Services Sections Assets/adoption-service.webp";
+import imgImport     from "../../assets/ExportImport/catflying.webp";
+import imgTaxi       from "../../assets/ServicePageAssets/dogHug.webp";
+import imgHero       from "../../assets/ServicePageAssets/petFamily.webp";
+import imgWhy        from "../../assets/ServicePageAssets/catKiss.webp";
 
 import "./ServicePage.css";
 
@@ -126,7 +128,7 @@ const ServiceCard = ({ label, icon: Icon, image, href, desc, features, status = 
       whileHover={comingSoon ? undefined : { y: -6, boxShadow: "0 24px 52px rgba(0,28,16,0.18)" }}
     >
       <div className="sp-card-img-wrap">
-        <img src={image} alt={label} className="sp-card-img" />
+        <img src={image} alt={label} className="sp-card-img" loading="lazy" />
         <div className="sp-card-img-overlay" />
         <div className="sp-card-badge">
           <Icon size={14} />
@@ -339,7 +341,7 @@ const ServicePage = () => {
             animate={whyInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
           >
-            <img src={imgWhy} alt="A cat and owner" className="sp-why-img" />
+            <img src={imgWhy} alt="A cat and owner" className="sp-why-img" loading="lazy" />
           </motion.div>
 
           {/* Text + stats */}

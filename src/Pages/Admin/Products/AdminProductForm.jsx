@@ -80,8 +80,9 @@ const SectionCard = ({ section, index, onUpdate, onRemove }) => {
   );
 };
 
-const CATEGORIES = ["dogs", "cats", "fish", "birds", "general", "apparel"];
-const GENDERS    = ["Male", "Female", "Unisex"];
+// Quick-pick suggestions — admins can also type any new value (free-form tags).
+const CATEGORY_SUGGESTIONS      = ["dogs", "cats", "fish", "birds", "general", "apparel"];
+const SUITABLE_FOR_SUGGESTIONS  = ["Male", "Female", "Unisex"];
 
 const EMPTY_FORM = {
   name:        "",
@@ -122,8 +123,10 @@ const AdminProductForm = () => {
   // Uploads happen immediately inside <ImageManager>, so the form just holds refs.
   const [images, setImages] = useState([]);
 
-  // Color tag input
+  // Free-form tag inputs (categories, colors, suitable-for)
+  const [categoryInput, setCategoryInput] = useState("");
   const [colorInput, setColorInput] = useState("");
+  const [genderInput, setGenderInput] = useState("");
 
   // Sections (dynamic rich-text tabs)
   const [sections, setSections] = useState([]);
@@ -209,23 +212,47 @@ const AdminProductForm = () => {
 
   const setField = (key, value) => setForm((f) => ({ ...f, [key]: value }));
 
-  // ── Category chips ──────────────────────────────────────────────────────────
-  const toggleCategory = (cat) =>
-    setForm((f) => ({
-      ...f,
-      categories: f.categories.includes(cat)
-        ? f.categories.filter((c) => c !== cat)
-        : [...f.categories, cat],
-    }));
+  // ── Category tags (free-form + quick-pick suggestions) ──────────────────────
+  const addCategory = (raw) => {
+    const val = (raw ?? categoryInput).trim();
+    if (!val) return;
+    if (!form.categories.includes(val)) setField("categories", [...form.categories, val]);
+    setCategoryInput("");
+  };
 
-  // ── Gender checkboxes ───────────────────────────────────────────────────────
-  const toggleGender = (g) =>
-    setForm((f) => ({
-      ...f,
-      genders: f.genders.includes(g)
-        ? f.genders.filter((x) => x !== g)
-        : [...f.genders, g],
-    }));
+  const handleCategoryKeyDown = (e) => {
+    if (e.key === "Enter" || e.key === ",") {
+      e.preventDefault();
+      addCategory();
+    }
+    if (e.key === "Backspace" && !categoryInput && form.categories.length > 0) {
+      setField("categories", form.categories.slice(0, -1));
+    }
+  };
+
+  const removeCategory = (cat) =>
+    setField("categories", form.categories.filter((c) => c !== cat));
+
+  // ── Suitable-for tags (free-form + quick-pick suggestions) ──────────────────
+  const addGender = (raw) => {
+    const val = (raw ?? genderInput).trim();
+    if (!val) return;
+    if (!form.genders.includes(val)) setField("genders", [...form.genders, val]);
+    setGenderInput("");
+  };
+
+  const handleGenderKeyDown = (e) => {
+    if (e.key === "Enter" || e.key === ",") {
+      e.preventDefault();
+      addGender();
+    }
+    if (e.key === "Backspace" && !genderInput && form.genders.length > 0) {
+      setField("genders", form.genders.slice(0, -1));
+    }
+  };
+
+  const removeGender = (g) =>
+    setField("genders", form.genders.filter((x) => x !== g));
 
   // ── Color tag input ─────────────────────────────────────────────────────────
   const addColor = () => {
@@ -305,18 +332,21 @@ const AdminProductForm = () => {
     const fd = new FormData();
     fd.append("name",        form.name.trim());
     fd.append("description", form.description);
+    // Always send `variants` — even when empty. Omitting it on an update left the
+    // server unable to tell "no variants" from "field not provided", so deleting
+    // every variant never cleared them. When empty, also send the top-level
+    // price/quantity that then apply to the (now simple) product.
+    fd.append("variants", JSON.stringify(
+      variants.map((v) => ({
+        label: v.label.trim(),
+        price: Number(v.price),
+        quantity: Number(v.quantity),
+        images: (v.images || []).map((img) => ({ url: img.url, publicId: img.publicId })),
+      }))
+    ));
     if (variants.length === 0) {
       fd.append("price",     Number(form.price));
       fd.append("quantity",  Number(form.quantity) || 0);
-    } else {
-      fd.append("variants", JSON.stringify(
-        variants.map((v) => ({
-          label: v.label.trim(),
-          price: Number(v.price),
-          quantity: Number(v.quantity),
-          images: (v.images || []).map((img) => ({ url: img.url, publicId: img.publicId })),
-        }))
-      ));
     }
     fd.append("isActive",    String(form.isActive));
     fd.append("isFeatured",  String(form.isFeatured));
@@ -578,41 +608,93 @@ const AdminProductForm = () => {
                 <span className="admin-label">
                   Categories <span className="admin-required">*</span>
                 </span>
-                <div className="admin-pf-cats">
-                  {CATEGORIES.map((cat) => (
-                    <button
-                      key={cat}
-                      type="button"
-                      className={`admin-pf-cat-chip${form.categories.includes(cat) ? " selected" : ""}`}
-                      onClick={() => toggleCategory(cat)}
-                    >
-                      {cat.charAt(0).toUpperCase() + cat.slice(1)}
-                    </button>
+                <div className={`admin-pf-color-input-wrap${categoryInput ? " focused" : ""}`}>
+                  {form.categories.map((cat) => (
+                    <span key={cat} className="admin-pf-color-tag">
+                      {cat}
+                      <button
+                        type="button"
+                        className="admin-pf-color-tag-remove"
+                        onClick={() => removeCategory(cat)}
+                        aria-label={`Remove ${cat}`}
+                      >
+                        <FiX size={10} />
+                      </button>
+                    </span>
                   ))}
+                  <input
+                    className="admin-pf-color-input"
+                    type="text"
+                    value={categoryInput}
+                    onChange={(e) => setCategoryInput(e.target.value)}
+                    onKeyDown={handleCategoryKeyDown}
+                    onBlur={() => addCategory()}
+                    placeholder={form.categories.length === 0 ? "Type a category and press Enter…" : "Add another…"}
+                  />
                 </div>
+                {/* Quick-pick suggestions (not already selected) */}
+                {CATEGORY_SUGGESTIONS.some((c) => !form.categories.includes(c)) && (
+                  <div className="admin-pf-cats" style={{ marginTop: "0.5rem" }}>
+                    {CATEGORY_SUGGESTIONS.filter((c) => !form.categories.includes(c)).map((cat) => (
+                      <button
+                        key={cat}
+                        type="button"
+                        className="admin-pf-cat-chip"
+                        onClick={() => addCategory(cat)}
+                      >
+                        + {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                      </button>
+                    ))}
+                  </div>
+                )}
                 {form.categories.length === 0 && (
-                  <p className="admin-pf-cats-hint">Select at least one category</p>
+                  <p className="admin-pf-cats-hint">Add at least one category</p>
                 )}
               </div>
 
-              {/* Genders */}
+              {/* Suitable For */}
               <div className="admin-field">
                 <span className="admin-label">Suitable For</span>
-                <div className="admin-pf-genders">
-                  {GENDERS.map((g) => (
-                    <label key={g} className="admin-pf-gender-label">
-                      <input
-                        type="checkbox"
-                        className="admin-pf-gender-cb"
-                        checked={form.genders.includes(g)}
-                        onChange={() => toggleGender(g)}
-                      />
-                      <span className={`admin-pf-gender-chip${form.genders.includes(g) ? " selected" : ""}`}>
-                        {g}
-                      </span>
-                    </label>
+                <div className={`admin-pf-color-input-wrap${genderInput ? " focused" : ""}`}>
+                  {form.genders.map((g) => (
+                    <span key={g} className="admin-pf-color-tag">
+                      {g}
+                      <button
+                        type="button"
+                        className="admin-pf-color-tag-remove"
+                        onClick={() => removeGender(g)}
+                        aria-label={`Remove ${g}`}
+                      >
+                        <FiX size={10} />
+                      </button>
+                    </span>
                   ))}
+                  <input
+                    className="admin-pf-color-input"
+                    type="text"
+                    value={genderInput}
+                    onChange={(e) => setGenderInput(e.target.value)}
+                    onKeyDown={handleGenderKeyDown}
+                    onBlur={() => addGender()}
+                    placeholder={form.genders.length === 0 ? "Type a value and press Enter…" : "Add another…"}
+                  />
                 </div>
+                {/* Quick-pick suggestions (not already selected) */}
+                {SUITABLE_FOR_SUGGESTIONS.some((g) => !form.genders.includes(g)) && (
+                  <div className="admin-pf-cats" style={{ marginTop: "0.5rem" }}>
+                    {SUITABLE_FOR_SUGGESTIONS.filter((g) => !form.genders.includes(g)).map((g) => (
+                      <button
+                        key={g}
+                        type="button"
+                        className="admin-pf-cat-chip"
+                        onClick={() => addGender(g)}
+                      >
+                        + {g}
+                      </button>
+                    ))}
+                  </div>
+                )}
+                <p className="admin-pf-color-hint">Press Enter or comma after each value</p>
               </div>
 
               {/* Colors */}

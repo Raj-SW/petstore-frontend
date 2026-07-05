@@ -51,7 +51,7 @@ apiClient.interceptors.response.use(
       // 413 from Vercel/nginx comes back as HTML with no JSON body
       const message =
         status === 413
-          ? "File too large. Please use images under 4 MB and try again."
+          ? "File too large. Please use images under 15 MB and try again."
           : data?.message || data?.error || "An error occurred";
 
       const apiError = new Error(message);

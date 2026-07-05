@@ -189,6 +189,7 @@ const AdminProducts = () => {
               src={src}
               alt={item.name}
               className="product-thumbnail"
+              loading="lazy"
               onError={(e) => { e.target.src = "https://placehold.co/50x50"; }}
             />
           </div>

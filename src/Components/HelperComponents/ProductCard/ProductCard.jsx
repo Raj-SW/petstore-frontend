@@ -17,7 +17,7 @@ const ProductCard = ({ id, imageUrl, title, price }) => {
 
   return (
     <button type="button" className="pc-card" onClick={() => navigate(`/petshop/${id}`)}>
-      <img src={imageUrl} alt={title} className="pc-img" />
+      <img src={imageUrl} alt={title} className="pc-img" loading="lazy" />
 
       <div className="pc-tint" />
 

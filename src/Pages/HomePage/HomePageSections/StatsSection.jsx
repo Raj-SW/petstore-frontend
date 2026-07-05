@@ -3,15 +3,17 @@ import { motion, useInView, AnimatePresence } from "framer-motion";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import feedbackApi from "../../../Services/api/feedbackApi";
 import vetWithDogImg from "../../../assets/StatsSection/vet-with-dog.jpg";
-import slide1a from "../../../assets/StatsSection/slide-1-a.jpg";
-import slide1b from "../../../assets/StatsSection/slide-1-b.jpg";
-import slide1c from "../../../assets/StatsSection/slide-1-c.jpg";
-import slide2a from "../../../assets/StatsSection/slide-2-a.jpg";
-import slide2b from "../../../assets/StatsSection/slide-2-b.jpg";
-import slide2c from "../../../assets/StatsSection/slide-2-c.png";
-import slide3a from "../../../assets/StatsSection/slide-3-a.jpg";
-import slide3b from "../../../assets/StatsSection/slide-3-b.jpg";
-import slide3c from "../../../assets/StatsSection/slide-3-c.png";
+// Resized (max 900px) + re-encoded as WebP — originals were raw camera/stock
+// resolution (up to 5181x7767px, ~40MP) for a card that displays under 650px wide.
+import slide1a from "../../../assets/StatsSection/slide-1-a.webp";
+import slide1b from "../../../assets/StatsSection/slide-1-b.webp";
+import slide1c from "../../../assets/StatsSection/slide-1-c.webp";
+import slide2a from "../../../assets/StatsSection/slide-2-a.webp";
+import slide2b from "../../../assets/StatsSection/slide-2-b.webp";
+import slide2c from "../../../assets/StatsSection/slide-2-c.webp";
+import slide3a from "../../../assets/StatsSection/slide-3-a.webp";
+import slide3b from "../../../assets/StatsSection/slide-3-b.webp";
+import slide3c from "../../../assets/StatsSection/slide-3-c.webp";
 import "./StatsSection.css";
 
 const toPhotoUrl = (p) => (typeof p === "string" ? p : p?.url);
@@ -121,7 +123,7 @@ const StatsSection = () => {
             transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
           >
             <div className="ss-about-img-clip">
-              <img src={vetWithDogImg} alt="Vet with dog" className="ss-about-img" />
+              <img src={vetWithDogImg} alt="Vet with dog" className="ss-about-img" loading="lazy" />
             </div>
           </motion.div>
 
@@ -250,13 +252,13 @@ const StatsSection = () => {
                       return (
                         <>
                           {photos[0]
-                            ? <img src={photos[0]} alt="" className="ss-slide-img ss-slide-img--tall" />
+                            ? <img src={photos[0]} alt="" className="ss-slide-img ss-slide-img--tall" loading="lazy" />
                             : <div className="ss-img-placeholder ss-img-placeholder--tall" />}
                           {photos[1]
-                            ? <img src={photos[1]} alt="" className="ss-slide-img" />
+                            ? <img src={photos[1]} alt="" className="ss-slide-img" loading="lazy" />
                             : <div className="ss-img-placeholder" />}
                           {photos[2]
-                            ? <img src={photos[2]} alt="" className="ss-slide-img" />
+                            ? <img src={photos[2]} alt="" className="ss-slide-img" loading="lazy" />
                             : <div className="ss-img-placeholder" />}
                         </>
                       );
@@ -266,9 +268,9 @@ const StatsSection = () => {
                     if (staticImages) {
                       return (
                         <>
-                          <img src={staticImages[0]} alt="" className="ss-slide-img ss-slide-img--tall" />
-                          <img src={staticImages[1]} alt="" className="ss-slide-img" />
-                          <img src={staticImages[2]} alt="" className="ss-slide-img" />
+                          <img src={staticImages[0]} alt="" className="ss-slide-img ss-slide-img--tall" loading="lazy" />
+                          <img src={staticImages[1]} alt="" className="ss-slide-img" loading="lazy" />
+                          <img src={staticImages[2]} alt="" className="ss-slide-img" loading="lazy" />
                         </>
                       );
                     }

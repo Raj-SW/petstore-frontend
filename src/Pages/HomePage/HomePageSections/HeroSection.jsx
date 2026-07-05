@@ -1,7 +1,9 @@
 import "./HeroSection.css";
 import { FaHome, FaWhatsapp, FaMapMarkerAlt } from "react-icons/fa";
-import heroLeftBg from "../../../assets/HeroSectionAssets/Hero-Image-left-background.png";
-import heroRight from "../../../assets/HeroSectionAssets/hero-image-right.png";
+// Re-encoded as WebP — originals were PNGs at small display dimensions
+// (553x370 / 661x370) but 264KB/547KB, a poor format choice for this content.
+import heroLeftBg from "../../../assets/HeroSectionAssets/Hero-Image-left-background.webp";
+import heroRight from "../../../assets/HeroSectionAssets/hero-image-right.webp";
 import vitalPawsLogo from "../../../assets/HeroSectionAssets/VitalPaws Logo.png";
 
 const FEATURES = [

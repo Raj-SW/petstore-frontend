@@ -87,7 +87,7 @@ const MySubscriptions = () => {
               {s.items.map((it, i) => (
                 <li key={it.product?._id ? `${it.product._id}-${i}` : i} className="ms-item">
                   {it.product?.images?.[0]?.url && (
-                    <img className="ms-item-img" src={it.product.images[0].url} alt="" />
+                    <img className="ms-item-img" src={it.product.images[0].url} alt="" loading="lazy" />
                   )}
                   <span className="ms-item-name">{(it.product?.name) || "Item"}</span>
                   {it.variantLabel ? ` · ${it.variantLabel}` : ""} × {it.quantity}

@@ -139,7 +139,7 @@ export default function OrderConfirmedPage() {
                 return (
                   <div key={item.id || item._id || i} className="oc-item">
                     {img && (
-                      <img src={img} alt={name} className="oc-item-img" />
+                      <img src={img} alt={name} className="oc-item-img" loading="lazy" />
                     )}
                     <div className="oc-item-info">
                       <span className="oc-item-name">{name}</span>

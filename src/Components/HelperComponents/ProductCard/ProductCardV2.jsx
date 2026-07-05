@@ -71,6 +71,7 @@ const ProductCardV2 = ({
           src={imageUrl || PLACEHOLDER_IMG}
           alt={title}
           className="pcv2-img"
+          loading="lazy"
           onError={(e) => { e.currentTarget.src = PLACEHOLDER_IMG; }}
         />
         {isOnSaleNow && (

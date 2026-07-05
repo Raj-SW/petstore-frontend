@@ -33,7 +33,7 @@ const PetList = ({ pets, onEdit, onDelete, onManagePhotos }) => {
           >
             <div className="pet-cover">
               {pet.images && pet.images.length > 0 ? (
-                <img src={pet.images[0].url} alt={pet.name} />
+                <img src={pet.images[0].url} alt={pet.name} loading="lazy" />
               ) : (
                 <span className="pet-cover-placeholder">
                   {TYPE_ICON[pet.type] || <FaPaw size={22} />}

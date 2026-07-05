@@ -1,57 +1,40 @@
-import { Carousel } from "primereact/carousel";
-import "primereact/resources/themes/saga-green/theme.css";
-import "primereact/resources/primereact.min.css";
-import "primeicons/primeicons.css";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselPrevious,
+  CarouselNext,
+} from "@/Components/ui/carousel";
 import ProductReviewCard from "../ProductReviewCard/ProductReviewCard";
+import "./ReviewCarousel.css";
 
-const ReviewCarousel = ({ reviews, currentUserId, onEdit, onDelete }) => {
-  const responsiveOptions = [
-    {
-      breakpoint: "1400px",
-      numVisible: 3,
-      numScroll: 1,
-    },
-    {
-      breakpoint: "1199px",
-      numVisible: 2,
-      numScroll: 1,
-    },
-    {
-      breakpoint: "767px",
-      numVisible: 1,
-      numScroll: 1,
-    },
-    {
-      breakpoint: "575px",
-      numVisible: 1,
-      numScroll: 1,
-    },
-  ];
-
-  const reviewTemplate = (review) => (
-    <div style={{ display: "flex", justifyContent: "center", padding: "0.5rem" }}>
-      <ProductReviewCard
-        review={review}
-        currentUserId={currentUserId}
-        onEdit={onEdit}
-        onDelete={onDelete}
-      />
-    </div>
-  );
-
-  return (
-    <div style={{ margin: "1rem 0" }}>
-      <Carousel
-        value={reviews}
-        itemTemplate={reviewTemplate}
-        numVisible={3}
-        numScroll={1}
-        circular
-        style={{ maxWidth: "100vw", margin: "0 auto" }}
-        responsiveOptions={responsiveOptions}
-      />
-    </div>
-  );
-};
+// Same responsive breakpoints PrimeReact's Carousel used to provide via
+// `responsiveOptions` (1 visible on mobile, 2 on tablet, 3 on desktop),
+// expressed as Tailwind basis utilities on each slide.
+const ReviewCarousel = ({ reviews, currentUserId, onEdit, onDelete }) => (
+  <div className="review-carousel-wrap">
+    <Carousel className="review-carousel" opts={{ align: "start", loop: true }}>
+      <CarouselContent>
+        {reviews.map((review) => (
+          <CarouselItem
+            key={review._id || review.id}
+            className="basis-full sm:basis-1/2 lg:basis-1/3"
+          >
+            <div className="review-carousel-slide">
+              <ProductReviewCard
+                review={review}
+                currentUserId={currentUserId}
+                onEdit={onEdit}
+                onDelete={onDelete}
+              />
+            </div>
+          </CarouselItem>
+        ))}
+      </CarouselContent>
+      <CarouselPrevious className="review-carousel-arrow review-carousel-arrow--prev" />
+      <CarouselNext className="review-carousel-arrow review-carousel-arrow--next" />
+    </Carousel>
+  </div>
+);
 
 export default ReviewCarousel;

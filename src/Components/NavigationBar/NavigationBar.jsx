@@ -271,12 +271,11 @@ const NavigationBar = () => {
         </div>
       </nav>
 
-      {/* Mobile slide-in menu */}
-      <button
-        type="button"
+      {/* Mobile slide-in menu — the overlay is just a click-to-close backdrop;
+          it must not be a <button> since it wraps a <nav> containing several
+          real buttons/links (invalid to nest interactive elements). */}
+      <div
         className={`mobile-menu-overlay${mobileMenuOpen ? " open" : ""}`}
-        tabIndex={mobileMenuOpen ? 0 : -1}
-        aria-label="Close menu"
         onClick={handleOverlayClick}
         aria-hidden={!mobileMenuOpen}
       >
@@ -439,7 +438,7 @@ const NavigationBar = () => {
             )}
           </div>
         </nav>
-      </button>
+      </div>
     </>
   );
 };

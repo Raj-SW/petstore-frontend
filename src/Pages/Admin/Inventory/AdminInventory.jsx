@@ -201,6 +201,7 @@ export default function AdminInventory() {
                           src={productImg(p) || "https://placehold.co/48x48"}
                           alt={productName(p)}
                           className="inv-product-img"
+                          loading="lazy"
                           onError={e => { e.target.src = "https://placehold.co/48x48"; }}
                         />
                         <span className="inv-product-name">{productName(p)}</span>

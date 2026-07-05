@@ -27,7 +27,7 @@ import "./ImageManager.css";
  *   onError    (msg) => void         optional toast hook
  *   label      string               optional heading
  */
-const MAX_MB = 4;
+const MAX_MB = 15;
 const MAX_BYTES = MAX_MB * 1024 * 1024;
 
 const Thumb = ({ img, index, onRemove, onMakeCover }) => {
@@ -41,7 +41,7 @@ const Thumb = ({ img, index, onRemove, onMakeCover }) => {
   };
   return (
     <div ref={setNodeRef} style={style} className={`im-thumb${index === 0 ? " im-thumb--cover" : ""}`}>
-      <img src={img.url} alt={`Uploaded thumbnail ${index + 1}`} className="im-thumb-img" />
+      <img src={img.url} alt={`Uploaded thumbnail ${index + 1}`} className="im-thumb-img" loading="lazy" />
 
       <button type="button" className="im-thumb-drag" {...attributes} {...listeners} title="Drag to reorder" aria-label="Drag to reorder">
         <MdDragIndicator />

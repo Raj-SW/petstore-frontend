@@ -70,12 +70,13 @@ const AppointmentCard = ({
         transition={{ type: "spring", stiffness: 400, damping: 10 }}
       >
         {icon ? (
-          <img src={icon} alt={`${title} avatar`} className="avatar-image" />
+          <img src={icon} alt={`${title} avatar`} className="avatar-image" loading="lazy" />
         ) : (
           <img
             src={getAvatarUrl()}
             alt={`${title} avatar`}
             className="avatar-image"
+            loading="lazy"
           />
         )}
       </motion.div>

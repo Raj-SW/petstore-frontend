@@ -381,7 +381,7 @@ export default function MyOrdersPage() {
                         className="orders-item-row orders-item-row--clickable"
                         onClick={() => { const pid = product?._id || product?.id; if (pid) navigate(`/product/${pid}`); }}
                       >
-                        {img && <img src={img} alt={name} className="orders-item-img" />}
+                        {img && <img src={img} alt={name} className="orders-item-img" loading="lazy" />}
                         <div className="orders-item-info">
                           <span className="orders-item-name">{name}</span>
                           <span className="orders-item-qty">Qty: {item.quantity}</span>

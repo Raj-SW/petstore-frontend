@@ -200,6 +200,39 @@
   color: #dc2626;
 }
 
+/* Suitable-for tags */
+.ip-suitable {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.6rem;
+}
+
+.ip-suitable-label {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-primary-forest, #001c10);
+}
+
+.ip-suitable-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.ip-suitable-tag {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.2rem 0.65rem;
+  border-radius: 50px;
+  background: rgba(217, 154, 43, 0.12);
+  color: var(--color-accent-gold, #b8860b);
+  text-transform: capitalize;
+}
+
 .ip-title {
   font-family: var(--font-body);
   font-weight: 800;

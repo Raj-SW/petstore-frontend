@@ -479,7 +479,7 @@ const AdminOrders = () => {
                         return (
                           <li key={item.product?._id ? `${item.product._id}-${idx}` : `item-${idx}`} className="aod-item">
                             {img ? (
-                              <img src={img} alt={name} className="aod-item-img" />
+                              <img src={img} alt={name} className="aod-item-img" loading="lazy" />
                             ) : (
                               <div className="aod-item-img aod-item-img--placeholder" />
                             )}
