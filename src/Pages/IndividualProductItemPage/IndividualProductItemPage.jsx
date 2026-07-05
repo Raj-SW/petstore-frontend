@@ -569,7 +569,7 @@ const IndividualProductItemPage = () => {
 
             {hasVariants && (
               <div className="ip-variants">
-                <span className="ip-variants-label">Size</span>
+                <span className="ip-variants-label">Options</span>
                 <div className="ip-variants-row">
                   {product.variantsView.map((v) => (
                     <button
