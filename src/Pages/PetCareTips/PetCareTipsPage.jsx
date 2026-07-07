@@ -10,6 +10,7 @@ import FeaturedSection from "./components/FeaturedSection";
 import AnimalStrip from "./components/AnimalStrip";
 import CategoryChips from "./components/CategoryChips";
 import AdvertBanner from "./components/AdvertBanner";
+import SkeletonCard from "../../Components/HelperComponents/SkeletonCard/SkeletonCard";
 import useSEO from "../../hooks/useSEO";
 import "./PetCareTips.css";
 
@@ -90,7 +91,7 @@ const PetCareTipsPage = () => {
 
   let tipsGridContent;
   if (loading) {
-    tipsGridContent = <div className="pct-empty">Loading tips…</div>;
+    tipsGridContent = <div className="pct-grid"><SkeletonCard variant="card" count={6} /></div>;
   } else if (gridItems.length === 0) {
     tipsGridContent = (
       <div className="pct-empty">
