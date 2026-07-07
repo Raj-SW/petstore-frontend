@@ -2,12 +2,9 @@ import { isValidElement } from "react";
 import { FiArrowRight, FiAward } from "react-icons/fi";
 import "./ProfessionalCard.css";
 
-/**
- * Professional directory card (Epic 4) — token-styled, no react-bootstrap.
- * Shows avatar, name, a role/specialty chip and experience; the primary action
- * opens the professional's profile. Ratings + contact block were removed (the
- * directory rebuild descoped reviews; contact lives on the detail page).
- */
+const PLACEHOLDER =
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='280'%3E%3Crect width='400' height='280' fill='%23f0ebe4'/%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-size='64' fill='%23c9baa8'%3E%F0%9F%91%A4%3C/text%3E%3C/svg%3E";
+
 const ProfessionalCard = ({
   name,
   specialty,
@@ -17,19 +14,20 @@ const ProfessionalCard = ({
   badgeLabel,
   onBook,
 }) => {
-  const avatarUrl =
-    image ||
-    `https://ui-avatars.com/api/?name=${encodeURIComponent(name || "Pro")}&background=74B49B&color=fff&size=160`;
+  const avatarUrl = image || PLACEHOLDER;
 
   return (
     <article className="pro-card">
-      <div className="pro-card-top">
-        <div className="pro-card-avatar">
-          <img src={avatarUrl} alt={`${name} avatar`} loading="lazy" />
-        </div>
+      <div className="pro-card-img-wrap">
+        <img
+          src={avatarUrl}
+          alt={name}
+          className="pro-card-img"
+          loading="lazy"
+          onError={(e) => { e.currentTarget.src = PLACEHOLDER; }}
+        />
         {badgeLabel && (
           <span className="pro-card-chip">
-            {/* badgeIcon may arrive as a JSX element (current callers) or a component */}
             {(() => {
               if (isValidElement(BadgeIcon)) return BadgeIcon;
               if (typeof BadgeIcon === "function") return <BadgeIcon aria-hidden="true" />;
@@ -40,19 +38,18 @@ const ProfessionalCard = ({
         )}
       </div>
 
-      <h3 className="pro-card-name">{name}</h3>
-
-      {specialty && <p className="pro-card-specialty">{specialty}</p>}
-
-      {(experience || experience === 0) && (
-        <p className="pro-card-exp">
-          <FiAward aria-hidden="true" /> {experience} years experience
-        </p>
-      )}
-
-      <button type="button" className="pro-card-btn" onClick={onBook}>
-        View profile <FiArrowRight aria-hidden="true" />
-      </button>
+      <div className="pro-card-info">
+        <h3 className="pro-card-name">{name}</h3>
+        {specialty && <p className="pro-card-specialty">{specialty}</p>}
+        {(experience || experience === 0) && (
+          <p className="pro-card-exp">
+            <FiAward aria-hidden="true" /> {experience} years experience
+          </p>
+        )}
+        <button type="button" className="pro-card-btn" onClick={onBook}>
+          View profile <FiArrowRight aria-hidden="true" />
+        </button>
+      </div>
     </article>
   );
 };

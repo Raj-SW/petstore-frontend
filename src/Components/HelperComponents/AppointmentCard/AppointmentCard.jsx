@@ -1,198 +1,89 @@
 import { format, parseISO } from "date-fns";
-import { Button, ButtonGroup } from "react-bootstrap";
-import {
-  FaTrash,
-  FaClock,
-  FaMapMarkerAlt,
-  FaPaw,
-} from "react-icons/fa";
+import { FaClock, FaMapMarkerAlt, FaPaw, FaBan } from "react-icons/fa";
 import { motion } from "framer-motion";
 import "./AppointmentCard.css";
 
+const PLACEHOLDER =
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='280'%3E%3Crect width='400' height='280' fill='%23f0ebe4'/%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-size='64' fill='%23c9baa8'%3E%F0%9F%91%A4%3C/text%3E%3C/svg%3E";
+
+const STATUS_COLOR = {
+  confirmed: "#2e7d4f",
+  pending:   "#b57c1a",
+  cancelled: "#c0392b",
+  rejected:  "#c0392b",
+};
+
 const AppointmentCard = ({
   professionalName,
-  title,
+  appointmentType,
   dateTime,
-  description,
   status,
   role,
   location,
   petName,
-  appointmentType,
   icon,
-  onEdit,
   onDelete,
 }) => {
-  // parse + format date/time with error handling
-  const getFormattedDate = () => {
-    if (!dateTime) {
-      console.log("No datetimeISO provided", dateTime);
-      return "No date set";
-    }
-
+  let formatted = "No date set";
+  if (dateTime) {
     try {
       const parsed = parseISO(dateTime);
-      if (Number.isNaN(parsed.getTime())) {
-        console.log("Invalid dateTime format:", dateTime);
-        return "Invalid date";
-      }
-      return format(parsed, "eee, MMM d, h:mm a");
-    } catch (error) {
-      console.log("Error parsing dateTime:", error, dateTime);
-      return "Date error";
+      if (!Number.isNaN(parsed.getTime())) formatted = format(parsed, "eee, MMM d · h:mm a");
+    } catch {
+      formatted = "Date error";
     }
-  };
+  }
 
-  const formatted = getFormattedDate();
-
-  // Generate UI Avatar URL as fallback
-  const getAvatarUrl = () => {
-    const bgColor = role === "Veterinarian" ? "74B49B" : "5C8D89";
-    return `https://ui-avatars.com/api/?name=${encodeURIComponent(
-      professionalName
-    )}&background=${bgColor}&color=fff&size=128`;
-  };
+  const isClosed = ["cancelled", "rejected"].includes(status?.toLowerCase());
+  const statusColor = STATUS_COLOR[status?.toLowerCase()] ?? "#8a7d6e";
 
   return (
-    <motion.div
-      className="appointment-card"
+    <motion.article
+      className="appt-card"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.3 }}
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
+      whileHover={{ y: -6, transition: { duration: 0.22, ease: "easeOut" } }}
     >
-      {/* Avatar/Icon */}
-      <motion.div
-        className="appointment-avatar"
-        whileHover={{ scale: 1.1 }}
-        transition={{ type: "spring", stiffness: 400, damping: 10 }}
-      >
-        {icon ? (
-          <img src={icon} alt={`${title} avatar`} className="avatar-image" loading="lazy" />
-        ) : (
-          <img
-            src={getAvatarUrl()}
-            alt={`${title} avatar`}
-            className="avatar-image"
-            loading="lazy"
-          />
+      <div className="appt-img-wrap">
+        <img
+          src={icon || PLACEHOLDER}
+          alt={professionalName}
+          className="appt-img"
+          loading="lazy"
+          onError={(e) => { e.currentTarget.src = PLACEHOLDER; }}
+        />
+        {status && (
+          <span className="appt-status-pill" style={{ background: statusColor }}>
+            {status}
+          </span>
         )}
-      </motion.div>
-
-      {/* Content */}
-      <div className="appointment-content">
-        {/* Header: title + badges */}
-        <motion.div
-          className="appointment-header"
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.1 }}
-        >
-          <h3 className="appointment-title">
-            {professionalName} - {appointmentType}
-          </h3>
-          <div className="badge-group">
-            {role && (
-              <motion.span
-                className={`badge role-badge role-${role.toLowerCase()}`}
-                whileHover={{ scale: 1.05 }}
-              >
-                {role}
-              </motion.span>
-            )}
-            {status && (
-              <motion.span
-                className={`badge status-badge status-${status.toLowerCase()}`}
-                whileHover={{ scale: 1.05 }}
-              >
-                {status}
-              </motion.span>
-            )}
-          </div>
-        </motion.div>
-
-        {/* Date/Time */}
-        <motion.div
-          className="appointment-schedule"
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.2 }}
-        >
-          <FaClock className="schedule-icon" />
-          {formatted}
-        </motion.div>
-
-        {/* Location */}
-        {location && (
-          <motion.div
-            className="appointment-location"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.3 }}
-          >
-            <FaMapMarkerAlt className="location-icon" />
-            <span>{location}</span>
-          </motion.div>
-        )}
-
-        {/* Pet Name */}
-        {petName && (
-          <motion.div
-            className="appointment-pet"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.35 }}
-          >
-            <FaPaw className="pet-icon" />
-            <span>{petName}</span>
-          </motion.div>
-        )}
-
-        {/* Description */}
-        {description && (
-          <motion.p
-            className="appointment-description"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.4 }}
-          >
-            {description}
-          </motion.p>
-        )}
-
-        {/* Action Buttons */}
-        <motion.div
-          className="appointment-actions"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-        >
-          <ButtonGroup size="sm">
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button
-                variant="outline-danger"
-                onClick={onDelete}
-                className="action-button"
-                disabled={
-                  status?.toLowerCase() === "cancelled" ||
-                  status?.toLowerCase() === "rejected"
-                }
-                title={
-                  status?.toLowerCase() === "cancelled" ||
-                  status?.toLowerCase() === "rejected"
-                    ? "Cannot delete cancelled/rejected appointments"
-                    : "Delete appointment"
-                }
-              >
-                <FaTrash /> Cancel
-              </Button>
-            </motion.div>
-          </ButtonGroup>
-        </motion.div>
       </div>
-    </motion.div>
+
+      <div className="appt-info">
+        <p className="appt-name">{professionalName}</p>
+        {appointmentType && <p className="appt-type">{appointmentType}</p>}
+
+        <div className="appt-meta">
+          <span><FaClock size={11} aria-hidden="true" /> {formatted}</span>
+          {location && <span><FaMapMarkerAlt size={11} aria-hidden="true" /> {location}</span>}
+          {petName  && <span><FaPaw size={11} aria-hidden="true" /> {petName}</span>}
+          {role     && <span className="appt-role">{role}</span>}
+        </div>
+
+        <button
+          type="button"
+          className="appt-cancel-btn"
+          onClick={onDelete}
+          disabled={isClosed}
+          title={isClosed ? "Cannot cancel a closed appointment" : "Cancel appointment"}
+        >
+          <FaBan size={12} aria-hidden="true" />
+          Cancel
+        </button>
+      </div>
+    </motion.article>
   );
 };
 
