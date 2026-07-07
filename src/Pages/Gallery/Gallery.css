@@ -212,17 +212,6 @@
 }
 
 /* ── Skeleton + empty ── */
-.gal-skeleton {
-  height: 300px;
-  border-radius: 14px;
-  background: linear-gradient(90deg, #e8e1d9 25%, #f0ebe5 50%, #e8e1d9 75%);
-  background-size: 200% 100%;
-  animation: gal-shimmer 1.4s infinite;
-}
-@keyframes gal-shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
 .gal-empty {
   text-align: center;
   color: var(--color-text-muted, #5b5147);

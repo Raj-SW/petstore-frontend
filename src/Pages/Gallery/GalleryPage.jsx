@@ -10,6 +10,7 @@ import Breadcrumb from "../../Components/HelperComponents/Breadcrumb/Breadcrumb"
 import AdvertBanner from "../PetCareTips/components/AdvertBanner";
 import { GALLERY_CATEGORIES, getCategoryTheme, formatEventDate } from "./galleryTheme";
 import { coverUrl } from "../../utils/coverImage";
+import SkeletonCard from "../../Components/HelperComponents/SkeletonCard/SkeletonCard";
 import useSEO from "../../hooks/useSEO";
 import "./Gallery.css";
 
@@ -100,7 +101,7 @@ const GalleryPage = () => {
   if (loading) {
     galleryContent = (
       <div className="gal-grid">
-        {Array.from({ length: 6 }, (_, i) => <div key={`skel-${i}`} className="gal-skeleton" />)}
+        <SkeletonCard variant="card" count={6} />
       </div>
     );
   } else if (posts.length === 0) {
