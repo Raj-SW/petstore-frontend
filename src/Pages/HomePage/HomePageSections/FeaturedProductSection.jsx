@@ -9,6 +9,7 @@ import {
   CarouselNext,
 } from "@/Components/ui/carousel";
 import { buildCarouselPlugins } from "./featuredAutoplay";
+import SkeletonCard from "../../../Components/HelperComponents/SkeletonCard/SkeletonCard";
 import productsApi from "@/Services/api/productsApi";
 import "./FeaturedProductSection.css";
 
@@ -77,9 +78,7 @@ const FeaturedProductSection = () => {
   if (loading) {
     carouselContent = (
       <div className="fp-skeleton-row">
-        {Array.from({ length: 3 }, (_, i) => (
-          <div key={`fp-skel-${i}`} className="fp-skeleton" />
-        ))}
+        <SkeletonCard variant="card" count={3} />
       </div>
     );
   } else if (currentProducts.length === 0) {

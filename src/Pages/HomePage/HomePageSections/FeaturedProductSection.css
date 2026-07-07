@@ -121,23 +121,6 @@
   flex: 0 0 360px;
 }
 
-/* ── Skeleton ── */
-
-.fp-skeleton {
-  width: 360px;
-  height: 400px;
-  border-radius: 16px;
-  background: linear-gradient(90deg, #e8e1d9 25%, #f0ebe5 50%, #e8e1d9 75%);
-  background-size: 200% 100%;
-  animation: fp-shimmer 1.4s infinite;
-  flex-shrink: 0;
-}
-
-@keyframes fp-shimmer {
-  0%   { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
-
 /* ── Empty state ── */
 
 .fp-empty {
@@ -174,10 +157,6 @@
     flex: 0 0 300px;
   }
 
-  .fp-skeleton {
-    width: 300px;
-    height: 360px;
-  }
 }
 
 /* Mobile: 1 card, full width */
@@ -224,11 +203,6 @@
     overflow: hidden;
   }
 
-  .fp-skeleton {
-    width: 100%;
-    max-width: 420px;
-    height: 340px;
-  }
 }
 
 /* ---- Carousel (Featured Products) ---- */
@@ -274,10 +248,7 @@
   gap: 1rem;
   padding: 0 2.75rem;
 }
-.fp-skeleton-row .fp-skeleton {
-  flex: 1 1 0;
-  height: 320px;
-}
+
 
 /* Position dots */
 .fp-dots {
