@@ -8,6 +8,7 @@ import {
 import Breadcrumb from "@/Components/HelperComponents/Breadcrumb/Breadcrumb";
 import ProfessionalList from "@/Components/HelperComponents/ProfessionalList/ProfessionalList";
 import { useAuth } from "@/context/AuthContext";
+import useSEO from "../../hooks/useSEO";
 import "./AppointmentPage.css";
 
 const TABS = [
@@ -20,6 +21,7 @@ const TABS = [
 const VALID_TABS = new Set(TABS.map((t) => t.key));
 
 const AppointmentPage = () => {
+  useSEO("Book an Appointment", "Book a veterinarian, groomer, or pet taxi service at VitalPaws in Mauritius.");
   const [searchParams, setSearchParams] = useSearchParams();
   const { user } = useAuth();
 

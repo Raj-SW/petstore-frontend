@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { FiCalendar, FiMapPin, FiArrowLeft } from "react-icons/fi";
 import galleryApi from "../../Services/api/galleryApi";
 import advertsApi from "../../Services/api/advertsApi";
+import useSEO from "../../hooks/useSEO";
 import RichTextRenderer from "../../Components/RichText/RichTextRenderer";
 import Breadcrumb from "../../Components/HelperComponents/Breadcrumb/Breadcrumb";
 import AdvertBanner from "../PetCareTips/components/AdvertBanner";
@@ -14,6 +15,7 @@ import "./GalleryDetail.css";
 const GalleryDetailPage = () => {
   const { slug } = useParams();
   const [post, setPost] = useState(null);
+  useSEO(post?.title, post?.excerpt || null);
   const [related, setRelated] = useState([]);
   const [sidebarAd, setSidebarAd] = useState(null);
   const [status, setStatus] = useState("loading"); // loading | ready | notfound

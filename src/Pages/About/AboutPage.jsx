@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import useSEO from "../../hooks/useSEO";
 import {
   FaPaw,
   FaPhoneAlt,
@@ -184,6 +185,7 @@ const CARE_ROWS = [
 /* ── Main Page ── */
 
 const AboutPage = () => {
+  useSEO("About Us", "Learn about VitalPaws — our mission, team, and commitment to compassionate pet care in Mauritius.");
   const heroRef = useRef(null);
   const heroInView = useInView(heroRef, { once: true, amount: 0.3 });
   const navigate = useNavigate();

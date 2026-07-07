@@ -11,11 +11,13 @@ import SearchBar from "@/Components/HelperComponents/SearchBar/SearchBar";
 import ShopBanner from "../../Components/Shop/ShopBanner";
 import FilterComponent from "./FilterComponent";
 import ProductService from "@/Services/localServices/ProductService";
+import useSEO from "../../hooks/useSEO";
 import "./PetShopPage.css";
 
 const PER_PAGE_OPTIONS = [25, 50, 100];
 
 const PetShopPage = () => {
+  useSEO("Pet Shop", "Shop pet food, toys, accessories and more at VitalPaws — Mauritius's trusted pet shop.");
   const [searchParams] = useSearchParams();
 
   const [products, setProducts] = useState([]);

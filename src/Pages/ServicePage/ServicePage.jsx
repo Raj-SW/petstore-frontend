@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, useInView } from "framer-motion";
+import useSEO from "../../hooks/useSEO";
 import {
   FaStethoscope,
   FaCut,
@@ -209,6 +210,7 @@ const StatCard = ({ value, label, delay }) => {
 /* ── Main Page ── */
 
 const ServicePage = () => {
+  useSEO("Services", "Explore VitalPaws services: veterinary care, grooming, boarding, pet taxi, and more in Mauritius.");
   const navigate = useNavigate();
 
   const heroRef   = useRef(null);

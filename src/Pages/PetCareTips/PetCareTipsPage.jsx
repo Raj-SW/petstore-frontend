@@ -10,11 +10,13 @@ import FeaturedSection from "./components/FeaturedSection";
 import AnimalStrip from "./components/AnimalStrip";
 import CategoryChips from "./components/CategoryChips";
 import AdvertBanner from "./components/AdvertBanner";
+import useSEO from "../../hooks/useSEO";
 import "./PetCareTips.css";
 
 const SPONSORED_EVERY = 5; // inject a sponsored card after every 5th tip
 
 const PetCareTipsPage = () => {
+  useSEO("Pet Care Tips", "Browse expert pet care tips for dogs, cats, birds and more from the VitalPaws team in Mauritius.");
   const [tips, setTips] = useState([]);
   const [featured, setFeatured] = useState([]);
   const [bannerAds, setBannerAds] = useState([]);

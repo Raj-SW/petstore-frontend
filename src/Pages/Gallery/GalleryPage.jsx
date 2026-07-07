@@ -10,6 +10,7 @@ import Breadcrumb from "../../Components/HelperComponents/Breadcrumb/Breadcrumb"
 import AdvertBanner from "../PetCareTips/components/AdvertBanner";
 import { GALLERY_CATEGORIES, getCategoryTheme, formatEventDate } from "./galleryTheme";
 import { coverUrl } from "../../utils/coverImage";
+import useSEO from "../../hooks/useSEO";
 import "./Gallery.css";
 
 const FeaturedHero = ({ post }) => {
@@ -45,6 +46,7 @@ const FeaturedHero = ({ post }) => {
 };
 
 const GalleryPage = () => {
+  useSEO("Gallery", "See VitalPaws events, awards, and community moments from our veterinary clinic in Mauritius.");
   const [posts, setPosts] = useState([]);
   const [featured, setFeatured] = useState(null);
   const [bannerAd, setBannerAd] = useState(null);

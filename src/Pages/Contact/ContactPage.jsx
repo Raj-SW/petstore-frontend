@@ -9,6 +9,7 @@ import contactApi from "../../Services/api/contactApi";
 import advertsApi from "../../Services/api/advertsApi";
 import { useToast } from "../../context/ToastContext";
 import GoogleMap, { CLINIC_LOCATION } from "../../Components/Common/GoogleMap";
+import useSEO from "../../hooks/useSEO";
 import "./Contact.css";
 
 // Same targets as the footer — keep in sync.
@@ -67,6 +68,7 @@ const PromoCard = ({ adverts }) => {
 };
 
 const ContactPage = () => {
+  useSEO("Contact Us", "Get in touch with VitalPaws. Find us in Piton, Mauritius or send us a message online.");
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [sending, setSending] = useState(false);
   const [promoAds, setPromoAds] = useState([]);

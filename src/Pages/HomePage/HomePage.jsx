@@ -6,9 +6,11 @@ import StatsSection from "./HomePageSections/StatsSection";
 import EngagementSection from "./HomePageSections/EngagementSection/EngagementSection";
 import PromoBannerCarousel from "./HomePageSections/PromoBannerCarousel/PromoBannerCarousel";
 import FaqSection from "./HomePageSections/FaqSection/FaqSection";
+import useSEO from "../../hooks/useSEO";
 import "./HomePage.css";
 
 const HomePage = () => {
+  useSEO();
   return (
     <>
       <HeroSection />

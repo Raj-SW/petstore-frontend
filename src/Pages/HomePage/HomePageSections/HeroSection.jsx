@@ -17,7 +17,7 @@ const HeroSection = () => (
   <section className="hero-section">
     {/* Background layers */}
     <img src={heroLeftBg} alt="" className="hero-bg-img hero-bg-left" aria-hidden="true" />
-    <img src={heroRight} alt="" className="hero-bg-img hero-bg-right" aria-hidden="true" />
+    <img src={heroRight} alt="" className="hero-bg-img hero-bg-right" aria-hidden="true" fetchpriority="high" />
 
     {/* Gradient fade — right image bleeds into center */}
     <div className="hero-right-fade" aria-hidden="true" />

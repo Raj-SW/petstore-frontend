@@ -5,6 +5,7 @@ import { FiClock, FiCalendar, FiUser, FiArrowLeft, FiArrowRight } from "react-ic
 import tipsApi from "../../Services/api/tipsApi";
 import advertsApi from "../../Services/api/advertsApi";
 import { RichTextRenderer } from "../../Components/RichText";
+import useSEO from "../../hooks/useSEO";
 import Breadcrumb from "../../Components/HelperComponents/Breadcrumb/Breadcrumb";
 import { getAnimalTheme, capitalize } from "./tipTheme";
 import { coverUrl } from "../../utils/coverImage";
@@ -13,6 +14,10 @@ import "./TipDetail.css";
 const TipDetailPage = () => {
   const { slug } = useParams();
   const [tip, setTip] = useState(null);
+  useSEO(
+    tip?.title,
+    tip?.title ? `${tip.title} — a pet care tip for ${tip.animalType}s from VitalPaws in Mauritius.` : null
+  );
   const [related, setRelated] = useState([]);
   const [advert, setAdvert] = useState(null);
   const [status, setStatus] = useState("loading"); // loading | ready | notfound
