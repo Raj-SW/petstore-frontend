@@ -5,7 +5,7 @@ import { FaSearch, FaSync, FaUserMd, FaCut, FaCar } from "react-icons/fa";
 import { motion } from "framer-motion";
 import ProfessionalCard from "@/Components/HelperComponents/ProfessionalCard/ProfessionalCard";
 import PaginationBar from "@/Components/HelperComponents/PaginationBar/PaginationBar";
-import LoadingSpinner from "@/Components/HelperComponents/LoadingSpinner/LoadingSpinner";
+import SkeletonCard from "@/Components/HelperComponents/SkeletonCard/SkeletonCard";
 import professionalsApi from "@/Services/api/professionalsApi";
 import { useToast } from "@/context/ToastContext";
 import useDebounce from "@/hooks/useDebounce";
@@ -197,9 +197,8 @@ const ProfessionalList = ({
   // Render loading state
   if (loading) {
     return (
-      <div className="loading-container" role="status" aria-live="polite">
-        <LoadingSpinner />
-        <p>{config.loadingMessage}</p>
+      <div className={className} role="status" aria-live="polite">
+        <SkeletonCard variant="row" count={4} />
       </div>
     );
   }
