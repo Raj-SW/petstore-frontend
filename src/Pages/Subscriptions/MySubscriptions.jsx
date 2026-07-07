@@ -4,6 +4,7 @@ import { FiPause, FiPlay, FiSkipForward, FiX } from "react-icons/fi";
 import subscriptionsApi from "../../Services/api/subscriptionsApi";
 import { useToast } from "../../context/ToastContext";
 import { useCurrency } from "../../context/CurrencyContext";
+import SkeletonCard from "../../Components/HelperComponents/SkeletonCard/SkeletonCard";
 import "./MySubscriptions.css";
 
 const intervalLabel = (unit, count) => `Every ${count} ${unit}${count > 1 ? "s" : ""}`;
@@ -56,12 +57,12 @@ const MySubscriptions = () => {
       transition={{ duration: 0.4 }}
     >
       <h1 className="ms-title">My Subscriptions</h1>
-      {loading && <p className="ms-empty">Loading…</p>}
       {!loading && subs.length === 0 && (
         <p className="ms-empty">You have no active subscriptions yet.</p>
       )}
 
       <div className="ms-list">
+        {loading && <SkeletonCard variant="row" count={3} />}
         {subs.map((s) => {
           let statusAction = null;
           if (s.status === "active") {
