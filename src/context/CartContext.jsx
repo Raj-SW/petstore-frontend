@@ -58,7 +58,7 @@ function CartSyncLayer({ children }) {
         // Backend cart unavailable — local cart stays as-is
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.id]);
+  }, [user?._id ?? user?.id]);
 
   // Optimistic add: update UI immediately, sync to backend in background
   const addItem = useCallback(
@@ -73,7 +73,7 @@ function CartSyncLayer({ children }) {
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [user?.id]
+    [user?._id ?? user?.id]
   );
 
   const removeItem = useCallback(
@@ -88,7 +88,7 @@ function CartSyncLayer({ children }) {
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [user?.id]
+    [user?._id ?? user?.id]
   );
 
   const updateItemQuantity = useCallback(
@@ -106,7 +106,7 @@ function CartSyncLayer({ children }) {
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [user?.id, removeItem]
+    [user?._id ?? user?.id, removeItem]
   );
 
   const emptyCart = useCallback(
@@ -121,7 +121,7 @@ function CartSyncLayer({ children }) {
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [user?.id]
+    [user?._id ?? user?.id]
   );
 
   const value = useMemo(() => ({
