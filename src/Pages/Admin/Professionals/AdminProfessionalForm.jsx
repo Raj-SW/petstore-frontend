@@ -103,7 +103,7 @@ const AdminProfessionalForm = () => {
     try {
       const professionalInfo = buildProfessionalInfo();
       if (isEdit) {
-        await adminProfessionalsApi.update(id, professionalInfo);
+        await adminProfessionalsApi.update(id, professionalInfo, role);
         addToast("Professional updated", "success");
       } else if (mode === "promote") {
         await adminProfessionalsApi.promote({ userId: selectedUser._id, role, professionalInfo });
@@ -227,7 +227,7 @@ const AdminProfessionalForm = () => {
           <div className="apf-row">
             <div className="apf-field">
               <label>Role</label>
-              <Select value={role} onValueChange={setRole} disabled={isEdit}>
+              <Select value={role} onValueChange={setRole}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
                   {ROLES.map((r) => <SelectItem key={r} value={r}>{r}</SelectItem>)}

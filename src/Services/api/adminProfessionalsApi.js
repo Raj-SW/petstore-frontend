@@ -17,8 +17,8 @@ const adminProfessionalsApi = {
     return res.data;
   },
 
-  update: async (id, professionalInfo) => {
-    const res = await api.patch(`/admin/professionals/${id}`, { professionalInfo });
+  update: async (id, professionalInfo, role) => {
+    const res = await api.patch(`/admin/professionals/${id}`, { professionalInfo, ...(role ? { role } : {}) });
     return res.data;
   },
 
