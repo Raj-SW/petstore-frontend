@@ -60,8 +60,8 @@ const AdminProfessionals = () => {
       if (statusFilter !== "all") params.status = statusFilter;
       const res = await adminProfessionalsApi.list(params);
       setRows(res.data || []);
-    } catch {
-      addToast("Failed to load professionals", "error");
+    } catch (err) {
+      addToast(err?.response?.data?.message || "Failed to load professionals", "error");
       setRows([]);
     } finally {
       setLoading(false);
@@ -77,8 +77,8 @@ const AdminProfessionals = () => {
       setRows((prev) => prev.map((r) =>
         r._id === row._id ? { ...r, professionalInfo: { ...r.professionalInfo, isActive: next } } : r));
       addToast(next ? "Professional activated" : "Professional deactivated", "success");
-    } catch {
-      addToast("Failed to update status", "error");
+    } catch (err) {
+      addToast(err?.response?.data?.message || "Failed to update status", "error");
     }
   };
 
@@ -88,8 +88,8 @@ const AdminProfessionals = () => {
       await adminProfessionalsApi.offboard(row._id);
       setRows((prev) => prev.filter((r) => r._id !== row._id));
       addToast("Professional offboarded", "success");
-    } catch {
-      addToast("Failed to offboard", "error");
+    } catch (err) {
+      addToast(err?.response?.data?.message || "Failed to offboard", "error");
     }
   };
 

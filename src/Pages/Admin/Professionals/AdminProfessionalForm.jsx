@@ -269,7 +269,7 @@ const AdminProfessionalForm = () => {
 
         <div className="apf-section">
           <label className="apf-section-label">Profile photo</label>
-          <ImageManager value={photo} onChange={setPhoto} uploadUrl="/admin/professionals/upload-image" max={1} label="Photo" />
+          <ImageManager value={photo} onChange={setPhoto} uploadUrl="/admin/professionals/upload-image" max={1} label="Photo" onError={(msg) => addToast(msg, "error")} />
         </div>
 
         <div className="apf-section">
