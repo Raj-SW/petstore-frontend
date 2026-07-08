@@ -11,6 +11,7 @@ import SearchBar from "@/Components/HelperComponents/SearchBar/SearchBar";
 import ShopBanner from "../../Components/Shop/ShopBanner";
 import FilterComponent from "./FilterComponent";
 import ProductService from "@/Services/localServices/ProductService";
+import SkeletonCard from "../../Components/HelperComponents/SkeletonCard/SkeletonCard";
 import useSEO from "../../hooks/useSEO";
 import "./PetShopPage.css";
 
@@ -146,9 +147,7 @@ const PetShopPage = () => {
     if (isLoading) {
       return (
         <div className="ps-grid">
-          {[1,2,3,4,5,6,7,8].map((n) => (
-            <div key={`skeleton-${n}`} className="ps-skeleton" />
-          ))}
+          <SkeletonCard variant="card" count={8} />
         </div>
       );
     }

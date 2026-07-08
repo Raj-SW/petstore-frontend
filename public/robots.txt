@@ -1,0 +1,25 @@
+User-agent: *
+
+# Public storefront — index everything below
+Allow: /
+Allow: /petshop
+Allow: /services
+Allow: /appointments
+Allow: /pet-care-tips
+Allow: /gallery
+Allow: /contact
+Allow: /about
+Allow: /import-export-service
+
+# Auth-gated and personal pages — no search value
+Disallow: /admin
+Disallow: /checkout
+Disallow: /payment/
+Disallow: /my-orders
+Disallow: /my-subscriptions
+Disallow: /order-confirmed/
+Disallow: /profile
+Disallow: /reset-password
+Disallow: /import-page
+
+Sitemap: https://www.vitalpaws.mu/sitemap.xml

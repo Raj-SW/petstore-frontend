@@ -12,6 +12,7 @@ import {
 import ordersApi from "../../Services/api/ordersApi";
 import { useToast } from "../../context/ToastContext";
 import { useCart } from "../../context/CartContext";
+import SkeletonCard from "../../Components/HelperComponents/SkeletonCard/SkeletonCard";
 import Breadcrumb from "../../Components/HelperComponents/Breadcrumb/Breadcrumb";
 import "./MyOrdersPage.css";
 
@@ -253,9 +254,8 @@ export default function MyOrdersPage() {
   // ── Loading ──
   if (loading) {
     return (
-      <div className="my-orders-state">
-        <FaSpinner className="spin" size={28} />
-        <p>Loading your orders…</p>
+      <div className="my-orders-page">
+        <div className="my-orders-list"><SkeletonCard variant="row" count={4} /></div>
       </div>
     );
   }

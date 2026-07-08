@@ -251,8 +251,8 @@
 .sp-card {
   background: #fff;
   border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 4px 18px rgba(0, 28, 16, 0.08);
+  border: 1px solid rgba(0, 28, 16, 0.07);
+  box-shadow: 0 2px 12px rgba(0, 28, 16, 0.06);
   cursor: pointer;
   transition: box-shadow 0.25s ease;
   display: flex;
@@ -261,9 +261,15 @@
 
 .sp-card-img-wrap {
   position: relative;
-  height: 200px;
-  overflow: hidden;
+  padding: 10px 10px 0;
   flex-shrink: 0;
+}
+
+.sp-card-img-inner {
+  position: relative;
+  height: 200px;
+  border-radius: 10px;
+  overflow: hidden;
 }
 
 .sp-card-img {
@@ -593,7 +599,7 @@
 }
 
 @media (max-width: 575px) {
-  .sp-card-img-wrap {
+  .sp-card-img-inner {
     height: 165px;
   }
 

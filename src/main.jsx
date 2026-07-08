@@ -1,5 +1,7 @@
 import { lazy, Suspense } from "react";
 import ReactDOM from "react-dom/client";
+import { SkeletonTheme } from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 import App from "./App.jsx";
 import "./index.css";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
@@ -308,15 +310,17 @@ const router = createBrowserRouter([
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <GlobalToastProvider>
-    <AuthProvider>
-      <CurrencyProvider>
-        <CartContext>
-          <ToastProvider>
-            <RouterProvider router={router} />
-          </ToastProvider>
-        </CartContext>
-      </CurrencyProvider>
-    </AuthProvider>
-  </GlobalToastProvider>
+  <SkeletonTheme baseColor="#e8ede9" highlightColor="#FAF5F1">
+    <GlobalToastProvider>
+      <AuthProvider>
+        <CurrencyProvider>
+          <CartContext>
+            <ToastProvider>
+              <RouterProvider router={router} />
+            </ToastProvider>
+          </CartContext>
+        </CurrencyProvider>
+      </AuthProvider>
+    </GlobalToastProvider>
+  </SkeletonTheme>
 );

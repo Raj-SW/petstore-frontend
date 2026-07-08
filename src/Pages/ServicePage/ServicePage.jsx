@@ -129,15 +129,17 @@ const ServiceCard = ({ label, icon: Icon, image, href, desc, features, status = 
       whileHover={comingSoon ? undefined : { y: -6, boxShadow: "0 24px 52px rgba(0,28,16,0.18)" }}
     >
       <div className="sp-card-img-wrap">
-        <img src={image} alt={label} className="sp-card-img" loading="lazy" />
-        <div className="sp-card-img-overlay" />
+        <div className="sp-card-img-inner">
+          <img src={image} alt={label} className="sp-card-img" loading="lazy" />
+          <div className="sp-card-img-overlay" />
+        </div>
         <div className="sp-card-badge">
           <Icon size={14} />
         </div>
         {comingSoon && (
           <span
             style={{
-              position: "absolute", top: 12, left: 12, zIndex: 3,
+              position: "absolute", top: 18, left: 18, zIndex: 3,
               background: "#D99A2B", color: "#001C10",
               fontSize: "0.68rem", fontWeight: 700, letterSpacing: "0.05em",
               textTransform: "uppercase", padding: "0.28rem 0.65rem", borderRadius: 999,

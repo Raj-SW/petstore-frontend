@@ -19,24 +19,23 @@ const TipCard = ({ tip }) => {
   return (
     <motion.article className="pct-card" {...cardMotion}>
       <Link to={`/pet-care-tips/${tip.slug || tip._id}`} className="pct-card-link">
-        <div className="pct-card-strip" style={{ background: theme.color }} />
-        <div
-          className="pct-card-img"
-          style={cover ? undefined : { background: `linear-gradient(135deg, ${theme.tint} 0%, #fffdf9 135%)` }}
-        >
+        <div className="pct-img-wrap">
           {cover ? (
-            <img src={cover} alt={tip.title} loading="lazy" />
+            <img src={cover} alt={tip.title} loading="lazy" className="pct-img" />
           ) : (
-            <span className="pct-card-img-badge">
-              <Icon style={{ color: theme.color }} size={26} aria-hidden="true" />
-            </span>
+            <div
+              className="pct-img-placeholder"
+              style={{ background: `linear-gradient(135deg, ${theme.tint} 0%, #fffdf9 135%)` }}
+            >
+              <span className="pct-card-img-badge">
+                <Icon style={{ color: theme.color }} size={26} aria-hidden="true" />
+              </span>
+            </div>
           )}
+          <span className="pct-pill" style={{ background: theme.color }}>{theme.label}</span>
         </div>
         <div className="pct-card-body">
           <div className="pct-badges">
-            <span className="pct-badge" style={{ background: theme.tint, color: theme.color }}>
-              {theme.label}
-            </span>
             <span className="pct-badge pct-badge-cat">{tip.category}</span>
           </div>
           <h3 className="pct-card-title">{tip.title}</h3>
@@ -58,18 +57,17 @@ export const SponsoredCard = ({ advert }) => (
       target={advert.link.startsWith("http") ? "_blank" : undefined}
       rel="noopener noreferrer"
     >
-      <div className="pct-card-strip" style={{ background: "#B4B2A9" }} />
-      <div className="pct-card-img pct-card-img-sponsored">
+      <div className="pct-img-wrap">
         {advert.image ? (
-          <img src={advert.image} alt={advert.title} loading="lazy" />
+          <img src={advert.image} alt={advert.title} loading="lazy" className="pct-img" />
         ) : (
-          <FiExternalLink size={26} style={{ color: "#888780", opacity: 0.5 }} aria-hidden="true" />
+          <div className="pct-img-placeholder" style={{ background: "#f1efe8" }}>
+            <FiExternalLink size={26} style={{ color: "#888780", opacity: 0.5 }} aria-hidden="true" />
+          </div>
         )}
+        <span className="pct-pill" style={{ background: "#B4B2A9" }}>Sponsored</span>
       </div>
       <div className="pct-card-body">
-        <div className="pct-badges">
-          <span className="pct-badge pct-badge-sponsored">Sponsored</span>
-        </div>
         <h3 className="pct-card-title">{advert.title}</h3>
         <div className="pct-card-meta">
           <FiExternalLink size={12} aria-hidden="true" />

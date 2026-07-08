@@ -92,10 +92,11 @@ describe("PetCareTipsPage", () => {
   });
 
   it("shows loading state immediately on mount", () => {
-    // Never resolves — we observe the loading text
+    // Never resolves — we observe the skeleton placeholders
     tipsApi.getTips.mockReturnValue(new Promise(() => {}));
-    renderPage();
-    expect(screen.getByText(/Loading tips/i)).toBeInTheDocument();
+    const { container } = renderPage();
+    const skeletons = container.querySelectorAll('[data-testid="skeleton-card-item"]');
+    expect(skeletons.length).toBeGreaterThan(0);
   });
 
   it("renders tip cards after API resolves", async () => {

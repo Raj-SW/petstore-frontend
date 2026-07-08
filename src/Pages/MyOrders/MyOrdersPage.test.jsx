@@ -111,10 +111,11 @@ describe("MyOrdersPage", () => {
     expect(document.body).toBeTruthy();
   });
 
-  it("shows a loading spinner while fetching orders", () => {
+  it("shows a loading skeleton while fetching orders", () => {
     mockGetMyOrders.mockReturnValue(new Promise(() => {})); // never resolves
-    renderPage();
-    expect(screen.getByText(/loading your orders/i)).toBeInTheDocument();
+    const { container } = renderPage();
+    const skeletons = container.querySelectorAll('[data-testid="skeleton-row-item"]');
+    expect(skeletons.length).toBeGreaterThan(0);
   });
 
   it("shows 'No orders yet' empty state when the user has no orders", async () => {
