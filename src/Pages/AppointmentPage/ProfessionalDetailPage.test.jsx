@@ -41,4 +41,26 @@ describe("ProfessionalDetailPage", () => {
     renderAt("missing");
     await waitFor(() => expect(screen.getByText(/not found/i)).toBeInTheDocument());
   });
+
+  it("renders rich-text bio HTML formatting", async () => {
+    professionalsApi.getProfessionalById.mockResolvedValue({
+      _id: "p2", name: "Dr. Rich Text", role: "groomer",
+      bio: "<p>Loves <strong>golden retrievers</strong> and <em>long walks</em>.</p>",
+    });
+    renderAt("p2");
+    await waitFor(() => expect(screen.getByRole("heading", { name: "Dr. Rich Text" })).toBeInTheDocument());
+    expect(screen.getByText("golden retrievers").tagName).toBe("STRONG");
+    expect(screen.getByText("long walks").tagName).toBe("EM");
+  });
+
+  it("sanitizes malicious bio content", async () => {
+    professionalsApi.getProfessionalById.mockResolvedValue({
+      _id: "p3", name: "Dr. Unsafe", role: "trainer",
+      bio: "<p>Hello</p><script>window.__xss = true;</script>",
+    });
+    const { container } = renderAt("p3");
+    await waitFor(() => expect(screen.getByRole("heading", { name: "Dr. Unsafe" })).toBeInTheDocument());
+    expect(container.querySelector("script")).toBeNull();
+    expect(window.__xss).toBeUndefined();
+  });
 });

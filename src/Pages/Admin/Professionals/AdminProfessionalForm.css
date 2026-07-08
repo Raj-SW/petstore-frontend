@@ -1,5 +1,5 @@
 /* ── Admin professional form ──────────────────────────────────────── */
-.apf-page { padding: 1.5rem; max-width: 860px; }
+.apf-page { padding: 1.5rem 2rem 3rem; max-width: 1200px; margin: 0 auto; width: 100%; }
 
 .apf-back {
   display: inline-flex;

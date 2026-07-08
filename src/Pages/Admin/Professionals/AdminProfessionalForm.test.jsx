@@ -60,4 +60,23 @@ describe("AdminProfessionalForm — create", () => {
     fireEvent.click(screen.getByRole("button", { name: /save|create/i }));
     await waitFor(() => expect(adminProfessionalsApi.create).not.toHaveBeenCalled());
   });
+
+  it("includes the bio rich-text value in the submitted payload", async () => {
+    adminProfessionalsApi.create.mockResolvedValue({ data: {} });
+    renderAt("/admin/professionals/new");
+
+    fireEvent.change(screen.getByLabelText(/name/i), { target: { value: "Dr New" } });
+    fireEvent.change(screen.getByLabelText(/email/i), { target: { value: "new@x.com" } });
+    fireEvent.change(screen.getByLabelText(/phone/i), { target: { value: "12345678" } });
+    fireEvent.change(screen.getByLabelText(/address/i), { target: { value: "1 St" } });
+    fireEvent.change(screen.getByLabelText(/specialization/i), { target: { value: "Feline" } });
+    fireEvent.change(screen.getByLabelText(/experience/i), { target: { value: "5" } });
+    fireEvent.change(screen.getByLabelText(/bio/i), { target: { value: "<p>Loves <strong>cats</strong>.</p>" } });
+
+    fireEvent.click(screen.getByRole("button", { name: /save|create/i }));
+
+    await waitFor(() => expect(adminProfessionalsApi.create).toHaveBeenCalledTimes(1));
+    const payload = adminProfessionalsApi.create.mock.calls[0][0];
+    expect(payload.professionalInfo.bio).toBe("<p>Loves <strong>cats</strong>.</p>");
+  });
 });
