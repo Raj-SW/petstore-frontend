@@ -49,6 +49,8 @@ const AdminDashboard      = lazy(() => import("./Pages/Admin/Dashboard/AdminDash
 const AdminProducts       = lazy(() => import("./Pages/Admin/Products/AdminProducts"));
 const AdminProductForm    = lazy(() => import("./Pages/Admin/Products/AdminProductForm"));
 const AdminUsers          = lazy(() => import("./Pages/Admin/Users/AdminUsers"));
+const AdminProfessionals  = lazy(() => import("./Pages/Admin/Professionals/AdminProfessionals"));
+const AdminProfessionalForm = lazy(() => import("./Pages/Admin/Professionals/AdminProfessionalForm"));
 const AdminOrders         = lazy(() => import("./Pages/Admin/Orders/AdminOrders"));
 const AdminAppointments   = lazy(() => import("./Pages/Admin/Appointments/AdminAppointments"));
 const AdminAnalytics      = lazy(() => import("./Pages/Admin/Analytics/AdminAnalytics"));
@@ -282,7 +284,15 @@ const router = createBrowserRouter([
       },
       {
         path: "professionals",
-        element: <div>Professionals Management - To be implemented</div>,
+        element: P(<AdminProfessionals />),
+      },
+      {
+        path: "professionals/new",
+        element: P(<AdminProfessionalForm />),
+      },
+      {
+        path: "professionals/:id/edit",
+        element: P(<AdminProfessionalForm />),
       },
       {
         path: "orders",
