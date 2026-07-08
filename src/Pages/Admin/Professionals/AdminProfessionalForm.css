@@ -1,0 +1,214 @@
+/* ── Admin professional form ──────────────────────────────────────── */
+.apf-page { padding: 1.5rem; max-width: 860px; }
+
+.apf-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #ba7517;
+  text-decoration: none;
+  margin-bottom: 10px;
+}
+
+.apf-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 0 1.25rem;
+  color: #001c10;
+}
+
+.apf-form {
+  background: #fff;
+  border: 1px solid #e8e4dc;
+  border-radius: 12px;
+  padding: 24px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.apf-section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid #f1efe8;
+}
+.apf-section:last-of-type { border-bottom: none; padding-bottom: 0; }
+
+.apf-section-head { display: flex; align-items: center; justify-content: space-between; }
+.apf-section-label { font-size: 13px; font-weight: 600; color: #444441; }
+
+.apf-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+}
+
+.apf-field { display: flex; flex-direction: column; gap: 6px; }
+.apf-field label { font-size: 13px; font-weight: 600; color: #444441; }
+.apf-field input,
+.apf-field textarea,
+.apf-field select {
+  padding: 10px 12px;
+  border: 1px solid #e8e4dc;
+  border-radius: 8px;
+  font-size: 14px;
+  background: #fff;
+  font-family: inherit;
+}
+.apf-field input:focus,
+.apf-field textarea:focus,
+.apf-field select:focus { outline: none; border-color: #ba7517; }
+.apf-field textarea { resize: vertical; }
+
+.apf-error { color: #a32d2d; font-size: 12px; margin: 0; }
+
+.apf-readonly {
+  font-size: 14px;
+  color: #001c10;
+  font-weight: 600;
+  margin: 0;
+}
+.apf-readonly span { font-weight: 400; color: #8a7a66; margin-left: 4px; }
+
+/* Mode tabs (create vs promote) */
+.apf-tabs { display: flex; gap: 8px; }
+.apf-tab {
+  padding: 8px 16px;
+  border: 1px solid #e8e4dc;
+  background: #fff;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b6055;
+  cursor: pointer;
+}
+.apf-tab--active { background: #001c10; color: #f6ece3; border-color: #001c10; }
+
+/* Promote — user search */
+.apf-search-row { display: flex; gap: 8px; }
+.apf-search-row input { flex: 1; }
+.apf-user-results {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+.apf-user-result {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #e8e4dc;
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+  text-align: left;
+}
+.apf-user-result--selected { border-color: #ba7517; background: #fdf6ec; }
+.apf-user-name { font-weight: 600; font-size: 13px; color: #001c10; }
+.apf-user-email { font-size: 12px; color: #8a7a66; }
+
+/* Services */
+.apf-service-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr auto;
+  gap: 8px;
+  align-items: center;
+}
+.apf-service-name, .apf-service-num {
+  padding: 8px 10px;
+  border: 1px solid #e8e4dc;
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+/* Availability */
+.apf-availability { display: flex; flex-direction: column; gap: 8px; }
+.apf-avail-row { display: flex; align-items: center; gap: 10px; }
+.apf-avail-day {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 110px;
+  flex-shrink: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #444441;
+  text-transform: capitalize;
+  cursor: pointer;
+}
+.apf-avail-time {
+  padding: 6px 10px;
+  border: 1px solid #e8e4dc;
+  border-radius: 8px;
+  font-size: 13px;
+}
+.apf-avail-time:disabled { background: #f7f5f1; color: #b6ada0; }
+.apf-avail-sep { font-size: 12px; color: #8a7a66; }
+
+/* Buttons */
+.apf-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 4px;
+}
+.apf-submit {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 22px;
+  background: #ba7517;
+  color: #faeeda;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.apf-submit:disabled { opacity: 0.6; cursor: default; }
+.apf-btn-secondary {
+  padding: 8px 16px;
+  border: 1px solid #e8e4dc;
+  background: #fff;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #444441;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+}
+.apf-btn-add {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 14px;
+  border: 1px solid #e8e4dc;
+  background: #fff;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #ba7517;
+  cursor: pointer;
+}
+.apf-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid #e7c3bd;
+  background: #fff;
+  border-radius: 8px;
+  color: #c0392b;
+  cursor: pointer;
+}
+.apf-icon-btn:hover { background: #c0392b; color: #fff; }
