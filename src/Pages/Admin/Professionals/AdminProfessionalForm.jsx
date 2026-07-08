@@ -3,6 +3,7 @@ import { useParams, useNavigate, useLocation, Link } from "react-router-dom";
 import { FiArrowLeft, FiPlus, FiX } from "react-icons/fi";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/Components/ui/select";
 import ImageManager from "@/Components/Admin/ImageManager/ImageManager";
+import { RichTextEditor } from "@/Components/RichText";
 import adminProfessionalsApi from "@/Services/api/adminProfessionalsApi";
 import { useToast } from "@/context/ToastContext";
 import "./AdminProfessionalForm.css";
@@ -251,10 +252,15 @@ const AdminProfessionalForm = () => {
             <input id="f-qual" value={qualifications} onChange={(e) => setQualifications(e.target.value)} />
           </div>
 
-          <div className="apf-field">
-            <label htmlFor="f-bio">Bio</label>
-            <textarea id="f-bio" maxLength={500} rows={3} value={bio} onChange={(e) => setBio(e.target.value)} />
-          </div>
+          <RichTextEditor
+            label="Bio"
+            value={bio}
+            onChange={setBio}
+            preset="minimal"
+            placeholder="A short bio for your public profile…"
+            maxLength={5000}
+            minHeight="140px"
+          />
 
           {isEdit && (
             <p className="apf-readonly">★ {rating.toFixed(1)} rating <span>(read-only, from customer reviews)</span></p>

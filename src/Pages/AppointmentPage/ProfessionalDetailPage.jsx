@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FiMail, FiPhone, FiArrowLeft, FiAward, FiClock, FiCheckCircle } from "react-icons/fi";
 import Breadcrumb from "@/Components/HelperComponents/Breadcrumb/Breadcrumb";
+import { RichTextRenderer } from "@/Components/RichText";
 import professionalsApi from "../../Services/api/professionalsApi";
 import "./ProfessionalDetailPage.css";
 
@@ -110,7 +111,7 @@ const ProfessionalDetailPage = () => {
           {pro.bio && (
             <section className="pd-section">
               <h2 className="pd-section-title">About</h2>
-              <p className="pd-bio">{pro.bio}</p>
+              <RichTextRenderer content={pro.bio} className="pd-bio" />
             </section>
           )}
 

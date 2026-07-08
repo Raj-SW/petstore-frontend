@@ -7,6 +7,16 @@ vi.mock("@/Services/api/adminProfessionalsApi", () => ({
 }));
 vi.mock("@/context/ToastContext", () => ({ useToast: () => ({ addToast: vi.fn() }) }));
 vi.mock("@/Components/Admin/ImageManager/ImageManager", () => ({ default: () => <div data-testid="image-manager" /> }));
+// TipTap/ProseMirror needs browser APIs jsdom doesn't implement (elementFromPoint).
+// Stub with a plain textarea so bio still participates in the form's state/payload.
+vi.mock("@/Components/RichText", () => ({
+  RichTextEditor: ({ value, onChange, label }) => (
+    <div>
+      <label htmlFor="mock-rte">{label}</label>
+      <textarea id="mock-rte" value={value} onChange={(e) => onChange(e.target.value)} />
+    </div>
+  ),
+}));
 
 import adminProfessionalsApi from "@/Services/api/adminProfessionalsApi";
 import AdminProfessionalForm from "./AdminProfessionalForm";
