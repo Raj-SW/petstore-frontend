@@ -69,8 +69,8 @@ describe("GalleryPage", () => {
     // Never resolves so we stay in loading
     galleryApi.getPosts.mockReturnValue(new Promise(() => {}));
     const { container } = renderPage();
-    // Skeletons are rendered as .gal-skeleton divs
-    const skeletons = container.querySelectorAll(".gal-skeleton");
+    // Skeletons are rendered by the shared SkeletonCard component
+    const skeletons = container.querySelectorAll('[data-testid="skeleton-card-item"]');
     expect(skeletons.length).toBeGreaterThan(0);
   });
 
