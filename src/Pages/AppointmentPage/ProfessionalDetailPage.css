@@ -27,11 +27,11 @@
 .pd-contact { margin-top: 1rem; display: flex; flex-direction: column; gap: 0.6rem; }
 .pd-contact-line { display: inline-flex; align-items: center; gap: 8px; color: #4a574d; text-decoration: none; font-size: 0.9rem; justify-content: center; }
 .pd-contact-line:hover { color: var(--color-accent-gold, #d99a2b); }
-.pd-cta {
+.pd-contact .pd-cta {
   justify-content: center; margin-top: 0.6rem; background: var(--color-primary-forest, #001c10);
   color: #f6ece3; font-weight: 600; padding: 0.7rem 1.4rem; border-radius: 50px; transition: background 0.18s ease;
 }
-.pd-cta:hover { background: var(--color-accent-gold, #d99a2b); color: var(--color-primary-forest, #001c10); }
+.pd-contact .pd-cta:hover { background: var(--color-accent-gold, #d99a2b); color: var(--color-primary-forest, #001c10); }
 
 .pd-main { display: flex; flex-direction: column; gap: 1.6rem; }
 .pd-section { background: #fff; border: 1px solid rgba(0, 28, 16, 0.08); border-radius: 16px; padding: 1.4rem 1.6rem; }
