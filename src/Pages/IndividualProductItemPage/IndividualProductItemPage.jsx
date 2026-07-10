@@ -251,6 +251,10 @@ const IndividualProductItemPage = () => {
   const [activeImage, setActiveImage] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [selectedVariant, setSelectedVariant] = useState(null);
+  // Matrix products: the buyer's chosen value per option axis ({ Weight: "5kg", … })
+  const [axisSelection, setAxisSelection] = useState({});
+  const productOptions = Array.isArray(product?.options) ? product.options : [];
+  const hasMatrix = productOptions.length > 0;
 
   // Close the image lightbox on Escape.
   useEffect(() => {
@@ -265,8 +269,21 @@ const IndividualProductItemPage = () => {
     if (product?.variantsView?.length) {
       const inStock = product.variantsView.find((v) => v.quantity > 0) || product.variantsView[0];
       setSelectedVariant(inStock);
+      if (inStock?.optionValues) setAxisSelection({ ...inStock.optionValues });
     }
   }, [product]);
+
+  // Matrix products: resolve the chosen axis values to a variant (or null when
+  // that combination isn't sold). All downstream plumbing keys on selectedVariant.
+  useEffect(() => {
+    if (!hasMatrix || !product?.variantsView) return;
+    if (productOptions.some((o) => !axisSelection[o.name])) return;
+    const match = product.variantsView.find(
+      (v) => v.optionValues && productOptions.every((o) => v.optionValues[o.name] === axisSelection[o.name])
+    );
+    setSelectedVariant(match || null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [axisSelection, product]);
 
   // Reset the active thumbnail when the variant changes (its gallery may differ).
   useEffect(() => { setActiveImage(0); }, [selectedVariant?._id]);
@@ -567,7 +584,47 @@ const IndividualProductItemPage = () => {
               {displayOnSale && <SaleBadge percent={displayPctLabel} />}
             </div>
 
-            {hasVariants && (
+            {hasVariants && hasMatrix && (
+              <>
+                {productOptions.map((axis) => (
+                  <div className="ip-variants" key={axis.name}>
+                    <span className="ip-variants-label">{axis.name}</span>
+                    <div className="ip-variants-row">
+                      {axis.values.map((val) => {
+                        // Combinations matching this value + the buyer's other-axis picks
+                        const candidates = product.variantsView.filter(
+                          (v) =>
+                            v.optionValues &&
+                            v.optionValues[axis.name] === val &&
+                            productOptions.every(
+                              (o) =>
+                                o.name === axis.name ||
+                                !axisSelection[o.name] ||
+                                v.optionValues[o.name] === axisSelection[o.name]
+                            )
+                        );
+                        const purchasable = candidates.some((v) => v.quantity > 0);
+                        return (
+                          <button
+                            key={val}
+                            type="button"
+                            className={`ip-variant${axisSelection[axis.name] === val ? " ip-variant--active" : ""}${!purchasable ? " ip-variant--out" : ""}`}
+                            disabled={!purchasable}
+                            onClick={() => setAxisSelection((s) => ({ ...s, [axis.name]: val }))}
+                          >
+                            {val}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
+                {!selectedVariant && (
+                  <p className="ip-variants-label">This combination is unavailable.</p>
+                )}
+              </>
+            )}
+            {hasVariants && !hasMatrix && (
               <div className="ip-variants">
                 <span className="ip-variants-label">Options</span>
                 <div className="ip-variants-row">
