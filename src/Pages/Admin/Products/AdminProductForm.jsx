@@ -24,6 +24,7 @@ import { useToast } from "../../../context/ToastContext";
 import { RichTextEditor } from "../../../Components/RichText";
 import ImageManager from "../../../Components/Admin/ImageManager/ImageManager";
 import announcementsApi from "../../../Services/api/announcementsApi";
+import { mergeCombinations, generateCombinations, comboKey } from "../../../utils/variantMatrix";
 import "./AdminProductForm.css";
 
 const normalizeImage = (img) =>
@@ -130,7 +131,19 @@ const AdminProductForm = () => {
 
   // Sections (dynamic rich-text tabs)
   const [sections, setSections] = useState([]);
-  const [variants, setVariants] = useState([]); // [{ label, price, quantity }]
+  const [variants, setVariants] = useState([]); // [{ label, price, quantity }] or matrix rows with optionValues
+  // Option axes (matrix products) — [{ name, values: [] }], max 4
+  const [options, setOptions] = useState([]);
+  const [optionValueInputs, setOptionValueInputs] = useState([]); // per-axis pending value text
+  const [removedCombos, setRemovedCombos] = useState(new Set());
+  // Distinct attribute values across products — dropdown suggestions
+  const [suggestions, setSuggestions] = useState(null);
+
+  useEffect(() => {
+    api.get("/products/filter-options")
+      .then((res) => setSuggestions(res?.data?.data ?? null))
+      .catch(() => {}); // silent — hardcoded quick-picks still work
+  }, []);
 
   // DnD sensors
   const sensors = useSensors(
@@ -183,11 +196,31 @@ const AdminProductForm = () => {
           saleEndsAt:    p.saleEndsAt ? p.saleEndsAt.slice(0, 10) : "",
         });
 
+        const loadedOptions = Array.isArray(p.options)
+          ? p.options.map((o) => ({ name: o.name, values: [...(o.values || [])] }))
+          : [];
+        setOptions(loadedOptions);
+        setOptionValueInputs(loadedOptions.map(() => ""));
+        // Combos absent from the stored variants were removed by the admin —
+        // seed them so the merge effect doesn't resurrect them as blank rows.
+        if (loadedOptions.length > 0) {
+          const storedKeys = new Set(
+            (p.variants || [])
+              .filter((v) => v.optionValues)
+              .map((v) => comboKey(v.optionValues, loadedOptions))
+          );
+          setRemovedCombos(new Set(
+            generateCombinations(loadedOptions)
+              .map((c) => c.key)
+              .filter((k) => !storedKeys.has(k))
+          ));
+        }
         setVariants(
           Array.isArray(p.variants)
             ? p.variants.map((v) => ({
                 _key: v._id || crypto.randomUUID(),
                 label: v.label,
+                optionValues: v.optionValues || undefined,
                 price: v.price,
                 quantity: v.quantity,
                 images: normalizeImages(v.images),
@@ -285,6 +318,54 @@ const AdminProductForm = () => {
   const removeVariant = (i) =>
     setVariants((vs) => vs.filter((_, j) => j !== i));
 
+  // Quick-picks = hardcoded defaults ∪ values already used on other products
+  const categorySuggestions = [...new Set([...CATEGORY_SUGGESTIONS, ...(suggestions?.categories || [])])];
+  const suitableForSuggestions = [...new Set([...SUITABLE_FOR_SUGGESTIONS, ...(suggestions?.genders || [])])];
+  const colorSuggestions = suggestions?.colors || [];
+
+  // ── Option axes (matrix products) ───────────────────────────────────────────
+  const axesComplete = options.length > 0 && options.every((o) => o.name.trim() && o.values.length > 0);
+
+  // Regenerate the combination rows whenever the axes change (preserves
+  // price/stock/images of surviving combinations via their key).
+  useEffect(() => {
+    if (!axesComplete) return;
+    setVariants((vs) => mergeCombinations(options, vs, removedCombos));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(options), removedCombos]);
+
+  const addOptionAxis = () => {
+    if (options.length >= 4) return;
+    setOptions((os) => [...os, { name: "", values: [] }]);
+    setOptionValueInputs((ins) => [...ins, ""]);
+  };
+
+  const removeOptionAxis = (i) => {
+    setOptions((os) => os.filter((_, j) => j !== i));
+    setOptionValueInputs((ins) => ins.filter((_, j) => j !== i));
+    setRemovedCombos(new Set()); // keys are axis-dependent — reset
+    // Dropping the last axis returns to the flat editor with stale matrix rows — clear them.
+    if (options.length === 1) setVariants([]);
+  };
+
+  const updateOptionAxis = (i, changes) =>
+    setOptions((os) => os.map((o, j) => (j === i ? { ...o, ...changes } : o)));
+
+  const addOptionValue = (i, raw) => {
+    const val = (raw ?? optionValueInputs[i] ?? "").trim();
+    if (!val) return;
+    if (!options[i].values.includes(val)) {
+      updateOptionAxis(i, { values: [...options[i].values, val] });
+    }
+    setOptionValueInputs((ins) => ins.map((x, j) => (j === i ? "" : x)));
+  };
+
+  const removeOptionValue = (i, val) =>
+    updateOptionAxis(i, { values: options[i].values.filter((v) => v !== val) });
+
+  const removeCombination = (key) =>
+    setRemovedCombos((s) => new Set(s).add(key));
+
   // ── Validation ──────────────────────────────────────────────────────────────
   const validate = () => {
     if (!form.name.trim() || form.name.trim().length < 2) {
@@ -298,7 +379,21 @@ const AdminProductForm = () => {
       addToast("Description must be at least 10 characters.", "error");
       return false;
     }
-    if (variants.length > 0) {
+    if (options.length > 0) {
+      if (!axesComplete) {
+        addToast("Give every option a name and at least one value.", "error");
+        return false;
+      }
+      if (variants.length === 0) {
+        addToast("Keep at least one combination.", "error");
+        return false;
+      }
+      const bad = variants.some((v) => v.price === "" || Number(v.price) < 0 || v.quantity === "" || Number(v.quantity) < 0);
+      if (bad) {
+        addToast("Each combination needs a price and stock.", "error");
+        return false;
+      }
+    } else if (variants.length > 0) {
       const bad = variants.some((v) => !v.label.trim() || v.price === "" || Number(v.price) < 0 || v.quantity === "" || Number(v.quantity) < 0);
       if (bad) {
         addToast("Each variant needs a label, price and stock.", "error");
@@ -337,9 +432,14 @@ const AdminProductForm = () => {
     // server unable to tell "no variants" from "field not provided", so deleting
     // every variant never cleared them. When empty, also send the top-level
     // price/quantity that then apply to the (now simple) product.
+    // Option axes — server derives combination labels from these + optionValues.
+    fd.append("options", JSON.stringify(
+      options.map((o) => ({ name: o.name.trim(), values: o.values }))
+    ));
     fd.append("variants", JSON.stringify(
       variants.map((v) => ({
-        label: v.label.trim(),
+        label: (v.label || "").trim() || Object.values(v.optionValues || {}).join(" · "),
+        ...(v.optionValues ? { optionValues: v.optionValues } : {}),
         price: Number(v.price),
         quantity: Number(v.quantity),
         images: (v.images || []).map((img) => ({ url: img.url, publicId: img.publicId })),
@@ -546,30 +646,97 @@ const AdminProductForm = () => {
                 </div>
               )}
 
-              {/* Weight / size variants */}
+              {/* Option axes (matrix products): Weight × Flavour × … max 4 */}
               <div className="admin-field apf-variants">
                 <div className="apf-variants-head">
-                  <span className="admin-label">Weight / size variants</span>
-                  <button
-                    type="button"
-                    className="apf-variant-add"
-                    onClick={() => setVariants((vs) => [...vs, { _key: crypto.randomUUID(), label: "", price: "", quantity: "", images: [] }])}
-                  >
-                    + Add variant
-                  </button>
+                  <span className="admin-label">Product options (e.g. Weight, Flavour)</span>
+                  {options.length < 4 && (
+                    <button type="button" className="apf-variant-add" onClick={addOptionAxis}>
+                      + Add option
+                    </button>
+                  )}
                 </div>
-                {variants.length > 0 && (
-                  <p className="apf-hint">Price &amp; stock are set per variant — the top-level price/stock are derived automatically.</p>
-                )}
-                {variants.map((v, i) => (
-                  <div key={v._key || v._id || i} className="apf-variant-block">
+                {options.map((axis, i) => (
+                  <div key={i} className="apf-variant-block">
                     <div className="apf-variant-row">
                       <input
                         className="admin-input"
-                        placeholder="Label (e.g. 5kg)"
-                        value={v.label}
-                        onChange={(e) => updateVariant(i, { label: e.target.value })}
+                        placeholder="Option name (e.g. Weight)"
+                        value={axis.name}
+                        list="apf-option-name-suggestions"
+                        onChange={(e) => updateOptionAxis(i, { name: e.target.value })}
                       />
+                      <button type="button" className="apf-variant-remove" onClick={() => removeOptionAxis(i)}>
+                        Remove
+                      </button>
+                    </div>
+                    <div className={`admin-pf-color-input-wrap${optionValueInputs[i] ? " focused" : ""}`}>
+                      {axis.values.map((val) => (
+                        <span key={val} className="admin-pf-color-tag">
+                          {val}
+                          <button type="button" onClick={() => removeOptionValue(i, val)}>
+                            <FiX size={12} />
+                          </button>
+                        </span>
+                      ))}
+                      <input
+                        className="admin-pf-color-input"
+                        value={optionValueInputs[i] ?? ""}
+                        onChange={(e) => setOptionValueInputs((ins) => ins.map((x, j) => (j === i ? e.target.value : x)))}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === ",") { e.preventDefault(); addOptionValue(i); }
+                          if (e.key === "Backspace" && !optionValueInputs[i] && axis.values.length > 0) {
+                            removeOptionValue(i, axis.values[axis.values.length - 1]);
+                          }
+                        }}
+                        onBlur={() => addOptionValue(i)}
+                        placeholder={axis.values.length === 0 ? "Type a value and press Enter… (e.g. 5kg)" : "Add another…"}
+                      />
+                    </div>
+                  </div>
+                ))}
+                <datalist id="apf-option-name-suggestions">
+                  {(suggestions?.optionNames || []).map((n) => <option key={n} value={n} />)}
+                </datalist>
+              </div>
+
+              {/* Combination table (matrix) or flat variants (legacy/simple) */}
+              <div className="admin-field apf-variants">
+                <div className="apf-variants-head">
+                  <span className="admin-label">
+                    {options.length > 0 ? "Combinations (price & stock per combination)" : "Weight / size variants"}
+                  </span>
+                  {options.length === 0 && (
+                    <button
+                      type="button"
+                      className="apf-variant-add"
+                      onClick={() => setVariants((vs) => [...vs, { _key: crypto.randomUUID(), label: "", price: "", quantity: "", images: [] }])}
+                    >
+                      + Add variant
+                    </button>
+                  )}
+                </div>
+                {variants.length > 0 && (
+                  <p className="apf-hint">Price &amp; stock are set per {options.length > 0 ? "combination" : "variant"} — the top-level price/stock are derived automatically.</p>
+                )}
+                {options.length > 0 && !axesComplete && (
+                  <p className="apf-hint">Give every option a name and at least one value to generate the combinations.</p>
+                )}
+                {variants.map((v, i) => (
+                  <div key={v.key || v._key || v._id || i} className="apf-variant-block">
+                    <div className="apf-variant-row">
+                      {v.optionValues ? (
+                        <span className="admin-input apf-combo-label">
+                          {Object.values(v.optionValues).join(" · ")}
+                        </span>
+                      ) : (
+                        <input
+                          className="admin-input"
+                          placeholder="Label (e.g. 5kg)"
+                          value={v.label}
+                          onChange={(e) => updateVariant(i, { label: e.target.value })}
+                        />
+                      )}
                       <input
                         className="admin-input"
                         type="number" min="0" step="0.01" placeholder="Price (Rs)"
@@ -585,7 +752,7 @@ const AdminProductForm = () => {
                       <button
                         type="button"
                         className="apf-variant-remove"
-                        onClick={() => removeVariant(i)}
+                        onClick={() => (v.key ? removeCombination(v.key) : removeVariant(i))}
                       >
                         Remove
                       </button>
@@ -634,9 +801,9 @@ const AdminProductForm = () => {
                   />
                 </div>
                 {/* Quick-pick suggestions (not already selected) */}
-                {CATEGORY_SUGGESTIONS.some((c) => !form.categories.includes(c)) && (
+                {categorySuggestions.some((c) => !form.categories.includes(c)) && (
                   <div className="admin-pf-cats" style={{ marginTop: "0.5rem" }}>
-                    {CATEGORY_SUGGESTIONS.filter((c) => !form.categories.includes(c)).map((cat) => (
+                    {categorySuggestions.filter((c) => !form.categories.includes(c)).map((cat) => (
                       <button
                         key={cat}
                         type="button"
@@ -681,9 +848,9 @@ const AdminProductForm = () => {
                   />
                 </div>
                 {/* Quick-pick suggestions (not already selected) */}
-                {SUITABLE_FOR_SUGGESTIONS.some((g) => !form.genders.includes(g)) && (
+                {suitableForSuggestions.some((g) => !form.genders.includes(g)) && (
                   <div className="admin-pf-cats" style={{ marginTop: "0.5rem" }}>
-                    {SUITABLE_FOR_SUGGESTIONS.filter((g) => !form.genders.includes(g)).map((g) => (
+                    {suitableForSuggestions.filter((g) => !form.genders.includes(g)).map((g) => (
                       <button
                         key={g}
                         type="button"
@@ -725,6 +892,23 @@ const AdminProductForm = () => {
                     placeholder={form.colors.length === 0 ? "Type a color and press Enter…" : "Add another…"}
                   />
                 </div>
+                {/* Quick-pick suggestions — colors already used on other products */}
+                {colorSuggestions.some((c) => !form.colors.includes(c)) && (
+                  <div className="admin-pf-cats" style={{ marginTop: "0.5rem" }}>
+                    {colorSuggestions.filter((c) => !form.colors.includes(c)).map((c) => (
+                      <button
+                        key={c}
+                        type="button"
+                        className="admin-pf-cat-chip"
+                        onClick={() => {
+                          if (!form.colors.includes(c)) setField("colors", [...form.colors, c]);
+                        }}
+                      >
+                        + {c}
+                      </button>
+                    ))}
+                  </div>
+                )}
                 <p className="admin-pf-color-hint">Press Enter or comma after each color</p>
               </div>
             </div>
