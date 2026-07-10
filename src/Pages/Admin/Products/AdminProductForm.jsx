@@ -186,6 +186,7 @@ const AdminProductForm = () => {
         setVariants(
           Array.isArray(p.variants)
             ? p.variants.map((v) => ({
+                _key: v._id || crypto.randomUUID(),
                 label: v.label,
                 price: v.price,
                 quantity: v.quantity,
@@ -552,7 +553,7 @@ const AdminProductForm = () => {
                   <button
                     type="button"
                     className="apf-variant-add"
-                    onClick={() => setVariants((vs) => [...vs, { label: "", price: "", quantity: "", images: [] }])}
+                    onClick={() => setVariants((vs) => [...vs, { _key: crypto.randomUUID(), label: "", price: "", quantity: "", images: [] }])}
                   >
                     + Add variant
                   </button>
@@ -561,7 +562,7 @@ const AdminProductForm = () => {
                   <p className="apf-hint">Price &amp; stock are set per variant — the top-level price/stock are derived automatically.</p>
                 )}
                 {variants.map((v, i) => (
-                  <div key={v.label ? `${v.label}-${i}` : i} className="apf-variant-block">
+                  <div key={v._key || v._id || i} className="apf-variant-block">
                     <div className="apf-variant-row">
                       <input
                         className="admin-input"
