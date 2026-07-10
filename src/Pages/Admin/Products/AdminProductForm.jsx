@@ -674,8 +674,13 @@ const AdminProductForm = () => {
                       {axis.values.map((val) => (
                         <span key={val} className="admin-pf-color-tag">
                           {val}
-                          <button type="button" onClick={() => removeOptionValue(i, val)}>
-                            <FiX size={12} />
+                          <button
+                            type="button"
+                            className="admin-pf-color-tag-remove"
+                            onClick={() => removeOptionValue(i, val)}
+                            aria-label={`Remove ${val}`}
+                          >
+                            <FiX size={10} />
                           </button>
                         </span>
                       ))}
