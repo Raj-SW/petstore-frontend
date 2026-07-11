@@ -10,13 +10,6 @@ import heroRight from "../../../assets/HeroSectionAssets/hero-image-right.webp";
 import vitalPawsLogo from "../../../assets/HeroSectionAssets/VitalPaws Logo.png";
 import AppointmentModal from "../../../Components/AppointmentModal/AppointmentModal";
 
-const FEATURES = [
-  { label: "Evening Clinic", sub: "Perfect for busy owners" },
-  { label: "Weekend Care", sub: "We're open Saturdays" },
-  { label: "Home Visits", sub: "At your doorstep" },
-  { label: "Pet Relocation", sub: "Safe & stress-free" },
-];
-
 const CONSULTATION_HOURS = ["Mon, Wed, Thu, Sat: 4:30 PM – 6:00 PM"];
 
 const contentVariants = {
@@ -128,18 +121,6 @@ const HeroSection = () => {
               <FaShoppingBag size={18} className="me-2" />
               Shop
             </motion.button>
-          </motion.div>
-
-          <motion.div className="hero-features" variants={itemVariants}>
-            {FEATURES.map((f) => (
-              <div key={f.label} className="hero-feature-item">
-                <FaHome className="hero-feature-icon" />
-                <div>
-                  <p className="hero-feature-label">{f.label}</p>
-                  <p className="hero-feature-sub">{f.sub}</p>
-                </div>
-              </div>
-            ))}
           </motion.div>
         </motion.div>
 

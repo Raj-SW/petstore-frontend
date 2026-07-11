@@ -58,15 +58,37 @@
 
 @media (max-width: 575px) {
   .vr-section {
-    padding: 2.5rem 1.25rem;
+    padding: 2.5rem 0;
+  }
+
+  .vr-header,
+  .vr-cta-row {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
   }
 
   .vr-title {
     font-size: 1.9rem;
   }
 
+  /* Horizontal scroll-snap carousel — native, no JS, cards peek at the edge */
   .vr-grid {
-    grid-template-columns: 1fr;
-    gap: 1rem;
+    display: flex;
+    grid-template-columns: none;
+    gap: 0.85rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 0 1.25rem 0.5rem;
+  }
+
+  .vr-grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .vr-grid > * {
+    flex: 0 0 72%;
+    scroll-snap-align: start;
   }
 }

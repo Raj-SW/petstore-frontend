@@ -117,3 +117,22 @@
   outline: 3px solid rgba(217, 154, 43, 0.5);
   outline-offset: 2px;
 }
+
+/* ── Mobile: fits a 2-column grid cell ── */
+@media (max-width: 575px) {
+  .pro-card { max-width: none; }
+  .pro-card-img-wrap { padding: 8px 8px 0; }
+  .pro-card-img { height: 140px; }
+  .pro-card-info { padding: 0.6rem 0.65rem 0.75rem; gap: 0.25rem; }
+  .pro-card-name { font-size: 0.9rem; }
+  .pro-card-specialty { font-size: 0.74rem; }
+  .pro-card-exp { font-size: 0.74rem; }
+  .pro-card-chip { top: 14px; left: 14px; font-size: 0.62rem; padding: 3px 9px; }
+  .pro-card-btn {
+    margin-top: 0.35rem;
+    padding: 0.45rem 0.85rem;
+    font-size: 0.76rem;
+    align-self: stretch;
+    justify-content: center;
+  }
+}

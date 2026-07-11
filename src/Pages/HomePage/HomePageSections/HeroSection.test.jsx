@@ -52,11 +52,9 @@ describe("HeroSection", () => {
     expect(mockNavigate).toHaveBeenCalledWith("/petshop");
   });
 
-  it("renders the trust bar feature items", () => {
+  it("renders the headline and tagline", () => {
     renderHero();
-    expect(screen.getByText("Evening Clinic")).toBeTruthy();
-    expect(screen.getByText("Weekend Care")).toBeTruthy();
-    expect(screen.getByText("Home Visits")).toBeTruthy();
-    expect(screen.getByText("Pet Relocation")).toBeTruthy();
+    expect(screen.getByText(/They Can't Speak/i)).toBeTruthy();
+    expect(screen.getByText(/We Listen/i)).toBeTruthy();
   });
 });

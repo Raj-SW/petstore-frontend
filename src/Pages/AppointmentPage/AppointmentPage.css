@@ -159,7 +159,9 @@
 
 @media (max-width: 991px) {
   .ap-grid {
-    grid-template-columns: 1fr;
+    /* minmax(0,1fr) lets the single column shrink below its content's
+       min-content width instead of forcing the page wider than the viewport */
+    grid-template-columns: minmax(0, 1fr);
   }
   .ap-sidebar {
     position: static;

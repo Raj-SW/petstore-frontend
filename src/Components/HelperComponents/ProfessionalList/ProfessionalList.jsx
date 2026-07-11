@@ -226,12 +226,12 @@ const ProfessionalList = ({
     >
       <Container fluid>
         {/* Header with search and filtering */}
-        <div className={`${role}-list-header d-flex justify-content-between`}>
-          <h4 className="" style={{ color: "var(--primary-blue-color)" }}>
+        <div className="pro-list-header">
+          <h4 className="pro-list-title" style={{ color: "var(--primary-blue-color)" }}>
             {config.title}
           </h4>
 
-          <div className="d-flex gap-2 align-items-center">
+          <div className="pro-list-controls">
             <InputGroup className="search-bar">
               <InputGroup.Text>
                 <FaSearch />
@@ -254,9 +254,8 @@ const ProfessionalList = ({
                   setSortBy(field);
                   setSortOrder(order);
                 }}
-                style={{ width: "200px" }}
                 aria-label="Sort professionals"
-                className="p-2 rounded-5"
+                className="p-2 rounded-5 pro-list-sort"
               >
                 <option value="name-asc">Name (A-Z)</option>
                 <option value="name-desc">Name (Z-A)</option>
@@ -277,52 +276,46 @@ const ProfessionalList = ({
         </div>
 
         {/* Professional cards */}
-        <Container
-          className={`${role}-list d-flex flex-wrap justify-content-center gap-4`}
-        >
-          {paginatedProfessionals.length === 0 ? (
-            <div className="text-center py-5">
-              <p className="text-muted">{config.noResultsMessage}</p>
-              {debouncedSearchQuery && (
-                <Button
-                  variant="outline-primary"
-                  size="sm"
-                  onClick={() => setSearchQuery("")}
-                >
-                  Clear Search
-                </Button>
-              )}
-            </div>
-          ) : (
-            paginatedProfessionals.map((professional) => (
-              <div
-                key={professional._id || professional.id}
-                className="mb-4 d-flex justify-content-center"
+        {paginatedProfessionals.length === 0 ? (
+          <div className="text-center py-5">
+            <p className="text-muted">{config.noResultsMessage}</p>
+            {debouncedSearchQuery && (
+              <Button
+                variant="outline-primary"
+                size="sm"
+                onClick={() => setSearchQuery("")}
               >
-                <ProfessionalCard
-                  id={professional._id || professional.id}
-                  name={professional.name}
-                  specialty={
-                    config.specialtyField === "specialties"
-                      ? professional.specialties?.join(", ")
-                      : professional.specialization
-                  }
-                  qualifications={professional.qualifications || []}
-                  experience={professional.experience}
-                  rating={professional.rating}
-                  reviews={professional.reviews}
-                  image={professional.profileImage?.url}
-                  phone={professional.phone}
-                  email={professional.email}
-                  location={professional.location}
-                  badgeIcon={config.badgeIcon}
-                  badgeLabel={config.badgeLabel}
-                  onBook={() => handleBook(professional)}
-                />
-              </div>
-            ))
-          )}
-        </Container>
+                Clear Search
+              </Button>
+            )}
+          </div>
+        ) : (
+          <div className="pro-list-grid">
+            {paginatedProfessionals.map((professional) => (
+              <ProfessionalCard
+                key={professional._id || professional.id}
+                id={professional._id || professional.id}
+                name={professional.name}
+                specialty={
+                  config.specialtyField === "specialties"
+                    ? professional.specialties?.join(", ")
+                    : professional.specialization
+                }
+                qualifications={professional.qualifications || []}
+                experience={professional.experience}
+                rating={professional.rating}
+                reviews={professional.reviews}
+                image={professional.profileImage?.url}
+                phone={professional.phone}
+                email={professional.email}
+                location={professional.location}
+                badgeIcon={config.badgeIcon}
+                badgeLabel={config.badgeLabel}
+                onBook={() => handleBook(professional)}
+              />
+            ))}
+          </div>
+        )}
 
         {/* Pagination */}
         {totalPages > 1 && (

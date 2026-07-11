@@ -1,19 +1,38 @@
-/* Professional List Header Styles */
-.veterinarian-list-header,
-.groomer-list-header {
+/* Professional List Header — role-independent, responsive */
+.pro-list-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 2rem;
+    margin-bottom: 1.75rem;
     gap: 1rem;
+    flex-wrap: wrap;
 }
 
-.veterinarian-list-header h4,
-.groomer-list-header h4 {
+.pro-list-title {
     margin: 0;
     color: var(--primary1-color);
     font-weight: 600;
     font-size: 1.5rem;
+}
+
+.pro-list-controls {
+    display: flex;
+    gap: 0.6rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.pro-list-sort {
+    width: 200px;
+    max-width: 100%;
+}
+
+/* Responsive grid of professional cards */
+.pro-list-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 2rem;
 }
 
 /* Search Bar Styles */
@@ -189,14 +208,23 @@
 /* Responsive Design */
 @media (max-width: 768px) {
 
-    .veterinarian-list-header,
-    .groomer-list-header {
+    .pro-list-header {
         flex-direction: column;
         align-items: stretch;
         gap: 1rem;
     }
 
-    .search-bar {
+    .pro-list-controls {
+        width: 100%;
+    }
+
+    .pro-list-controls .search-bar {
+        flex: 1 1 100%;
+        width: 100%;
+    }
+
+    .pro-list-sort {
+        flex: 1 1 100%;
         width: 100%;
     }
 
@@ -209,8 +237,7 @@
         justify-content: center;
     }
 
-    .veterinarian-list,
-    .groomer-list {
+    .pro-list-grid {
         gap: 1rem;
     }
 
@@ -221,10 +248,9 @@
     }
 }
 
-@media (max-width: 576px) {
+@media (max-width: 575px) {
 
-    .veterinarian-list-header h4,
-    .groomer-list-header h4 {
+    .pro-list-title {
         font-size: 1.25rem;
     }
 
@@ -234,6 +260,12 @@
 
     .filter-controls {
         gap: 0.5rem;
+    }
+
+    /* Two professional cards per row on phones */
+    .pro-list-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.75rem;
     }
 }
 

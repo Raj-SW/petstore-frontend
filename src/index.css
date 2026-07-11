@@ -3,6 +3,10 @@
 
 html {
   scroll-behavior: smooth;
+  /* Prevent off-canvas elements (e.g. the mobile nav drawer parked off-screen)
+     from creating horizontal page scroll. `clip` — unlike `hidden` — does not
+     turn the root into a scroll container, so `position: sticky` keeps working. */
+  overflow-x: clip;
 }
 
 @media (prefers-reduced-motion: reduce) {
