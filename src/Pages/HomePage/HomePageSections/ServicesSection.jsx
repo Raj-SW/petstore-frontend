@@ -3,19 +3,17 @@ import { motion, useInView, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import {
   FaStethoscope,
-  FaCut,
-  FaDog,
-  FaBed,
-  FaHeart,
+  FaHome,
+  FaPlane,
+  FaShoppingBag,
   FaPaw,
 } from "react-icons/fa";
 // Re-encoded as WebP — originals were 2MB+ PNGs (a poor lossless format choice
 // for photographic content) at the same pixel dimensions.
 import imgVeterinary from "../../../assets/Services Sections Assets/veterinary-service.webp";
-import imgGrooming from "../../../assets/Services Sections Assets/grooming-service.webp";
-import imgBoarding from "../../../assets/Services Sections Assets/boarding-service.webp";
-import imgTraining from "../../../assets/Services Sections Assets/training-sevice.webp";
-import imgAdoption from "../../../assets/Services Sections Assets/adoption-service.webp";
+import imgHomeVisits from "../../../assets/Services Sections Assets/boarding-service.webp";
+import imgPetTravel from "../../../assets/ExportImport/catflying.webp";
+import imgShop from "../../../assets/NavigationBarAssets/PetStore/img1.webp";
 import "./ServicesSection.css";
 
 const SERVICES = [
@@ -30,44 +28,34 @@ const SERVICES = [
     delay: 0.05,
   },
   {
-    key: "grooming",
+    key: "home-visits",
     status: "live",
-    label: "Grooming",
-    icon: FaCut,
-    image: imgGrooming,
-    href: "/appointments?tab=groomers",
-    gridClass: "sc-grooming",
+    label: "Home Visits",
+    icon: FaHome,
+    image: imgHomeVisits,
+    href: "/appointments",
+    gridClass: "sc-home-visits",
     delay: 0.1,
   },
   {
-    key: "adoption",
-    status: "coming-soon",
-    label: "Adoption & Rescue",
-    icon: FaHeart,
-    image: imgAdoption,
-    href: "/services",
-    gridClass: "sc-adoption",
+    key: "pet-relocation",
+    status: "live",
+    label: "Pet Relocation",
+    icon: FaPlane,
+    image: imgPetTravel,
+    href: "/import-export-service",
+    gridClass: "sc-pet-relocation",
     delay: 0.15,
   },
   {
-    key: "boarding",
-    status: "coming-soon",
-    label: "Boarding",
-    icon: FaBed,
-    image: imgBoarding,
-    href: "/appointments",
-    gridClass: "sc-boarding",
+    key: "shop",
+    status: "live",
+    label: "Shop",
+    icon: FaShoppingBag,
+    image: imgShop,
+    href: "/petshop",
+    gridClass: "sc-shop",
     delay: 0.2,
-  },
-  {
-    key: "training",
-    status: "coming-soon",
-    label: "Pet Training",
-    icon: FaDog,
-    image: imgTraining,
-    href: "/appointments",
-    gridClass: "sc-training",
-    delay: 0.25,
   },
 ];
 
@@ -171,7 +159,7 @@ const ServicesSection = () => {
           <FaPaw className="deco-paw" />
           <span className="deco-line" />
         </div>
-        <h2 className="services-title">OUR SERVICES</h2>
+        <h2 className="services-title">WELCOME TO THE HOME OF PET CARE</h2>
         <p className="services-subtitle">
           Complete care for{" "}
           <span className="services-subtitle-script">happy pets</span>
