@@ -23,12 +23,23 @@
   margin: 0;
 }
 
+.vr-carousel-wrap {
+  position: relative;
+}
+
 .vr-grid {
   max-width: 1280px;
   margin: 0 auto;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 1.25rem;
+}
+
+/* Arrow controls + dots only make sense once the grid becomes a scrollable
+   carousel (mobile, see below) — hidden by default on desktop/tablet. */
+.vr-arrow,
+.vr-dots {
+  display: none;
 }
 
 .vr-cta-row {
@@ -90,5 +101,56 @@
   .vr-grid > * {
     flex: 0 0 72%;
     scroll-snap-align: start;
+  }
+
+  /* Arrow controls — floating over the carousel edges */
+  .vr-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 40%;
+    transform: translateY(-50%);
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.92);
+    color: var(--color-primary-forest, #001c10);
+    box-shadow: 0 4px 14px rgba(0, 28, 16, 0.18);
+    z-index: 2;
+    cursor: pointer;
+  }
+
+  .vr-arrow:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+
+  .vr-arrow-prev { left: 0.4rem; }
+  .vr-arrow-next { right: 0.4rem; }
+
+  /* Dot indicators */
+  .vr-dots {
+    display: flex;
+    justify-content: center;
+    gap: 0.4rem;
+    margin-top: 0.9rem;
+  }
+
+  .vr-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(0, 28, 16, 0.18);
+    padding: 0;
+    cursor: pointer;
+  }
+
+  .vr-dot-active {
+    background: var(--color-accent-gold, #d99a2b);
+    width: 20px;
+    border-radius: 4px;
   }
 }
