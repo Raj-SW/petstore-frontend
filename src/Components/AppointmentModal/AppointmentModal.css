@@ -1,0 +1,109 @@
+.am-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 28, 16, 0.6);
+  backdrop-filter: blur(3px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+}
+
+.am-modal {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  background: #fff;
+  border-radius: 16px;
+  padding: 2rem 1.75rem 1.75rem;
+  box-shadow: 0 24px 60px rgba(0, 28, 16, 0.3);
+}
+
+.am-close-btn {
+  position: absolute;
+  top: 0.9rem;
+  right: 0.9rem;
+  background: none;
+  border: none;
+  color: var(--color-text-muted, #6b6b6b);
+  cursor: pointer;
+  padding: 0.35rem;
+  border-radius: 50%;
+  display: flex;
+}
+
+.am-close-btn:hover {
+  background: rgba(0, 28, 16, 0.06);
+}
+
+.am-title {
+  font-family: var(--font-display, serif) !important;
+  font-size: 1.5rem;
+  color: var(--color-primary-forest, #001c10);
+  margin: 0 0 0.5rem;
+}
+
+.am-description {
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  color: var(--color-text-muted, #555);
+  margin: 0 0 1rem;
+  line-height: 1.5;
+}
+
+.am-hours {
+  list-style: none;
+  margin: 0 0 1.4rem;
+  padding: 0.9rem 1rem;
+  background: var(--color-bg-warm-ivory, #f6ece3);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.am-hours li {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  color: var(--color-text-default, #1a2a1a);
+}
+
+.am-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.am-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0.75rem 1.4rem;
+  border-radius: 50px;
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  font-weight: 600;
+  text-decoration: none !important;
+  cursor: pointer;
+  width: 100%;
+}
+
+.am-btn-primary {
+  background-color: #25d366;
+  color: #fff !important;
+  border: 2px solid #25d366;
+}
+
+.am-btn-outline {
+  background: transparent;
+  color: var(--color-text-default, #1a2a1a) !important;
+  border: 2px solid var(--color-text-default, #1a2a1a);
+}
+
+@media (max-width: 575px) {
+  .am-modal {
+    padding: 1.6rem 1.25rem 1.4rem;
+  }
+}
