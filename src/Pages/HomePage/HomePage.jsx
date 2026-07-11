@@ -3,6 +3,7 @@ import HeroSection from "./HomePageSections/HeroSection";
 import ServicesSection from "./HomePageSections/ServicesSection";
 import PetTravelBand from "./HomePageSections/PetTravelBand/PetTravelBand";
 import VetRecommendedSection from "./HomePageSections/VetRecommendedSection/VetRecommendedSection";
+import FeaturedProductSection from "./HomePageSections/FeaturedProductSection";
 import VetNetworkSection from "./HomePageSections/VetNetworkSection/VetNetworkSection";
 import PetCareTipsSection from "./HomePageSections/PetCareTipsSection/PetCareTipsSection";
 import StatsSection from "./HomePageSections/StatsSection";
@@ -22,6 +23,7 @@ const HomePage = () => {
       <PetTravelBand />
       <PromoBannerCarousel />
       <VetRecommendedSection />
+      <FeaturedProductSection />
       <VetNetworkSection />
       <PetCareTipsSection />
       <StatsSection />
