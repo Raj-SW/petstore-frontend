@@ -29,7 +29,7 @@ const ServicePage               = lazy(() => import("./Pages/ServicePage/Service
 const AppointmentPage           = lazy(() => import("./Pages/AppointmentPage/AppointmentPage.jsx"));
 const ProfessionalDetailPage    = lazy(() => import("./Pages/AppointmentPage/ProfessionalDetailPage.jsx"));
 const CartCheckOutPage          = lazy(() => import("./Pages/CartCheckoutPage/CartCheckOutPage.jsx"));
-const ImportExportServicePage   = lazy(() => import("./Pages/ImportExport/ImportExportServicePage.jsx"));
+const PetTravelPage             = lazy(() => import("./Pages/PetTravel/PetTravelPage.jsx"));
 const ExportImportForm          = lazy(() => import("./Pages/ImportExport/Import/ImportPage.jsx"));
 const UserProfile               = lazy(() => import("./Pages/UserProfile.jsx"));
 const ResetPassword             = lazy(() => import("./Components/Auth/ResetPassword.jsx"));
@@ -174,7 +174,7 @@ const router = createBrowserRouter([
       },
       {
         path: "import-export-service",
-        element: P(<ImportExportServicePage />),
+        element: P(<PetTravelPage />),
       },
       {
         path: "import-page",
