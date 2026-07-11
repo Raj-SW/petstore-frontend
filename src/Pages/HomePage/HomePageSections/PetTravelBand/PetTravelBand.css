@@ -1,0 +1,118 @@
+.ptb-section {
+  background: var(--color-primary-forest, #001c10);
+  padding: 3.5rem 0;
+}
+
+.ptb-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+}
+
+.ptb-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.ptb-title {
+  font-family: var(--font-display, serif) !important;
+  font-size: 2.4rem;
+  color: var(--color-accent-gold, #d99a2b);
+  margin: 0 0 0.75rem;
+}
+
+.ptb-sub {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--color-bg-cream, #faf5f1);
+  opacity: 0.9;
+  margin: 0 0 1.4rem;
+  line-height: 1.6;
+  max-width: 480px;
+}
+
+.ptb-points {
+  list-style: none;
+  margin: 0 0 1.8rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 480px;
+}
+
+.ptb-points li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  color: var(--color-bg-cream, #faf5f1);
+  line-height: 1.45;
+}
+
+.ptb-point-icon {
+  color: var(--color-accent-gold, #d99a2b);
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+
+.ptb-cta {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.75rem 1.9rem;
+  border-radius: 50px;
+  background: var(--color-accent-gold, #d99a2b);
+  color: var(--color-primary-forest, #001c10) !important;
+  border: none;
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.ptb-image-col {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.ptb-image {
+  width: 100%;
+  max-width: 380px;
+  height: auto;
+  object-fit: contain;
+}
+
+@media (max-width: 991px) {
+  .ptb-inner {
+    flex-direction: column-reverse;
+    text-align: center;
+    padding: 0 1.5rem;
+    gap: 2rem;
+  }
+
+  .ptb-points {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: left;
+  }
+
+  .ptb-image {
+    max-width: 260px;
+  }
+}
+
+@media (max-width: 575px) {
+  .ptb-section {
+    padding: 2.5rem 0;
+  }
+
+  .ptb-title {
+    font-size: 1.9rem;
+  }
+}

@@ -5,6 +5,11 @@
 .pcv2-card {
   width: 100%;
   max-width: 360px;
+  /* Fill the grid/carousel cell so every card in a row is the same height
+     regardless of image resolution or description length */
+  height: 100%;
+  display: flex;
+  flex-direction: column;
   background: #fff;
   border-radius: 16px;
   cursor: pointer;
@@ -55,6 +60,8 @@
   display: flex;
   flex-direction: column;
   gap: 0.3rem;
+  /* Grow to fill the card so the price row can pin to the bottom */
+  flex: 1 1 auto;
 }
 
 .pcv2-name {
@@ -86,7 +93,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 0.55rem;
+  /* Pin price + action to the bottom edge so cards align across a row */
+  margin-top: auto;
+  padding-top: 0.55rem;
 }
 
 .pcv2-price {
@@ -169,8 +178,16 @@
 }
 
 @media (max-width: 575px) {
-  .pcv2-card { width: 100%; max-width: 420px; }
-  .pcv2-img  { height: 190px; }
+  /* Cards sit in a 2-col grid on phones — fill the cell, drop the fixed cap */
+  .pcv2-card { width: 100%; max-width: none; }
+  .pcv2-img  { height: 150px; }
+  .pcv2-img-wrap { padding: 8px 8px 0; }
+  .pcv2-info { padding: 0.6rem 0.65rem 0.75rem; gap: 0.2rem; }
+  .pcv2-name { font-size: 0.85rem; }
+  .pcv2-desc { display: none; }
+  .pcv2-bottom-row { margin-top: 0.4rem; flex-wrap: wrap; gap: 0.35rem; }
+  .pcv2-price { font-size: 0.92rem; }
+  .pcv2-select-btn { padding: 0.35rem 0.7rem; font-size: 0.72rem; }
 }
 
 /* Variant products: "From" price + select-options button */

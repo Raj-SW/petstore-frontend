@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FiMail, FiPhone, FiArrowLeft, FiAward, FiClock, FiCheckCircle } from "react-icons/fi";
 import Breadcrumb from "@/Components/HelperComponents/Breadcrumb/Breadcrumb";
+import { RichTextRenderer } from "@/Components/RichText";
 import professionalsApi from "../../Services/api/professionalsApi";
 import "./ProfessionalDetailPage.css";
 
@@ -32,16 +33,16 @@ const ProfessionalDetailPage = () => {
   const { id } = useParams();
   const [pro, setPro] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     let active = true;
     setLoading(true);
-    setError(false);
+    setError(null);
     professionalsApi
       .getProfessionalById(id)
       .then((data) => { if (active) setPro(data); })
-      .catch(() => { if (active) setError(true); })
+      .catch((err) => { if (active) setError(err?.response?.data?.message || err?.message || "Could not load profile"); })
       .finally(() => { if (active) setLoading(false); });
     return () => { active = false; };
   }, [id]);
@@ -55,7 +56,7 @@ const ProfessionalDetailPage = () => {
       <div className="pd-page">
         <div className="pd-notfound">
           <h1>Professional not found</h1>
-          <p>We couldn’t load this profile.</p>
+          <p>{error || "We couldn’t load this profile."}</p>
           <Link to="/appointments" className="pd-back-link"><FiArrowLeft /> Back to professionals</Link>
         </div>
       </div>
@@ -90,7 +91,7 @@ const ProfessionalDetailPage = () => {
       >
         {/* Left — identity + contact */}
         <aside className="pd-aside">
-          <img src={pro.image || avatarUrl(pro.name)} alt={pro.name} className="pd-avatar" />
+          <img src={pro.profileImage?.url || avatarUrl(pro.name)} alt={pro.name} className="pd-avatar" />
           <span className="pd-role">{roleLabel}</span>
           <h1 className="pd-name">{pro.name}</h1>
           {specialty && <p className="pd-specialty">{specialty}</p>}
@@ -110,7 +111,7 @@ const ProfessionalDetailPage = () => {
           {pro.bio && (
             <section className="pd-section">
               <h2 className="pd-section-title">About</h2>
-              <p className="pd-bio">{pro.bio}</p>
+              <RichTextRenderer content={pro.bio} className="pd-bio" />
             </section>
           )}
 

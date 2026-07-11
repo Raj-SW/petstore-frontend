@@ -1,11 +1,11 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import { FaStethoscope, FaPlane, FaThLarge } from "react-icons/fa";
+import { FaStethoscope, FaThLarge } from "react-icons/fa";
 import img1 from "../../../assets/NavigationBarAssets/Services/img1.webp";
 import img2 from "../../../assets/NavigationBarAssets/Services/img2.webp";
-import img3 from "../../../assets/NavigationBarAssets/Services/img3.webp";
 import "./ServicesDropdown.css";
 
+// "Import & Export" (pet travel) was pulled out into its own top-level "Pet Travel" nav link.
 const SERVICE_ITEMS = [
   {
     key: "all",
@@ -22,14 +22,6 @@ const SERVICE_ITEMS = [
     href: "/appointments",
     image: img2,
     icon: FaStethoscope,
-  },
-  {
-    key: "import-export",
-    label: "Import & Export",
-    desc: "International pet travel assistance",
-    href: "/import-export-service",
-    image: img3,
-    icon: FaPlane,
   },
 ];
 

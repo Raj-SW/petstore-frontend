@@ -284,18 +284,21 @@
 .mobile-slide-menu {
   position: fixed;
   top: 0;
-  left: 0;
+  /* Drawer opens from the right to match the hamburger's right-side position */
+  right: 0;
   height: 100vh;
+  height: 100svh; /* iOS Safari: 100vh includes the address bar and clips the bottom */
   width: 82vw;
   max-width: 310px;
   background: var(--color-primary-forest);
   z-index: 1300;
-  transform: translateX(-100%);
+  transform: translateX(100%);
   transition: transform 0.32s cubic-bezier(.4, 0, .2, 1);
-  box-shadow: 4px 0 24px rgba(0, 28, 16, 0.3);
+  box-shadow: -4px 0 24px rgba(0, 28, 16, 0.3);
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   outline: none;
 }
 

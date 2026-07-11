@@ -27,13 +27,12 @@ describe("cartApi", () => {
     });
   });
 
-  it("addToCart defaults quantity=1 and variant=null", async () => {
+  it("addToCart omits variantId when null (default)", async () => {
     api.post.mockResolvedValue({ data: { data: {} } });
     await cartApi.addToCart("p1");
     expect(api.post).toHaveBeenCalledWith("/cart", {
       productId: "p1",
       quantity: 1,
-      variantId: null,
     });
   });
 

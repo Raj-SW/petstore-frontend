@@ -36,6 +36,7 @@ vi.mock("react-router-dom", async () => {
 // Mock heavy child components that have their own dependencies
 vi.mock("./AddToCart", () => ({ default: () => <div data-testid="add-to-cart" /> }));
 vi.mock("./Dropdowns/ServicesDropdown", () => ({ default: () => <div data-testid="services-dropdown" /> }));
+vi.mock("./Dropdowns/ClinicDropdown", () => ({ default: () => <div data-testid="clinic-dropdown" /> }));
 vi.mock("./Dropdowns/SignUpDropdown", () => ({
   default: ({ showLogin, setShowLogin }) => (
     <div data-testid="signup-dropdown">
@@ -70,16 +71,25 @@ describe("NavigationBar", () => {
     useAuth.mockReturnValue({ user: null, logout: vi.fn(), isAdmin: () => false });
     renderNav();
     expect(screen.getByRole("link", { name: /home/i })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /pet store/i })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /gallery/i })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /^shop$/i })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /pet travel/i })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /pet care tips/i })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /contact/i })).toBeInTheDocument();
   });
 
-  it("renders the Services dropdown trigger button", () => {
+  it("renders the Care dropdown trigger button", () => {
     useAuth.mockReturnValue({ user: null, logout: vi.fn(), isAdmin: () => false });
     renderNav();
     expect(
-      screen.getByRole("button", { name: /services/i })
+      screen.getByRole("button", { name: /care/i })
+    ).toBeInTheDocument();
+  });
+
+  it("renders the Our Clinic dropdown trigger button", () => {
+    useAuth.mockReturnValue({ user: null, logout: vi.fn(), isAdmin: () => false });
+    renderNav();
+    expect(
+      screen.getByRole("button", { name: /our clinic/i })
     ).toBeInTheDocument();
   });
 
@@ -112,6 +122,19 @@ describe("NavigationBar", () => {
     useAuth.mockReturnValue({ user: null, logout: vi.fn(), isAdmin: () => false });
     renderNav();
     expect(screen.getByRole("button", { name: /open menu/i })).toBeInTheDocument();
+  });
+
+  it("locks body scroll while the mobile drawer is open and restores it on close", async () => {
+    useAuth.mockReturnValue({ user: null, logout: vi.fn(), isAdmin: () => false });
+    renderNav();
+
+    expect(document.body.style.overflow).not.toBe("hidden");
+
+    await userEvent.click(screen.getByRole("button", { name: /open menu/i }));
+    expect(document.body.style.overflow).toBe("hidden");
+
+    await userEvent.click(screen.getByRole("button", { name: /close menu/i }));
+    expect(document.body.style.overflow).not.toBe("hidden");
   });
 
   it("shows Admin Dashboard link in user menu when isAdmin returns true", async () => {

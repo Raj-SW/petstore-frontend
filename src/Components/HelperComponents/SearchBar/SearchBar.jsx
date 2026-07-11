@@ -158,6 +158,8 @@ const SearchBar = ({
         initial={{ width: "280px" }}
         animate={{ width: isFocused ? "420px" : "280px", scale: isFocused ? 1.04 : 1 }}
         transition={{ type: "spring", stiffness: 400, damping: 25 }}
+        /* Never let the expanded/scaled width overflow a narrow viewport */
+        style={{ maxWidth: "100%" }}
         onMouseMove={handleMouseMove}
       >
         <motion.div

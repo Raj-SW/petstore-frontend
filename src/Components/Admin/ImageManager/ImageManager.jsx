@@ -106,7 +106,7 @@ const ImageManager = ({ value = [], onChange, uploadUrl, max = 10, onError, labe
       }
       if (uploaded.length) onChange([...value, ...uploaded]);
     } catch (err) {
-      fail(err?.message || "Image upload failed.");
+      fail(err?.response?.data?.message || err?.message || "Image upload failed.");
     } finally {
       setUploading(false);
     }

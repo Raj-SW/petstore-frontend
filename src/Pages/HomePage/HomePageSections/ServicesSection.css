@@ -68,8 +68,8 @@
 
 .services-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: 310px 310px;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: 310px;
   gap: 1rem;
   width: min(1200px, 100%);
   margin: 0 auto;
@@ -82,13 +82,6 @@
   min-width: 0;
   height: 100%;
 }
-
-/* Explicit placement */
-.sc-vet      { grid-column: 1; grid-row: 1; }
-.sc-grooming { grid-column: 2; grid-row: 1; }
-.sc-adoption { grid-column: 3; grid-row: 1 / 3; }
-.sc-boarding { grid-column: 1; grid-row: 2; }
-.sc-training { grid-column: 2; grid-row: 2; }
 
 /* ── Service Card ── */
 
@@ -111,11 +104,6 @@
   object-fit: cover;
   object-position: center center;
   display: block;
-}
-
-/* Shift adoption crop right so the puppy lands center-frame */
-.sc-adoption .sc-image {
-  object-position: 72% center;
 }
 
 .sc-bottom-gradient {
@@ -208,15 +196,9 @@
 @media (max-width: 991px) {
   .services-grid {
     grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: 250px 250px 340px;
+    grid-template-rows: repeat(2, 250px);
     padding: 0 1.5rem;
   }
-
-  .sc-vet      { grid-column: 1; grid-row: 1; }
-  .sc-grooming { grid-column: 2; grid-row: 1; }
-  .sc-boarding { grid-column: 1; grid-row: 2; }
-  .sc-training { grid-column: 2; grid-row: 2; }
-  .sc-adoption { grid-column: 1 / 3; grid-row: 3; }
 }
 
 @media (max-width: 575px) {
@@ -227,25 +209,10 @@
 
   .services-grid {
     grid-template-columns: 1fr;
-    grid-template-rows: repeat(5, 240px);
+    grid-template-rows: repeat(4, 240px);
     gap: 0.85rem;
     padding: 0 1rem;
   }
-
-  .sc-vet,
-  .sc-grooming,
-  .sc-adoption,
-  .sc-boarding,
-  .sc-training {
-    grid-column: 1;
-    grid-row: auto;
-  }
-
-  .sc-vet      { order: 1; }
-  .sc-grooming { order: 2; }
-  .sc-boarding { order: 3; }
-  .sc-training { order: 4; }
-  .sc-adoption { order: 5; }
 
   .services-title {
     font-size: 2.6rem;

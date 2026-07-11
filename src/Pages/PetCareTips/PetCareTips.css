@@ -354,7 +354,14 @@
   font-size: 14px;
 }
 @media (max-width: 980px) { .pct-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 640px) { .pct-grid { grid-template-columns: 1fr; } }
+/* Keep 2 tips per row on phones instead of collapsing to a single column */
+@media (max-width: 640px) {
+  .pct-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .pct-content { padding: 20px 12px 48px; }
+  .pct-card-body { padding: 0.65rem 0.7rem 0.8rem; }
+  .pct-img, .pct-img-placeholder { height: 120px; }
+  .pct-pill { top: 14px; left: 14px; font-size: 0.62rem; padding: 0.2rem 0.55rem; }
+}
 
 /* Tip detail — admin-defined sections */
 .ptd-sections { margin-top: 1.5rem; display: flex; flex-direction: column; gap: 1.4rem; }

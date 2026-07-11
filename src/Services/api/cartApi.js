@@ -11,7 +11,9 @@ const cartApi = {
   // Add a product to the backend cart
   // productId = MongoDB _id string, quantity = positive integer
   addToCart: async (productId, quantity = 1, variantId = null) => {
-    const response = await api.post("/cart", { productId, quantity, variantId });
+    const body = { productId, quantity };
+    if (variantId) body.variantId = variantId;
+    const response = await api.post("/cart", body);
     return response.data.data;
   },
 

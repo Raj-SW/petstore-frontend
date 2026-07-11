@@ -11,7 +11,9 @@ import {
   FaChevronDown,
   FaThLarge,
   FaStethoscope,
-  FaPlane,
+  FaInfoCircle,
+  FaUsers,
+  FaImages,
 } from "react-icons/fa";
 import vitalPawsLogo from "../../assets/NavBar Assets/Vital-paws-logo.png";
 import pawsImg from "../../assets/NavBar Assets/Paws.png";
@@ -20,9 +22,12 @@ import AddToCart from "./AddToCart";
 import SignUpDropdown from "./Dropdowns/SignUpDropdown";
 import CurrencySelector from "../HelperComponents/CurrencySelector/CurrencySelector";
 import ServicesDropdown from "./Dropdowns/ServicesDropdown";
+import ClinicDropdown from "./Dropdowns/ClinicDropdown";
 import "./NavigationBar.css";
 
-const SERVICES_PATHS = ["/services", "/appointments", "/import-export-service"];
+// "Pet Travel" (Import & Export) is now its own top-level link, not part of Care.
+const SERVICES_PATHS = ["/services", "/appointments"];
+const CLINIC_PATHS = ["/about", "/gallery"];
 
 const isPathActive = (pathname, href) => {
   if (!href) return false;
@@ -33,19 +38,27 @@ const isPathActive = (pathname, href) => {
 const isServicesPathActive = (pathname) =>
   SERVICES_PATHS.some((p) => pathname.startsWith(p));
 
+const isClinicPathActive = (pathname) =>
+  CLINIC_PATHS.some((p) => pathname.startsWith(p));
+
 const MOBILE_SERVICE_ITEMS = [
   { label: "All Services", href: "/services", icon: FaThLarge },
   { label: "Find a Professional", href: "/appointments", icon: FaStethoscope },
-  { label: "Import & Export", href: "/import-export-service", icon: FaPlane },
+];
+
+const MOBILE_CLINIC_ITEMS = [
+  { label: "About", href: "/about", icon: FaInfoCircle },
+  { label: "Meet the Team", href: "/about", icon: FaUsers },
+  { label: "Inside VitalPaws", href: "/gallery", icon: FaImages },
 ];
 
 const NAV_LINKS = [
   { label: "Home", href: "/home" },
-  { label: "Services", href: "/services", hasDropdown: true },
-  { label: "Pet Store", href: "/petshop" },
+  { label: "Care", href: "/services", dropdown: "services" },
+  { label: "Shop", href: "/petshop" },
+  { label: "Pet Travel", href: "/import-export-service" },
   { label: "Pet Care Tips", href: "/pet-care-tips" },
-  { label: "Gallery", href: "/gallery" },
-  { label: "About", href: "/about" },
+  { label: "Our Clinic", href: "/about", dropdown: "clinic" },
   { label: "Contact", href: "/contact" },
 ];
 
@@ -58,11 +71,14 @@ const NavigationBar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
+  const [clinicOpen, setClinicOpen] = useState(false);
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
+  const [mobileClinicOpen, setMobileClinicOpen] = useState(false);
 
   const mobileMenuRef = useRef(null);
   const userMenuRef = useRef(null);
   const servicesWrapRef = useRef(null);
+  const clinicWrapRef = useRef(null);
 
   // Esc closes all menus
   useEffect(() => {
@@ -71,13 +87,14 @@ const NavigationBar = () => {
         setMobileMenuOpen(false);
         setUserMenuOpen(false);
         setServicesOpen(false);
+        setClinicOpen(false);
       }
     };
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  // Click-outside closes user menu + services dropdown
+  // Click-outside closes user menu + Care/Our Clinic dropdowns
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (userMenuOpen && userMenuRef.current && !userMenuRef.current.contains(e.target)) {
@@ -86,19 +103,35 @@ const NavigationBar = () => {
       if (servicesOpen && servicesWrapRef.current && !servicesWrapRef.current.contains(e.target)) {
         setServicesOpen(false);
       }
+      if (clinicOpen && clinicWrapRef.current && !clinicWrapRef.current.contains(e.target)) {
+        setClinicOpen(false);
+      }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [userMenuOpen, servicesOpen]);
+  }, [userMenuOpen, servicesOpen, clinicOpen]);
 
   // Focus mobile menu when opened
   useEffect(() => {
     if (mobileMenuOpen && mobileMenuRef.current) mobileMenuRef.current.focus();
   }, [mobileMenuOpen]);
 
-  // Close mobile services accordion when menu closes
+  // Lock background scroll while the mobile drawer is open
   useEffect(() => {
-    if (!mobileMenuOpen) setMobileServicesOpen(false);
+    if (!mobileMenuOpen) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [mobileMenuOpen]);
+
+  // Close mobile accordions when menu closes
+  useEffect(() => {
+    if (!mobileMenuOpen) {
+      setMobileServicesOpen(false);
+      setMobileClinicOpen(false);
+    }
   }, [mobileMenuOpen]);
 
   const handleOverlayClick = (e) => {
@@ -107,6 +140,7 @@ const NavigationBar = () => {
 
   const isActive = (href) => isPathActive(location.pathname, href);
   const isServicesActive = () => isServicesPathActive(location.pathname);
+  const isClinicActive = () => isClinicPathActive(location.pathname);
 
   const handleNav = (href) => (e) => {
     e.preventDefault();
@@ -128,7 +162,6 @@ const NavigationBar = () => {
                 <span className="nav-brand-vital">Vital</span>
                 <span className="nav-brand-paws">Paws</span>
               </span>
-              <span className="nav-brand-sub">VETERINARY CARE</span>
             </div>
           </a>
 
@@ -137,9 +170,9 @@ const NavigationBar = () => {
 
           {/* Desktop nav links */}
           <ul className="nav-links">
-            {NAV_LINKS.map(({ label, href, hasDropdown }) => {
+            {NAV_LINKS.map(({ label, href, dropdown }) => {
               let linkElement;
-              if (hasDropdown) {
+              if (dropdown === "services") {
                 linkElement = (
                   <div className="nav-services-trigger-wrap" ref={servicesWrapRef}>
                     <button
@@ -161,6 +194,28 @@ const NavigationBar = () => {
                     />
                   </div>
                 );
+              } else if (dropdown === "clinic") {
+                linkElement = (
+                  <div className="nav-services-trigger-wrap" ref={clinicWrapRef}>
+                    <button
+                      type="button"
+                      className={`nav-link-item nav-services-trigger${isClinicActive() ? " active" : ""}`}
+                      onClick={() => setClinicOpen((s) => !s)}
+                      aria-expanded={clinicOpen}
+                      aria-haspopup="menu"
+                    >
+                      {label}
+                      <FaChevronDown
+                        size={10}
+                        className={`nav-services-chev${clinicOpen ? " open" : ""}`}
+                      />
+                    </button>
+                    <ClinicDropdown
+                      open={clinicOpen}
+                      onClose={() => setClinicOpen(false)}
+                    />
+                  </div>
+                );
               } else if (href) {
                 linkElement = (
                   <a
@@ -175,7 +230,7 @@ const NavigationBar = () => {
                 linkElement = <span className="nav-link-item nav-link-disabled">{label}</span>;
               }
               return (
-                <li key={label} className={hasDropdown ? "nav-link-services-wrap" : ""}>
+                <li key={label} className={dropdown ? "nav-link-services-wrap" : ""}>
                   {linkElement}
                 </li>
               );
@@ -316,7 +371,7 @@ const NavigationBar = () => {
               Home
             </a>
 
-            {/* Services accordion */}
+            {/* Care accordion (was Services) */}
             <div className="mobile-services-group">
               <button
                 type="button"
@@ -324,7 +379,7 @@ const NavigationBar = () => {
                 onClick={() => setMobileServicesOpen((s) => !s)}
                 aria-expanded={mobileServicesOpen}
               >
-                <span>Services</span>
+                <span>Care</span>
                 <FaChevronDown
                   size={12}
                   className={`mobile-services-chev${mobileServicesOpen ? " open" : ""}`}
@@ -356,13 +411,22 @@ const NavigationBar = () => {
               </AnimatePresence>
             </div>
 
-            {/* Pet Store */}
+            {/* Shop (was Pet Store) */}
             <a
               href="/petshop"
               className={`mobile-menu-link${isActive("/petshop") ? " active" : ""}`}
               onClick={handleNav("/petshop")}
             >
-              Pet Store
+              Shop
+            </a>
+
+            {/* Pet Travel (was inside the Care dropdown) */}
+            <a
+              href="/import-export-service"
+              className={`mobile-menu-link${isActive("/import-export-service") ? " active" : ""}`}
+              onClick={handleNav("/import-export-service")}
+            >
+              Pet Travel
             </a>
 
             {/* Pet Care Tips */}
@@ -374,23 +438,45 @@ const NavigationBar = () => {
               Pet Care Tips
             </a>
 
-            {/* Gallery */}
-            <a
-              href="/gallery"
-              className={`mobile-menu-link${isActive("/gallery") ? " active" : ""}`}
-              onClick={handleNav("/gallery")}
-            >
-              Gallery
-            </a>
+            {/* Our Clinic accordion (About / Meet the Team / Inside VitalPaws) */}
+            <div className="mobile-services-group">
+              <button
+                type="button"
+                className={`mobile-menu-link mobile-services-trigger${isClinicActive() ? " active" : ""}`}
+                onClick={() => setMobileClinicOpen((s) => !s)}
+                aria-expanded={mobileClinicOpen}
+              >
+                <span>Our Clinic</span>
+                <FaChevronDown
+                  size={12}
+                  className={`mobile-services-chev${mobileClinicOpen ? " open" : ""}`}
+                />
+              </button>
 
-            {/* About */}
-            <a
-              href="/about"
-              className={`mobile-menu-link${isActive("/about") ? " active" : ""}`}
-              onClick={handleNav("/about")}
-            >
-              About
-            </a>
+              <AnimatePresence>
+                {mobileClinicOpen && (
+                  <motion.div
+                    className="mobile-services-sub"
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
+                  >
+                    {MOBILE_CLINIC_ITEMS.map(({ label, href, icon: Icon }) => (
+                      <a
+                        key={label}
+                        href={href}
+                        className={`mobile-sub-link${location.pathname.startsWith(href) ? " active" : ""}`}
+                        onClick={handleNav(href)}
+                      >
+                        <Icon size={13} className="mobile-sub-icon" />
+                        {label}
+                      </a>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
 
             {/* Contact */}
             <a
