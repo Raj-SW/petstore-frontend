@@ -3,9 +3,7 @@ import { motion } from "framer-motion";
 import { FaWhatsapp, FaCalendarCheck, FaStar } from "react-icons/fa";
 import AppointmentModal from "../../../Components/AppointmentModal/AppointmentModal";
 import PtIcon from "../components/PtIcon";
-// Existing pet-travel themed asset. Swap for a golden-retriever-in-crate
-// airport photo (see the design brief) when one is available.
-import heroImg from "../../../assets/ExportImport/catflying.webp";
+import heroImg from "../../../assets/PetTravel/pettravel.png";
 import {
   ptHero,
   PT_WHATSAPP_NUMBER,
@@ -85,11 +83,11 @@ const PtHero = () => {
         >
           <img
             src={heroImg}
-            alt="A pet ready to travel safely to a new home abroad"
+            alt="A golden retriever sitting comfortably in an open airline travel crate at an airport terminal, with its pet passport beside it"
             className="pt-hero-img"
             fetchpriority="high"
-            width="640"
-            height="520"
+            width="1672"
+            height="941"
           />
           <motion.div
             className="pt-hero-trust"

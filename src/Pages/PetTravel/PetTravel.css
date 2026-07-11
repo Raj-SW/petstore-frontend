@@ -200,7 +200,7 @@
 .pt-hero-img {
   width: 100%;
   height: auto;
-  aspect-ratio: 16 / 13;
+  aspect-ratio: 1672 / 941;
   object-fit: cover;
   border-radius: var(--pt-radius);
   box-shadow: var(--pt-shadow);

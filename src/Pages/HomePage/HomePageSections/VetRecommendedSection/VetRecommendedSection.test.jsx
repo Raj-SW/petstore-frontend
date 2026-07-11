@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, waitFor, fireEvent } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 
 vi.mock("framer-motion", async () => {
   const React = await import("react");
@@ -25,6 +25,15 @@ vi.mock("framer-motion", async () => {
     useInView: () => true,
   };
 });
+
+// Carousel mocked to lightweight passthroughs — embla needs real layout/ResizeObserver
+vi.mock("@/Components/ui/carousel", () => ({
+  Carousel: ({ children }) => <div data-testid="carousel">{children}</div>,
+  CarouselContent: ({ children }) => <div>{children}</div>,
+  CarouselItem: ({ children }) => <div>{children}</div>,
+  CarouselPrevious: () => <button type="button">prev</button>,
+  CarouselNext: () => <button type="button">next</button>,
+}));
 
 vi.mock("../../../../Components/HelperComponents/ProductCard/ProductCardV2", () => ({
   default: ({ title }) => <div>{title}</div>,
@@ -60,11 +69,20 @@ describe("VetRecommendedSection", () => {
     });
   });
 
-  it("renders the returned products", async () => {
+  it("renders the returned products inside the shared Carousel", async () => {
     productsApi.getProducts.mockResolvedValue({ data: makeProducts(4) });
     render(<VetRecommendedSection />);
-    expect(await screen.findByText("Product 0")).toBeTruthy();
+    expect(await screen.findByTestId("carousel")).toBeTruthy();
+    expect(screen.getByText("Product 0")).toBeTruthy();
     expect(screen.getByText("Product 3")).toBeTruthy();
+  });
+
+  it("renders the carousel prev/next controls", async () => {
+    productsApi.getProducts.mockResolvedValue({ data: makeProducts(4) });
+    render(<VetRecommendedSection />);
+    await screen.findByText("Product 0");
+    expect(screen.getByRole("button", { name: /prev/i })).toBeTruthy();
+    expect(screen.getByRole("button", { name: /next/i })).toBeTruthy();
   });
 
   it("renders the section title and Explore the Store CTA", async () => {
@@ -89,45 +107,5 @@ describe("VetRecommendedSection", () => {
     await waitFor(() => expect(errSpy).toHaveBeenCalled());
     expect(container).toBeEmptyDOMElement();
     errSpy.mockRestore();
-  });
-
-  it("renders carousel arrow controls and a dot per product when there are 2+ products", async () => {
-    productsApi.getProducts.mockResolvedValue({ data: makeProducts(4) });
-    render(<VetRecommendedSection />);
-    await screen.findByText("Product 0");
-    expect(screen.getByRole("button", { name: /previous product/i })).toBeTruthy();
-    expect(screen.getByRole("button", { name: /next product/i })).toBeTruthy();
-    expect(screen.getAllByRole("tab")).toHaveLength(4);
-  });
-
-  it("disables the previous arrow on the first product and marks its dot active", async () => {
-    productsApi.getProducts.mockResolvedValue({ data: makeProducts(3) });
-    render(<VetRecommendedSection />);
-    await screen.findByText("Product 0");
-    expect(screen.getByRole("button", { name: /previous product/i })).toBeDisabled();
-    expect(screen.getByRole("button", { name: /next product/i })).not.toBeDisabled();
-    expect(screen.getByRole("tab", { name: /go to product 1/i })).toHaveAttribute("aria-selected", "true");
-  });
-
-  it("clicking a dot scrolls the carousel to that product", async () => {
-    productsApi.getProducts.mockResolvedValue({ data: makeProducts(3) });
-    render(<VetRecommendedSection />);
-    await screen.findByText("Product 0");
-    const scrollIntoViewMock = vi.fn();
-    Element.prototype.scrollIntoView = scrollIntoViewMock;
-    fireEvent.click(screen.getByRole("tab", { name: /go to product 3/i }));
-    expect(scrollIntoViewMock).toHaveBeenCalledWith({
-      behavior: "smooth",
-      inline: "start",
-      block: "nearest",
-    });
-  });
-
-  it("does not render carousel controls for a single product", async () => {
-    productsApi.getProducts.mockResolvedValue({ data: makeProducts(1) });
-    render(<VetRecommendedSection />);
-    await screen.findByText("Product 0");
-    expect(screen.queryByRole("button", { name: /previous product/i })).toBeNull();
-    expect(screen.queryByRole("tab")).toBeNull();
   });
 });
