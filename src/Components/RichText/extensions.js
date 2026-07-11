@@ -71,6 +71,7 @@ export function buildExtensions(preset = "standard", opts = {}) {
           code: false,
           strike: false,
           horizontalRule: false,
+          underline: false, // added explicitly below
         }),
         Underline,
         ...shared,
@@ -78,7 +79,7 @@ export function buildExtensions(preset = "standard", opts = {}) {
 
     case "full":
       return [
-        StarterKit,
+        StarterKit.configure({ underline: false, link: false }),
         Underline,
         linkConfig,
         textAlignConfig,
@@ -89,7 +90,7 @@ export function buildExtensions(preset = "standard", opts = {}) {
     case "blog":
       // Everything in full + inline images (for Gallery / blog posts)
       return [
-        StarterKit,
+        StarterKit.configure({ underline: false, link: false }),
         Underline,
         linkConfig,
         textAlignConfig,
@@ -101,7 +102,7 @@ export function buildExtensions(preset = "standard", opts = {}) {
     case "standard":
     default:
       return [
-        StarterKit.configure({ codeBlock: false }),
+        StarterKit.configure({ codeBlock: false, underline: false, link: false }),
         Underline,
         linkConfig,
         ...shared,

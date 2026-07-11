@@ -25,6 +25,7 @@ import { RichTextEditor } from "../../../Components/RichText";
 import ImageManager from "../../../Components/Admin/ImageManager/ImageManager";
 import announcementsApi from "../../../Services/api/announcementsApi";
 import { mergeCombinations, generateCombinations, comboKey } from "../../../utils/variantMatrix";
+import CreatableTagSelect from "../../../Components/CreatableTagSelect/CreatableTagSelect";
 import "./AdminProductForm.css";
 
 const normalizeImage = (img) =>
@@ -124,10 +125,6 @@ const AdminProductForm = () => {
   // Uploads happen immediately inside <ImageManager>, so the form just holds refs.
   const [images, setImages] = useState([]);
 
-  // Free-form tag inputs (categories, colors, suitable-for)
-  const [categoryInput, setCategoryInput] = useState("");
-  const [colorInput, setColorInput] = useState("");
-  const [genderInput, setGenderInput] = useState("");
 
   // Sections (dynamic rich-text tabs)
   const [sections, setSections] = useState([]);
@@ -246,70 +243,6 @@ const AdminProductForm = () => {
 
   const setField = (key, value) => setForm((f) => ({ ...f, [key]: value }));
 
-  // ── Category tags (free-form + quick-pick suggestions) ──────────────────────
-  const addCategory = (raw) => {
-    const val = (raw ?? categoryInput).trim();
-    if (!val) return;
-    if (!form.categories.includes(val)) setField("categories", [...form.categories, val]);
-    setCategoryInput("");
-  };
-
-  const handleCategoryKeyDown = (e) => {
-    if (e.key === "Enter" || e.key === ",") {
-      e.preventDefault();
-      addCategory();
-    }
-    if (e.key === "Backspace" && !categoryInput && form.categories.length > 0) {
-      setField("categories", form.categories.slice(0, -1));
-    }
-  };
-
-  const removeCategory = (cat) =>
-    setField("categories", form.categories.filter((c) => c !== cat));
-
-  // ── Suitable-for tags (free-form + quick-pick suggestions) ──────────────────
-  const addGender = (raw) => {
-    const val = (raw ?? genderInput).trim();
-    if (!val) return;
-    if (!form.genders.includes(val)) setField("genders", [...form.genders, val]);
-    setGenderInput("");
-  };
-
-  const handleGenderKeyDown = (e) => {
-    if (e.key === "Enter" || e.key === ",") {
-      e.preventDefault();
-      addGender();
-    }
-    if (e.key === "Backspace" && !genderInput && form.genders.length > 0) {
-      setField("genders", form.genders.slice(0, -1));
-    }
-  };
-
-  const removeGender = (g) =>
-    setField("genders", form.genders.filter((x) => x !== g));
-
-  // ── Color tag input ─────────────────────────────────────────────────────────
-  const addColor = () => {
-    const val = colorInput.trim();
-    if (!val) return;
-    if (!form.colors.includes(val)) {
-      setField("colors", [...form.colors, val]);
-    }
-    setColorInput("");
-  };
-
-  const handleColorKeyDown = (e) => {
-    if (e.key === "Enter" || e.key === ",") {
-      e.preventDefault();
-      addColor();
-    }
-    if (e.key === "Backspace" && !colorInput && form.colors.length > 0) {
-      setField("colors", form.colors.slice(0, -1));
-    }
-  };
-
-  const removeColor = (color) =>
-    setField("colors", form.colors.filter((c) => c !== color));
 
   // Update one variant's fields (incl. its images array)
   const updateVariant = (i, changes) =>
@@ -778,48 +711,14 @@ const AdminProductForm = () => {
 
               {/* Categories */}
               <div className="admin-field">
-                <span className="admin-label">
-                  Categories <span className="admin-required">*</span>
-                </span>
-                <div className={`admin-pf-color-input-wrap${categoryInput ? " focused" : ""}`}>
-                  {form.categories.map((cat) => (
-                    <span key={cat} className="admin-pf-color-tag">
-                      {cat}
-                      <button
-                        type="button"
-                        className="admin-pf-color-tag-remove"
-                        onClick={() => removeCategory(cat)}
-                        aria-label={`Remove ${cat}`}
-                      >
-                        <FiX size={10} />
-                      </button>
-                    </span>
-                  ))}
-                  <input
-                    className="admin-pf-color-input"
-                    type="text"
-                    value={categoryInput}
-                    onChange={(e) => setCategoryInput(e.target.value)}
-                    onKeyDown={handleCategoryKeyDown}
-                    onBlur={() => addCategory()}
-                    placeholder={form.categories.length === 0 ? "Type a category and press Enter…" : "Add another…"}
-                  />
-                </div>
-                {/* Quick-pick suggestions (not already selected) */}
-                {categorySuggestions.some((c) => !form.categories.includes(c)) && (
-                  <div className="admin-pf-cats" style={{ marginTop: "0.5rem" }}>
-                    {categorySuggestions.filter((c) => !form.categories.includes(c)).map((cat) => (
-                      <button
-                        key={cat}
-                        type="button"
-                        className="admin-pf-cat-chip"
-                        onClick={() => addCategory(cat)}
-                      >
-                        + {cat.charAt(0).toUpperCase() + cat.slice(1)}
-                      </button>
-                    ))}
-                  </div>
-                )}
+                <CreatableTagSelect
+                  label="Categories"
+                  required
+                  value={form.categories}
+                  onChange={(vals) => setField("categories", vals)}
+                  options={categorySuggestions}
+                  placeholder="Select or create a category…"
+                />
                 {form.categories.length === 0 && (
                   <p className="admin-pf-cats-hint">Add at least one category</p>
                 )}
@@ -827,94 +726,24 @@ const AdminProductForm = () => {
 
               {/* Suitable For */}
               <div className="admin-field">
-                <span className="admin-label">Suitable For</span>
-                <div className={`admin-pf-color-input-wrap${genderInput ? " focused" : ""}`}>
-                  {form.genders.map((g) => (
-                    <span key={g} className="admin-pf-color-tag">
-                      {g}
-                      <button
-                        type="button"
-                        className="admin-pf-color-tag-remove"
-                        onClick={() => removeGender(g)}
-                        aria-label={`Remove ${g}`}
-                      >
-                        <FiX size={10} />
-                      </button>
-                    </span>
-                  ))}
-                  <input
-                    className="admin-pf-color-input"
-                    type="text"
-                    value={genderInput}
-                    onChange={(e) => setGenderInput(e.target.value)}
-                    onKeyDown={handleGenderKeyDown}
-                    onBlur={() => addGender()}
-                    placeholder={form.genders.length === 0 ? "Type a value and press Enter…" : "Add another…"}
-                  />
-                </div>
-                {/* Quick-pick suggestions (not already selected) */}
-                {suitableForSuggestions.some((g) => !form.genders.includes(g)) && (
-                  <div className="admin-pf-cats" style={{ marginTop: "0.5rem" }}>
-                    {suitableForSuggestions.filter((g) => !form.genders.includes(g)).map((g) => (
-                      <button
-                        key={g}
-                        type="button"
-                        className="admin-pf-cat-chip"
-                        onClick={() => addGender(g)}
-                      >
-                        + {g}
-                      </button>
-                    ))}
-                  </div>
-                )}
-                <p className="admin-pf-color-hint">Press Enter or comma after each value</p>
+                <CreatableTagSelect
+                  label="Suitable For"
+                  value={form.genders}
+                  onChange={(vals) => setField("genders", vals)}
+                  options={suitableForSuggestions}
+                  placeholder="e.g. Male, Female, Unisex…"
+                />
               </div>
 
               {/* Colors */}
               <div className="admin-field">
-                <span className="admin-label">Colors</span>
-                <div className={`admin-pf-color-input-wrap${colorInput ? " focused" : ""}`}>
-                  {form.colors.map((color) => (
-                    <span key={color} className="admin-pf-color-tag">
-                      {color}
-                      <button
-                        type="button"
-                        className="admin-pf-color-tag-remove"
-                        onClick={() => removeColor(color)}
-                        aria-label={`Remove ${color}`}
-                      >
-                        <FiX size={10} />
-                      </button>
-                    </span>
-                  ))}
-                  <input
-                    className="admin-pf-color-input"
-                    type="text"
-                    value={colorInput}
-                    onChange={(e) => setColorInput(e.target.value)}
-                    onKeyDown={handleColorKeyDown}
-                    onBlur={addColor}
-                    placeholder={form.colors.length === 0 ? "Type a color and press Enter…" : "Add another…"}
-                  />
-                </div>
-                {/* Quick-pick suggestions — colors already used on other products */}
-                {colorSuggestions.some((c) => !form.colors.includes(c)) && (
-                  <div className="admin-pf-cats" style={{ marginTop: "0.5rem" }}>
-                    {colorSuggestions.filter((c) => !form.colors.includes(c)).map((c) => (
-                      <button
-                        key={c}
-                        type="button"
-                        className="admin-pf-cat-chip"
-                        onClick={() => {
-                          if (!form.colors.includes(c)) setField("colors", [...form.colors, c]);
-                        }}
-                      >
-                        + {c}
-                      </button>
-                    ))}
-                  </div>
-                )}
-                <p className="admin-pf-color-hint">Press Enter or comma after each color</p>
+                <CreatableTagSelect
+                  label="Colors"
+                  value={form.colors}
+                  onChange={(vals) => setField("colors", vals)}
+                  options={colorSuggestions}
+                  placeholder="e.g. Black, Red, Blue…"
+                />
               </div>
             </div>
           </div>
