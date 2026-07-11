@@ -96,6 +96,7 @@ const EMPTY_FORM = {
   genders:     [],
   isActive:    true,
   isFeatured:  false,
+  vetRecommended: false,
   onSale:        false,
   discountType:  "percent",
   discountValue: "",
@@ -186,6 +187,7 @@ const AdminProductForm = () => {
           genders:   Array.isArray(p.genders) ? p.genders : [],
           isActive:  p.isActive  ?? true,
           isFeatured:p.isFeatured ?? false,
+          vetRecommended: p.vetRecommended ?? false,
           onSale:        p.onSale ?? false,
           discountType:  p.discountType ?? "percent",
           discountValue: p.discountValue ?? "",
@@ -384,6 +386,7 @@ const AdminProductForm = () => {
     }
     fd.append("isActive",    String(form.isActive));
     fd.append("isFeatured",  String(form.isFeatured));
+    fd.append("vetRecommended", String(form.vetRecommended));
     fd.append("onSale",        String(form.onSale));
     fd.append("discountType",  form.discountType);
     fd.append("discountValue", String(Number(form.discountValue) || 0));
@@ -801,6 +804,21 @@ const AdminProductForm = () => {
                     className="toggle-input"
                     checked={form.isFeatured}
                     onChange={(e) => setField("isFeatured", e.target.checked)}
+                  />
+                </label>
+              </div>
+
+              <div className="admin-pf-toggle-row">
+                <div>
+                  <p className="admin-notification-label">Vet Recommended</p>
+                  <p className="admin-notification-desc">Show in the "Vet Recommended This Month" homepage section.</p>
+                </div>
+                <label className="admin-toggle" aria-label="Vet Recommended">
+                  <input
+                    type="checkbox"
+                    className="toggle-input"
+                    checked={form.vetRecommended}
+                    onChange={(e) => setField("vetRecommended", e.target.checked)}
                   />
                 </label>
               </div>

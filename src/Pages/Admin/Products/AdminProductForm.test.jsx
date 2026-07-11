@@ -72,3 +72,18 @@ describe("AdminProductForm — option matrix", () => {
     expect(await screen.findByText("reptiles")).toBeTruthy(); // from mocked API
   });
 });
+
+describe("AdminProductForm — vetRecommended toggle", () => {
+  it("renders unchecked by default in create mode", () => {
+    renderForm();
+    const toggle = screen.getByRole("checkbox", { name: "Vet Recommended" });
+    expect(toggle.checked).toBe(false);
+  });
+
+  it("toggling it flips the checkbox state", () => {
+    renderForm();
+    const toggle = screen.getByRole("checkbox", { name: "Vet Recommended" });
+    fireEvent.click(toggle);
+    expect(toggle.checked).toBe(true);
+  });
+});
