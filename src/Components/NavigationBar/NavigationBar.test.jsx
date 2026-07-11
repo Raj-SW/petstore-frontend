@@ -124,6 +124,19 @@ describe("NavigationBar", () => {
     expect(screen.getByRole("button", { name: /open menu/i })).toBeInTheDocument();
   });
 
+  it("locks body scroll while the mobile drawer is open and restores it on close", async () => {
+    useAuth.mockReturnValue({ user: null, logout: vi.fn(), isAdmin: () => false });
+    renderNav();
+
+    expect(document.body.style.overflow).not.toBe("hidden");
+
+    await userEvent.click(screen.getByRole("button", { name: /open menu/i }));
+    expect(document.body.style.overflow).toBe("hidden");
+
+    await userEvent.click(screen.getByRole("button", { name: /close menu/i }));
+    expect(document.body.style.overflow).not.toBe("hidden");
+  });
+
   it("shows Admin Dashboard link in user menu when isAdmin returns true", async () => {
     useAuth.mockReturnValue({
       user: { name: "Bob", profileImage: null },

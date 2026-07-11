@@ -116,6 +116,16 @@ const NavigationBar = () => {
     if (mobileMenuOpen && mobileMenuRef.current) mobileMenuRef.current.focus();
   }, [mobileMenuOpen]);
 
+  // Lock background scroll while the mobile drawer is open
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [mobileMenuOpen]);
+
   // Close mobile accordions when menu closes
   useEffect(() => {
     if (!mobileMenuOpen) {

@@ -286,6 +286,7 @@
   top: 0;
   left: 0;
   height: 100vh;
+  height: 100svh; /* iOS Safari: 100vh includes the address bar and clips the bottom */
   width: 82vw;
   max-width: 310px;
   background: var(--color-primary-forest);
@@ -296,6 +297,7 @@
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   outline: none;
 }
 
