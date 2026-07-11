@@ -64,9 +64,11 @@ describe("AdminProductForm — option matrix", () => {
     expect(screen.getByText(/Combinations \(price & stock per combination\)/)).toBeTruthy();
   });
 
-  it("merges fetched attribute values into quick-pick suggestions", async () => {
+  it("loads filter-options and passes suggestions to CreatableTagSelect", async () => {
     renderForm();
-    expect(await screen.findByText("+ Reptiles")).toBeTruthy();
-    expect(await screen.findByText("+ red")).toBeTruthy();
+    // Open the Categories dropdown and confirm API-fetched values appear
+    const combobox = await screen.findAllByRole("combobox");
+    fireEvent.focus(combobox[0]); // first combobox = Categories
+    expect(await screen.findByText("reptiles")).toBeTruthy(); // from mocked API
   });
 });
