@@ -39,13 +39,15 @@ const PetTravelBand = () => {
               </li>
             ))}
           </ul>
-          <button
+          <motion.button
             type="button"
             className="ptb-cta"
             onClick={() => navigate("/import-export-service")}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.96 }}
           >
             Learn More
-          </button>
+          </motion.button>
         </motion.div>
 
         <motion.div
@@ -53,6 +55,7 @@ const PetTravelBand = () => {
           initial={{ opacity: 0, x: 24 }}
           animate={inView ? { opacity: 1, x: 0 } : {}}
           transition={{ duration: 0.5, delay: 0.1 }}
+          whileHover={{ y: -6 }}
         >
           <img src={catFlying} alt="Cat and dog traveling around the world" className="ptb-image" />
         </motion.div>

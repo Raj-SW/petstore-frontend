@@ -5,6 +5,16 @@ import SkeletonCard from "../../../../Components/HelperComponents/SkeletonCard/S
 import productsApi from "@/Services/api/productsApi";
 import "./VetRecommendedSection.css";
 
+const gridVariants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.08 } },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 24 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] } },
+};
+
 const VetRecommendedSection = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -35,30 +45,44 @@ const VetRecommendedSection = () => {
         <p className="vr-subtitle">Curated by our veterinary team</p>
       </motion.div>
 
-      <div className="vr-grid">
+      <motion.div
+        className="vr-grid"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
+        variants={gridVariants}
+      >
         {loading ? (
           <SkeletonCard variant="card" count={4} />
         ) : (
           products.map((product) => (
-            <ProductCard
-              key={product._id || product.id}
-              id={product._id || product.id}
-              imageUrl={product.images?.[0]?.url || product.images?.[0] || product.imageUrl}
-              title={product.name || product.title}
-              price={product.price}
-              description={product.description}
-              salePrice={product.salePrice}
-              isOnSaleNow={product.isOnSaleNow}
-              discountPercentLabel={product.discountPercentLabel}
-              effectivePrice={product.effectivePrice}
-              variantsView={product.variantsView}
-            />
+            <motion.div key={product._id || product.id} variants={cardVariants}>
+              <ProductCard
+                id={product._id || product.id}
+                imageUrl={product.images?.[0]?.url || product.images?.[0] || product.imageUrl}
+                title={product.name || product.title}
+                price={product.price}
+                description={product.description}
+                salePrice={product.salePrice}
+                isOnSaleNow={product.isOnSaleNow}
+                discountPercentLabel={product.discountPercentLabel}
+                effectivePrice={product.effectivePrice}
+                variantsView={product.variantsView}
+              />
+            </motion.div>
           ))
         )}
-      </div>
+      </motion.div>
 
       <div className="vr-cta-row">
-        <a href="/petshop" className="vr-cta-btn">Explore the Store</a>
+        <motion.a
+          href="/petshop"
+          className="vr-cta-btn"
+          whileHover={{ scale: 1.04 }}
+          whileTap={{ scale: 0.97 }}
+        >
+          Explore the Store
+        </motion.a>
       </div>
     </section>
   );

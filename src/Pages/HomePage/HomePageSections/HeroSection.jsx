@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion, useScroll, useTransform } from "framer-motion";
 import "./HeroSection.css";
 import { FaHome, FaStethoscope, FaTruck, FaShoppingBag } from "react-icons/fa";
 // Re-encoded as WebP — originals were PNGs at small display dimensions
@@ -18,16 +19,44 @@ const FEATURES = [
 
 const CONSULTATION_HOURS = ["Mon, Wed, Thu, Sat: 4:30 PM – 6:00 PM"];
 
+const contentVariants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.12, delayChildren: 0.1 } },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 22 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.25, 0.46, 0.45, 0.94] } },
+};
+
 const HeroSection = () => {
   const navigate = useNavigate();
   const [bookingOpen, setBookingOpen] = useState(false);
   const [mobileVetOpen, setMobileVetOpen] = useState(false);
 
+  const heroRef = useRef(null);
+  const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
+  const yLeft = useTransform(scrollYProgress, [0, 1], [0, 50]);
+  const yRight = useTransform(scrollYProgress, [0, 1], [0, -50]);
+
   return (
-    <section className="hero-section">
-      {/* Background layers */}
-      <img src={heroLeftBg} alt="" className="hero-bg-img hero-bg-left" aria-hidden="true" />
-      <img src={heroRight} alt="" className="hero-bg-img hero-bg-right" aria-hidden="true" fetchpriority="high" />
+    <section className="hero-section" ref={heroRef}>
+      {/* Background layers — subtle parallax drift on scroll */}
+      <motion.img
+        src={heroLeftBg}
+        alt=""
+        className="hero-bg-img hero-bg-left"
+        aria-hidden="true"
+        style={{ y: yLeft }}
+      />
+      <motion.img
+        src={heroRight}
+        alt=""
+        className="hero-bg-img hero-bg-right"
+        aria-hidden="true"
+        fetchpriority="high"
+        style={{ y: yRight }}
+      />
 
       {/* Gradient fade — right image bleeds into center */}
       <div className="hero-right-fade" aria-hidden="true" />
@@ -35,44 +64,73 @@ const HeroSection = () => {
       {/* Content overlay */}
       <div className="hero-overlay">
         {/* Logo sits over the left background */}
-        <div className="hero-logo-col">
+        <motion.div
+          className="hero-logo-col"
+          initial={{ opacity: 0, scale: 0.85 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
+        >
           <img src={vitalPawsLogo} alt="VitalPaws" className="hero-logo-badge" />
-        </div>
+        </motion.div>
 
         {/* Center text */}
-        <div className="hero-content">
-          <p className="hero-because">Because</p>
-          <h1 className="hero-headline">
+        <motion.div className="hero-content" initial="hidden" animate="visible" variants={contentVariants}>
+          <motion.p className="hero-because" variants={itemVariants}>Because</motion.p>
+          <motion.h1 className="hero-headline" variants={itemVariants}>
             <span className="hero-headline-dark">They Can't Speak…</span>
             <br />
             <span className="hero-headline-gold">We Listen.</span>
-          </h1>
-          <p className="hero-body">
+          </motion.h1>
+          <motion.p className="hero-body" variants={itemVariants}>
             Compassionate veterinary care in Piton
             <br />
             for the pets you love the most.
-          </p>
+          </motion.p>
 
-          <div className="hero-buttons">
-            <button type="button" className="hero-btn hero-btn-primary" onClick={() => setBookingOpen(true)}>
+          <motion.div className="hero-buttons" variants={itemVariants}>
+            <motion.button
+              type="button"
+              className="hero-btn hero-btn-primary"
+              onClick={() => setBookingOpen(true)}
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.97 }}
+            >
               <FaStethoscope size={18} className="me-2" />
               Book Appointment
-            </button>
-            <button type="button" className="hero-btn hero-btn-outline" onClick={() => setMobileVetOpen(true)}>
+            </motion.button>
+            <motion.button
+              type="button"
+              className="hero-btn hero-btn-outline"
+              onClick={() => setMobileVetOpen(true)}
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.97 }}
+            >
               <FaTruck size={18} className="me-2" />
               Mobile Vet
-            </button>
-            <button type="button" className="hero-btn hero-btn-outline" onClick={() => navigate("/import-export-service")}>
+            </motion.button>
+            <motion.button
+              type="button"
+              className="hero-btn hero-btn-outline"
+              onClick={() => navigate("/import-export-service")}
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.97 }}
+            >
               <FaHome size={18} className="me-2" />
               Pet Travel
-            </button>
-            <button type="button" className="hero-btn hero-btn-outline" onClick={() => navigate("/petshop")}>
+            </motion.button>
+            <motion.button
+              type="button"
+              className="hero-btn hero-btn-outline"
+              onClick={() => navigate("/petshop")}
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.97 }}
+            >
               <FaShoppingBag size={18} className="me-2" />
               Shop
-            </button>
-          </div>
+            </motion.button>
+          </motion.div>
 
-          <div className="hero-features">
+          <motion.div className="hero-features" variants={itemVariants}>
             {FEATURES.map((f) => (
               <div key={f.label} className="hero-feature-item">
                 <FaHome className="hero-feature-icon" />
@@ -82,8 +140,8 @@ const HeroSection = () => {
                 </div>
               </div>
             ))}
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
         {/* Transparent spacer — right bg shows through */}
         <div className="hero-right-col" />

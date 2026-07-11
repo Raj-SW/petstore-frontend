@@ -7,6 +7,16 @@ import SkeletonCard from "../../../../Components/HelperComponents/SkeletonCard/S
 import professionalsApi from "../../../../Services/api/professionalsApi";
 import "./VetNetworkSection.css";
 
+const gridVariants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.08 } },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 24 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] } },
+};
+
 const ROLE_BADGES = {
   veterinarian: { icon: <FaUserMd />, label: "Veterinarian" },
   groomer: { icon: <FaCut />, label: "Groomer" },
@@ -44,26 +54,33 @@ const VetNetworkSection = () => {
         <h2 className="vn-title">Meet Our Veterinary Network</h2>
       </motion.div>
 
-      <div className="vn-grid">
+      <motion.div
+        className="vn-grid"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
+        variants={gridVariants}
+      >
         {loading ? (
           <SkeletonCard variant="card" count={4} />
         ) : (
           professionals.map((pro) => {
             const badge = ROLE_BADGES[pro.role] || {};
             return (
-              <ProfessionalCard
-                key={pro._id || pro.id}
-                name={pro.name}
-                specialty={pro.specialization}
-                image={pro.profileImage?.url}
-                badgeIcon={badge.icon}
-                badgeLabel={badge.label}
-                onBook={() => navigate(`/appointments/professional/${pro._id || pro.id}`)}
-              />
+              <motion.div key={pro._id || pro.id} variants={cardVariants}>
+                <ProfessionalCard
+                  name={pro.name}
+                  specialty={pro.specialization}
+                  image={pro.profileImage?.url}
+                  badgeIcon={badge.icon}
+                  badgeLabel={badge.label}
+                  onBook={() => navigate(`/appointments/professional/${pro._id || pro.id}`)}
+                />
+              </motion.div>
             );
           })
         )}
-      </div>
+      </motion.div>
     </section>
   );
 };
