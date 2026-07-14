@@ -130,26 +130,16 @@ function CheckoutContent() {
         });
         orderId = res.data._id;
         setPendingOrderId(orderId);
-
-        // Optional subscription — non-fatal
-        if (makeRecurring) {
-          subscriptionsApi.create({
-            items: items.map((i) => ({ product: i.productId || i.id, quantity: i.quantity })),
-            shippingAddress: address,
-            paymentMethod: "stripe",
-            intervalUnit: recurUnit,
-            intervalCount: Number(recurCount),
-            source: "checkout",
-          }).catch(() => {});
-        }
-
-        await emptyCart();
       }
 
       // ── Step 2: Get Stripe client secret ──
       const { clientSecret } = await paymentsApi.initializePayment(orderId);
 
       // ── Step 3: Client-side card confirmation ──
+      // No irreversible side effects (cart clear, subscription) may happen
+      // before this succeeds: emptying the cart here would re-render the
+      // empty-cart screen and unmount the CardElement mid-payment, and a
+      // declined card must not leave an active recurring subscription.
       const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
         payment_method: { card: elements.getElement(CardElement) },
       });
@@ -167,6 +157,20 @@ function CheckoutContent() {
         } catch {
           // Stripe webhook will reconcile if this fails
         }
+
+        // Optional subscription — only once payment actually went through
+        if (makeRecurring) {
+          subscriptionsApi.create({
+            items: items.map((i) => ({ product: i.productId || i.id, quantity: i.quantity })),
+            shippingAddress: address,
+            paymentMethod: "stripe",
+            intervalUnit: recurUnit,
+            intervalCount: Number(recurCount),
+            source: "checkout",
+          }).catch(() => {});
+        }
+
+        await emptyCart();
         navigate(`/order-confirmed/${orderId}`, {
           state: { orderId, items, total: grandTotal ?? cartTotal },
         });
