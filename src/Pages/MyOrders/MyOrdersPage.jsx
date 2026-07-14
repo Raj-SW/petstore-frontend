@@ -10,8 +10,10 @@ import {
   FaMapMarkerAlt, FaCreditCard, FaTimes,
 } from "react-icons/fa";
 import ordersApi from "../../Services/api/ordersApi";
+import contactApi from "../../Services/api/contactApi";
 import { useToast } from "../../context/ToastContext";
 import { useCart } from "../../context/CartContext";
+import { useAuth } from "../../context/AuthContext";
 import SkeletonCard from "../../Components/HelperComponents/SkeletonCard/SkeletonCard";
 import Breadcrumb from "../../Components/HelperComponents/Breadcrumb/Breadcrumb";
 import "./MyOrdersPage.css";
@@ -104,15 +106,31 @@ function RefundModal({ order, onClose }) {
   const [notes, setNotes]         = useState("");
   const [submitting, setSubmitting] = useState(false);
   const { addToast } = useToast();
+  const { user } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!reason) return;
     setSubmitting(true);
-    await new Promise(r => setTimeout(r, 900));
-    addToast("Return request received. Our team will contact you within 24–48 hours.", "success");
-    setSubmitting(false);
-    onClose();
+    try {
+      // Recorded through the contact inbox so the admin team actually sees
+      // it (this previously faked success with a setTimeout and recorded
+      // nothing — a silent black hole for legitimate return requests).
+      await contactApi.submitContact({
+        name: user?.name || "Customer",
+        email: user?.email || "",
+        message:
+          `RETURN/REFUND REQUEST — Order #${order._id.slice(-8).toUpperCase()} (id: ${order._id})\n` +
+          `Reason: ${reason}` +
+          (notes.trim() ? `\nNotes: ${notes.trim()}` : ""),
+      });
+      addToast("Return request received. Our team will contact you within 24–48 hours.", "success");
+      onClose();
+    } catch (err) {
+      addToast(err?.message || "Could not submit your request. Please try again.", "error");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
