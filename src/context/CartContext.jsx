@@ -15,50 +15,68 @@ const pushCartItemToBackend = (item) =>
  * Intercepts every mutation to also sync with the backend cart.
  */
 function CartSyncLayer({ children }) {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const ruc = useRUCCart();
   // Always keep a ref to the latest ruc so stale useCallback closures never
   // check an outdated items array (which causes "No such item to update" and
   // duplicate-item bugs when cart is restored from the backend after login).
   const rucRef = useRef(ruc);
   rucRef.current = ruc;
+  // Tracks the last *resolved* auth identity so we can tell a real
+  // logged-in → logged-out transition apart from the initial mount
+  // (where user is still null while AuthContext restores the session).
+  const prevUserIdRef = useRef(undefined);
 
-  // On login: fetch backend cart and populate local state.
-  // On logout: clear local cart.
+  // On login: fetch backend cart and MERGE with the local (guest) cart.
+  // On logout (real transition only): clear local cart.
   useEffect(() => {
-    if (!user) {
-      ruc.emptyCart();
+    if (authLoading) return; // auth not resolved yet — never touch the cart
+
+    const userId = user?._id ?? user?.id ?? null;
+    const prevUserId = prevUserIdRef.current;
+    prevUserIdRef.current = userId;
+
+    if (!userId) {
+      // Guard: emptying on first mount would wipe the persisted guest cart
+      // on every page load. Only clear when someone actually logged out.
+      if (prevUserId) ruc.emptyCart();
       return;
     }
 
     cartApi
       .getCart()
       .then((backendCart) => {
-        if (backendCart?.items?.length) {
-          // Backend has items → restore into local cart
-          const converted = backendCart.items.map((item) => ({
-            id: item.variantId
-              ? `${item.product?._id || item.product}::${item.variantId}`
-              : (item.product?._id || item.product),
-            productId: item.product?._id || item.product,
-            variantId: item.variantId || null,
-            variantLabel: item.variantLabel || null,
-            name: item.product?.name || "Product",
-            price: item.price,
-            image: item.product?.images?.[0]?.url || "",
-            quantity: item.quantity,
-          }));
-          ruc.setItems(converted);
-        } else if (ruc.items?.length) {
+        const backendItems = (backendCart?.items ?? []).map((item) => ({
+          id: item.variantId
+            ? `${item.product?._id || item.product}::${item.variantId}`
+            : (item.product?._id || item.product),
+          productId: item.product?._id || item.product,
+          variantId: item.variantId || null,
+          variantLabel: item.variantLabel || null,
+          name: item.product?.name || "Product",
+          price: item.price,
+          image: item.product?.images?.[0]?.url || "",
+          quantity: item.quantity,
+        }));
+        const localItems = rucRef.current.items ?? [];
+
+        if (backendItems.length) {
+          // Merge, don't replace: keep the backend cart as the base and
+          // append guest-session lines it doesn't have, pushing those up.
+          const backendIds = new Set(backendItems.map((i) => i.id));
+          const guestOnly = localItems.filter((i) => !backendIds.has(i.id));
+          ruc.setItems([...backendItems, ...guestOnly]);
+          guestOnly.forEach(pushCartItemToBackend);
+        } else if (localItems.length) {
           // Backend is empty but local cart has items (added before login) → push up
-          ruc.items.forEach(pushCartItemToBackend);
+          localItems.forEach(pushCartItemToBackend);
         }
       })
       .catch(() => {
         // Backend cart unavailable — local cart stays as-is
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?._id ?? user?.id]);
+  }, [user?._id ?? user?.id, authLoading]);
 
   // Optimistic add: update UI immediately, sync to backend in background
   const addItem = useCallback(
@@ -81,7 +99,12 @@ function CartSyncLayer({ children }) {
       rucRef.current.removeItem(id);
       if (user) {
         try {
-          await cartApi.removeItem(id);
+          // Variant lines use a composite local id "productId::variantId";
+          // the backend needs the two parts separately or it can't match
+          // the item (the failure was silently swallowed, so removed
+          // variant items resurrected from the backend at next login).
+          const [productId, variantId = null] = String(id).split("::");
+          await cartApi.removeItem(productId, variantId);
         } catch {
           /* silent */
         }
@@ -99,7 +122,8 @@ function CartSyncLayer({ children }) {
       rucRef.current.updateItemQuantity(id, quantity);
       if (user) {
         try {
-          await cartApi.updateItem(id, quantity);
+          const [productId, variantId = null] = String(id).split("::");
+          await cartApi.updateItem(productId, quantity, variantId);
         } catch {
           /* silent */
         }
