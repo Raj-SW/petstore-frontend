@@ -33,6 +33,7 @@ const PetTravelPage             = lazy(() => import("./Pages/PetTravel/PetTravel
 const ExportImportForm          = lazy(() => import("./Pages/ImportExport/Import/ImportPage.jsx"));
 const UserProfile               = lazy(() => import("./Pages/UserProfile.jsx"));
 const ResetPassword             = lazy(() => import("./Components/Auth/ResetPassword.jsx"));
+const VerifyEmail               = lazy(() => import("./Components/Auth/VerifyEmail.jsx"));
 const PaymentPage               = lazy(() => import("./Pages/Payment/PaymentPage.jsx"));
 const MyOrdersPage              = lazy(() => import("./Pages/MyOrders/MyOrdersPage.jsx"));
 const OrderConfirmedPage        = lazy(() => import("./Pages/OrderConfirmed/OrderConfirmedPage.jsx"));
@@ -191,6 +192,13 @@ const router = createBrowserRouter([
       {
         path: "reset-password",
         element: P(<ResetPassword />),
+      },
+      {
+        // Landing page for the emailed verification link (backend builds
+        // frontendUrl(`verify-email/<token>`) — this route did not exist,
+        // so verification emails dead-ended on a router error screen).
+        path: "verify-email/:token",
+        element: P(<VerifyEmail />),
       },
     ],
   },
