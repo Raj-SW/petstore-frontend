@@ -131,7 +131,7 @@ const Footer = () => {
 
         {/* ── Bottom bar ── */}
         <div className="ft-bottom">
-          <span className="ft-copy">© 2024 VitalPaws. All rights reserved.</span>
+          <span className="ft-copy">© {new Date().getFullYear()} VitalPaws. All rights reserved.</span>
 
           <div className="ft-legal">
             <a href="/" className="ft-legal-link">Terms of Service</a>
