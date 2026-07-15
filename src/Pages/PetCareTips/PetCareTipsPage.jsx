@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, useRef } from "react";
 import { motion } from "framer-motion";
-import { FiSearch } from "react-icons/fi";
 import PageHero from "../../Components/HelperComponents/PageHero/PageHero";
+import HeroSearch from "../../Components/HelperComponents/HeroSearch/HeroSearch";
 import heroImg from "../../assets/StatsSection/vet-with-dog.jpg";
 import tipsApi from "../../Services/api/tipsApi";
 import advertsApi from "../../Services/api/advertsApi";
@@ -124,16 +124,12 @@ const PetCareTipsPage = () => {
         script="love"
         tagline="From golden retrievers to bearded dragons — trusted advice tailored to your pet's breed, age, and needs."
       >
-        <div className="pct-search" style={{ width: "min(100%, 560px)" }}>
-          <FiSearch size={17} aria-hidden="true" />
-          <input
-            type="search"
-            placeholder="Search by pet, breed, or topic…"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            aria-label="Search tips"
-          />
-        </div>
+        <HeroSearch
+          value={search}
+          onChange={setSearch}
+          placeholder="Search by pet, breed, or topic…"
+          ariaLabel="Search tips"
+        />
       </PageHero>
 
       <div className="pct-content">

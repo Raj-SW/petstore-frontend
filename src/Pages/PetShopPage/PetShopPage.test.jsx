@@ -17,9 +17,6 @@ vi.mock("@/Services/localServices/ProductService", () => ({
 vi.mock("@/Components/HelperComponents/ProductCard/ProductCardV2", () => ({
   default: ({ title }) => <div data-testid="product-card">{title}</div>,
 }));
-vi.mock("@/Components/HelperComponents/SearchBar/SearchBar", () => ({
-  default: () => <div data-testid="search-bar" />,
-}));
 vi.mock("@/Components/HelperComponents/SortDropDown/SortDropDown", () => ({
   default: () => <div data-testid="sort-dropdown" />,
 }));
@@ -67,7 +64,7 @@ describe("PetShopPage", () => {
   it("renders search bar and shop banner", async () => {
     const { default: PetShopPage } = await import("./PetShopPage");
     render(<MemoryRouter><PetShopPage /></MemoryRouter>);
-    await waitFor(() => expect(screen.queryByTestId("search-bar")).toBeDefined());
+    await waitFor(() => expect(screen.getByRole("searchbox", { name: /Search products/i })).toBeInTheDocument());
   });
 
   it("shows product cards after load", async () => {

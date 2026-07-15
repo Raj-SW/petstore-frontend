@@ -38,27 +38,6 @@
   margin: 0 auto 1.6rem;
   max-width: 540px;
 }
-.gal-search {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  background: #fff;
-  border: 1px solid #e3d7c9;
-  border-radius: 50px;
-  padding: 0.7rem 1.2rem;
-  max-width: 440px;
-  margin: 0 auto;
-  color: #8a7d6e;
-}
-.gal-search input {
-  border: none;
-  outline: none;
-  background: transparent;
-  font-size: 0.95rem;
-  width: 100%;
-  color: #3f372f;
-}
-
 /* ── Content ── */
 .gal-content {
   max-width: 1200px;

@@ -1,12 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { FiSearch, FiCalendar, FiMapPin, FiArrowRight } from "react-icons/fi";
+import { FiCalendar, FiMapPin, FiArrowRight } from "react-icons/fi";
 import galleryApi from "../../Services/api/galleryApi";
 import advertsApi from "../../Services/api/advertsApi";
 import { useToast } from "../../context/ToastContext";
 import { Link } from "react-router-dom";
 import GalleryCard from "./components/GalleryCard";
 import PageHero from "../../Components/HelperComponents/PageHero/PageHero";
+import HeroSearch from "../../Components/HelperComponents/HeroSearch/HeroSearch";
 import heroImg from "../../assets/StatsSection/slide-2-a.webp";
 import AdvertBanner from "../PetCareTips/components/AdvertBanner";
 import { GALLERY_CATEGORIES, getCategoryTheme, formatEventDate } from "./galleryTheme";
@@ -125,16 +126,12 @@ const GalleryPage = () => {
         script="community"
         tagline="Events, adoption drives and milestones from the VitalPaws family."
       >
-        <div className="gal-search" style={{ width: "min(100%, 560px)" }}>
-          <FiSearch size={17} aria-hidden="true" />
-          <input
-            type="search"
-            placeholder="Search moments…"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            aria-label="Search gallery"
-          />
-        </div>
+        <HeroSearch
+          value={search}
+          onChange={setSearch}
+          placeholder="Search moments…"
+          ariaLabel="Search gallery"
+        />
       </PageHero>
 
       <div className="gal-content">

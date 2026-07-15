@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaFilter, FaTimes, FaSearch } from "react-icons/fa";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/Components/ui/select";
 
 import ProductCard from "../../Components/HelperComponents/ProductCard/ProductCardV2";
 import SortDropDown from "@/Components/HelperComponents/SortDropDown/SortDropDown";
-import SearchBar from "@/Components/HelperComponents/SearchBar/SearchBar";
+import HeroSearch from "@/Components/HelperComponents/HeroSearch/HeroSearch";
 import PageHero from "@/Components/HelperComponents/PageHero/PageHero";
 import heroImg from "@/assets/NavigationBarAssets/PetStore/img1.webp";
 import ShopBanner from "../../Components/Shop/ShopBanner";
@@ -21,6 +21,8 @@ const PER_PAGE_OPTIONS = [25, 50, 100];
 const PetShopPage = () => {
   useSEO("Pet Shop", "Shop pet food, toys, accessories and more at VitalPaws — Mauritius's trusted pet shop.");
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const [q, setQ] = useState("");
 
   const [products, setProducts] = useState([]);
   const [displayedProducts, setDisplayedProducts] = useState([]);
@@ -217,9 +219,13 @@ const PetShopPage = () => {
         script="needs"
         tagline="Food, toys, accessories and more — hand-picked for happy, healthy pets."
       >
-        <div className="ps-intro-search" style={{ width: "min(100%, 560px)" }}>
-          <SearchBar showInPages={["/petshop"]} />
-        </div>
+        <HeroSearch
+          value={q}
+          onChange={setQ}
+          placeholder="Search for products…"
+          ariaLabel="Search products"
+          onSubmit={(v) => navigate(`/petshop?search=${encodeURIComponent(v)}`)}
+        />
       </PageHero>
 
       {/* ── Slim advert banner (admin-managed, branded fallback) — right before products ── */}
