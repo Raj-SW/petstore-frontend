@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { FaCheckCircle } from "react-icons/fa";
 // Premium travel photo (also the Pet Travel page hero). The previous cat
 // illustration duplicated the adjacent "Pet Relocation" service card image.
-import petTravelImg from "../../../../assets/PetTravel/pettravel.png";
+import petTravelImg from "../../../../assets/PetTravel/pettravel.jpg";
 import "./PetTravelBand.css";
 
 const POINTS = [

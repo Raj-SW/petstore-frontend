@@ -113,25 +113,51 @@
 }
 
 /* ============================= HERO ============================= */
+/* Full-cover image hero — same structure as the Services page hero:
+   background photo + forest gradient overlay + centered content. */
 .pt-hero {
-  background: linear-gradient(180deg, var(--color-bg-warm-ivory, #f6ece3) 0%, var(--color-bg-cream, #faf5f1) 100%);
-}
-.pt-hero-inner {
-  max-width: var(--pt-maxw);
-  margin: 0 auto;
-  padding: clamp(2.5rem, 6vw, 5rem) var(--pt-pad-x);
-  display: grid;
-  grid-template-columns: minmax(0, 45fr) minmax(0, 55fr);
-  gap: clamp(2rem, 5vw, 4rem);
+  position: relative;
+  min-height: 65vh;
+  display: flex;
   align-items: center;
+  justify-content: center;
+  overflow: hidden;
 }
-.pt-hero-content { min-width: 0; }
+.pt-hero-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 40%;
+  display: block;
+}
+.pt-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 28, 16, 0.88) 0%,
+    rgba(0, 28, 16, 0.68) 50%,
+    rgba(0, 28, 16, 0.5) 100%
+  );
+  z-index: 1;
+}
+.pt-hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 4.5rem 1.5rem;
+  max-width: 760px;
+  width: 100%;
+}
 .pt-hero-badge {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  background: rgba(217, 154, 43, 0.14);
-  color: var(--color-accent-gold, #a9761a);
+  background: rgba(217, 154, 43, 0.18);
+  border: 1px solid rgba(217, 154, 43, 0.45);
+  color: var(--color-accent-gold, #d99a2b);
   font-family: var(--font-body);
   font-size: 0.72rem;
   font-weight: 700;
@@ -143,43 +169,58 @@
 }
 .pt-hero-title {
   font-family: var(--font-display, serif);
-  font-size: clamp(2.4rem, 6vw, 4rem);
-  line-height: 1.04;
-  color: var(--color-primary-forest, #001c10);
+  font-size: clamp(2.6rem, 7vw, 5rem);
+  line-height: 1.02;
+  letter-spacing: 0.06em;
+  color: var(--color-accent-gold, #d99a2b);
   margin: 0 0 0.6rem;
 }
-.pt-hero-title-line { display: block; }
 .pt-hero-tagline {
   font-family: var(--font-script, cursive);
-  font-size: clamp(1.4rem, 3vw, 1.9rem);
-  color: var(--color-accent-gold, #d99a2b);
-  margin: 0 0 1.1rem;
+  font-size: clamp(1.5rem, 3.5vw, 2.2rem);
+  color: var(--color-bg-cream, #faf5f1);
+  margin: 0 0 1rem;
   line-height: 1.2;
 }
 .pt-hero-body {
   font-family: var(--font-body);
-  font-size: 1rem;
-  color: var(--color-text-muted, #4f5d53);
+  font-size: clamp(0.9rem, 1.6vw, 1rem);
+  color: rgba(250, 245, 241, 0.82);
   line-height: 1.7;
-  margin: 0 0 1.8rem;
-  max-width: 46ch;
+  margin: 0 auto 2rem;
+  max-width: 56ch;
+}
+.pt-btn-outline--onimage {
+  color: var(--color-bg-cream, #faf5f1);
+  border-color: rgba(250, 245, 241, 0.55);
+}
+.pt-btn-outline--onimage:hover {
+  border-color: var(--color-accent-gold, #d99a2b);
+  color: var(--color-accent-gold, #d99a2b);
 }
 
-/* Hero feature row */
+/* Feature strip — directly below the hero image */
+.pt-hero-strip {
+  background: var(--color-bg-warm-ivory, #f6ece3);
+  padding: 2.2rem var(--pt-pad-x);
+}
 .pt-hero-features {
   list-style: none;
-  margin: 0 0 2rem;
+  margin: 0 auto;
   padding: 0;
+  max-width: var(--pt-maxw);
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 1.1rem;
+  gap: 1.4rem;
 }
 .pt-hero-feature {
   display: grid;
   grid-template-rows: auto auto auto;
   gap: 0.25rem;
+  justify-items: center;
+  text-align: center;
 }
-.pt-hero-feature-icon { color: var(--color-primary-forest, #001c10); }
+.pt-hero-feature-icon { color: var(--color-accent-gold, #ba7517); }
 .pt-hero-feature-title {
   font-family: var(--font-body);
   font-size: 0.85rem;
@@ -193,53 +234,34 @@
   line-height: 1.35;
 }
 
-.pt-hero-actions { display: flex; gap: 0.9rem; flex-wrap: wrap; }
-
-/* Hero media */
-.pt-hero-media { position: relative; min-width: 0; }
-.pt-hero-img {
-  width: 100%;
-  height: auto;
-  aspect-ratio: 1672 / 941;
-  object-fit: cover;
-  border-radius: var(--pt-radius);
-  box-shadow: var(--pt-shadow);
-  display: block;
-  background: #e9ddcf;
+.pt-hero-actions {
+  display: flex;
+  gap: 0.9rem;
+  flex-wrap: wrap;
+  justify-content: center;
 }
+
+/* Trust line — inline under the CTAs, on the image */
 .pt-hero-trust {
-  position: absolute;
-  top: 1.2rem;
-  right: 1.2rem;
-  background: #fff;
-  border-radius: var(--pt-radius-sm);
-  box-shadow: var(--pt-shadow);
-  padding: 0.85rem 1.1rem;
-  text-align: center;
-  max-width: 180px;
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1.6rem;
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: rgba(250, 245, 241, 0.85);
 }
 .pt-hero-trust-stars {
-  display: flex;
-  justify-content: center;
+  display: inline-flex;
   gap: 2px;
   color: var(--color-accent-gold, #d99a2b);
   font-size: 0.8rem;
-  margin-bottom: 0.35rem;
 }
-.pt-hero-trust-label {
-  font-family: var(--font-body);
-  font-size: 0.78rem;
-  font-weight: 700;
-  color: var(--color-primary-forest, #001c10);
-  margin: 0;
-}
-.pt-hero-trust-stat {
-  font-family: var(--font-body);
-  font-size: 0.72rem;
-  color: var(--color-text-muted, #6b7a70);
-  margin: 0.15rem 0 0;
-  line-height: 1.3;
-}
+.pt-hero-trust-label { font-weight: 700; }
+.pt-hero-trust-sep { opacity: 0.5; }
+.pt-hero-trust-stat { opacity: 0.85; }
 
 /* =========================== PROCESS =========================== */
 .pt-timeline {
@@ -479,10 +501,6 @@
 
 /* ============================ TABLET ============================ */
 @media (max-width: 1023px) {
-  .pt-hero-inner { grid-template-columns: 1fr; }
-  .pt-hero-media { order: -1; }
-  .pt-hero-body { max-width: none; }
-
   /* Timeline wraps to two rows of four; drop the single-line connector */
   .pt-timeline { grid-template-columns: repeat(4, minmax(0, 1fr)); row-gap: 2rem; }
   .pt-timeline::before { display: none; }
@@ -495,10 +513,10 @@
 
 /* ============================ MOBILE =========================== */
 @media (max-width: 640px) {
+  .pt-hero { min-height: 72svh; }
   .pt-hero-features { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
-  .pt-hero-actions { flex-direction: column; }
-  .pt-hero-actions .pt-btn { width: 100%; }
-  .pt-hero-trust { top: auto; bottom: 0.8rem; right: 0.8rem; padding: 0.6rem 0.8rem; max-width: 150px; }
+  .pt-hero-actions { flex-direction: column; align-items: stretch; }
+  .pt-hero-actions .pt-btn { width: 100%; justify-content: center; }
 
   /* Timeline becomes a vertical list of compact cards */
   .pt-timeline { grid-template-columns: 1fr; gap: 0.75rem; }

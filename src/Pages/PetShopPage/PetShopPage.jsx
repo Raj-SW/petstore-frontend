@@ -8,6 +8,8 @@ import ProductCard from "../../Components/HelperComponents/ProductCard/ProductCa
 import SortDropDown from "@/Components/HelperComponents/SortDropDown/SortDropDown";
 import Breadcrumb from "@/Components/HelperComponents/Breadcrumb/Breadcrumb";
 import SearchBar from "@/Components/HelperComponents/SearchBar/SearchBar";
+import PageHero from "@/Components/HelperComponents/PageHero/PageHero";
+import heroImg from "@/assets/NavigationBarAssets/PetStore/img1.webp";
 import ShopBanner from "../../Components/Shop/ShopBanner";
 import FilterComponent from "./FilterComponent";
 import ProductService from "@/Services/localServices/ProductService";
@@ -219,33 +221,19 @@ const PetShopPage = () => {
         </div>
       </div>
 
-      {/* ── Intro band: heading + description + centered search ── */}
-      <section className="ps-intro">
-        <motion.h1
-          className="ps-intro-title"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          Pet Shop
-        </motion.h1>
-        <motion.p
-          className="ps-intro-subtitle"
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-        >
-          Find food, toys, accessories and more — everything your companion needs.
-        </motion.p>
-        <motion.div
-          className="ps-intro-search"
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.45, delay: 0.2 }}
-        >
+      {/* ── Hero — shared PageHero standard, search stays front and center ── */}
+      <PageHero
+        compact
+        image={heroImg}
+        title="Pet Shop"
+        subtitle="Everything your companion"
+        script="needs"
+        tagline="Food, toys, accessories and more — hand-picked for happy, healthy pets."
+      >
+        <div className="ps-intro-search" style={{ width: "min(100%, 560px)" }}>
           <SearchBar showInPages={["/petshop"]} />
-        </motion.div>
-      </section>
+        </div>
+      </PageHero>
 
       {/* ── Slim advert banner (admin-managed, branded fallback) — right before products ── */}
       <ShopBanner />

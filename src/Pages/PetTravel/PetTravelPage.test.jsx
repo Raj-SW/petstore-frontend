@@ -24,7 +24,7 @@ vi.mock("framer-motion", async () => {
 });
 
 vi.mock("../../hooks/useSEO", () => ({ default: vi.fn() }));
-vi.mock("../../assets/PetTravel/pettravel.png", () => ({ default: "pettravel.png" }));
+vi.mock("../../assets/PetTravel/pettravel.jpg", () => ({ default: "pettravel.jpg" }));
 
 import PetTravelPage from "./PetTravelPage";
 import {

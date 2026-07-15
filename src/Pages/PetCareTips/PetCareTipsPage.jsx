@@ -1,7 +1,8 @@
 import { useState, useEffect, useMemo, useRef } from "react";
 import { motion } from "framer-motion";
 import { FiSearch } from "react-icons/fi";
-import { FaPaw } from "react-icons/fa";
+import PageHero from "../../Components/HelperComponents/PageHero/PageHero";
+import heroImg from "../../assets/StatsSection/vet-with-dog.jpg";
 import tipsApi from "../../Services/api/tipsApi";
 import advertsApi from "../../Services/api/advertsApi";
 import { useToast } from "../../context/ToastContext";
@@ -114,40 +115,16 @@ const PetCareTipsPage = () => {
 
   return (
     <div className="pct-page">
-      {/* Hero */}
-      <header className="pct-hero">
-        <FaPaw className="pct-hero-paw" aria-hidden="true" />
-        <motion.p
-          className="pct-hero-label"
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.45 }}
-        >
-          Expert knowledge, for every pet
-        </motion.p>
-        <motion.h1
-          className="pct-hero-title"
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.45, delay: 0.1 }}
-        >
-          Care tips written with love, for every animal you love
-        </motion.h1>
-        <motion.p
-          className="pct-hero-sub"
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.45, delay: 0.2 }}
-        >
-          From golden retrievers to bearded dragons — trusted advice tailored to
-          your pet&apos;s breed, age, and needs.
-        </motion.p>
-        <motion.div
-          className="pct-search"
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.45, delay: 0.3 }}
-        >
+      {/* Hero — shared PageHero standard (Services-page treatment) */}
+      <PageHero
+        compact
+        image={heroImg}
+        title="Pet Care Tips"
+        subtitle="Advice written with"
+        script="love"
+        tagline="From golden retrievers to bearded dragons — trusted advice tailored to your pet's breed, age, and needs."
+      >
+        <div className="pct-search" style={{ width: "min(100%, 560px)" }}>
           <FiSearch size={17} aria-hidden="true" />
           <input
             type="search"
@@ -156,8 +133,8 @@ const PetCareTipsPage = () => {
             onChange={(e) => setSearch(e.target.value)}
             aria-label="Search tips"
           />
-        </motion.div>
-      </header>
+        </div>
+      </PageHero>
 
       <div className="pct-content">
         <AnimalStrip selected={animalType} onSelect={setAnimalType} />

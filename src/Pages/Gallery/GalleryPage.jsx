@@ -7,6 +7,8 @@ import { useToast } from "../../context/ToastContext";
 import { Link } from "react-router-dom";
 import GalleryCard from "./components/GalleryCard";
 import Breadcrumb from "../../Components/HelperComponents/Breadcrumb/Breadcrumb";
+import PageHero from "../../Components/HelperComponents/PageHero/PageHero";
+import heroImg from "../../assets/StatsSection/slide-2-a.webp";
 import AdvertBanner from "../PetCareTips/components/AdvertBanner";
 import { GALLERY_CATEGORIES, getCategoryTheme, formatEventDate } from "./galleryTheme";
 import { coverUrl } from "../../utils/coverImage";
@@ -119,17 +121,15 @@ const GalleryPage = () => {
       <div className="gal-breadcrumb" style={{ maxWidth: "1200px", margin: "0 auto", padding: "1rem 1.5rem 0" }}>
         <Breadcrumb items={[{ label: "Home", path: "/" }, { label: "Gallery" }]} />
       </div>
-      <header className="gal-hero">
-        <motion.p className="gal-hero-label" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45 }}>
-          VitalPaws · Moments
-        </motion.p>
-        <motion.h1 className="gal-hero-title" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: 0.1 }}>
-          Gallery
-        </motion.h1>
-        <motion.p className="gal-hero-sub" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: 0.2 }}>
-          The events, adoption drives and milestones that make our community.
-        </motion.p>
-        <motion.div className="gal-search" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: 0.3 }}>
+      <PageHero
+        compact
+        image={heroImg}
+        title="Gallery"
+        subtitle="The moments that make our"
+        script="community"
+        tagline="Events, adoption drives and milestones from the VitalPaws family."
+      >
+        <div className="gal-search" style={{ width: "min(100%, 560px)" }}>
           <FiSearch size={17} aria-hidden="true" />
           <input
             type="search"
@@ -138,8 +138,8 @@ const GalleryPage = () => {
             onChange={(e) => setSearch(e.target.value)}
             aria-label="Search gallery"
           />
-        </motion.div>
-      </header>
+        </div>
+      </PageHero>
 
       <div className="gal-content">
         {/* Category chips */}
