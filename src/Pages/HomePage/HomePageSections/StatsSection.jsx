@@ -2,7 +2,9 @@ import { useState, useEffect, useRef } from "react";
 import {
   motion, AnimatePresence, useInView, useReducedMotion, animate,
 } from "framer-motion";
-import { FaPaw, FaStar, FaRegStar } from "react-icons/fa";
+import {
+  FaPaw, FaStar, FaRegStar, FaArrowLeft, FaArrowRight,
+} from "react-icons/fa";
 import feedbackApi from "../../../Services/api/feedbackApi";
 import vetWithDogImg from "../../../assets/StatsSection/vet-with-dog.jpg";
 import "./StatsSection.css";
@@ -119,8 +121,11 @@ const StatsSection = () => {
   const featured = testimonials[active];
   const photo = featured?.photos?.[0];
 
+  // Drift (duplicated aria-hidden track + animation) only kicks in with enough
+  // material to loop seamlessly; fewer chips render as a static wrapped grid.
+  const drift = !reduced && testimonials.length >= 8;
   // Two drifting rows when there's enough material, otherwise one.
-  const twoRows = testimonials.length >= 6;
+  const twoRows = testimonials.length >= 12;
   const rows = twoRows
     ? [testimonials.filter((_, i) => i % 2 === 0), testimonials.filter((_, i) => i % 2 === 1)]
     : [testimonials];
@@ -207,32 +212,50 @@ const StatsSection = () => {
           <p className="ts-script">real words from real pet parents</p>
         </div>
 
-        <div className="ts-note-stage" aria-live="polite">
-          <AnimatePresence mode="wait">
-            <motion.figure
-              key={featured?.id ?? active}
-              className="ts-note"
-              initial={reduced ? { opacity: 0 } : { opacity: 0, y: 18, rotate: -1.5 }}
-              animate={{ opacity: 1, y: 0, rotate: 0.5 }}
-              exit={{ opacity: 0, y: -14, transition: { duration: 0.18 } }}
-              transition={{ type: "spring", stiffness: 260, damping: 22 }}
-            >
-              <div className="ts-polaroid" aria-hidden="true">
-                {photo ? (
-                  <img src={photo} alt="" loading="lazy" />
-                ) : (
-                  <span className="ts-monogram" data-testid="ts-monogram">
-                    {initialOf(featured?.author)}
-                  </span>
-                )}
-              </div>
-              <div className="ts-note-body">
-                <Stars rating={featured?.rating} />
-                <blockquote className="ts-quote">{featured?.text}</blockquote>
-                <figcaption className="ts-author">— {featured?.author}</figcaption>
-              </div>
-            </motion.figure>
-          </AnimatePresence>
+        <div className="ts-note-row">
+          <button
+            type="button"
+            className="ts-arrow"
+            aria-label="Previous testimonial"
+            onClick={() => pick((active - 1 + testimonials.length) % testimonials.length)}
+          >
+            <FaArrowLeft size={16} aria-hidden="true" />
+          </button>
+          <div className="ts-note-stage" aria-live="polite">
+            <AnimatePresence mode="wait">
+              <motion.figure
+                key={featured?.id ?? active}
+                className="ts-note"
+                initial={reduced ? { opacity: 0 } : { opacity: 0, y: 18, rotate: -1.5 }}
+                animate={{ opacity: 1, y: 0, rotate: 0.5 }}
+                exit={{ opacity: 0, y: -14, transition: { duration: 0.18 } }}
+                transition={{ type: "spring", stiffness: 260, damping: 22 }}
+              >
+                <div className="ts-polaroid" aria-hidden="true">
+                  {photo ? (
+                    <img src={photo} alt="" loading="lazy" />
+                  ) : (
+                    <span className="ts-monogram" data-testid="ts-monogram">
+                      {initialOf(featured?.author)}
+                    </span>
+                  )}
+                </div>
+                <div className="ts-note-body">
+                  <Stars rating={featured?.rating} />
+                  <blockquote className="ts-quote">{featured?.text}</blockquote>
+                  <figcaption className="ts-author">— {featured?.author}</figcaption>
+                </div>
+              </motion.figure>
+            </AnimatePresence>
+          </div>
+          <button
+            type="button"
+            className="ts-arrow"
+            aria-label="Next testimonial"
+            onClick={() => pick((active + 1) % testimonials.length)}
+          >
+            <FaArrowRight size={16} aria-hidden="true" />
+          </button>
         </div>
 
         <div className="ts-dots">
@@ -247,11 +270,11 @@ const StatsSection = () => {
           ))}
         </div>
 
-        <div className={`ts-marquee${reduced ? " ts-marquee--static" : ""}`}>
+        <div className={`ts-marquee${drift ? "" : " ts-marquee--static"}`}>
           {rows.map((row, r) => (
             <div key={r} className={`ts-row ts-row--${r === 1 ? "reverse" : "forward"}`}>
               <div className="ts-track">{row.map(chip)}</div>
-              {!reduced && (
+              {drift && (
                 <div className="ts-track" aria-hidden="true">
                   {row.map((t) => {
                     const i = testimonials.indexOf(t);

@@ -122,4 +122,19 @@ describe("StatsSection (trust story band)", () => {
     fireEvent.click(screen.getByRole("button", { name: "Go to testimonial 3" }));
     expect(await screen.findByText(/rabbit felt at home/)).toBeInTheDocument();
   });
+
+  it("renders prev/next arrows that navigate testimonials and stop auto-advance", async () => {
+    render(<StatsSection />);
+    await screen.findByText(/follow-up care was outstanding/);
+    fireEvent.click(screen.getByRole("button", { name: "Next testimonial" }));
+    expect(await screen.findByText(/enjoys going there now/)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Previous testimonial" }));
+    expect(await screen.findByText(/follow-up care was outstanding/)).toBeInTheDocument();
+  });
+
+  it("renders the chip wall statically (no duplicate track) when fewer than 8 testimonials", async () => {
+    render(<StatsSection />);
+    await screen.findByText(/follow-up care was outstanding/);
+    expect(document.querySelector('.ts-track[aria-hidden="true"]')).toBeNull();
+  });
 });

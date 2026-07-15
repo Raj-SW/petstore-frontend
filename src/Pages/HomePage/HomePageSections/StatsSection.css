@@ -89,6 +89,17 @@
   margin: 0.2rem 0 0;
 }
 
+.ts-note-row { display: flex; align-items: center; gap: 1rem; justify-content: center; }
+.ts-arrow {
+  width: 46px; height: 46px; border-radius: 50%; border: none; cursor: pointer;
+  background: var(--color-primary-forest, #001c10); color: #fff;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+.ts-arrow:hover { background: var(--color-accent-gold, #ba7517); transform: scale(1.08); }
+.ts-arrow:focus-visible {
+  outline: 2px solid var(--color-accent-gold, #d99a2b); outline-offset: 2px;
+}
 .ts-note-stage { max-width: 640px; margin: 0 auto; min-height: 210px; }
 .ts-note {
   display: flex; gap: 1.4rem; align-items: flex-start;
@@ -137,7 +148,7 @@
 }
 
 /* Marquee — pure CSS drift over a duplicated track */
-.ts-marquee { overflow-x: hidden; display: grid; gap: 0.9rem; }
+.ts-marquee { overflow-x: hidden; display: grid; gap: 0.9rem; padding: 4px 0; }
 .ts-row { display: flex; width: max-content; }
 .ts-row--forward .ts-track { animation: ts-drift 40s linear infinite; }
 .ts-row--reverse .ts-track { animation: ts-drift 52s linear infinite reverse; }
@@ -156,13 +167,13 @@
   border: 1px solid #efe6d8; border-radius: 12px;
   padding: 0.6rem 1rem; cursor: pointer;
   font-family: var(--font-body);
-  opacity: 0.85; transform: rotate(1deg);
+  opacity: 0.85; transform: rotate(0.5deg);
   transition: opacity 0.2s ease, border-color 0.2s ease;
   white-space: nowrap;
 }
 .ts-chip:nth-child(even) {
   background: var(--color-bg-cream, #faf5f1);
-  transform: rotate(-1deg);
+  transform: rotate(-0.5deg);
 }
 .ts-chip:hover { opacity: 1; }
 .ts-chip--active {
@@ -197,6 +208,11 @@
   .ts-note { padding: 1.2rem 1.3rem; gap: 1rem; }
   .ts-polaroid { width: 64px; height: 74px; }
   .ts-row:nth-child(2) { display: none; }
+}
+
+@media (max-width: 640px) {
+  .ts-note-row { flex-wrap: wrap; }
+  .ts-note-row .ts-arrow { order: 2; margin-top: 0.6rem; }
 }
 
 @media (max-width: 380px) {
