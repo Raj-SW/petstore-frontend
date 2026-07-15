@@ -199,6 +199,17 @@
   color: var(--color-accent-gold, #d99a2b);
 }
 
+.pt-btn-whatsapp {
+  background: #25d366;
+  border: 2px solid #25d366;
+  color: #ffffff !important;
+}
+.pt-btn-whatsapp:hover {
+  background: #1ebe5d;
+  border-color: #1ebe5d;
+  color: #ffffff !important;
+}
+
 /* Feature strip — directly below the hero image */
 .pt-hero-strip {
   background: var(--color-bg-warm-ivory, #f6ece3);

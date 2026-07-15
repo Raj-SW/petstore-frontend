@@ -92,7 +92,7 @@ const PtHero = () => {
               href={waHref}
               target="_blank"
               rel="noopener noreferrer"
-              className="pt-btn pt-btn-outline pt-btn-outline--onimage"
+              className="pt-btn pt-btn-whatsapp"
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
             >
