@@ -1,6 +1,40 @@
 .ms-page { max-width: 820px; margin: 0 auto; padding: 32px 20px; min-height: 100vh; }
 .ms-title { font-size: 26px; margin-bottom: 20px; }
-.ms-empty { color: #6f6e68; }
+
+/* Empty state — icon + hint + CTA (matches the Profile "My Pets" pattern) */
+.ms-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  text-align: center;
+  background: #fff;
+  border: 1px solid #e8e4dc;
+  border-radius: 16px;
+  padding: 2.75rem 1.5rem;
+}
+.ms-empty-icon { color: var(--color-accent-gold, #d99a2b); }
+.ms-empty-title {
+  font-family: var(--font-body);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--color-primary-forest, #001c10);
+  margin: 0;
+}
+.ms-empty-text { color: #6f6e68; font-size: 0.9rem; margin: 0; max-width: 380px; }
+.ms-empty-cta {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 0.5rem;
+  padding: 0.65rem 1.7rem;
+  border-radius: 50px;
+  background: var(--color-primary-forest, #001c10);
+  color: #fff !important;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-decoration: none !important;
+}
 .ms-list { display: flex; flex-direction: column; gap: 16px; }
 .ms-card { border: 1px solid #e8e4dc; border-radius: 12px; padding: 16px 18px; background: #fff; }
 .ms-card.ms-paused { opacity: 0.7; }
@@ -16,9 +50,15 @@
 .ms-actions button {
   display: inline-flex; align-items: center; gap: 5px;
   border: 1px solid #d8d4cc; background: #faf9f6; border-radius: 8px;
-  padding: 6px 12px; font-size: 13px; cursor: pointer;
+  /* ≥40px touch target (was ~30px — too small for the destructive Cancel) */
+  padding: 10px 14px; min-height: 40px; font-size: 13px; cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
 }
+.ms-actions button:disabled { opacity: 0.5; cursor: default; }
 .ms-actions .ms-cancel { color: #c0392b; border-color: #e7c3bd; }
+.ms-actions .ms-cancel--confirm {
+  background: #c0392b; color: #fff; border-color: #c0392b; font-weight: 600;
+}
 .ms-item { display: flex; align-items: center; gap: 8px; }
 .ms-item-img { width: 32px; height: 32px; border-radius: 6px; object-fit: cover; }
 .ms-pricing { display: flex; align-items: baseline; gap: 8px; margin: 8px 0 4px; }

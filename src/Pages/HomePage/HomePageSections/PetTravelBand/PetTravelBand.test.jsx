@@ -7,7 +7,7 @@ vi.mock("react-router-dom", async () => {
   return { ...real, useNavigate: () => mockNavigate };
 });
 
-vi.mock("../../../../assets/ExportImport/catflying.webp", () => ({ default: "catflying.webp" }));
+vi.mock("../../../../assets/PetTravel/pettravel.png", () => ({ default: "pettravel.png" }));
 
 import PetTravelBand from "./PetTravelBand";
 

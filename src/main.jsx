@@ -34,6 +34,7 @@ const ExportImportForm          = lazy(() => import("./Pages/ImportExport/Import
 const UserProfile               = lazy(() => import("./Pages/UserProfile.jsx"));
 const ResetPassword             = lazy(() => import("./Components/Auth/ResetPassword.jsx"));
 const VerifyEmail               = lazy(() => import("./Components/Auth/VerifyEmail.jsx"));
+const NotFoundPage              = lazy(() => import("./Pages/NotFound/NotFoundPage.jsx"));
 const PaymentPage               = lazy(() => import("./Pages/Payment/PaymentPage.jsx"));
 const MyOrdersPage              = lazy(() => import("./Pages/MyOrders/MyOrdersPage.jsx"));
 const OrderConfirmedPage        = lazy(() => import("./Pages/OrderConfirmed/OrderConfirmedPage.jsx"));
@@ -199,6 +200,11 @@ const router = createBrowserRouter([
         // so verification emails dead-ended on a router error screen).
         path: "verify-email/:token",
         element: P(<VerifyEmail />),
+      },
+      {
+        // Branded 404 — keeps navbar/footer instead of the raw router error
+        path: "*",
+        element: P(<NotFoundPage />),
       },
     ],
   },
