@@ -1,6 +1,6 @@
 /* ================================================
-   Services Section — "Premium Care. Every Step of the Way."
-   Cream band with 4 tinted pillar cards.
+   Services Section
+   Asymmetric 3-col grid with hover overlay cards
    ================================================ */
 
 .services-section {
@@ -14,33 +14,54 @@
 
 .services-header {
   text-align: center;
-  margin: 0 auto 2.8rem;
+  margin-bottom: 2.8rem;
   padding: 0 1rem;
-  max-width: 720px;
+}
+
+.services-header-deco {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 0.55rem;
+}
+
+.deco-line {
+  display: block;
+  width: 72px;
+  height: 1.5px;
+  background-color: var(--color-accent-gold);
+  border-radius: 2px;
+  opacity: 0.7;
+}
+
+.deco-paw {
+  color: var(--color-accent-gold);
+  font-size: 1.1rem;
 }
 
 .services-title {
   font-family: var(--font-display) !important;
-  font-size: clamp(1.9rem, 1.4rem + 2vw, 2.9rem);
-  letter-spacing: 0.02em;
-  margin: 0 0 0.6rem;
-  line-height: 1.15;
-}
-
-.services-title-forest {
-  color: var(--color-primary-forest);
-}
-
-.services-title-gold {
+  font-size: 3.5rem;
   color: var(--color-accent-gold);
+  letter-spacing: 0.1em;
+  margin: 0 0 0.4rem;
+  line-height: 1;
 }
 
 .services-subtitle {
   font-family: var(--font-body);
-  font-size: clamp(0.95rem, 0.85rem + 0.4vw, 1.1rem);
+  font-size: 1.2rem;
   color: var(--color-text-muted);
   margin: 0;
   line-height: 1.6;
+}
+
+.services-subtitle-script {
+  font-family: var(--font-script) !important;
+  font-size: 2.2rem;
+  color: var(--color-text-default);
+  vertical-align: middle;
 }
 
 /* ── Grid Layout ── */
@@ -48,122 +69,160 @@
 .services-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 1.5rem;
+  grid-template-rows: 310px;
+  gap: 1rem;
   width: min(1200px, 100%);
   margin: 0 auto;
   padding: 0 2rem;
   box-sizing: border-box;
 }
 
-@media (max-width: 1023px) {
-  .services-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 640px) {
-  .services-grid {
-    grid-template-columns: 1fr;
-    padding: 0 1.25rem;
-  }
-}
-
-/* ── Pillar wrapper (tinted panel) ── */
-
-.pillar-wrap {
-  border-radius: 16px;
-  padding: 1.75rem 1.25rem 1.5rem;
-}
-
-/* ── Pillar card (white inner) ── */
-
-.pillar-card {
-  background: #fff;
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  border-radius: 16px;
-  padding: 1.5rem 1.25rem 1.35rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
+.sc-grid-item {
+  min-height: 0;
+  min-width: 0;
   height: 100%;
 }
 
-.pillar-photo-wrap {
+/* ── Service Card ── */
+
+.service-card {
   position: relative;
   width: 100%;
-  aspect-ratio: 4 / 3;
-  margin-bottom: 1.6rem;
-}
-
-.pillar-photo {
-  width: 100%;
   height: 100%;
-  object-fit: cover;
-  border-radius: 12px;
+  border-radius: 14px;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0, 28, 16, 0.12);
   display: block;
 }
 
-.pillar-icon-chip {
+.sc-image {
   position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 44px;
-  height: 44px;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  display: block;
+}
+
+.sc-bottom-gradient {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 65%;
+  background: linear-gradient(
+    to top right,
+    rgba(0, 28, 16, 0.92) 0%,
+    rgba(0, 28, 16, 0.55) 38%,
+    transparent 68%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+.sc-label-row {
+  position: absolute;
+  bottom: 1.1rem;
+  left: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.4rem;
+  z-index: 2;
+}
+
+.sc-icon-badge {
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
+  background-color: var(--color-accent-gold);
   display: flex;
   align-items: center;
   justify-content: center;
   color: #fff;
-  z-index: 2;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
-.pillar-title {
+.sc-title {
   font-family: var(--font-display) !important;
-  font-size: clamp(1.15rem, 1.05rem + 0.4vw, 1.4rem);
-  margin: 0 0 0.5rem;
-  line-height: 1.2;
+  font-size: 1.95rem;
+  color: #fff;
+  letter-spacing: 0.06em;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
+  line-height: 1.05;
 }
 
-.pillar-blurb {
-  font-family: var(--font-body);
-  font-size: 0.92rem;
-  color: var(--color-text-muted);
-  line-height: 1.5;
-  margin: 0 0 1.25rem;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
+/* ── Hover overlay ── */
 
-.pillar-learn-more {
-  font-family: var(--font-body);
-  font-size: 0.88rem;
-  font-weight: 600;
-  background: transparent;
-  border: 1.5px solid;
-  border-radius: 999px;
-  padding: 0.55rem 1.35rem;
-  cursor: pointer;
-  display: inline-flex;
+.sc-hover-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 28, 16, 0.75);
+  display: flex;
   align-items: center;
-  gap: 0.45rem;
-  margin-top: auto;
+  justify-content: center;
+  z-index: 3;
 }
 
-.pillar-arrow {
-  transition: transform 0.2s ease;
+.sc-view-btn {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-primary-forest);
+  background-color: var(--color-accent-gold);
+  border: none;
+  border-radius: 50px;
+  padding: 0.7rem 2rem;
+  cursor: pointer;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
 }
 
-.pillar-learn-more:hover .pillar-arrow {
-  transform: translateX(4px);
+/* ── Responsive ── */
+
+@media (max-width: 1199px) {
+  .services-grid {
+    grid-template-rows: 270px 270px;
+  }
+
+  .sc-title {
+    font-size: 1.7rem;
+  }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .pillar-arrow {
-    transition: none;
+@media (max-width: 991px) {
+  .services-grid {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 250px);
+    padding: 0 1.5rem;
+  }
+}
+
+@media (max-width: 575px) {
+  .services-section {
+    padding-top: 2.5rem;
+    padding-bottom: 2.5rem;
+  }
+
+  .services-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(4, 240px);
+    gap: 0.85rem;
+    padding: 0 1rem;
+  }
+
+  .services-title {
+    font-size: 2.6rem;
+  }
+
+  .services-subtitle-script {
+    font-size: 1.55rem;
+  }
+
+  .sc-title {
+    font-size: 1.5rem;
   }
 }

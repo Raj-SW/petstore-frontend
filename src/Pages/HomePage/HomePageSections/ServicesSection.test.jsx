@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 
 const mockNavigate = vi.fn();
@@ -7,52 +7,47 @@ vi.mock("react-router-dom", async () => {
   return { ...real, useNavigate: () => mockNavigate };
 });
 
-vi.mock("framer-motion", async () => {
-  const React = await import("react");
-  const FRAMER_PROPS = new Set([
-    "initial", "animate", "exit", "transition", "whileInView", "whileHover",
-    "whileTap", "viewport", "layoutId", "layout", "variants",
-  ]);
-  const motion = new Proxy({}, {
-    get: (_t, tag) =>
-      React.forwardRef(({ children, ...props }, ref) => {
-        const rest = {};
-        for (const k of Object.keys(props)) if (!FRAMER_PROPS.has(k)) rest[k] = props[k];
-        return React.createElement(tag, { ref, ...rest }, children);
-      }),
-  });
-  return {
-    motion,
-    AnimatePresence: ({ children }) => children,
-    useInView: () => true,
-    useReducedMotion: () => false,
-  };
-});
-
 vi.mock("../../../assets/Services Sections Assets/veterinary-service.webp", () => ({ default: "vet.webp" }));
-vi.mock("../../../assets/NavigationBarAssets/PetStore/img2.webp", () => ({ default: "shop.webp" }));
+vi.mock("../../../assets/Services Sections Assets/boarding-service.webp", () => ({ default: "home.webp" }));
 vi.mock("../../../assets/ExportImport/catflying.webp", () => ({ default: "travel.webp" }));
-vi.mock("../../../assets/StatsSection/vet-with-dog.jpg", () => ({ default: "tips.jpg" }));
+vi.mock("../../../assets/NavigationBarAssets/PetStore/img1.webp", () => ({ default: "shop.webp" }));
 
 import ServicesSection from "./ServicesSection";
 
-const renderSection = () => render(<ServicesSection />);
-
-describe("ServicesSection (Premium Care pillars)", () => {
+describe("ServicesSection", () => {
   beforeEach(() => vi.clearAllMocks());
 
-  it("renders the Premium Care heading and all four pillars", () => {
-    renderSection();
-    expect(screen.getByText(/premium care\./i)).toBeInTheDocument();
-    expect(screen.getByText(/every step of the way\./i)).toBeInTheDocument();
-    ["Veterinary Care", "Pet Store", "Pet Travel", "Pet Care Tips"].forEach((t) =>
-      expect(screen.getByText(t)).toBeInTheDocument());
-    expect(screen.getAllByRole("button", { name: /learn more/i })).toHaveLength(4);
+  it("renders the new section title", () => {
+    render(<ServicesSection />);
+    expect(screen.getByText("WELCOME TO THE HOME OF PET CARE")).toBeTruthy();
   });
 
-  it("Learn More navigates to the pillar route", () => {
-    renderSection();
-    fireEvent.click(screen.getAllByRole("button", { name: /learn more/i })[2]);
+  it("renders exactly 4 service cards", () => {
+    render(<ServicesSection />);
+    expect(screen.getByText("Veterinary Care")).toBeTruthy();
+    expect(screen.getByText("Home Visits")).toBeTruthy();
+    expect(screen.getByText("Pet Relocation")).toBeTruthy();
+    expect(screen.getByText("Shop")).toBeTruthy();
+    expect(screen.queryByText("Grooming")).toBeNull();
+    expect(screen.queryByText("Adoption & Rescue")).toBeNull();
+    expect(screen.queryByText("Boarding")).toBeNull();
+    expect(screen.queryByText("Pet Training")).toBeNull();
+  });
+
+  it("none of the 4 cards show a Coming Soon badge", () => {
+    render(<ServicesSection />);
+    expect(screen.queryByText("Coming Soon")).toBeNull();
+  });
+
+  it("navigates to /import-export-service when Pet Relocation is clicked", () => {
+    render(<ServicesSection />);
+    fireEvent.click(screen.getByText("Pet Relocation"));
     expect(mockNavigate).toHaveBeenCalledWith("/import-export-service");
+  });
+
+  it("navigates to /petshop when Shop is clicked", () => {
+    render(<ServicesSection />);
+    fireEvent.click(screen.getByText("Shop"));
+    expect(mockNavigate).toHaveBeenCalledWith("/petshop");
   });
 });
