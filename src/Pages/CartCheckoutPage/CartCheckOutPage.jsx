@@ -64,6 +64,13 @@ const CARD_OPTS = {
   },
 };
 
+// Numbered step heading — gold numeral circle + title.
+const StepTitle = ({ n, children }) => (
+  <h2 className="co-step-title">
+    <span className="co-step-num" aria-hidden="true">{n}</span> {children}
+  </h2>
+);
+
 // ── Inner checkout form (needs useStripe / useElements) ───────────────────────
 function CheckoutContent() {
   const stripe   = useStripe();
@@ -235,103 +242,11 @@ function CheckoutContent() {
       </div>
 
       <form id="co-form" className="co-layout" onSubmit={handleSubmit} noValidate>
-        {/* ── LEFT: Shipping Details ── */}
-        <div className="co-form-col">
-          <section className="co-section">
-            <h2 className="co-section-title">Shipping Details</h2>
-
-            <div className="co-field">
-              <label htmlFor="street">Street address</label>
-              <input
-                id="street" name="street" type="text"
-                value={address.street} onChange={handleAddressChange}
-                placeholder="123 Main St" autoComplete="street-address"
-              />
-              {fieldErrors.street && <span className="co-field-err">{fieldErrors.street}</span>}
-            </div>
-
-            <div className="co-field-row">
-              <div className="co-field">
-                <label htmlFor="city">City</label>
-                <input
-                  id="city" name="city" type="text"
-                  value={address.city} onChange={handleAddressChange}
-                  placeholder="Port Louis" autoComplete="address-level2"
-                />
-                {fieldErrors.city && <span className="co-field-err">{fieldErrors.city}</span>}
-              </div>
-              <div className="co-field">
-                <label htmlFor="state">State / District</label>
-                <input
-                  id="state" name="state" type="text"
-                  value={address.state} onChange={handleAddressChange}
-                  placeholder="Plaines Wilhems" autoComplete="address-level1"
-                />
-                {fieldErrors.state && <span className="co-field-err">{fieldErrors.state}</span>}
-              </div>
-            </div>
-
-            <div className="co-field-row">
-              <div className="co-field">
-                <label htmlFor="country">Country</label>
-                <input
-                  id="country" name="country" type="text"
-                  value={address.country} onChange={handleAddressChange}
-                  placeholder="Mauritius" autoComplete="country-name"
-                />
-                {fieldErrors.country && <span className="co-field-err">{fieldErrors.country}</span>}
-              </div>
-              <div className="co-field">
-                <label htmlFor="zipCode">Postal code</label>
-                <input
-                  id="zipCode" name="zipCode" type="text"
-                  value={address.zipCode} onChange={handleAddressChange}
-                  placeholder="00000" autoComplete="postal-code"
-                />
-                {fieldErrors.zipCode && <span className="co-field-err">{fieldErrors.zipCode}</span>}
-              </div>
-            </div>
-          </section>
-
-          <section className="co-section">
-            <h2 className="co-section-title">Order Notes <span className="co-optional">(optional)</span></h2>
-            <textarea
-              className="co-notes"
-              rows={3}
-              placeholder="Special instructions for your order, e.g. delivery times, pet name…"
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-            />
-          </section>
-
-          {/* Cart items — visible on mobile below form */}
-          <section className="co-section co-items-mobile">
-            <h2 className="co-section-title">Your Items</h2>
-            <AnimatePresence initial={false}>
-              {items.map((item) => (
-                <CartItem
-                  key={item.id}
-                  item={{
-                    ...item,
-                    name: item.variantLabel
-                      ? `${item.name || item.title} · ${item.variantLabel}`
-                      : (item.name || item.title),
-                    quantity: item.quantity || 1,
-                  }}
-                  onIncreaseQuantity={(id) => updateItemQuantity(id, item.quantity + 1)}
-                  onDecreaseQuantity={(id) => updateItemQuantity(id, item.quantity - 1)}
-                  onRemoveItem={removeItem}
-                />
-              ))}
-            </AnimatePresence>
-          </section>
-        </div>
-
-        {/* ── RIGHT: Order Summary + Payment ── */}
+        {/* ── LEFT: Order Summary (Step 1) ── */}
         <aside className="co-sidebar">
           {/* Order summary */}
           <section className="co-sidebar-section">
-            <h2 className="co-section-title">Your Order</h2>
+            <StepTitle n={1}>Your Order</StepTitle>
 
             {/* Items list — desktop only */}
             <div className="co-order-items co-items-desktop">
@@ -413,13 +328,105 @@ function CheckoutContent() {
               onIntervalUnitChange={setRecurUnit}
             />
           </section>
+        </aside>
 
-          {/* Payment */}
-          <section className="co-sidebar-section">
-            <h2 className="co-section-title">
+        {/* ── RIGHT: Delivery Details (Step 2) + Payment (Step 3) ── */}
+        <div className="co-form-col">
+          <section className="co-section">
+            <StepTitle n={2}>Delivery Details</StepTitle>
+
+            <div className="co-field">
+              <label htmlFor="street">Street address</label>
+              <input
+                id="street" name="street" type="text"
+                value={address.street} onChange={handleAddressChange}
+                placeholder="123 Main St" autoComplete="street-address"
+              />
+              {fieldErrors.street && <span className="co-field-err">{fieldErrors.street}</span>}
+            </div>
+
+            <div className="co-field-row">
+              <div className="co-field">
+                <label htmlFor="city">City</label>
+                <input
+                  id="city" name="city" type="text"
+                  value={address.city} onChange={handleAddressChange}
+                  placeholder="Port Louis" autoComplete="address-level2"
+                />
+                {fieldErrors.city && <span className="co-field-err">{fieldErrors.city}</span>}
+              </div>
+              <div className="co-field">
+                <label htmlFor="state">State / District</label>
+                <input
+                  id="state" name="state" type="text"
+                  value={address.state} onChange={handleAddressChange}
+                  placeholder="Plaines Wilhems" autoComplete="address-level1"
+                />
+                {fieldErrors.state && <span className="co-field-err">{fieldErrors.state}</span>}
+              </div>
+            </div>
+
+            <div className="co-field-row">
+              <div className="co-field">
+                <label htmlFor="country">Country</label>
+                <input
+                  id="country" name="country" type="text"
+                  value={address.country} onChange={handleAddressChange}
+                  placeholder="Mauritius" autoComplete="country-name"
+                />
+                {fieldErrors.country && <span className="co-field-err">{fieldErrors.country}</span>}
+              </div>
+              <div className="co-field">
+                <label htmlFor="zipCode">Postal code</label>
+                <input
+                  id="zipCode" name="zipCode" type="text"
+                  value={address.zipCode} onChange={handleAddressChange}
+                  placeholder="00000" autoComplete="postal-code"
+                />
+                {fieldErrors.zipCode && <span className="co-field-err">{fieldErrors.zipCode}</span>}
+              </div>
+            </div>
+
+            {/* Notes — sub-block of step 2 */}
+            <div className="co-notes-block">
+              <h2 className="co-section-title">Order Notes <span className="co-optional">(optional)</span></h2>
+              <textarea
+                className="co-notes"
+                rows={3}
+                placeholder="Special instructions for your order, e.g. delivery times, pet name…"
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+              />
+            </div>
+          </section>
+
+          {/* Cart items — visible on mobile below form */}
+          <section className="co-section co-items-mobile">
+            <h2 className="co-section-title">Your Items</h2>
+            <AnimatePresence initial={false}>
+              {items.map((item) => (
+                <CartItem
+                  key={item.id}
+                  item={{
+                    ...item,
+                    name: item.variantLabel
+                      ? `${item.name || item.title} · ${item.variantLabel}`
+                      : (item.name || item.title),
+                    quantity: item.quantity || 1,
+                  }}
+                  onIncreaseQuantity={(id) => updateItemQuantity(id, item.quantity + 1)}
+                  onDecreaseQuantity={(id) => updateItemQuantity(id, item.quantity - 1)}
+                  onRemoveItem={removeItem}
+                />
+              ))}
+            </AnimatePresence>
+          </section>
+
+          <section className="co-section">
+            <StepTitle n={3}>
               <FaLock size={13} style={{ marginRight: "0.4rem", opacity: 0.6 }} />
-              Secure Payment
-            </h2>
+              Payment
+            </StepTitle>
             <div className="co-card-wrap">
               <CardElement options={CARD_OPTS} />
             </div>
@@ -428,61 +435,62 @@ function CheckoutContent() {
                 Test: 4242 4242 4242 4242 · any future date · any CVC
               </p>
             )}
-          </section>
 
-          {/* Retry notice */}
-          {pendingOrderId && (
-            <motion.p
-              className="co-retry-hint"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-            >
-              Your order was saved — just re-enter your card details and try again.
-            </motion.p>
-          )}
-
-          {/* CTA */}
-          <motion.button
-            type="submit"
-            form="co-form"
-            className="co-place-btn"
-            disabled={placing || !stripe}
-            whileHover={placing ? {} : { y: -3 }}
-            whileTap={placing ? {} : { scale: 0.97, y: 0 }}
-            transition={{ type: "spring", stiffness: 420, damping: 14 }}
-          >
-            {placing ? (
-              <><FaSpinner className="spin" size={14} /> Processing…</>
-            ) : (
-              <>
-                <FaLock size={13} />
-                Place Order
-                {grandTotal != null && (
-                  <span className="co-place-amount">
-                    {" · "}
-                    <Price amount={grandTotal} inline />
-                  </span>
-                )}
-              </>
+            {/* Retry notice */}
+            {pendingOrderId && (
+              <motion.p
+                className="co-retry-hint"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+              >
+                Your order was saved — just re-enter your card details and try again.
+              </motion.p>
             )}
-          </motion.button>
 
-          {placing && (
-            <motion.p
-              className="co-placing-hint"
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
+            {/* CTA */}
+            <motion.button
+              type="submit"
+              form="co-form"
+              className="co-place-btn"
+              disabled={placing || !stripe}
+              whileHover={placing ? {} : { y: -3 }}
+              whileTap={placing ? {} : { scale: 0.97, y: 0 }}
+              transition={{ type: "spring", stiffness: 420, damping: 14 }}
             >
-              Securing your order, please don't close this page…
-            </motion.p>
-          )}
+              {placing ? (
+                <><FaSpinner className="spin" size={14} /> Processing…</>
+              ) : (
+                <>
+                  <FaLock size={13} />
+                  Place Order
+                  {grandTotal != null && (
+                    <span className="co-place-amount">
+                      {" · "}
+                      <Price amount={grandTotal} inline />
+                    </span>
+                  )}
+                </>
+              )}
+            </motion.button>
 
-          <ul className="co-perks">
-            <li><FaTruck size={13} /> Free delivery on orders over Rs {Number(settings?.freeShippingThreshold || 100).toLocaleString()}</li>
-            <li><FaShieldAlt size={13} /> SSL encrypted checkout</li>
-            <li><FaCheckCircle size={13} /> 100% satisfaction guarantee</li>
-          </ul>
-        </aside>
+            {placing && (
+              <motion.p
+                className="co-placing-hint"
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+              >
+                Securing your order, please don't close this page…
+              </motion.p>
+            )}
+
+            {/* Perks — moved into step 3, after the button */}
+            <ul className="co-perks">
+              <li><FaTruck size={13} /> Free delivery on orders over Rs {Number(settings?.freeShippingThreshold || 100).toLocaleString()}</li>
+              <li><FaShieldAlt size={13} /> SSL encrypted checkout</li>
+              <li><FaCheckCircle size={13} /> 100% satisfaction guarantee</li>
+            </ul>
+          </section>
+        </div>
       </form>
     </div>
   );
