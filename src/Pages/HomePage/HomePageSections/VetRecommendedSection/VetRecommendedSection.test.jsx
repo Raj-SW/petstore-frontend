@@ -26,14 +26,29 @@ vi.mock("framer-motion", async () => {
   };
 });
 
-// Carousel mocked to lightweight passthroughs — embla needs real layout/ResizeObserver
-vi.mock("@/Components/ui/carousel", () => ({
-  Carousel: ({ children }) => <div data-testid="carousel">{children}</div>,
-  CarouselContent: ({ children }) => <div>{children}</div>,
-  CarouselItem: ({ children }) => <div>{children}</div>,
-  CarouselPrevious: () => <button type="button">prev</button>,
-  CarouselNext: () => <button type="button">next</button>,
-}));
+// Carousel mocked to lightweight passthroughs — embla needs real layout/ResizeObserver.
+// setApi is fed a fake embla api reporting 2 snaps so the section shows its arrows
+// (they are hidden when everything fits in one view).
+vi.mock("@/Components/ui/carousel", async () => {
+  const React = await import("react");
+  const fakeApi = {
+    scrollSnapList: () => [0, 1],
+    selectedScrollSnap: () => 0,
+    scrollTo: () => {},
+    on: () => {},
+    off: () => {},
+  };
+  return {
+    Carousel: ({ children, setApi }) => {
+      React.useEffect(() => { setApi?.(fakeApi); }, [setApi]);
+      return <div data-testid="carousel">{children}</div>;
+    },
+    CarouselContent: ({ children }) => <div>{children}</div>,
+    CarouselItem: ({ children }) => <div>{children}</div>,
+    CarouselPrevious: () => <button type="button">prev</button>,
+    CarouselNext: () => <button type="button">next</button>,
+  };
+});
 
 vi.mock("../../../../Components/HelperComponents/ProductCard/ProductCardV2", () => ({
   default: ({ title }) => <div>{title}</div>,
@@ -57,14 +72,14 @@ const makeProducts = (n) =>
 beforeEach(() => vi.clearAllMocks());
 
 describe("VetRecommendedSection", () => {
-  it("requests vetRecommended=true active products limited to 4", async () => {
+  it("requests vetRecommended=true active products beyond one desktop view", async () => {
     productsApi.getProducts.mockResolvedValue({ data: makeProducts(4) });
     render(<VetRecommendedSection />);
     await waitFor(() => {
       expect(productsApi.getProducts).toHaveBeenCalledWith({
         vetRecommended: true,
         isActive: true,
-        limit: 4,
+        limit: 8,
       });
     });
   });
