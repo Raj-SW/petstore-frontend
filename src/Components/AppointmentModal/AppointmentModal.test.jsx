@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 
 vi.mock("framer-motion", async () => {
   const React = await import("react");
@@ -59,5 +59,12 @@ describe("AppointmentModal (booking preset)", () => {
     rerender(<AppointmentModal open onClose={onClose} preset={BOOKING_PRESET} />);
     fireEvent.keyDown(document, { key: "Escape" });
     expect(onClose).toHaveBeenCalled();
+  });
+
+  it("moves focus into the dialog on open", async () => {
+    render(<AppointmentModal open onClose={() => {}} preset={BOOKING_PRESET} />);
+    await waitFor(() => {
+      expect(document.activeElement?.closest('[role="dialog"]')).not.toBeNull();
+    });
   });
 });

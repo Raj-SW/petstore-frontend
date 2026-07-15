@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
   FaTimes,
@@ -78,9 +78,14 @@ export const TRAVEL_PRESET = {
   secondary: { type: "clinic" },
 };
 
+const FOCUSABLE_SELECTOR =
+  'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+
 const AppointmentModal = ({ open, onClose, preset }) => {
   const [values, setValues] = useState({});
   const shouldReduceMotion = useReducedMotion();
+  const panelRef = useRef(null);
+  const previouslyFocusedRef = useRef(null);
 
   useEffect(() => {
     if (!open) return;
@@ -93,6 +98,34 @@ const AppointmentModal = ({ open, onClose, preset }) => {
       document.removeEventListener("keydown", onKeyDown);
     };
   }, [open, onClose]);
+
+  // Focus trap: move focus into the panel on open, restore it on close.
+  useEffect(() => {
+    if (!open) return;
+    previouslyFocusedRef.current = document.activeElement;
+    const focusables = panelRef.current?.querySelectorAll(FOCUSABLE_SELECTOR);
+    focusables?.[0]?.focus();
+    return () => {
+      previouslyFocusedRef.current?.focus?.();
+    };
+  }, [open]);
+
+  const handlePanelKeyDown = (e) => {
+    if (e.key !== "Tab") return;
+    const focusables = Array.from(
+      panelRef.current?.querySelectorAll(FOCUSABLE_SELECTOR) || []
+    );
+    if (focusables.length === 0) return;
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  };
 
   if (!preset) return null;
 
@@ -122,6 +155,8 @@ const AppointmentModal = ({ open, onClose, preset }) => {
             aria-modal="true"
             aria-label={preset.title}
             className="am-modal"
+            ref={panelRef}
+            onKeyDown={handlePanelKeyDown}
             {...panelMotion}
             transition={{ duration: 0.25, ease: HOUSE_EASE }}
           >
