@@ -120,6 +120,13 @@
   margin-top: 0.2rem;
 }
 
+.cm-summary-note {
+  font-family: var(--font-body);
+  font-size: 0.76rem;
+  color: #999;
+  margin: 0;
+}
+
 /* ── Buttons ── */
 
 .cm-btn {

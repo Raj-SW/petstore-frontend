@@ -9,8 +9,6 @@ import { CartItem } from "../HelperComponents/CartItem/CartItem";
 import Price from "../HelperComponents/Price/Price";
 import "./CartModal.css";
 
-const SHIPPING_FEE = 20;
-
 const CartModal = ({ show, onHide }) => {
   const navigate = useNavigate();
   const { items, cartTotal, totalItems, updateItemQuantity, removeItem } = useCart();
@@ -37,8 +35,6 @@ const CartModal = ({ show, onHide }) => {
       removeItem(id);
     }
   };
-
-  const total = cartTotal + (cartTotal > 0 ? SHIPPING_FEE : 0);
 
   return createPortal(
     <AnimatePresence>
@@ -114,18 +110,16 @@ const CartModal = ({ show, onHide }) => {
 
                 <footer className="cm-footer">
                   <div className="cm-summary">
-                    <div className="cm-summary-row">
+                    {/* Shipping/tax come from store settings and are computed
+                        at checkout (incl. free-shipping threshold) — quoting a
+                        hardcoded fee here disagreed with the checkout total. */}
+                    <div className="cm-summary-row cm-summary-row--total">
                       <span>Subtotal</span>
                       <Price amount={cartTotal} />
                     </div>
-                    <div className="cm-summary-row">
-                      <span>Shipping</span>
-                      <Price amount={cartTotal > 0 ? SHIPPING_FEE : 0} />
-                    </div>
-                    <div className="cm-summary-row cm-summary-row--total">
-                      <span>Total</span>
-                      <Price amount={total} />
-                    </div>
+                    <p className="cm-summary-note">
+                      Shipping &amp; taxes calculated at checkout
+                    </p>
                   </div>
 
                   <button

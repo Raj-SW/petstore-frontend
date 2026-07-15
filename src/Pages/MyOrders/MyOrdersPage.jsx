@@ -345,6 +345,12 @@ export default function MyOrdersPage() {
             const payment     = PAYMENT_META[order.paymentStatus] || PAYMENT_META.pending;
             const canCancel   = ["pending", "processing"].includes(order.status);
             const isDelivered = order.status === "delivered";
+            // Card payment that never completed (e.g. declined then abandoned)
+            // — offer the recovery path instead of leaving a dead end.
+            const needsPayment =
+              order.paymentStatus === "pending" &&
+              order.paymentMethod === "stripe" &&
+              order.status !== "cancelled";
             const isExpanded  = expandedId === order._id;
             const finalAmount = typeof order.finalAmount === "number"
               ? order.finalAmount
@@ -473,6 +479,15 @@ export default function MyOrdersPage() {
                   </div>
 
                   <div className="orders-card-actions">
+                    {needsPayment && (
+                      <button
+                        type="button"
+                        className="mo-btn mo-btn--primary"
+                        onClick={() => navigate(`/payment/${order._id}`)}
+                      >
+                        <FaCreditCard size={11} /> Pay Now
+                      </button>
+                    )}
                     {isDelivered && (
                       <>
                         <button type="button" className="mo-btn mo-btn--reorder" onClick={() => handleReorder(order)}>

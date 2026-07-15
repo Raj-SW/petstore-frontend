@@ -4,11 +4,17 @@ import { MemoryRouter } from "react-router-dom";
 
 // ── API & context mocks ───────────────────────────────────────────────────────
 
-const { mockGetMyOrders, mockAddToast, mockSubmitContact } = vi.hoisted(() => ({
+const { mockGetMyOrders, mockAddToast, mockSubmitContact, mockNavigate } = vi.hoisted(() => ({
   mockGetMyOrders: vi.fn(),
   mockAddToast: vi.fn(),
   mockSubmitContact: vi.fn(),
+  mockNavigate: vi.fn(),
 }));
+
+vi.mock("react-router-dom", async () => {
+  const real = await vi.importActual("react-router-dom");
+  return { ...real, useNavigate: () => mockNavigate };
+});
 
 vi.mock("../../Services/api/ordersApi", () => ({
   default: {
@@ -229,6 +235,29 @@ describe("MyOrdersPage", () => {
     await waitFor(() =>
       expect(screen.getByTestId("breadcrumb")).toBeInTheDocument()
     );
+  });
+});
+
+describe("MyOrdersPage — Pay Now recovery for unpaid card orders", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockGetMyOrders.mockResolvedValue({ data: SAMPLE_ORDERS });
+  });
+
+  it("shows Pay Now on payment-pending stripe orders and routes to /payment/:id", async () => {
+    renderPage();
+    const payBtn = await screen.findByRole("button", { name: /pay now/i });
+    fireEvent.click(payBtn);
+    expect(mockNavigate).toHaveBeenCalledWith("/payment/order001234567");
+  });
+
+  it("does not show Pay Now on paid orders", async () => {
+    mockGetMyOrders.mockResolvedValue({
+      data: SAMPLE_ORDERS.filter((o) => o.paymentStatus === "completed"),
+    });
+    renderPage();
+    await screen.findByText(/cat toy/i);
+    expect(screen.queryByRole("button", { name: /pay now/i })).toBeNull();
   });
 });
 

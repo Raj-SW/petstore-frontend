@@ -403,6 +403,9 @@ function CheckoutContent() {
             <SubscriptionChooser
               basePrice={cartTotal}
               discountPercent={SUB_DISCOUNT}
+              // Honest copy: today's order is charged at full price — the
+              // discount applies to the recurring deliveries, not this one.
+              savingsNote={`Save ${SUB_DISCOUNT}% on every delivery from your 2nd order — today's order is charged at full price`}
               mode={makeRecurring ? "subscribe" : "onetime"}
               onModeChange={(m) => setMakeRecurring(m === "subscribe")}
               intervalCount={recurCount}
