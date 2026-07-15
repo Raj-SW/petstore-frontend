@@ -10,7 +10,16 @@ import vetWithDogImg from "../../../assets/StatsSection/vet-with-dog.jpg";
 import "./StatsSection.css";
 
 const ease = [0.25, 0.46, 0.45, 0.94];
-const toPhotoUrl = (p) => (typeof p === "string" ? p : p?.url);
+// Photos may be a string, {url}, or a legacy corrupt shape where a URL
+// string was cast into a subdocument as char-indexed keys ({0:'h',1:'t',…}).
+const toPhotoUrl = (p) => {
+  if (!p) return "";
+  if (typeof p === "string") return p;
+  if (p.url) return p.url;
+  const chars = Object.keys(p).filter((k) => /^\d+$/.test(k));
+  if (chars.length) return chars.sort((a, b) => a - b).map((k) => p[k]).join("");
+  return "";
+};
 
 // Fallback when the API errors or returns nothing (kept from the old section).
 const TESTIMONIALS = [

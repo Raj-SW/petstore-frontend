@@ -107,6 +107,21 @@ describe("StatsSection (trust story band)", () => {
     expect(document.querySelector(".ts-track[aria-hidden]")).toBeNull();
   });
 
+  it("recovers a photo URL from the legacy char-indexed corrupt shape", async () => {
+    // Mongoose casting a bare URL string into the {url, publicId} subdoc
+    // spreads it into char-indexed keys — the reader must reassemble it.
+    const corrupt = {};
+    "https://img/x.jpg".split("").forEach((c, i) => { corrupt[i] = c; });
+    feedbackApi.getFeedback.mockResolvedValue({
+      data: [{ _id: "c1", name: "Corrupt Carl", rating: 5, message: "great!", photos: [corrupt] }],
+    });
+    render(<StatsSection />);
+    await screen.findByText(/great!/);
+    const img = document.querySelector(".ts-polaroid img");
+    expect(img).not.toBeNull();
+    expect(img.getAttribute("src")).toBe("https://img/x.jpg");
+  });
+
   it("renders the mission headline and all three trust labels", async () => {
     render(<StatsSection />);
     await screen.findByText(/follow-up care was outstanding/);
