@@ -95,9 +95,10 @@ describe("VetRecommendedSection", () => {
   it("renders the carousel prev/next controls", async () => {
     productsApi.getProducts.mockResolvedValue({ data: makeProducts(4) });
     render(<VetRecommendedSection />);
-    await screen.findByText("Product 0");
-    expect(screen.getByRole("button", { name: /prev/i })).toBeTruthy();
-    expect(screen.getByRole("button", { name: /next/i })).toBeTruthy();
+    // findByRole (not getByRole): the arrows appear only after the mocked
+    // embla setApi effect flushes its snaps state — a tick after the data.
+    expect(await screen.findByRole("button", { name: /prev/i })).toBeTruthy();
+    expect(await screen.findByRole("button", { name: /next/i })).toBeTruthy();
   });
 
   it("renders the section title and Explore the Store CTA", async () => {
