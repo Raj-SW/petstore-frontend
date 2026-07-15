@@ -5,7 +5,8 @@
  * resolved to components by <PtIcon name="…" /> in components/PtIcon.jsx.
  */
 
-export const PT_WHATSAPP_NUMBER = "23057580480";
+// Single source of truth for the number lives in AppointmentModal.
+export { WHATSAPP_NUMBER as PT_WHATSAPP_NUMBER } from "../../Components/AppointmentModal/AppointmentModal";
 export const PT_WHATSAPP_MESSAGE =
   "Hi, I'd like help relocating my pet abroad.";
 export const PT_CLINIC_MAP_URL = "https://maps.app.goo.gl/YQRTJz6vFe3K9Z6UA";
