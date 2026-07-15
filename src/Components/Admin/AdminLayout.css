@@ -239,6 +239,37 @@
     margin-left: 70px;
 }
 
+/* Floating mobile opener — hidden on desktop, appears when the sidebar
+   (and the toggle that lives inside it) is off-screen. */
+.admin-mobile-menu-btn {
+    display: none;
+    position: fixed;
+    top: 0.9rem;
+    left: 0.9rem;
+    z-index: 998;
+    width: 42px;
+    height: 42px;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 12px;
+    background: var(--color-primary-forest, #001c10);
+    color: var(--color-bg-cream, #faf5f1);
+    box-shadow: 0 4px 14px rgba(0, 28, 16, 0.3);
+    cursor: pointer;
+}
+
+/* Backdrop behind the open drawer — real element instead of the old
+   `.admin-sidebar.open ~ .admin-layout::before` selector, which could never
+   match (the sidebar is a child of .admin-layout, not a sibling). */
+.admin-sidebar-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 28, 16, 0.5);
+    z-index: 999;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .admin-sidebar {
@@ -253,23 +284,17 @@
         margin-left: 0 !important;
     }
 
-    .admin-layout::before {
-        content: '';
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: rgba(0, 28, 16, 0.5);
-        z-index: 999;
-        opacity: 0;
-        visibility: hidden;
-        transition: all 0.3s;
+    .admin-mobile-menu-btn {
+        display: flex;
     }
 
-    .admin-sidebar.open~.admin-layout::before {
-        opacity: 1;
-        visibility: visible;
+    .admin-sidebar-backdrop {
+        display: block;
+    }
+
+    /* Clear the floating menu button so it never overlaps page titles */
+    .admin-page {
+        padding-top: 4.5rem;
     }
 }
 

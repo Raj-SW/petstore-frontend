@@ -140,7 +140,7 @@ const AdminAnalytics = () => {
                   </span>
                 </td>
                 <td className="admin-table-price">
-                  ${(product.price ?? 0).toFixed(2)}
+                  Rs {Math.round(product.price ?? 0).toLocaleString("en-US")}
                 </td>
                 <td>{product.stock ?? product.quantity ?? "—"}</td>
                 <td>
