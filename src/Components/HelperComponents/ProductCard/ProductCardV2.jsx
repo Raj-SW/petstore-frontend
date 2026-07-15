@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useCart } from "@/context/CartContext";
-import { FaShoppingCart, FaMinus, FaPlus } from "react-icons/fa";
+import { FaShoppingCart, FaMinus, FaPlus, FaPaw, FaStar } from "react-icons/fa";
 import { useToast } from "@/context/ToastContext";
 import ProductPrice from "../Price/ProductPrice";
 import SaleBadge from "../SaleBadge/SaleBadge";
@@ -33,12 +33,26 @@ const PLACEHOLDER_IMG =
 const ProductCardV2 = ({
   id, imageUrl, title, price, description,
   salePrice = null, isOnSaleNow = false, discountPercentLabel = 0, effectivePrice,
-  variantsView = null,
+  variantsView = null, vetRecommended = false, bestSeller = false,
 }) => {
   const navigate = useNavigate();
   const { addItem } = useCart();
   const { showCartToast } = useToast();
   const [qty, setQty] = useState(1);
+
+  const badges = [
+    isOnSaleNow && <SaleBadge key="sale" percent={discountPercentLabel} className="pcv2-sale-badge" />,
+    vetRecommended && (
+      <span key="vet" className="pc-badge pc-badge-vet">
+        <FaPaw size={10} /> Vet Recommended
+      </span>
+    ),
+    bestSeller && (
+      <span key="best" className="pc-badge pc-badge-best">
+        <FaStar size={10} /> Best Seller
+      </span>
+    ),
+  ].filter(Boolean).slice(0, 2);
 
   const hasVariants = Array.isArray(variantsView) && variantsView.length > 0;
   const fromPrice = hasVariants
@@ -74,9 +88,7 @@ const ProductCardV2 = ({
           loading="lazy"
           onError={(e) => { e.currentTarget.src = PLACEHOLDER_IMG; }}
         />
-        {isOnSaleNow && (
-          <SaleBadge percent={discountPercentLabel} className="pcv2-sale-badge" />
-        )}
+        {badges.length > 0 && <div className="pc-badges">{badges}</div>}
       </div>
 
       <div className="pcv2-info">

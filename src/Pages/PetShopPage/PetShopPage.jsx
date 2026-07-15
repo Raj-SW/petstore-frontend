@@ -201,6 +201,8 @@ const PetShopPage = () => {
               discountPercentLabel={p.discountPercentLabel}
               effectivePrice={p.effectivePrice}
               variantsView={p.variantsView}
+              vetRecommended={p.vetRecommended}
+              bestSeller={p.bestSeller}
             />
           </motion.div>
         ))}

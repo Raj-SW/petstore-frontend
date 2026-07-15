@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   FaFacebook, FaTwitter, FaInstagram, FaPlus, FaMinus,
   FaShieldAlt, FaCheckCircle, FaExclamationTriangle,
-  FaTag,
+  FaTag, FaPaw, FaStar,
 } from "react-icons/fa";
 import { FiShare2, FiChevronLeft, FiChevronDown, FiChevronRight, FiSearch, FiX } from "react-icons/fi";
 
@@ -553,6 +553,16 @@ const IndividualProductItemPage = () => {
                   {vStock > 0 ? "In Stock" : "Out of Stock"}
                 </span>
               )}
+              {product.vetRecommended && (
+                <span className="ip-badge ip-badge--vet">
+                  <FaPaw size={10} /> Vet Recommended
+                </span>
+              )}
+              {product.bestSeller && (
+                <span className="ip-badge ip-badge--best">
+                  <FaStar size={10} /> Best Seller
+                </span>
+              )}
             </div>
 
             {/* Suitable for (free-form tags set in admin) */}
@@ -722,6 +732,8 @@ const IndividualProductItemPage = () => {
                     discountPercentLabel={item.discountPercentLabel}
                     effectivePrice={item.effectivePrice}
                     variantsView={item.variantsView}
+                    vetRecommended={item.vetRecommended}
+                    bestSeller={item.bestSeller}
                   />
                 </motion.div>
               ))}

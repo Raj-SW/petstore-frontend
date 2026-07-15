@@ -200,6 +200,18 @@
   color: #dc2626;
 }
 
+.ip-badge--vet {
+  background: #d99a2b;
+  color: var(--color-primary-forest, #001c10);
+  text-transform: uppercase;
+}
+
+.ip-badge--best {
+  background: #7a3b69;
+  color: #fff;
+  text-transform: uppercase;
+}
+
 /* Suitable-for tags */
 .ip-suitable {
   display: flex;

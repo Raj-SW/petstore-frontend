@@ -32,11 +32,38 @@
   position: relative;
 }
 
-.pcv2-sale-badge {
+.pc-badges {
   position: absolute;
   top: 18px;
   left: 18px;
   z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-start;
+}
+
+.pc-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-body);
+  font-size: 0.66rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.pc-badge-vet {
+  background: #d99a2b;
+  color: var(--color-primary-forest, #001c10);
+}
+
+.pc-badge-best {
+  background: #7a3b69;
+  color: #fff;
 }
 
 .pcv2-img {

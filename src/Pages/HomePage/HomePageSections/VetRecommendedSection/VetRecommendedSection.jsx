@@ -89,6 +89,8 @@ const VetRecommendedSection = () => {
                     discountPercentLabel={product.discountPercentLabel}
                     effectivePrice={product.effectivePrice}
                     variantsView={product.variantsView}
+                    vetRecommended={product.vetRecommended}
+                    bestSeller={product.bestSeller}
                   />
                 </CarouselItem>
               ))}
