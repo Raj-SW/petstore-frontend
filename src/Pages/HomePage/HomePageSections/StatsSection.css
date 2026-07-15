@@ -217,6 +217,9 @@
 
 @media (max-width: 640px) {
   .ts-note-row { flex-wrap: wrap; }
+  /* The note must claim the full first line (flex:1 alone lets it shrink
+     beside the arrows); arrows then wrap onto their own centered row. */
+  .ts-note-row .ts-note-stage { flex: 1 1 100%; min-height: 0; }
   .ts-note-row .ts-arrow { order: 2; margin-top: 0.6rem; }
 }
 
