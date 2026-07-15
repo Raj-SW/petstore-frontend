@@ -10,7 +10,7 @@ import {
 import { FiShare2, FiChevronLeft, FiChevronDown, FiChevronRight, FiSearch, FiX } from "react-icons/fi";
 
 import "./IndividaulItemPage.css";
-import Breadcrumb from "@/Components/HelperComponents/Breadcrumb/Breadcrumb";
+import BackButton from "@/Components/HelperComponents/BackButton/BackButton";
 import LoginModal from "@/Components/NavigationBar/Dropdowns/LoginModal";
 import SignUpModal from "@/Components/NavigationBar/Dropdowns/SignUpModal";
 import { RichTextRenderer } from "@/Components/RichText";
@@ -474,15 +474,9 @@ const IndividualProductItemPage = () => {
   return (
     <>
       <div className="ip-page">
-        {/* Back + breadcrumb row */}
+        {/* Back row */}
         <div className="ip-breadcrumb-row">
-          <Breadcrumb
-            items={[
-              { label: "Home", path: "/" },
-              { label: "Pet Shop", path: "/petshop" },
-              { label: productName, path: null },
-            ]}
-          />
+          <BackButton fallbackTo="/petshop" />
         </div>
 
         {/* Main product card */}

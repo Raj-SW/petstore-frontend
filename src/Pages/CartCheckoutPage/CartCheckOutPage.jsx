@@ -1,13 +1,14 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   FaShoppingBag, FaTruck, FaShieldAlt, FaCheckCircle,
-  FaSpinner, FaLock, FaArrowLeft,
+  FaSpinner, FaLock,
 } from "react-icons/fa";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 
+import BackButton from "../../Components/HelperComponents/BackButton/BackButton";
 import { CartItem } from "../../Components/HelperComponents/CartItem/CartItem";
 import Price from "../../Components/HelperComponents/Price/Price";
 import SubscriptionChooser from "../../Components/Subscriptions/SubscriptionChooser";
@@ -228,9 +229,7 @@ function CheckoutContent() {
   return (
     <div className="co-page">
       <div className="co-header">
-        <Link to="/petshop" className="co-back">
-          <FaArrowLeft size={13} /> Continue Shopping
-        </Link>
+        <BackButton fallbackTo="/petshop" label="Continue Shopping" />
         <h1 className="co-title">Checkout</h1>
         <span className="co-item-count">{totalItems} item{totalItems !== 1 ? "s" : ""}</span>
       </div>

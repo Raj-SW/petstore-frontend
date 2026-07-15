@@ -1,0 +1,21 @@
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 40px;
+  padding: 0.35rem 0.9rem 0.35rem 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--color-primary-forest, #001c10);
+  transition: color 0.2s ease, gap 0.2s ease;
+}
+.back-btn:hover { color: var(--color-accent-gold, #ba7517); gap: 0.6rem; }
+.back-btn:focus-visible {
+  outline: 2px solid var(--color-accent-gold, #d99a2b);
+  outline-offset: 2px;
+  border-radius: 6px;
+}

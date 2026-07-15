@@ -2,18 +2,7 @@
    PetShop Page
    ================================================ */
 
-/* ── Breadcrumb strip + intro band ── */
-
-.ps-crumb-strip {
-  background: var(--color-ivory, #f6ece3);
-  border-bottom: 1px solid rgba(0, 28, 16, 0.06);
-  padding: 0.9rem 1.25rem;
-}
-
-.ps-crumb-inner {
-  max-width: 1280px;
-  margin: 0 auto;
-}
+/* ── Intro band ── */
 
 .ps-intro {
   text-align: center;

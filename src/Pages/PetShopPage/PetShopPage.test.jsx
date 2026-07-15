@@ -23,9 +23,6 @@ vi.mock("@/Components/HelperComponents/SearchBar/SearchBar", () => ({
 vi.mock("@/Components/HelperComponents/SortDropDown/SortDropDown", () => ({
   default: () => <div data-testid="sort-dropdown" />,
 }));
-vi.mock("@/Components/HelperComponents/Breadcrumb/Breadcrumb", () => ({
-  default: () => <div data-testid="breadcrumb" />,
-}));
 vi.mock("@/Components/Shop/ShopBanner", () => ({
   default: () => <div data-testid="shop-banner" />,
 }));

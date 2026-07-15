@@ -19,14 +19,6 @@
   overflow: clip; /* belt-and-braces against any child overflow */
 }
 
-/* ── Breadcrumb ── */
-.pt-crumb {
-  background: var(--color-bg-warm-ivory, #f6ece3);
-  border-bottom: var(--pt-border);
-  padding: 0.85rem var(--pt-pad-x);
-}
-.pt-crumb-inner { max-width: var(--pt-maxw); margin: 0 auto; }
-
 /* ── Buttons ── */
 .pt-btn {
   display: inline-flex;

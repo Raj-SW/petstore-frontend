@@ -5,7 +5,6 @@ import {
   FaStethoscope, FaCut, FaDog, FaTaxi,
 } from "react-icons/fa";
 
-import Breadcrumb from "@/Components/HelperComponents/Breadcrumb/Breadcrumb";
 import ProfessionalList from "@/Components/HelperComponents/ProfessionalList/ProfessionalList";
 import { useAuth } from "@/context/AuthContext";
 import useSEO from "../../hooks/useSEO";
@@ -56,15 +55,6 @@ const AppointmentPage = () => {
 
   return (
     <div className="ap-page">
-      <div className="ap-breadcrumb">
-        <Breadcrumb
-          items={[
-            { label: "Home", path: "/" },
-            { label: "Appointments", path: "/appointments" },
-          ]}
-        />
-      </div>
-
       <div className="ap-grid">
         {/* Sidebar */}
         <aside className="ap-sidebar">

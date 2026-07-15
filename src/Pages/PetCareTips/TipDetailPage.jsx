@@ -6,7 +6,7 @@ import tipsApi from "../../Services/api/tipsApi";
 import advertsApi from "../../Services/api/advertsApi";
 import { RichTextRenderer } from "../../Components/RichText";
 import useSEO from "../../hooks/useSEO";
-import Breadcrumb from "../../Components/HelperComponents/Breadcrumb/Breadcrumb";
+import BackButton from "../../Components/HelperComponents/BackButton/BackButton";
 import { getAnimalTheme, capitalize } from "./tipTheme";
 import { coverUrl } from "../../utils/coverImage";
 import "./TipDetail.css";
@@ -70,16 +70,9 @@ const TipDetailPage = () => {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.4 }}
     >
-      {/* Breadcrumb */}
+      {/* Back */}
       <div className="ptd-breadcrumb">
-        <Breadcrumb
-          items={[
-            { label: "Home", path: "/" },
-            { label: "Pet Care Tips", path: "/pet-care-tips" },
-            { label: theme.label },
-            { label: capitalize(tip.category) },
-          ]}
-        />
+        <BackButton fallbackTo="/pet-care-tips" />
       </div>
 
       {/* Cover hero */}

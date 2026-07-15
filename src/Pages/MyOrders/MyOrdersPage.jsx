@@ -15,7 +15,7 @@ import { useToast } from "../../context/ToastContext";
 import { useCart } from "../../context/CartContext";
 import { useAuth } from "../../context/AuthContext";
 import SkeletonCard from "../../Components/HelperComponents/SkeletonCard/SkeletonCard";
-import Breadcrumb from "../../Components/HelperComponents/Breadcrumb/Breadcrumb";
+import BackButton from "../../Components/HelperComponents/BackButton/BackButton";
 import "./MyOrdersPage.css";
 
 // ── Constants ────────────────────────────────────────────────────────────────
@@ -294,7 +294,7 @@ export default function MyOrdersPage() {
 
   return (
     <div className="my-orders-page">
-      <Breadcrumb items={[{ label: "Home", path: "/" }, { label: "My Orders", path: "/my-orders" }]} />
+      <BackButton fallbackTo="/" />
 
       <div className="my-orders-header">
         <h1>My Orders</h1>

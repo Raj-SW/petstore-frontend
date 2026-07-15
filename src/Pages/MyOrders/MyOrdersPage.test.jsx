@@ -44,10 +44,6 @@ vi.mock("../../context/CartContext", () => ({
   }),
 }));
 
-vi.mock("../../Components/HelperComponents/Breadcrumb/Breadcrumb", () => ({
-  default: () => <nav data-testid="breadcrumb" />,
-}));
-
 vi.mock("../../Components/HelperComponents/Price/Price", () => ({
   default: ({ amount }) => <span>${amount}</span>,
 }));
@@ -229,11 +225,11 @@ describe("MyOrdersPage", () => {
     );
   });
 
-  it("shows breadcrumb after data loads", async () => {
+  it("shows a back button after data loads", async () => {
     mockGetMyOrders.mockResolvedValue({ data: SAMPLE_ORDERS });
     renderPage();
     await waitFor(() =>
-      expect(screen.getByTestId("breadcrumb")).toBeInTheDocument()
+      expect(screen.getByRole("button", { name: /back/i })).toBeInTheDocument()
     );
   });
 });

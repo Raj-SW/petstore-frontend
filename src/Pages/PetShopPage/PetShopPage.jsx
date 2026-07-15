@@ -6,7 +6,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 import ProductCard from "../../Components/HelperComponents/ProductCard/ProductCardV2";
 import SortDropDown from "@/Components/HelperComponents/SortDropDown/SortDropDown";
-import Breadcrumb from "@/Components/HelperComponents/Breadcrumb/Breadcrumb";
 import SearchBar from "@/Components/HelperComponents/SearchBar/SearchBar";
 import PageHero from "@/Components/HelperComponents/PageHero/PageHero";
 import heroImg from "@/assets/NavigationBarAssets/PetStore/img1.webp";
@@ -209,18 +208,6 @@ const PetShopPage = () => {
 
   return (
     <>
-      {/* ── Breadcrumb strip ── */}
-      <div className="ps-crumb-strip">
-        <div className="ps-crumb-inner">
-          <Breadcrumb
-            items={[
-              { label: "Home", path: "/" },
-              { label: "Pet Shop", path: "/petshop" },
-            ]}
-          />
-        </div>
-      </div>
-
       {/* ── Hero — shared PageHero standard, search stays front and center ── */}
       <PageHero
         compact

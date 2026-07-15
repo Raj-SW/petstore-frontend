@@ -6,7 +6,6 @@ import advertsApi from "../../Services/api/advertsApi";
 import { useToast } from "../../context/ToastContext";
 import { Link } from "react-router-dom";
 import GalleryCard from "./components/GalleryCard";
-import Breadcrumb from "../../Components/HelperComponents/Breadcrumb/Breadcrumb";
 import PageHero from "../../Components/HelperComponents/PageHero/PageHero";
 import heroImg from "../../assets/StatsSection/slide-2-a.webp";
 import AdvertBanner from "../PetCareTips/components/AdvertBanner";
@@ -118,9 +117,6 @@ const GalleryPage = () => {
 
   return (
     <div className="gal-page">
-      <div className="gal-breadcrumb" style={{ maxWidth: "1200px", margin: "0 auto", padding: "1rem 1.5rem 0" }}>
-        <Breadcrumb items={[{ label: "Home", path: "/" }, { label: "Gallery" }]} />
-      </div>
       <PageHero
         compact
         image={heroImg}

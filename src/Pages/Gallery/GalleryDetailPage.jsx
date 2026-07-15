@@ -6,7 +6,7 @@ import galleryApi from "../../Services/api/galleryApi";
 import advertsApi from "../../Services/api/advertsApi";
 import useSEO from "../../hooks/useSEO";
 import RichTextRenderer from "../../Components/RichText/RichTextRenderer";
-import Breadcrumb from "../../Components/HelperComponents/Breadcrumb/Breadcrumb";
+import BackButton from "../../Components/HelperComponents/BackButton/BackButton";
 import AdvertBanner from "../PetCareTips/components/AdvertBanner";
 import { getCategoryTheme, formatEventDate } from "./galleryTheme";
 import { coverUrl } from "../../utils/coverImage";
@@ -58,7 +58,7 @@ const GalleryDetailPage = () => {
   return (
     <div className="gald-page">
       <div className="gald-breadcrumb" style={{ maxWidth: "1100px", margin: "0 auto", padding: "1rem 1.5rem 0" }}>
-        <Breadcrumb items={[{ label: "Home", path: "/" }, { label: "Gallery", path: "/gallery" }, { label: post.title }]} />
+        <BackButton fallbackTo="/gallery" />
       </div>
       <div className="gald-cover" style={coverUrl(post.coverImage) ? { backgroundImage: `url(${coverUrl(post.coverImage)})` } : { background: `linear-gradient(135deg, ${theme.color}, #0f3d2a)` }}>
         <span className="gal-card-pill" style={{ background: theme.color }}>

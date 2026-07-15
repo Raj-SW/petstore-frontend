@@ -20,17 +20,6 @@
   flex-wrap: wrap;
 }
 
-.co-back {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: #888;
-  text-decoration: none;
-}
-.co-back:hover { color: var(--color-accent-gold, #d99a2b); }
-
 .co-title {
   font-family: var(--font-display, 'Bebas Neue', sans-serif);
   font-size: 2.2rem;
