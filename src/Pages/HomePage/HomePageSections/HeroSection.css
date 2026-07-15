@@ -42,8 +42,8 @@
     background: linear-gradient(
         to right,
         var(--color-bg-warm-ivory) 0%,
-        rgba(246, 236, 227, 0.55) 18%,
-        transparent 40%
+        rgba(246, 236, 227, 0.4) 8%,
+        transparent 16%
     );
     z-index: 1;
     pointer-events: none;
@@ -56,34 +56,21 @@
     z-index: 2;
     display: flex;
     align-items: center;
+    justify-content: flex-start;
     min-height: 580px;
     width: 100%;
 }
 
-/* Left column — logo over left bg */
-.hero-logo-col {
-    width: 24%;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 1.5rem;
-}
-
-.hero-logo-badge {
-    width: 270px;
-    height: 270px;
-    object-fit: contain;
-    filter: drop-shadow(0 8px 28px rgba(0, 0, 0, 0.28));
-}
-
-/* Center — text content */
+/* Text content — left-aligned */
 .hero-content {
     flex: 1;
-    padding: 3rem 2rem 3rem 2rem;
+    max-width: 580px;
+    padding: 3rem 2rem 3rem clamp(1.5rem, 6vw, 5rem);
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: flex-start;
+    text-align: left;
 }
 
 /* Right spacer — transparent, pet photo shows through */
@@ -133,6 +120,7 @@
     display: flex;
     gap: 0.85rem;
     flex-wrap: wrap;
+    justify-content: flex-start;
     margin-bottom: 2rem;
 }
 
@@ -172,11 +160,6 @@
     .hero-headline {
         font-size: 3.2rem;
     }
-
-    .hero-logo-badge {
-        width: 210px;
-        height: 210px;
-    }
 }
 
 @media (max-width: 991px) {
@@ -207,21 +190,12 @@
         display: none;
     }
 
-    .hero-logo-col {
-        width: 100%;
-        padding: 1.25rem 0 0.25rem;
-    }
-
-    .hero-logo-badge {
-        width: 128px;
-        height: 128px;
-    }
-
-    /* Center the content stack on mobile */
+    /* Content stack on mobile — stays left-aligned */
     .hero-content {
+        max-width: 100%;
         padding: 0.5rem 0 0;
-        align-items: center;
-        text-align: center;
+        align-items: flex-start;
+        text-align: left;
     }
 
     .hero-right-col {
@@ -238,8 +212,6 @@
         gap: 0.7rem;
         width: 100%;
         max-width: 420px;
-        margin-left: auto;
-        margin-right: auto;
     }
 
     .hero-btn {
