@@ -63,7 +63,9 @@ const VetNetworkSection = () => {
 
   const pro = professionals[active];
   const meta = pro ? info(pro) : null;
-  const firstName = pro?.name?.split(" ")[0] ?? "";
+  // Skip honorifics — "Dr. Amara Devi" must yield "Book with Amara", not "Book with Dr."
+  const firstName =
+    (pro?.name ?? "").split(/\s+/).find((w) => !/^dr\.?$/i.test(w)) ?? "";
 
   return (
     <section className="vn-section">

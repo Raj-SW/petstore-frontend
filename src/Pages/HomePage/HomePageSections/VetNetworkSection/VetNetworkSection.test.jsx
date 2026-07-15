@@ -121,4 +121,17 @@ describe("VetNetworkSection (spotlight)", () => {
     const { container } = render(<VetNetworkSection />);
     await waitFor(() => expect(container.firstChild).toBeNull());
   });
+
+  it("skips the Dr. honorific in the Book CTA", async () => {
+    professionalsApi.getProfessionals.mockResolvedValue({
+      data: [{
+        _id: "p9",
+        name: "Dr. Sara Naidoo",
+        role: "veterinarian",
+        professionalInfo: { specialization: "Dentistry", rating: 5, experience: 3 },
+      }],
+    });
+    render(<VetNetworkSection />);
+    expect(await screen.findByRole("button", { name: "Book with Sara" })).toBeInTheDocument();
+  });
 });
