@@ -89,7 +89,11 @@
   margin: 0.2rem 0 0;
 }
 
-.ts-note-row { display: flex; align-items: center; gap: 1rem; justify-content: center; }
+/* Cap the row so the arrows hug the note instead of flying to the band edges */
+.ts-note-row {
+  display: flex; align-items: center; gap: 1rem; justify-content: center;
+  max-width: 780px; margin: 0 auto;
+}
 .ts-arrow {
   width: 46px; height: 46px; border-radius: 50%; border: none; cursor: pointer;
   background: var(--color-primary-forest, #001c10); color: #fff;
@@ -100,7 +104,7 @@
 .ts-arrow:focus-visible {
   outline: 2px solid var(--color-accent-gold, #d99a2b); outline-offset: 2px;
 }
-.ts-note-stage { max-width: 640px; margin: 0 auto; min-height: 210px; }
+.ts-note-stage { flex: 1; max-width: 640px; min-height: 210px; }
 .ts-note {
   display: flex; gap: 1.4rem; align-items: flex-start;
   background: var(--color-bg-cream, #faf5f1);
@@ -186,7 +190,8 @@
 .ts-chip-name { font-size: 0.75rem; color: #8a8272; }
 
 /* Reduced motion: static wrapped grid, no drift */
-.ts-marquee--static .ts-row { width: auto; }
+/* Row must center its content-width track, or few chips sit far left */
+.ts-marquee--static .ts-row { width: auto; justify-content: center; }
 .ts-marquee--static .ts-track {
   flex-wrap: wrap; justify-content: center; animation: none; padding-right: 0;
 }
