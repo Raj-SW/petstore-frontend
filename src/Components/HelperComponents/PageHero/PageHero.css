@@ -1,16 +1,12 @@
 /* Shared page hero — mirrors the Services-page hero treatment. */
 .ph-hero {
   position: relative;
-  min-height: 65vh;
+  min-height: 55vh;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
   background: var(--color-primary-forest, #001c10);
-}
-
-.ph-hero--compact {
-  min-height: 38vh;
 }
 
 .ph-bg {
@@ -44,10 +40,6 @@
   width: 100%;
 }
 
-.ph-hero--compact .ph-content {
-  padding: 2.5rem 1.5rem;
-}
-
 .ph-deco {
   display: flex;
   align-items: center;
@@ -78,10 +70,6 @@
   line-height: 0.98;
   margin: 0 0 0.6rem;
   text-transform: uppercase;
-}
-
-.ph-hero--compact .ph-title {
-  font-size: clamp(2.2rem, 5vw, 3.6rem);
 }
 
 .ph-sub {
@@ -149,4 +137,8 @@
 .ph-btn-outline:hover {
   border-color: var(--color-accent-gold, #d99a2b);
   color: var(--color-accent-gold, #d99a2b) !important;
+}
+
+@media (max-width: 640px) {
+  .ph-hero { min-height: 60svh; }
 }

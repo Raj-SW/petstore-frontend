@@ -9,11 +9,9 @@ const ease = [0.25, 0.46, 0.45, 0.94];
  * opens the same way: cover photo, forest gradient overlay, gold deco
  * line + paw, display-font title, script subtitle, optional tagline/CTAs.
  *
- * `compact` renders a shorter band for utility pages (shop, appointments)
- * where the content below is the point.
  */
-const PageHero = ({ image, title, subtitle, script, tagline, compact = false, children }) => (
-  <section className={`ph-hero${compact ? " ph-hero--compact" : ""}`}>
+const PageHero = ({ image, title, subtitle, script, tagline, children }) => (
+  <section className="ph-hero">
     {image && (
       <img src={image} alt="" aria-hidden="true" className="ph-bg" fetchpriority="high" />
     )}

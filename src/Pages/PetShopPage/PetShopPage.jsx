@@ -212,7 +212,6 @@ const PetShopPage = () => {
     <>
       {/* ── Hero — shared PageHero standard, search stays front and center ── */}
       <PageHero
-        compact
         image={heroImg}
         title="Pet Shop"
         subtitle="Everything your companion"

@@ -99,7 +99,6 @@ const ContactPage = () => {
   return (
     <div className="ct-page">
       <PageHero
-        compact
         image={heroImg}
         title="Contact Us"
         subtitle="We'd love to"

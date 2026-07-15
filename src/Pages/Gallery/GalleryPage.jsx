@@ -119,7 +119,6 @@ const GalleryPage = () => {
   return (
     <div className="gal-page">
       <PageHero
-        compact
         image={heroImg}
         title="Gallery"
         subtitle="The moments that make our"

@@ -117,7 +117,6 @@ const PetCareTipsPage = () => {
     <div className="pct-page">
       {/* Hero — shared PageHero standard (Services-page treatment) */}
       <PageHero
-        compact
         image={heroImg}
         title="Pet Care Tips"
         subtitle="Advice written with"
