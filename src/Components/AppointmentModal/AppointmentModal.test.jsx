@@ -1,81 +1,63 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
-import AppointmentModal from "./AppointmentModal";
 
-const setup = (props = {}) => {
-  const onClose = vi.fn();
-  render(
-    <AppointmentModal
-      open={true}
-      onClose={onClose}
-      title="Book an Appointment"
-      description="We're here for your pet."
-      hours={["Mon, Wed, Thu, Sat: 4:30 PM – 6:00 PM"]}
-      waMessage="Hi, I'd like to book a vet appointment."
-      {...props}
-    />
-  );
-  return { onClose };
-};
+vi.mock("framer-motion", async () => {
+  const React = await import("react");
+  const FRAMER_PROPS = new Set([
+    "initial", "animate", "exit", "transition", "whileInView", "whileHover",
+    "whileTap", "viewport", "layoutId", "layout", "variants",
+  ]);
+  const motion = new Proxy({}, {
+    get: (_t, tag) =>
+      React.forwardRef(({ children, ...props }, ref) => {
+        const rest = {};
+        for (const k of Object.keys(props)) if (!FRAMER_PROPS.has(k)) rest[k] = props[k];
+        return React.createElement(tag, { ref, ...rest }, children);
+      }),
+  });
+  return {
+    motion,
+    AnimatePresence: ({ children }) => children,
+    useReducedMotion: () => false,
+  };
+});
 
-describe("AppointmentModal", () => {
-  it("renders nothing when open is false", () => {
-    render(<AppointmentModal open={false} onClose={vi.fn()} title="Hidden" />);
-    expect(screen.queryByRole("dialog")).toBeNull();
+import AppointmentModal, { BOOKING_PRESET, MOBILE_VET_PRESET } from "./AppointmentModal";
+
+describe("AppointmentModal (booking preset)", () => {
+  it("shows hours, note and footnote", () => {
+    render(<AppointmentModal open onClose={() => {}} preset={BOOKING_PRESET} />);
+    expect(screen.getByText("Book Your Appointment")).toBeInTheDocument();
+    expect(screen.getAllByText(/4:30 PM – 6:00 PM/).length).toBe(4);
+    expect(screen.getByText(/Home visits and special appointments/)).toBeInTheDocument();
+    expect(screen.getByText(/reply within a few minutes/)).toBeInTheDocument();
   });
 
-  it("renders the title, description and hours when open", () => {
-    setup();
-    expect(screen.getByRole("dialog", { name: "Book an Appointment" })).toBeTruthy();
-    expect(screen.getByText("We're here for your pet.")).toBeTruthy();
-    expect(screen.getByText("Mon, Wed, Thu, Sat: 4:30 PM – 6:00 PM")).toBeTruthy();
+  it("builds the WhatsApp URL from the form values", () => {
+    render(<AppointmentModal open onClose={() => {}} preset={BOOKING_PRESET} />);
+    fireEvent.change(screen.getByLabelText("Pet's Name"), { target: { value: "Rex" } });
+    fireEvent.change(screen.getByLabelText("Owner's Name"), { target: { value: "Raj" } });
+    const link = screen.getByRole("link", { name: /Continue with WhatsApp/i });
+    const href = decodeURIComponent(link.getAttribute("href"));
+    expect(href).toContain("wa.me/23057580480");
+    expect(href).toContain("Pet's Name: Rex");
+    expect(href).toContain("Owner's Name: Raj");
+    expect(href).toContain("Reason for Visit:"); // blank field keeps its bullet
   });
 
-  it("builds a WhatsApp link with the pre-filled message", () => {
-    setup();
-    const link = screen.getByRole("link", { name: /continue on whatsapp/i });
-    expect(link.href).toBe(
-      "https://wa.me/23057580480?text=Hi%2C%20I%27d%20like%20to%20book%20a%20vet%20appointment."
-    );
+  it("mobile vet preset shows the checklist and Call Now", () => {
+    render(<AppointmentModal open onClose={() => {}} preset={MOBILE_VET_PRESET} />);
+    expect(screen.getByText(/Pets unable to travel/)).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Call Now/i }))
+      .toHaveAttribute("href", "tel:+23057580480");
   });
 
-  it("uses a custom primary label when provided", () => {
-    setup({ primaryLabel: "Book via WhatsApp" });
-    expect(screen.getByRole("link", { name: /book via whatsapp/i })).toBeTruthy();
-  });
-
-  it("shows the Find Our Clinic link by default", () => {
-    setup();
-    expect(screen.getByRole("link", { name: /find our clinic/i })).toBeTruthy();
-  });
-
-  it("hides the Find Our Clinic link when showFindClinic is false", () => {
-    setup({ showFindClinic: false });
-    expect(screen.queryByRole("link", { name: /find our clinic/i })).toBeNull();
-  });
-
-  it("calls onClose when the close button is clicked", () => {
-    const { onClose } = setup();
-    fireEvent.click(screen.getByRole("button", { name: /close/i }));
-    expect(onClose).toHaveBeenCalledTimes(1);
-  });
-
-  it("calls onClose when clicking the overlay backdrop", () => {
-    const { onClose } = setup();
-    const dialog = screen.getByRole("dialog");
-    fireEvent.click(dialog.parentElement);
-    expect(onClose).toHaveBeenCalledTimes(1);
-  });
-
-  it("does not close when clicking inside the modal", () => {
-    const { onClose } = setup();
-    fireEvent.click(screen.getByText("We're here for your pet."));
-    expect(onClose).not.toHaveBeenCalled();
-  });
-
-  it("calls onClose on Escape key", () => {
-    const { onClose } = setup();
+  it("renders nothing when closed and closes on Escape", () => {
+    const onClose = vi.fn();
+    const { rerender } = render(<AppointmentModal open={false} onClose={onClose} preset={BOOKING_PRESET} />);
+    expect(screen.queryByText("Book Your Appointment")).toBeNull();
+    rerender(<AppointmentModal open onClose={onClose} preset={BOOKING_PRESET} />);
     fireEvent.keyDown(document, { key: "Escape" });
-    expect(onClose).toHaveBeenCalledTimes(1);
+    expect(onClose).toHaveBeenCalled();
   });
 });

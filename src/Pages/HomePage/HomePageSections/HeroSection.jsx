@@ -7,9 +7,10 @@ import { FaHome, FaStethoscope, FaTruck, FaShoppingBag } from "react-icons/fa";
 // (553x370 / 661x370) but 264KB/547KB, a poor format choice for this content.
 import heroLeftBg from "../../../assets/HeroSectionAssets/Hero-Image-left-background.webp";
 import heroRight from "../../../assets/HeroSectionAssets/hero-image-right.webp";
-import AppointmentModal from "../../../Components/AppointmentModal/AppointmentModal";
-
-const CONSULTATION_HOURS = ["Mon, Wed, Thu, Sat: 4:30 PM – 6:00 PM"];
+import AppointmentModal, {
+  BOOKING_PRESET,
+  MOBILE_VET_PRESET,
+} from "../../../Components/AppointmentModal/AppointmentModal";
 
 const contentVariants = {
   hidden: {},
@@ -120,18 +121,12 @@ const HeroSection = () => {
       <AppointmentModal
         open={bookingOpen}
         onClose={() => setBookingOpen(false)}
-        title="Book an Appointment"
-        description="We're here for you and your pet."
-        hours={CONSULTATION_HOURS}
-        waMessage="Hi, I'd like to book a vet appointment."
+        preset={BOOKING_PRESET}
       />
       <AppointmentModal
         open={mobileVetOpen}
         onClose={() => setMobileVetOpen(false)}
-        title="Book a Mobile Vet Visit"
-        description="Our vet comes to you. Tell us your location and pet details."
-        waMessage="Hi, I'd like to book a mobile vet visit."
-        primaryLabel="Book via WhatsApp"
+        preset={MOBILE_VET_PRESET}
       />
     </section>
   );

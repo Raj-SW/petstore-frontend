@@ -27,6 +27,6 @@ describe("FinalCtaStrip", () => {
     render(<FinalCtaStrip />);
     expect(screen.queryByRole("dialog")).toBeNull();
     fireEvent.click(screen.getByRole("button", { name: /book appointment/i }));
-    expect(screen.getByRole("dialog", { name: /book an appointment/i })).toBeTruthy();
+    expect(screen.getByRole("dialog", { name: /book your appointment/i })).toBeTruthy();
   });
 });

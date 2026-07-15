@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { FaWhatsapp, FaCalendarCheck, FaStar } from "react-icons/fa";
-import AppointmentModal from "../../../Components/AppointmentModal/AppointmentModal";
+import AppointmentModal, {
+  TRAVEL_PRESET,
+} from "../../../Components/AppointmentModal/AppointmentModal";
 import PtIcon from "../components/PtIcon";
 import heroImg from "../../../assets/PetTravel/pettravel.jpg";
 import {
@@ -144,10 +146,7 @@ const PtHero = () => {
       <AppointmentModal
         open={bookingOpen}
         onClose={() => setBookingOpen(false)}
-        title="Book a Relocation Consultation"
-        description="Tell us where your pet is travelling and we'll guide you through every requirement."
-        waMessage={PT_WHATSAPP_MESSAGE}
-        primaryLabel="Continue on WhatsApp"
+        preset={TRAVEL_PRESET}
       />
     </>
   );

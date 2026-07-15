@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import PtIcon from "../components/PtIcon";
-import AppointmentModal from "../../../Components/AppointmentModal/AppointmentModal";
+import AppointmentModal, {
+  TRAVEL_PRESET,
+} from "../../../Components/AppointmentModal/AppointmentModal";
 import { fadeUp } from "../components/motionPresets";
 import {
   ptDestinations,
   ptRulesCard,
   ptChecklistCard,
-  PT_WHATSAPP_MESSAGE,
   PT_CHECKLIST_PDF_URL,
 } from "../petTravelContent";
 
@@ -84,10 +85,7 @@ const PtDestinations = () => {
       <AppointmentModal
         open={rulesOpen}
         onClose={() => setRulesOpen(false)}
-        title="Check Your Destination"
-        description="Tell us the country you're relocating to and we'll confirm exactly what your pet needs."
-        waMessage={PT_WHATSAPP_MESSAGE}
-        primaryLabel="Ask on WhatsApp"
+        preset={TRAVEL_PRESET}
       />
     </section>
   );
