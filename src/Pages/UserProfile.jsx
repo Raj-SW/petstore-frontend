@@ -7,7 +7,7 @@ import {
 
 import AvatarUploader from "../Components/UserProfile/AvatarUploader";
 import ManagePhotosModal from "../Components/UserProfile/ManagePhotosModal";
-import Breadcrumb from "../Components/HelperComponents/Breadcrumb/Breadcrumb";
+import BackButton from "../Components/HelperComponents/BackButton/BackButton";
 import UserProfileService from "../Services/localServices/userProfileService";
 import PetForm from "../Components/UserProfile/PetForm";
 import PetList from "../Components/UserProfile/PetList";
@@ -191,7 +191,7 @@ const UserProfile = () => {
   return (
     <div className="up-page">
       <div className="up-breadcrumb">
-        <Breadcrumb items={[{ label: "Home", path: "/" }, { label: "Profile", path: "/profile" }]} />
+        <BackButton fallbackTo="/" />
       </div>
 
       {/* Alerts */}

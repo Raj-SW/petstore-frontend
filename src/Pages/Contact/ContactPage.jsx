@@ -1,7 +1,6 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
-import { FaPaw, FaFacebook, FaInstagram } from "react-icons/fa";
+import { FaFacebook, FaInstagram } from "react-icons/fa";
 import { FaTiktok } from "react-icons/fa6";
 import { IoLogoWhatsapp } from "react-icons/io5";
 import { FiSend, FiMapPin, FiPhone } from "react-icons/fi";
@@ -9,6 +8,8 @@ import contactApi from "../../Services/api/contactApi";
 import advertsApi from "../../Services/api/advertsApi";
 import { useToast } from "../../context/ToastContext";
 import GoogleMap, { CLINIC_LOCATION } from "../../Components/Common/GoogleMap";
+import PageHero from "../../Components/HelperComponents/PageHero/PageHero";
+import heroImg from "../../assets/ServicePageAssets/catKiss.webp";
 import useSEO from "../../hooks/useSEO";
 import "./Contact.css";
 
@@ -18,12 +19,6 @@ const SOCIALS = [
   { label: "Facebook", href: "https://www.facebook.com/share/1BUiS7SRxh/?mibextid=wwXIfr", Icon: FaFacebook },
   { label: "Instagram", href: "https://www.instagram.com/vitalpawsmru", Icon: FaInstagram },
   { label: "TikTok", href: "https://www.tiktok.com/@vitalpawsmru", Icon: FaTiktok },
-];
-
-const SHOWCASE = [
-  "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=600",
-  "https://images.unsplash.com/photo-1518717758536-85ae29035b6d?w=700",
-  "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=600",
 ];
 
 const PromoCard = ({ adverts }) => {
@@ -73,7 +68,6 @@ const ContactPage = () => {
   const [sending, setSending] = useState(false);
   const [promoAds, setPromoAds] = useState([]);
   const { addToast } = useToast();
-  const headerRef = useRef(null);
 
   useEffect(() => {
     advertsApi
@@ -104,40 +98,16 @@ const ContactPage = () => {
 
   return (
     <div className="ct-page">
-      {/* Hero */}
-      <header className="ct-hero" ref={headerRef}>
-        <motion.span className="ct-tag" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
-          #1 Pet care in Mauritius
-        </motion.span>
-        <motion.h1 className="ct-hero-title" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: 0.05 }}>
-          Compassionate Care,<br />Dedicated to Your Pet's Wellness
-        </motion.h1>
-        <motion.p className="ct-hero-sub" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: 0.12 }}>
-          Discover our mission, values, and unwavering commitment to providing exceptional veterinary care for your cherished companions.
-        </motion.p>
-        <motion.div className="ct-hero-actions" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: 0.18 }}>
-          <Link to="/appointments" className="ct-btn ct-btn-primary">Find a Professional</Link>
-          <Link to="/petshop" className="ct-btn ct-btn-ghost">Get Started</Link>
-        </motion.div>
-        <FaPaw className="ct-hero-paw" aria-hidden="true" />
-
-        {/* Showcase blobs */}
-        <div className="ct-showcase">
-          {SHOWCASE.map((src, idx) => (
-            <motion.div
-              key={src}
-              className={`ct-blob ct-blob-${idx}`}
-              style={{ backgroundImage: `url(${src})` }}
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, delay: 0.2 + idx * 0.08 }}
-            />
-          ))}
-        </div>
-        <svg className="ct-squiggle" viewBox="0 0 160 20" fill="none" aria-hidden="true">
-          <path d="M2 10 Q 20 0, 40 10 T 80 10 T 120 10 T 158 10" stroke="#E8943A" strokeWidth="3" strokeLinecap="round" />
-        </svg>
-      </header>
+      <PageHero
+        image={heroImg}
+        title="Contact Us"
+        subtitle="We'd love to"
+        script="hear from you"
+        tagline="Find us in Piton, reach us on WhatsApp, or send a message — we're here for you and your pet."
+      >
+        <Link to="/appointments" className="ph-btn-primary">Find a Professional</Link>
+        <Link to="/petshop" className="ph-btn-outline">Get Started</Link>
+      </PageHero>
 
       {/* Connect section */}
       <section className="ct-connect">

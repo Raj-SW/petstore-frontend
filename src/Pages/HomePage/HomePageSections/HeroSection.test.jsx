@@ -31,13 +31,13 @@ describe("HeroSection", () => {
     renderHero();
     expect(screen.queryByRole("dialog")).toBeNull();
     fireEvent.click(screen.getByRole("button", { name: /book appointment/i }));
-    expect(screen.getByRole("dialog", { name: /book an appointment/i })).toBeTruthy();
+    expect(screen.getByRole("dialog", { name: /book your appointment/i })).toBeTruthy();
   });
 
   it("opens the mobile vet modal on Mobile Vet click", () => {
     renderHero();
     fireEvent.click(screen.getByRole("button", { name: /mobile vet/i }));
-    expect(screen.getByRole("dialog", { name: /book a mobile vet visit/i })).toBeTruthy();
+    expect(screen.getByRole("dialog", { name: /need a veterinarian at your location/i })).toBeTruthy();
   });
 
   it("navigates to /import-export-service on Pet Travel click", () => {

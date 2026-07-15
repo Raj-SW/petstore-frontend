@@ -20,13 +20,13 @@ const HomePage = () => {
     <>
       <HeroSection />
       <ServicesSection />
-      <PetTravelBand />
       <PromoBannerCarousel />
       <VetRecommendedSection />
-      <FeaturedProductSection />
+      <PetTravelBand />
       <VetNetworkSection />
       <PetCareTipsSection />
       <StatsSection />
+      <FeaturedProductSection />
       <FaqSection />
       <FinalCtaStrip />
       <EngagementSection />

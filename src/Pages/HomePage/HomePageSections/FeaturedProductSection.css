@@ -22,9 +22,11 @@
 }
 
 .fp-title {
-  font-family: var(--font-script) !important;
+  /* Display font like every other section title (was the lone script-font one) */
+  font-family: var(--font-display) !important;
   font-size: 2.8rem;
   color: var(--color-primary-forest);
+  letter-spacing: 0.06em;
   margin: 0;
   line-height: 1.1;
 }

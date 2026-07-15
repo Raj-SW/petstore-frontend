@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { FaCalendarCheck } from "react-icons/fa";
-import AppointmentModal from "../../../Components/AppointmentModal/AppointmentModal";
+import AppointmentModal, {
+  TRAVEL_PRESET,
+} from "../../../Components/AppointmentModal/AppointmentModal";
 import { fadeUp } from "../components/motionPresets";
-import { ptFinalCta, PT_WHATSAPP_MESSAGE } from "../petTravelContent";
+import { ptFinalCta } from "../petTravelContent";
 
 const PtFinalCta = () => {
   const [open, setOpen] = useState(false);
@@ -27,10 +29,7 @@ const PtFinalCta = () => {
       <AppointmentModal
         open={open}
         onClose={() => setOpen(false)}
-        title="Book a Relocation Consultation"
-        description="Tell us where your pet is travelling and we'll guide you through every requirement."
-        waMessage={PT_WHATSAPP_MESSAGE}
-        primaryLabel="Continue on WhatsApp"
+        preset={TRAVEL_PRESET}
       />
     </section>
   );

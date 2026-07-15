@@ -1,5 +1,4 @@
 import { useState } from "react";
-import Breadcrumb from "@/Components/HelperComponents/Breadcrumb/Breadcrumb";
 import { Container, Row, Col, Form, Button, Alert, Nav } from "react-bootstrap";
 import {
   FaPlaneArrival,
@@ -12,11 +11,6 @@ import "./ImportPage.css";
 import { useToast } from "../../../context/ToastContext";
 import { useAuth } from "../../../context/AuthContext";
 const ExportImportForm = () => {
-  const breadcrumbItems = [
-    { label: "Home", path: "/" },
-    { label: "Import/Export", path: "/import-export-service" },
-    { label: "Apply" },
-  ];
   const { addToast } = useToast();
   const { user } = useAuth();
   // Multi-step form state
@@ -54,11 +48,6 @@ const ExportImportForm = () => {
   return (
     <div className="import-page-container" style={{ height: "fit-content" }}>
       <Container className="pt-4 pb-2">
-        <Row>
-          <Col>
-            <Breadcrumb items={breadcrumbItems} />
-          </Col>
-        </Row>
         <Row>
           <Col>
             <div className="d-flex align-items-center gap-3">

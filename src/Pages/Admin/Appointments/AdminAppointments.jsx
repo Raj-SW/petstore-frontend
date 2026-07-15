@@ -7,7 +7,11 @@ import appointmentsApi from "../../../Services/api/appointmentsApi";
 import { useToast } from "../../../context/ToastContext";
 import "./AdminAppointments.css";
 
-const STATUS_OPTIONS = ["pending", "confirmed", "completed", "cancelled"];
+// Statuses are stored UPPERCASE in the appointment model — sending
+// lowercase made every status change 400 and every counter read 0.
+const STATUS_OPTIONS = ["PENDING", "CONFIRMED", "COMPLETED", "CANCELLED"];
+const statusLabel = (s) =>
+  (s || "pending").toLowerCase().replace(/_/g, " ").replace(/^\w/, (c) => c.toUpperCase());
 
 const getStatusClass = (status) => {
   const map = {
@@ -63,7 +67,7 @@ const AdminAppointments = () => {
           a._id === appointment._id ? { ...a, status: newStatus } : a
         )
       );
-      addToast(`Appointment status updated to "${newStatus}"`, "success");
+      addToast(`Appointment status updated to "${statusLabel(newStatus)}"`, "success");
     } catch (error) {
       addToast("Failed to update appointment status", "error");
       console.error("Error updating appointment status:", error);
@@ -74,9 +78,11 @@ const AdminAppointments = () => {
 
   // Derived stats
   const totalAppts = appointments.length;
-  const confirmedCount = appointments.filter((a) => a.status === "confirmed").length;
-  const completedCount = appointments.filter((a) => a.status === "completed").length;
-  const pendingCount = appointments.filter((a) => a.status === "pending").length;
+  const byStatus = (s) =>
+    appointments.filter((a) => (a.status || "").toUpperCase() === s).length;
+  const confirmedCount = byStatus("CONFIRMED");
+  const completedCount = byStatus("COMPLETED");
+  const pendingCount = byStatus("PENDING");
 
   const columns = [
     {
@@ -115,7 +121,7 @@ const AdminAppointments = () => {
       header: "Status",
       accessor: "status",
       render: (value) => (
-        <span className={getStatusClass(value)}>{value || "pending"}</span>
+        <span className={getStatusClass(value)}>{statusLabel(value)}</span>
       ),
     },
     {
@@ -145,7 +151,7 @@ const AdminAppointments = () => {
         </button>
       )}
       <Select
-        value={appointment.status || "pending"}
+        value={(appointment.status || "PENDING").toUpperCase()}
         onValueChange={(v) => handleStatusChange(appointment, v)}
         disabled={statusLoading[appointment._id]}
       >
@@ -155,7 +161,7 @@ const AdminAppointments = () => {
         <SelectContent>
           {STATUS_OPTIONS.map((s) => (
             <SelectItem key={s} value={s}>
-              {s.charAt(0).toUpperCase() + s.slice(1)}
+              {statusLabel(s)}
             </SelectItem>
           ))}
         </SelectContent>

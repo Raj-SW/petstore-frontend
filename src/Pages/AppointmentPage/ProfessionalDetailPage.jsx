@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FiMail, FiPhone, FiArrowLeft, FiAward, FiClock, FiCheckCircle } from "react-icons/fi";
-import Breadcrumb from "@/Components/HelperComponents/Breadcrumb/Breadcrumb";
+import BackButton from "@/Components/HelperComponents/BackButton/BackButton";
 import { RichTextRenderer } from "@/Components/RichText";
 import professionalsApi from "../../Services/api/professionalsApi";
 import "./ProfessionalDetailPage.css";
@@ -74,13 +74,7 @@ const ProfessionalDetailPage = () => {
   return (
     <div className="pd-page">
       <div className="pd-crumb">
-        <Breadcrumb
-          items={[
-            { label: "Home", path: "/" },
-            { label: "Appointments", path: "/appointments" },
-            { label: pro.name, path: null },
-          ]}
-        />
+        <BackButton fallbackTo="/appointments" />
       </div>
 
       <motion.div

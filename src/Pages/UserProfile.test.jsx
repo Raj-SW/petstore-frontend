@@ -74,10 +74,6 @@ vi.mock("../Components/UserProfile/ConfirmModal", () => ({
   default: ({ show }) => show ? <div data-testid="confirm-modal" /> : null,
 }));
 
-vi.mock("../Components/HelperComponents/Breadcrumb/Breadcrumb", () => ({
-  default: () => <nav data-testid="breadcrumb" />,
-}));
-
 vi.mock("../models", () => ({
   User: class User { constructor(d) { Object.assign(this, d); } },
   Pet:  class Pet  { constructor(d) { Object.assign(this, d); } },

@@ -1,19 +1,34 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 
 // ── API & context mocks ───────────────────────────────────────────────────────
 
-const { mockGetMyOrders, mockAddToast } = vi.hoisted(() => ({
+const { mockGetMyOrders, mockAddToast, mockSubmitContact, mockNavigate } = vi.hoisted(() => ({
   mockGetMyOrders: vi.fn(),
   mockAddToast: vi.fn(),
+  mockSubmitContact: vi.fn(),
+  mockNavigate: vi.fn(),
 }));
+
+vi.mock("react-router-dom", async () => {
+  const real = await vi.importActual("react-router-dom");
+  return { ...real, useNavigate: () => mockNavigate };
+});
 
 vi.mock("../../Services/api/ordersApi", () => ({
   default: {
     getMyOrders: mockGetMyOrders,
     cancelOrder: vi.fn().mockResolvedValue({ data: {} }),
   },
+}));
+
+vi.mock("../../Services/api/contactApi", () => ({
+  default: { submitContact: mockSubmitContact },
+}));
+
+vi.mock("../../context/AuthContext", () => ({
+  useAuth: () => ({ user: { name: "Raj Test", email: "raj@test.com" } }),
 }));
 
 vi.mock("../../context/ToastContext", () => ({
@@ -29,22 +44,35 @@ vi.mock("../../context/CartContext", () => ({
   }),
 }));
 
-vi.mock("../../Components/HelperComponents/Breadcrumb/Breadcrumb", () => ({
-  default: () => <nav data-testid="breadcrumb" />,
-}));
-
 vi.mock("../../Components/HelperComponents/Price/Price", () => ({
   default: ({ amount }) => <span>${amount}</span>,
 }));
 
-// Stub shadcn Select to avoid Radix portal issues
-vi.mock("@/Components/ui/select", () => ({
-  Select: ({ children }) => <div>{children}</div>,
-  SelectTrigger: ({ children }) => <div>{children}</div>,
-  SelectValue: ({ placeholder }) => <span>{placeholder}</span>,
-  SelectContent: ({ children }) => <div>{children}</div>,
-  SelectItem: ({ children, value }) => <option value={value}>{children}</option>,
-}));
+// Stub shadcn Select to avoid Radix portal issues.
+// Select passes onValueChange down via context so SelectItem renders a real
+// clickable button — lets tests pick a value (e.g. the refund reason).
+vi.mock("@/Components/ui/select", async () => {
+  const React = await import("react");
+  const SelectCtx = React.createContext(() => {});
+  return {
+    Select: ({ children, onValueChange }) => (
+      <SelectCtx.Provider value={onValueChange || (() => {})}>
+        <div>{children}</div>
+      </SelectCtx.Provider>
+    ),
+    SelectTrigger: ({ children }) => <div>{children}</div>,
+    SelectValue: ({ placeholder }) => <span>{placeholder}</span>,
+    SelectContent: ({ children }) => <div>{children}</div>,
+    SelectItem: ({ children, value }) => {
+      const onValueChange = React.useContext(SelectCtx);
+      return (
+        <button type="button" data-testid={`select-item-${value}`} onClick={() => onValueChange(value)}>
+          {children}
+        </button>
+      );
+    },
+  };
+});
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -197,11 +225,82 @@ describe("MyOrdersPage", () => {
     );
   });
 
-  it("shows breadcrumb after data loads", async () => {
+  it("shows a back button after data loads", async () => {
     mockGetMyOrders.mockResolvedValue({ data: SAMPLE_ORDERS });
     renderPage();
     await waitFor(() =>
-      expect(screen.getByTestId("breadcrumb")).toBeInTheDocument()
+      expect(screen.getByRole("button", { name: /back/i })).toBeInTheDocument()
     );
+  });
+});
+
+describe("MyOrdersPage — Pay Now recovery for unpaid card orders", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockGetMyOrders.mockResolvedValue({ data: SAMPLE_ORDERS });
+  });
+
+  it("shows Pay Now on payment-pending stripe orders and routes to /payment/:id", async () => {
+    renderPage();
+    const payBtn = await screen.findByRole("button", { name: /pay now/i });
+    fireEvent.click(payBtn);
+    expect(mockNavigate).toHaveBeenCalledWith("/payment/order001234567");
+  });
+
+  it("does not show Pay Now on paid orders", async () => {
+    mockGetMyOrders.mockResolvedValue({
+      data: SAMPLE_ORDERS.filter((o) => o.paymentStatus === "completed"),
+    });
+    renderPage();
+    await screen.findByText(/cat toy/i);
+    expect(screen.queryByRole("button", { name: /pay now/i })).toBeNull();
+  });
+});
+
+describe("MyOrdersPage — refund request (really recorded, not faked)", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockGetMyOrders.mockResolvedValue({ data: SAMPLE_ORDERS });
+    mockSubmitContact.mockResolvedValue({ success: true });
+  });
+
+  const openRefundModalAndPickReason = async () => {
+    renderPage();
+    const refundBtn = await screen.findByRole("button", { name: /return \/ refund/i });
+    fireEvent.click(refundBtn);
+    await screen.findByText(/request return \/ refund/i);
+    fireEvent.click(screen.getByTestId("select-item-Item arrived damaged"));
+  };
+
+  it("submits the request through the contact API with order + reason details", async () => {
+    await openRefundModalAndPickReason();
+    fireEvent.change(screen.getByLabelText(/additional notes/i), {
+      target: { value: "Box was crushed" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: /submit request/i }));
+
+    await waitFor(() => expect(mockSubmitContact).toHaveBeenCalledTimes(1));
+    const payload = mockSubmitContact.mock.calls[0][0];
+    expect(payload.name).toBe("Raj Test");
+    expect(payload.email).toBe("raj@test.com");
+    expect(payload.message).toContain("RETURN/REFUND REQUEST");
+    expect(payload.message).toContain("order009876543"); // delivered order id
+    expect(payload.message).toContain("Item arrived damaged");
+    expect(payload.message).toContain("Box was crushed");
+    await waitFor(() =>
+      expect(mockAddToast).toHaveBeenCalledWith(expect.stringMatching(/return request received/i), "success")
+    );
+  });
+
+  it("shows an error toast and keeps the modal open when submission fails", async () => {
+    mockSubmitContact.mockRejectedValue(new Error("Server unavailable"));
+    await openRefundModalAndPickReason();
+    fireEvent.click(screen.getByRole("button", { name: /submit request/i }));
+
+    await waitFor(() =>
+      expect(mockAddToast).toHaveBeenCalledWith("Server unavailable", "error")
+    );
+    // Modal must remain open so the user can retry — no fake success
+    expect(screen.getByText(/request return \/ refund/i)).toBeInTheDocument();
   });
 });

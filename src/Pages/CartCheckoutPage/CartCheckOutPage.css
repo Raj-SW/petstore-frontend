@@ -20,17 +20,6 @@
   flex-wrap: wrap;
 }
 
-.co-back {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: #888;
-  text-decoration: none;
-}
-.co-back:hover { color: var(--color-accent-gold, #d99a2b); }
-
 .co-title {
   font-family: var(--font-display, 'Bebas Neue', sans-serif);
   font-size: 2.2rem;
@@ -53,7 +42,7 @@
 /* ── Two-column layout ── */
 .co-layout {
   display: grid;
-  grid-template-columns: 1fr 380px;
+  grid-template-columns: 400px minmax(0, 1fr);
   gap: 2rem;
   align-items: flex-start;
 }
@@ -85,6 +74,40 @@
   letter-spacing: 0;
 }
 
+/* ── Numbered step titles ── */
+.co-step-title {
+  display: flex;
+  align-items: center;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--color-primary-forest, #001c10);
+  margin: 0 0 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.co-step-num {
+  display: inline-flex;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--color-accent-gold, #d99a2b);
+  color: var(--color-primary-forest, #001c10);
+  font-weight: 700;
+  font-size: 0.9rem;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0.5rem;
+}
+
+.co-notes-block {
+  margin-top: 1.1rem;
+}
+
+.co-notes-block .co-section-title {
+  margin-bottom: 0.6rem;
+}
+
 /* ── Address fields ── */
 .co-field {
   display: flex;
@@ -106,7 +129,8 @@
   padding: 0.72rem 1rem;
   border: 2px solid rgba(0,28,16,.18);
   border-radius: 12px;
-  font-size: 0.92rem;
+  font-size: 1rem;
+  min-height: 48px;
   font-family: var(--font-body);
   outline: none;
   background: var(--color-bg-cream, #fffcf7);
@@ -270,6 +294,7 @@
 /* ── Place order button ── */
 .co-place-btn {
   width: 100%;
+  min-height: 52px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -450,7 +475,9 @@
 
   .co-sidebar {
     position: static;
-    order: -1; /* summary first on mobile */
+    /* sidebar is already first in DOM order, so reading order stays
+       1 · Your Order → 2 · Delivery Details → 3 · Payment without
+       needing an `order` override. */
   }
 
   /* On mobile: show items inline in form col, hide sidebar copy */

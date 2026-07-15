@@ -45,7 +45,7 @@ const SERVICES = [
   {
     key: "import",
     status: "live",
-    label: "Import & Export",
+    label: "Pet Travel",
     icon: FaPlane,
     image: imgImport,
     href: "/import-export-service",
@@ -293,7 +293,7 @@ const ServicePage = () => {
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.97 }}
             >
-              Import &amp; Export
+              Pet Travel
             </motion.button>
           </motion.div>
         </div>

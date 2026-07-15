@@ -20,11 +20,16 @@ vi.mock("framer-motion", async () => {
         }),
     }
   );
-  return { motion, AnimatePresence: ({ children }) => children, useInView: () => true };
+  return {
+    motion,
+    AnimatePresence: ({ children }) => children,
+    useInView: () => true,
+    useReducedMotion: () => false,
+  };
 });
 
 vi.mock("../../hooks/useSEO", () => ({ default: vi.fn() }));
-vi.mock("../../assets/PetTravel/pettravel.png", () => ({ default: "pettravel.png" }));
+vi.mock("../../assets/PetTravel/pettravel.jpg", () => ({ default: "pettravel.jpg" }));
 
 import PetTravelPage from "./PetTravelPage";
 import {

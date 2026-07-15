@@ -59,7 +59,7 @@ describe("ContactPage", () => {
 
   it("renders the page hero heading", () => {
     renderPage();
-    expect(screen.getByText(/Compassionate Care/i)).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1, name: /contact us/i })).toBeInTheDocument();
   });
 
   it("renders social links", () => {

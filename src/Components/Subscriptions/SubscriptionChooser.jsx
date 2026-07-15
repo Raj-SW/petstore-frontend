@@ -15,6 +15,10 @@ const SubscriptionChooser = ({
   onIntervalUnitChange,
   formatAmount = defaultFormat,
   oneTimeLabel = "One-Time Purchase",
+  // Override where the discount does NOT apply to today's charge (checkout:
+  // the order being placed now is full price; savings start with the first
+  // recurring delivery). Defaults to the immediate-savings copy.
+  savingsNote = null,
 }) => {
   const { base, discounted, save } = computeSavings(basePrice, discountPercent);
   const subscribeActive = mode === "subscribe";
@@ -57,7 +61,9 @@ const SubscriptionChooser = ({
             <span className="subchooser-price-base">{formatAmount(base)}</span>
             <span className="subchooser-price-discounted">{formatAmount(discounted)}</span>
           </span>
-          <span className="subchooser-save">(You save {formatAmount(save)}!)</span>
+          <span className="subchooser-save">
+            {savingsNote ?? `(You save ${formatAmount(save)}!)`}
+          </span>
         </span>
       </button>
 

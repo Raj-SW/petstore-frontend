@@ -31,6 +31,14 @@ apiClient.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+// Endpoints where a 401 means "wrong credentials supplied in this request",
+// not "your session is invalid" — they must NOT nuke the current session
+// (e.g. a typo'd current password in change-password logged users out).
+const CREDENTIAL_CHECK_PATHS = ["/auth/login", "/users/change-password"];
+
+const isCredentialCheck = (url = "") =>
+  CREDENTIAL_CHECK_PATHS.some((path) => url.includes(path));
+
 // Handle auth errors globally
 apiClient.interceptors.response.use(
   (response) => response,
@@ -38,7 +46,7 @@ apiClient.interceptors.response.use(
     if (error.response) {
       const { status, data } = error.response;
 
-      if (status === 401) {
+      if (status === 401 && !isCredentialCheck(error.config?.url)) {
         // Token expired or invalid — trigger logout across the app
         globalThis.window.dispatchEvent(new CustomEvent("auth:logout"));
       }

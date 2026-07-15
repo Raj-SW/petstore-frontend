@@ -87,7 +87,7 @@ describe("PetCareTipsPage", () => {
   it("renders without crashing and shows hero heading", async () => {
     renderPage();
     expect(
-      screen.getByText(/Care tips written with love/i)
+      screen.getByRole("heading", { level: 1, name: /pet care tips/i })
     ).toBeInTheDocument();
   });
 

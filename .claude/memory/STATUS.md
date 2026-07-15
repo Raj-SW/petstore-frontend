@@ -1,14 +1,23 @@
 # Frontend Status
 
-**Active branch:** `feat/epic2-select-migrations`
-**Last updated:** 2026-06-24
+**Active branch:** `main` (all feature branches through `feat/admin-professionals-management` merged — PR #24, 2026-07-14)
+**Last updated:** 2026-07-14
 **Stack:** React 18 + Vite, Tailwind 3.4, shadcn/ui, @dnd-kit, Framer Motion, Vitest + React Testing Library
 
 For the full cross-repo backlog (BE + FE), see `../backend/.claude/memory/STATUS.md`.
 
 ---
 
-## Done (this branch)
+## Recently merged to main (2026-07, PR #24)
+
+- **Homepage redesign** — hero with 4 CTAs + AppointmentModal (WhatsApp deep-link, reused by FinalCtaStrip); ServicesSection reduced to 4 live cards; new PetTravelBand, VetRecommendedSection (Embla carousel, shares FeaturedProductSection's pattern), VetNetworkSection, PetCareTipsSection, FinalCtaStrip. FeaturedProductSection retained.
+- **Pet Travel landing page** (`/import-export-service` → `Pages/PetTravel/`) — Hero/Process/Destinations/TrustBar/FinalCta sections, content in `petTravelContent.js`, replaces old ImportExportServicePage (application form still at `/import-page`).
+- **Mobile responsiveness pass** — right-side nav drawer, `html{overflow-x:clip}` global overflow guard, 2-per-row card grids (products/tips/professionals), ProfessionalList refactored to role-independent `pro-list-*` classes, SearchBar width capped, appointment grid `minmax(0,1fr)`.
+- **Admin professionals** pages, **CreatableTagSelect**, **variant option matrix** admin form + product page selectors, **vetRecommended** admin toggle.
+- ⚠️ `src/assets/PetTravel/pettravel.png` is ~2MB unoptimized — convert to WebP when tooling available.
+- ⚠️ Vet Recommended homepage section hides itself unless products in the DB have `vetRecommended: true` (0 flagged as of 2026-07-14 — curate via Admin → Products).
+
+## Done (earlier branches)
 
 | Epic | What shipped | Key files |
 |------|-------------|-----------|
@@ -30,13 +39,11 @@ For the full cross-repo backlog (BE + FE), see `../backend/.claude/memory/STATUS
 
 | Epic | What's left | Depends on |
 |------|-------------|------------|
-| 2 | ✅ DONE — see row 2b above | — |
-| 4 | ProfessionalCard visual rebuild on design system; appointment list SearchBar | Epic 2 |
+| 4 | ProfessionalCard rebuilt ✅; appointment list SearchBar still pending | Epic 2 ✅ |
 | 9b | Typed announcements admin UI — type picker, per-type field sections (event date/location, CTA url, content ref picker) | Epic 9b BE ✅ |
 | 11 | `AdminSettings` page with StoreSettings controls (shipping fee, free-shipping threshold, tax rate/inclusive toggle) | Epic 11 BE ✅ |
 | 11 | Checkout page shows shipping + tax breakdown; order summary uses `grandTotal` | Epic 11 BE ✅ |
-| 12 | Subscriptions analytics dashboard (demand vs stock chart, horizon selector); enriched admin list/detail; user My Subscriptions; product-list "Subscribed(N)" badge | Epic 12 BE ✅ |
-| 13 | Import/Export — multi-step FE form (replaces dead 920-line wizard); `/admin/import-export` admin page | Epic 13 BE (not started) |
+| 13 | Import/Export — multi-step FE application form + `/admin/import-export` admin page (public Pet Travel landing page ✅ 2026-07) | Epic 13 BE (not started) |
 | 15 | Checkout redesign (single responsive page, design system); payment method selector (COD / Card / Juice) | MCB Juice creds needed |
 
 ---

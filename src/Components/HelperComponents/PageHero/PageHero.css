@@ -1,0 +1,144 @@
+/* Shared page hero — mirrors the Services-page hero treatment. */
+.ph-hero {
+  position: relative;
+  min-height: 55vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: var(--color-primary-forest, #001c10);
+}
+
+.ph-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 35%;
+  display: block;
+}
+
+.ph-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 28, 16, 0.88) 0%,
+    rgba(0, 28, 16, 0.7) 50%,
+    rgba(0, 28, 16, 0.55) 100%
+  );
+  z-index: 1;
+}
+
+.ph-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 3.5rem 1.5rem;
+  max-width: 760px;
+  width: 100%;
+}
+
+.ph-deco {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 0.8rem;
+}
+
+.ph-deco-line {
+  display: block;
+  width: 64px;
+  height: 1.5px;
+  background-color: var(--color-accent-gold, #d99a2b);
+  border-radius: 2px;
+  opacity: 0.75;
+}
+
+.ph-deco-paw {
+  color: var(--color-accent-gold, #d99a2b);
+  font-size: 1rem;
+}
+
+.ph-title {
+  font-family: var(--font-display) !important;
+  font-size: clamp(2.8rem, 7vw, 5.5rem);
+  color: var(--color-accent-gold, #d99a2b);
+  letter-spacing: 0.08em;
+  line-height: 0.98;
+  margin: 0 0 0.6rem;
+  text-transform: uppercase;
+}
+
+.ph-sub {
+  font-family: var(--font-body);
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  color: var(--color-bg-cream, #faf5f1);
+  margin: 0 0 0.5rem;
+}
+
+.ph-script {
+  font-family: var(--font-script) !important;
+  font-size: clamp(1.8rem, 4.5vw, 2.8rem);
+  color: var(--color-accent-gold, #d99a2b);
+  vertical-align: middle;
+}
+
+.ph-tagline {
+  font-family: var(--font-body);
+  font-size: clamp(0.85rem, 1.5vw, 1rem);
+  color: rgba(250, 245, 241, 0.72);
+  letter-spacing: 0.04em;
+  margin: 0;
+}
+
+.ph-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+}
+
+/* Standard hero CTAs — same treatment as the Services-page buttons */
+.ph-btn-primary,
+.ph-btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  font-weight: 600;
+  border-radius: 50px;
+  padding: 0.8rem 2rem;
+  cursor: pointer;
+  letter-spacing: 0.02em;
+  text-decoration: none !important;
+}
+
+.ph-btn-primary {
+  color: var(--color-primary-forest, #001c10) !important;
+  background-color: var(--color-accent-gold, #d99a2b);
+  border: none;
+  transition: background 0.2s ease;
+}
+.ph-btn-primary:hover {
+  background-color: #c48a24;
+}
+
+.ph-btn-outline {
+  color: var(--color-bg-cream, #faf5f1) !important;
+  background: transparent;
+  border: 2px solid rgba(250, 245, 241, 0.55);
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+.ph-btn-outline:hover {
+  border-color: var(--color-accent-gold, #d99a2b);
+  color: var(--color-accent-gold, #d99a2b) !important;
+}
+
+@media (max-width: 640px) {
+  .ph-hero { min-height: 60svh; }
+}

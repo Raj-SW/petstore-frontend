@@ -2,46 +2,7 @@
    PetShop Page
    ================================================ */
 
-/* ── Breadcrumb strip + intro band ── */
-
-.ps-crumb-strip {
-  background: var(--color-ivory, #f6ece3);
-  border-bottom: 1px solid rgba(0, 28, 16, 0.06);
-  padding: 0.9rem 1.25rem;
-}
-
-.ps-crumb-inner {
-  max-width: 1280px;
-  margin: 0 auto;
-}
-
-.ps-intro {
-  text-align: center;
-  background: var(--color-primary-forest, #001c10);
-  padding: 2.6rem 1.25rem 2.8rem;
-}
-
-.ps-intro-title {
-  font-family: var(--font-display, 'Bebas Neue', sans-serif);
-  color: #f6ece3;
-  font-size: clamp(2rem, 5vw, 3.2rem);
-  line-height: 1;
-  letter-spacing: 0.02em;
-  margin: 0;
-}
-
-.ps-intro-subtitle {
-  font-family: var(--font-body);
-  color: rgba(246, 236, 227, 0.82);
-  font-size: 1rem;
-  margin: 0.6rem auto 1.5rem;
-  max-width: 520px;
-}
-
-.ps-intro-search {
-  display: flex;
-  justify-content: flex-start;
-}
+/* ── Intro band ── */
 
 /* ── Category quick-filter strip ── */
 

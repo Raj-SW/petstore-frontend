@@ -11,6 +11,7 @@ import {
 import { motion } from "framer-motion";
 import { FaLock, FaSpinner, FaShieldAlt } from "react-icons/fa";
 import paymentsApi from "../../Services/api/paymentsApi";
+import ordersApi from "../../Services/api/ordersApi";
 import { useToast } from "../../context/ToastContext";
 import CheckoutStepper from "../../Components/HelperComponents/CheckoutStepper/CheckoutStepper";
 import "./PaymentPage.css";
@@ -71,7 +72,7 @@ function CheckoutForm({ orderId, clientSecret, orderSummary }) {
   };
 
   const btnAmount = orderSummary?.total
-    ? `Pay $${orderSummary.total.toFixed(2)}`
+    ? `Pay Rs ${Math.round(orderSummary.total).toLocaleString("en-US")}`
     : "Pay Now";
 
   return (
@@ -131,8 +132,11 @@ export default function PaymentPage() {
   const [clientSecret, setClientSecret] = useState(null);
   const [loading, setLoading]           = useState(true);
 
-  // Order summary passed from CartCheckoutPage via location.state
-  const orderSummary = location.state || null;
+  // Order summary passed from CartCheckoutPage via location.state; when the
+  // user arrives from My Orders "Pay Now" there is no state, so fall back to
+  // fetching the order (otherwise the summary showed "details unavailable").
+  const [fetchedSummary, setFetchedSummary] = useState(null);
+  const orderSummary = location.state || fetchedSummary;
 
   useEffect(() => {
     paymentsApi
@@ -145,6 +149,28 @@ export default function PaymentPage() {
         addToast(err?.message || "Could not initialize payment.", "error");
         navigate("/checkout");
       });
+
+    if (!location.state) {
+      ordersApi
+        .getOrderById(orderId)
+        .then((res) => {
+          const order = res?.data ?? res;
+          if (!order) return;
+          setFetchedSummary({
+            items: (order.items || []).map((i) => ({
+              name: i.product?.name || i.variantLabel || "Product",
+              quantity: i.quantity,
+              price: i.price,
+            })),
+            subtotal: order.totalAmount ?? 0,
+            shipping: order.shippingFee ?? 0,
+            total: order.grandTotal || (order.totalAmount ?? 0) - (order.discount ?? 0),
+          });
+        })
+        .catch(() => {
+          /* summary stays empty — payment itself is unaffected */
+        });
+    }
   }, [orderId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (loading) {
@@ -202,7 +228,7 @@ export default function PaymentPage() {
                     </span>
                   </div>
                   <span className="pmt-summary-item-price">
-                    ${(item.price * item.quantity).toFixed(2)}
+                    Rs {Math.round(item.price * item.quantity).toLocaleString("en-US")}
                   </span>
                 </div>
               ))}
@@ -215,16 +241,16 @@ export default function PaymentPage() {
             <div className="pmt-summary-totals">
               <div className="pmt-summary-row">
                 <span>Subtotal</span>
-                <span>${orderSummary.subtotal?.toFixed(2)}</span>
+                <span>Rs {Math.round(orderSummary.subtotal ?? 0).toLocaleString("en-US")}</span>
               </div>
               <div className="pmt-summary-row">
                 <span>Shipping</span>
-                <span>${orderSummary.shipping?.toFixed(2)}</span>
+                <span>Rs {Math.round(orderSummary.shipping ?? 0).toLocaleString("en-US")}</span>
               </div>
               <div className="pmt-summary-divider" />
               <div className="pmt-summary-row pmt-summary-row--total">
                 <span>Total due</span>
-                <span>${orderSummary.total?.toFixed(2)}</span>
+                <span>Rs {Math.round(orderSummary.total ?? 0).toLocaleString("en-US")}</span>
               </div>
             </div>
           )}

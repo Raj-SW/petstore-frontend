@@ -1,287 +1,155 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, waitFor, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 
-// ── Framer-motion stub ────────────────────────────────────────────────────────
-// AnimatePresence mode="wait" never completes exit animations in jsdom.
-// Stub it so content mounts synchronously and useInView always returns true.
 vi.mock("framer-motion", async () => {
   const React = await import("react");
   const FRAMER_PROPS = new Set([
     "initial", "animate", "exit", "transition", "whileInView", "whileHover",
-    "whileTap", "viewport", "layoutId", "layout", "variants", "custom",
+    "whileTap", "viewport", "layoutId", "layout", "variants",
   ]);
-  const motion = new Proxy(
-    {},
-    {
-      get: (_t, tag) =>
-        React.forwardRef(({ children, ...props }, ref) => {
-          const rest = {};
-          for (const k of Object.keys(props)) {
-            if (!FRAMER_PROPS.has(k)) rest[k] = props[k];
-          }
-          return React.createElement(tag, { ref, ...rest }, children);
-        }),
-    }
-  );
+  const motion = new Proxy({}, {
+    get: (_t, tag) =>
+      React.forwardRef(({ children, ...props }, ref) => {
+        const rest = {};
+        for (const k of Object.keys(props)) if (!FRAMER_PROPS.has(k)) rest[k] = props[k];
+        return React.createElement(tag, { ref, ...rest }, children);
+      }),
+  });
   return {
     motion,
-    AnimatePresence: ({ children }) => React.createElement(React.Fragment, null, children),
+    AnimatePresence: ({ children }) => children,
     useInView: () => true,
+    useReducedMotion: () => true, // counters render final values; marquee static
+    // count-up helper: jump straight to the target so tests are deterministic
+    animate: (_from, to, opts) => { opts?.onUpdate?.(to); return { stop: () => {} }; },
   };
 });
 
-// ── Asset stubs ───────────────────────────────────────────────────────────────
-// Vite image imports resolve to URLs in real builds; jest/vitest returns the
-// module path string. Stub them so the component can render without real files.
-vi.mock("../../../assets/StatsSection/vet-with-dog.jpg", () => ({ default: "vet-with-dog.jpg" }));
-vi.mock("../../../assets/StatsSection/slide-1-a.webp",  () => ({ default: "slide-1-a.webp" }));
-vi.mock("../../../assets/StatsSection/slide-1-b.webp",  () => ({ default: "slide-1-b.webp" }));
-vi.mock("../../../assets/StatsSection/slide-1-c.webp",  () => ({ default: "slide-1-c.webp" }));
-vi.mock("../../../assets/StatsSection/slide-2-a.webp",  () => ({ default: "slide-2-a.webp" }));
-vi.mock("../../../assets/StatsSection/slide-2-b.webp",  () => ({ default: "slide-2-b.webp" }));
-vi.mock("../../../assets/StatsSection/slide-2-c.webp",  () => ({ default: "slide-2-c.webp" }));
-vi.mock("../../../assets/StatsSection/slide-3-a.webp",  () => ({ default: "slide-3-a.webp" }));
-vi.mock("../../../assets/StatsSection/slide-3-b.webp",  () => ({ default: "slide-3-b.webp" }));
-vi.mock("../../../assets/StatsSection/slide-3-c.webp",  () => ({ default: "slide-3-c.webp" }));
-
-// ── feedbackApi stub ──────────────────────────────────────────────────────────
 vi.mock("../../../Services/api/feedbackApi", () => ({
   default: { getFeedback: vi.fn() },
 }));
 
+vi.mock("../../../assets/StatsSection/vet-with-dog.jpg", () => ({ default: "vet.jpg" }));
+
 import feedbackApi from "../../../Services/api/feedbackApi";
 import StatsSection from "./StatsSection";
 
-// CSS imports in jsdom silently error without a stub; treat as no-op
-vi.mock("./StatsSection.css", () => ({}));
+const FEEDBACK = [
+  { _id: "f1", name: "Amina Joomun", role: "Dog mum", rating: 5,
+    message: "The veterinary team diagnosed my dog quickly and the follow-up care was outstanding.",
+    photos: [{ url: "https://img/amina.jpg" }] },
+  { _id: "f2", name: "Kevin Chan", rating: 4,
+    message: "Grooming is exceptional and my cat actually enjoys going there now." },
+  { _id: "f3", name: "Priya Nair", rating: 0,
+    message: "Lovely welcoming team, my rabbit felt at home." },
+];
 
 beforeEach(() => {
   vi.clearAllMocks();
-  // Default: no DB feedback — component falls back to hardcoded TESTIMONIALS
-  feedbackApi.getFeedback.mockResolvedValue({ data: [] });
+  feedbackApi.getFeedback.mockResolvedValue({ data: FEEDBACK });
 });
 
-describe("StatsSection — renders without crashing", () => {
-  it("mounts and shows the section element", async () => {
-    const { container } = render(<StatsSection />);
-    await waitFor(() =>
-      expect(feedbackApi.getFeedback).toHaveBeenCalledWith({ limit: 12 })
-    );
-    expect(container.querySelector(".ss-section")).toBeInTheDocument();
-  });
-});
-
-describe("StatsSection — static stats", () => {
-  it("displays all three stat values", async () => {
+describe("StatsSection (trust story band)", () => {
+  it("fetches feedback and features the first testimonial with author and stars", async () => {
     render(<StatsSection />);
-    await waitFor(() => expect(feedbackApi.getFeedback).toHaveBeenCalled());
-    expect(screen.getByText("90K")).toBeInTheDocument();
-    expect(screen.getByText("150K")).toBeInTheDocument();
-    expect(screen.getByText("95%")).toBeInTheDocument();
+    expect(await screen.findByText(/follow-up care was outstanding/)).toBeInTheDocument();
+    expect(feedbackApi.getFeedback).toHaveBeenCalledWith({ limit: 12 });
+    expect(screen.getByText(/Amina Joomun/)).toBeInTheDocument();
+    // both the featured note and Amina's chip carry the label — assert at least one
+    expect(screen.getAllByLabelText("Rated 5 out of 5").length).toBeGreaterThanOrEqual(1);
   });
 
-  it("displays all three stat labels", async () => {
+  it("falls back to hardcoded testimonials when the API rejects", async () => {
+    feedbackApi.getFeedback.mockRejectedValue(new Error("boom"));
     render(<StatsSection />);
-    await waitFor(() => expect(feedbackApi.getFeedback).toHaveBeenCalled());
-    expect(screen.getByText("Satisfied User")).toBeInTheDocument();
-    expect(screen.getByText("Download")).toBeInTheDocument();
-    expect(screen.getByText("Project Success")).toBeInTheDocument();
+    expect(await screen.findByText(/John Corner, Melbourne/)).toBeInTheDocument();
   });
-});
 
-describe("StatsSection — about section text", () => {
-  it("shows the about heading", async () => {
+  it("computes the live average rating from rated items only", async () => {
     render(<StatsSection />);
-    await waitFor(() => expect(feedbackApi.getFeedback).toHaveBeenCalled());
-    expect(
-      screen.getByText(/where your pets are at the heart/i)
-    ).toBeInTheDocument();
+    await screen.findByText(/follow-up care was outstanding/);
+    // (5 + 4) / 2 = 4.5 — the rating-0 item is excluded
+    expect(screen.getByText("4.5★")).toBeInTheDocument();
   });
 
-  it("shows the about body copy", async () => {
-    render(<StatsSection />);
-    await waitFor(() => expect(feedbackApi.getFeedback).toHaveBeenCalled());
-    expect(screen.getByText(/from grooming to wellness/i)).toBeInTheDocument();
-  });
-});
-
-describe("StatsSection — testimonials heading", () => {
-  it("shows 'What Our Client Say'", async () => {
-    render(<StatsSection />);
-    await waitFor(() => expect(feedbackApi.getFeedback).toHaveBeenCalled());
-    expect(screen.getByText(/what our client say/i)).toBeInTheDocument();
-  });
-});
-
-describe("StatsSection — hardcoded testimonials fallback", () => {
-  it("shows the first testimonial author when API returns empty", async () => {
-    feedbackApi.getFeedback.mockResolvedValue({ data: [] });
-    render(<StatsSection />);
-    await waitFor(() => expect(feedbackApi.getFeedback).toHaveBeenCalled());
-    expect(screen.getByText(/john corner/i)).toBeInTheDocument();
-  });
-
-  it("shows the first testimonial quote text", async () => {
-    feedbackApi.getFeedback.mockResolvedValue({ data: [] });
-    render(<StatsSection />);
-    await waitFor(() => expect(feedbackApi.getFeedback).toHaveBeenCalled());
-    expect(screen.getByText(/best in the area/i)).toBeInTheDocument();
-  });
-
-  it("renders navigation buttons (Previous / Next)", async () => {
-    render(<StatsSection />);
-    await waitFor(() => expect(feedbackApi.getFeedback).toHaveBeenCalled());
-    expect(screen.getByRole("button", { name: /previous/i })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /next/i })).toBeInTheDocument();
-  });
-
-  it("renders one dot per hardcoded testimonial (5 total)", async () => {
-    render(<StatsSection />);
-    await waitFor(() => expect(feedbackApi.getFeedback).toHaveBeenCalled());
-    const dots = screen.getAllByRole("button", { name: /go to testimonial/i });
-    expect(dots).toHaveLength(5);
-  });
-
-  it("navigates to the next testimonial when next is clicked", async () => {
-    render(<StatsSection />);
-    await waitFor(() => expect(feedbackApi.getFeedback).toHaveBeenCalled());
-
-    // Initially shows first author (John Corner)
-    expect(screen.getAllByText(/john corner/i).length).toBeGreaterThan(0);
-
-    fireEvent.click(screen.getByRole("button", { name: /next/i }));
-
-    // After clicking next, shows second author (Sarah Mitchell)
-    expect(screen.getAllByText(/sarah mitchell/i).length).toBeGreaterThan(0);
-  });
-
-  it("navigates to the previous testimonial when prev is clicked", async () => {
-    render(<StatsSection />);
-    await waitFor(() => expect(feedbackApi.getFeedback).toHaveBeenCalled());
-
-    // Click next to get to slide 2
-    fireEvent.click(screen.getByRole("button", { name: /next/i }));
-    expect(screen.getAllByText(/sarah mitchell/i).length).toBeGreaterThan(0);
-
-    // Click prev to go back to slide 1
-    fireEvent.click(screen.getByRole("button", { name: /previous/i }));
-    expect(screen.getAllByText(/john corner/i).length).toBeGreaterThan(0);
-  });
-
-  it("clicking prev from first slide wraps to the last slide", async () => {
-    const { container } = render(<StatsSection />);
-    await waitFor(() => expect(feedbackApi.getFeedback).toHaveBeenCalled());
-
-    // Initially on slide 0 (dot 1 active)
-    const activeBefore = container.querySelectorAll(".ss-dot--active");
-    expect(activeBefore[0].getAttribute("aria-label")).toBe("Go to testimonial 1");
-
-    // Clicking prev from slide 0 should wrap to the last slide (index 4)
-    fireEvent.click(screen.getByRole("button", { name: /previous/i }));
-
-    const activeAfter = container.querySelectorAll(".ss-dot--active");
-    expect(activeAfter[0].getAttribute("aria-label")).toBe("Go to testimonial 5");
-  });
-
-  it("jumps to a specific testimonial when a dot is clicked", async () => {
-    render(<StatsSection />);
-    await waitFor(() => expect(feedbackApi.getFeedback).toHaveBeenCalled());
-
-    const dots = screen.getAllByRole("button", { name: /go to testimonial/i });
-    fireEvent.click(dots[2]); // jump to 3rd (David Lim)
-    expect(screen.getAllByText(/david lim/i).length).toBeGreaterThan(0);
-  });
-});
-
-describe("StatsSection — DB feedback path", () => {
-  it("renders testimonials from the API when data is present", async () => {
+  it("uses the fallback average when no items carry ratings", async () => {
     feedbackApi.getFeedback.mockResolvedValue({
-      data: [
-        { _id: "f1", name: "Alice", role: "Admin", message: "Great place!", rating: 5, photos: [] },
-        { _id: "f2", name: "Bob",   role: "",      message: "Loved it!",    rating: 4, photos: [] },
-      ],
+      data: [{ _id: "x", name: "NoStars", rating: 0, message: "nice" }],
     });
-
     render(<StatsSection />);
-    await waitFor(() => screen.getByText(/alice/i));
-    expect(screen.getByText(/great place!/i)).toBeInTheDocument();
+    await screen.findByText(/nice/);
+    expect(screen.getByText("4.8★")).toBeInTheDocument();
   });
 
-  it("shows author initials when DB testimonial has no photos", async () => {
+  it("clicking a marquee chip features that testimonial and marks it pressed", async () => {
+    render(<StatsSection />);
+    await screen.findByText(/follow-up care was outstanding/);
+    const chip = screen.getByRole("button", { name: /Kevin/ });
+    fireEvent.click(chip);
+    expect(await screen.findByText(/enjoys going there now/)).toBeInTheDocument();
+    expect(chip).toHaveAttribute("aria-pressed", "true");
+  });
+
+  it("shows a monogram disc when the featured testimonial has no photo", async () => {
+    render(<StatsSection />);
+    await screen.findByText(/follow-up care was outstanding/);
+    fireEvent.click(screen.getByRole("button", { name: /Kevin/ }));
+    await screen.findByText(/enjoys going there now/);
+    expect(screen.getByTestId("ts-monogram").textContent).toBe("K");
+  });
+
+  it("reduced motion renders the marquee as a static grid without duplicate chips", async () => {
+    render(<StatsSection />);
+    await screen.findByText(/follow-up care was outstanding/);
+    // one chip per testimonial — no aria-hidden duplicate track
+    const chips = screen.getAllByRole("button", { name: /Amina|Kevin|Priya/ });
+    expect(chips).toHaveLength(3);
+    expect(document.querySelector(".ts-track[aria-hidden]")).toBeNull();
+  });
+
+  it("recovers a photo URL from the legacy char-indexed corrupt shape", async () => {
+    // Mongoose casting a bare URL string into the {url, publicId} subdoc
+    // spreads it into char-indexed keys — the reader must reassemble it.
+    const corrupt = {};
+    "https://img/x.jpg".split("").forEach((c, i) => { corrupt[i] = c; });
     feedbackApi.getFeedback.mockResolvedValue({
-      data: [
-        { _id: "f1", name: "Charlie", role: "User", message: "Awesome!", rating: 5, photos: [] },
-      ],
+      data: [{ _id: "c1", name: "Corrupt Carl", rating: 5, message: "great!", photos: [corrupt] }],
     });
-
     render(<StatsSection />);
-    await waitFor(() => screen.getByText(/charlie/i));
-    // The initial avatar shows the first letter
-    expect(screen.getByText("C")).toBeInTheDocument();
+    await screen.findByText(/great!/);
+    const img = document.querySelector(".ts-polaroid img");
+    expect(img).not.toBeNull();
+    expect(img.getAttribute("src")).toBe("https://img/x.jpg");
   });
 
-  it("formats 'name, role' as author when role is present", async () => {
-    feedbackApi.getFeedback.mockResolvedValue({
-      data: [
-        { _id: "f1", name: "Diana", role: "Vet", message: "Test.", rating: 5, photos: [] },
-      ],
-    });
-
+  it("renders the mission headline and all three trust labels", async () => {
     render(<StatsSection />);
-    await waitFor(() => screen.getByText("Diana, Vet"));
+    await screen.findByText(/follow-up care was outstanding/);
+    expect(screen.getByText(/at the heart of everything we do/i)).toBeInTheDocument();
+    expect(screen.getByText("Successful Relocations")).toBeInTheDocument();
+    expect(screen.getByText("Certified Professionals")).toBeInTheDocument();
+    expect(screen.getByText("Average Rating")).toBeInTheDocument();
   });
 
-  it("shows only name when role is empty", async () => {
-    feedbackApi.getFeedback.mockResolvedValue({
-      data: [
-        { _id: "f1", name: "Eve", role: "", message: "Nice.", rating: 5, photos: [] },
-      ],
-    });
-
+  it("dot N selects testimonial N", async () => {
     render(<StatsSection />);
-    await waitFor(() => screen.getByText("Eve"));
+    await screen.findByText(/follow-up care was outstanding/);
+    fireEvent.click(screen.getByRole("button", { name: "Go to testimonial 3" }));
+    expect(await screen.findByText(/rabbit felt at home/)).toBeInTheDocument();
   });
 
-  it("falls back to hardcoded testimonials when getFeedback rejects", async () => {
-    feedbackApi.getFeedback.mockRejectedValue(new Error("Network error"));
+  it("renders prev/next arrows that navigate testimonials and stop auto-advance", async () => {
     render(<StatsSection />);
-    // Wait for the rejection to be handled
-    await waitFor(() =>
-      expect(feedbackApi.getFeedback).toHaveBeenCalled()
-    );
-    // Should still show hardcoded content
-    expect(screen.getByText(/john corner/i)).toBeInTheDocument();
-  });
-});
-
-describe("StatsSection — CSS classes present", () => {
-  it("has ss-section root class", async () => {
-    const { container } = render(<StatsSection />);
-    await waitFor(() => expect(feedbackApi.getFeedback).toHaveBeenCalled());
-    expect(container.querySelector(".ss-section")).toBeInTheDocument();
+    await screen.findByText(/follow-up care was outstanding/);
+    fireEvent.click(screen.getByRole("button", { name: "Next testimonial" }));
+    expect(await screen.findByText(/enjoys going there now/)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Previous testimonial" }));
+    expect(await screen.findByText(/follow-up care was outstanding/)).toBeInTheDocument();
   });
 
-  it("has ss-about class for the about row", async () => {
-    const { container } = render(<StatsSection />);
-    await waitFor(() => expect(feedbackApi.getFeedback).toHaveBeenCalled());
-    expect(container.querySelector(".ss-about")).toBeInTheDocument();
-  });
-
-  it("has ss-stats class for the stats grid", async () => {
-    const { container } = render(<StatsSection />);
-    await waitFor(() => expect(feedbackApi.getFeedback).toHaveBeenCalled());
-    expect(container.querySelector(".ss-stats")).toBeInTheDocument();
-  });
-
-  it("has ss-test-card class for the testimonial card", async () => {
-    const { container } = render(<StatsSection />);
-    await waitFor(() => expect(feedbackApi.getFeedback).toHaveBeenCalled());
-    expect(container.querySelector(".ss-test-card")).toBeInTheDocument();
-  });
-
-  it("has ss-dots class for the dot indicators", async () => {
-    const { container } = render(<StatsSection />);
-    await waitFor(() => expect(feedbackApi.getFeedback).toHaveBeenCalled());
-    expect(container.querySelector(".ss-dots")).toBeInTheDocument();
+  it("renders the chip wall statically (no duplicate track) when fewer than 8 testimonials", async () => {
+    render(<StatsSection />);
+    await screen.findByText(/follow-up care was outstanding/);
+    expect(document.querySelector('.ts-track[aria-hidden="true"]')).toBeNull();
   });
 });

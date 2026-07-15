@@ -5,12 +5,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   FaFacebook, FaTwitter, FaInstagram, FaPlus, FaMinus,
   FaShieldAlt, FaCheckCircle, FaExclamationTriangle,
-  FaTag,
+  FaTag, FaPaw, FaStar,
 } from "react-icons/fa";
 import { FiShare2, FiChevronLeft, FiChevronDown, FiChevronRight, FiSearch, FiX } from "react-icons/fi";
 
 import "./IndividaulItemPage.css";
-import Breadcrumb from "@/Components/HelperComponents/Breadcrumb/Breadcrumb";
+import BackButton from "@/Components/HelperComponents/BackButton/BackButton";
 import LoginModal from "@/Components/NavigationBar/Dropdowns/LoginModal";
 import SignUpModal from "@/Components/NavigationBar/Dropdowns/SignUpModal";
 import { RichTextRenderer } from "@/Components/RichText";
@@ -474,15 +474,9 @@ const IndividualProductItemPage = () => {
   return (
     <>
       <div className="ip-page">
-        {/* Back + breadcrumb row */}
+        {/* Back row */}
         <div className="ip-breadcrumb-row">
-          <Breadcrumb
-            items={[
-              { label: "Home", path: "/" },
-              { label: "Pet Shop", path: "/petshop" },
-              { label: productName, path: null },
-            ]}
-          />
+          <BackButton fallbackTo="/petshop" />
         </div>
 
         {/* Main product card */}
@@ -557,6 +551,16 @@ const IndividualProductItemPage = () => {
               {vStock !== null && (
                 <span className={`ip-badge ${vStock > 0 ? "ip-badge--stock" : "ip-badge--out"}`}>
                   {vStock > 0 ? "In Stock" : "Out of Stock"}
+                </span>
+              )}
+              {product.vetRecommended && (
+                <span className="ip-badge ip-badge--vet">
+                  <FaPaw size={10} /> Vet Recommended
+                </span>
+              )}
+              {product.bestSeller && (
+                <span className="ip-badge ip-badge--best">
+                  <FaStar size={10} /> Best Seller
                 </span>
               )}
             </div>
@@ -728,6 +732,8 @@ const IndividualProductItemPage = () => {
                     discountPercentLabel={item.discountPercentLabel}
                     effectivePrice={item.effectivePrice}
                     variantsView={item.variantsView}
+                    vetRecommended={item.vetRecommended}
+                    bestSeller={item.bestSeller}
                   />
                 </motion.div>
               ))}

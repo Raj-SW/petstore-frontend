@@ -33,23 +33,23 @@ const AdminDashboard = () => {
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
-      // In a real app, you'd have a dedicated dashboard endpoint
-      // For now, we'll simulate with multiple API calls
-      const [usersRes, productsRes, ordersRes, appointmentsRes] =
+      const [usersRes, professionalsRes, productsRes, ordersRes, appointmentsRes, dashboardRes] =
         await Promise.all([
           api.get("/admin/users?limit=5"),
+          api.get("/professionals?limit=1"),
           api.get("/products?limit=5"),
           api.get("/orders?limit=5&sortBy=createdAt&sortOrder=desc"),
           api.get("/admin/appointments?limit=5&sortBy=createdAt&sortOrder=desc"),
+          api.get("/admin/dashboard"), // completed-payment revenue aggregate
         ]);
 
       setStats({
         totalUsers: usersRes.data?.pagination?.total || 0,
-        totalProfessionals: 0, // Would come from professionals endpoint
+        totalProfessionals: professionalsRes.data?.pagination?.total || 0,
         totalProducts: productsRes.data?.pagination?.total || 0,
         totalOrders: ordersRes.data?.pagination?.total || 0,
         totalAppointments: appointmentsRes.data?.pagination?.total || 0,
-        totalRevenue: 0, // Would be calculated from orders
+        totalRevenue: dashboardRes.data?.data?.sales?.total || 0,
         recentOrders: ordersRes.data?.data || [],
         recentAppointments: appointmentsRes.data?.data || [],
       });
@@ -172,7 +172,7 @@ const AdminDashboard = () => {
                       {order.status}
                     </span>
                     <p className="item-amount">
-                      ${order.totalAmount?.toFixed(2)}
+                      Rs {Math.round(order.finalAmount ?? order.totalAmount ?? 0).toLocaleString("en-US")}
                     </p>
                   </div>
                 </div>

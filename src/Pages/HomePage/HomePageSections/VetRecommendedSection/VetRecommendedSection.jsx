@@ -42,7 +42,9 @@ const VetRecommendedSection = () => {
 
   useEffect(() => {
     productsApi
-      .getProducts({ vetRecommended: true, isActive: true, limit: 4 })
+      // limit must exceed the 4 visible on desktop, or Embla has nothing to
+      // scroll and both arrows render permanently disabled.
+      .getProducts({ vetRecommended: true, isActive: true, limit: 8 })
       .then((res) => setProducts(res?.data ?? []))
       .catch((err) => console.error("Error fetching vet recommended products:", err))
       .finally(() => setLoading(false));
@@ -87,12 +89,18 @@ const VetRecommendedSection = () => {
                     discountPercentLabel={product.discountPercentLabel}
                     effectivePrice={product.effectivePrice}
                     variantsView={product.variantsView}
+                    vetRecommended={product.vetRecommended}
+                    bestSeller={product.bestSeller}
                   />
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <CarouselPrevious className="vr-arrow vr-arrow-prev" />
-            <CarouselNext className="vr-arrow vr-arrow-next" />
+            {snaps.length > 1 && (
+              <>
+                <CarouselPrevious className="vr-arrow vr-arrow-prev" />
+                <CarouselNext className="vr-arrow vr-arrow-next" />
+              </>
+            )}
           </Carousel>
         )}
 

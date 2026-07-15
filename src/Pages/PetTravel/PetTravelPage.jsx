@@ -1,4 +1,3 @@
-import Breadcrumb from "@/Components/HelperComponents/Breadcrumb/Breadcrumb";
 import useSEO from "../../hooks/useSEO";
 import PtHero from "./sections/PtHero";
 import PtProcess from "./sections/PtProcess";
@@ -15,17 +14,6 @@ const PetTravelPage = () => {
 
   return (
     <div className="pt-page">
-      <div className="pt-crumb">
-        <div className="pt-crumb-inner">
-          <Breadcrumb
-            items={[
-              { label: "Home", path: "/" },
-              { label: "Pet Travel", path: "/import-export-service" },
-            ]}
-          />
-        </div>
-      </div>
-
       <PtHero />
       <PtProcess />
       <PtDestinations />

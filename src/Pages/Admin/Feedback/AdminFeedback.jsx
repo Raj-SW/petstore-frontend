@@ -282,7 +282,7 @@ const AdminFeedback = () => {
                   value={editPhotos}
                   onChange={setEditPhotos}
                   uploadUrl="/feedback/upload-image"
-                  max={6}
+                  max={3}
                   onError={(msg) => addToast(msg, "error")}
                 />
               </div>

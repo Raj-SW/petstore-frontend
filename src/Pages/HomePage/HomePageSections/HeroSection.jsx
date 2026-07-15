@@ -7,10 +7,10 @@ import { FaHome, FaStethoscope, FaTruck, FaShoppingBag } from "react-icons/fa";
 // (553x370 / 661x370) but 264KB/547KB, a poor format choice for this content.
 import heroLeftBg from "../../../assets/HeroSectionAssets/Hero-Image-left-background.webp";
 import heroRight from "../../../assets/HeroSectionAssets/hero-image-right.webp";
-import vitalPawsLogo from "../../../assets/HeroSectionAssets/VitalPaws Logo.png";
-import AppointmentModal from "../../../Components/AppointmentModal/AppointmentModal";
-
-const CONSULTATION_HOURS = ["Mon, Wed, Thu, Sat: 4:30 PM – 6:00 PM"];
+import AppointmentModal, {
+  BOOKING_PRESET,
+  MOBILE_VET_PRESET,
+} from "../../../Components/AppointmentModal/AppointmentModal";
 
 const contentVariants = {
   hidden: {},
@@ -56,17 +56,7 @@ const HeroSection = () => {
 
       {/* Content overlay */}
       <div className="hero-overlay">
-        {/* Logo sits over the left background */}
-        <motion.div
-          className="hero-logo-col"
-          initial={{ opacity: 0, scale: 0.85 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
-        >
-          <img src={vitalPawsLogo} alt="VitalPaws" className="hero-logo-badge" />
-        </motion.div>
-
-        {/* Center text */}
+        {/* Left text */}
         <motion.div className="hero-content" initial="hidden" animate="visible" variants={contentVariants}>
           <motion.p className="hero-because" variants={itemVariants}>Because</motion.p>
           <motion.h1 className="hero-headline" variants={itemVariants}>
@@ -131,18 +121,12 @@ const HeroSection = () => {
       <AppointmentModal
         open={bookingOpen}
         onClose={() => setBookingOpen(false)}
-        title="Book an Appointment"
-        description="We're here for you and your pet."
-        hours={CONSULTATION_HOURS}
-        waMessage="Hi, I'd like to book a vet appointment."
+        preset={BOOKING_PRESET}
       />
       <AppointmentModal
         open={mobileVetOpen}
         onClose={() => setMobileVetOpen(false)}
-        title="Book a Mobile Vet Visit"
-        description="Our vet comes to you. Tell us your location and pet details."
-        waMessage="Hi, I'd like to book a mobile vet visit."
-        primaryLabel="Book via WhatsApp"
+        preset={MOBILE_VET_PRESET}
       />
     </section>
   );

@@ -42,7 +42,7 @@
 
 .sp-hero {
   position: relative;
-  min-height: 65vh;
+  min-height: 55vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -567,7 +567,7 @@
 
 @media (max-width: 767px) {
   .sp-hero {
-    min-height: 55vh;
+    min-height: 60svh;
   }
 
   .sp-hero-actions {

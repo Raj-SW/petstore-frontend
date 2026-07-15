@@ -1,78 +1,97 @@
-import { useState, useRef, useEffect } from "react";
-import { motion, useInView, AnimatePresence } from "framer-motion";
-import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+import { useState, useEffect, useRef } from "react";
+import {
+  motion, AnimatePresence, useInView, useReducedMotion, animate,
+} from "framer-motion";
+import {
+  FaPaw, FaStar, FaRegStar, FaArrowLeft, FaArrowRight,
+} from "react-icons/fa";
 import feedbackApi from "../../../Services/api/feedbackApi";
 import vetWithDogImg from "../../../assets/StatsSection/vet-with-dog.jpg";
-// Resized (max 900px) + re-encoded as WebP — originals were raw camera/stock
-// resolution (up to 5181x7767px, ~40MP) for a card that displays under 650px wide.
-import slide1a from "../../../assets/StatsSection/slide-1-a.webp";
-import slide1b from "../../../assets/StatsSection/slide-1-b.webp";
-import slide1c from "../../../assets/StatsSection/slide-1-c.webp";
-import slide2a from "../../../assets/StatsSection/slide-2-a.webp";
-import slide2b from "../../../assets/StatsSection/slide-2-b.webp";
-import slide2c from "../../../assets/StatsSection/slide-2-c.webp";
-import slide3a from "../../../assets/StatsSection/slide-3-a.webp";
-import slide3b from "../../../assets/StatsSection/slide-3-b.webp";
-import slide3c from "../../../assets/StatsSection/slide-3-c.webp";
 import "./StatsSection.css";
 
-const toPhotoUrl = (p) => (typeof p === "string" ? p : p?.url);
+const ease = [0.25, 0.46, 0.45, 0.94];
+// Photos may be a string, {url}, or a legacy corrupt shape where a URL
+// string was cast into a subdocument as char-indexed keys ({0:'h',1:'t',…}).
+const toPhotoUrl = (p) => {
+  if (!p) return "";
+  if (typeof p === "string") return p;
+  if (p.url) return p.url;
+  const chars = Object.keys(p).filter((k) => /^\d+$/.test(k));
+  if (chars.length) return chars.sort((a, b) => a - b).map((k) => p[k]).join("");
+  return "";
+};
 
-const STATS = [
-  { value: "90K",  label: "Satisfied User" },
-  { value: "150K", label: "Download" },
-  { value: "95%",  label: "Project Success" },
-];
-
+// Fallback when the API errors or returns nothing (kept from the old section).
 const TESTIMONIALS = [
-  {
-    id: 1,
-    author: "John Corner, Melbourne",
-    text: "So far, this pet shop has proven to be the best in the area when it comes to providing expert and reliable services for pet owners. Their team operates with genuine care and passion.",
-  },
-  {
-    id: 2,
-    author: "Sarah Mitchell, Sydney",
-    text: "I've been bringing my golden retriever here for over two years. The staff is knowledgeable, kind, and truly passionate about what they do. Couldn't recommend them more.",
-  },
-  {
-    id: 3,
-    author: "David Lim, Auckland",
-    text: "The grooming service is exceptional and my cat actually enjoys going there now. The products are top-notch and the team always gives the best advice.",
-  },
-  {
-    id: 4,
-    author: "Priya Nair, Wellington",
-    text: "Absolutely love this place. From the moment we walked in, the team made both me and my rabbit feel welcome. The care they provide is second to none.",
-  },
-  {
-    id: 5,
-    author: "James Okafor, Brisbane",
-    text: "Five stars without hesitation. The veterinary team diagnosed my dog quickly and the follow-up care was outstanding. This is the only pet store I'll ever trust.",
-  },
+  { id: 1, author: "John Corner, Melbourne", rating: 5,
+    text: "So far, this pet shop has proven to be the best in the area when it comes to providing expert and reliable services for pet owners. Their team operates with genuine care and passion." },
+  { id: 2, author: "Sarah Mitchell, Sydney", rating: 5,
+    text: "I've been bringing my golden retriever here for over two years. The staff is knowledgeable, kind, and truly passionate about what they do. Couldn't recommend them more." },
+  { id: 3, author: "David Lim, Auckland", rating: 5,
+    text: "The grooming service is exceptional and my cat actually enjoys going there now. The products are top-notch and the team always gives the best advice." },
+  { id: 4, author: "Priya Nair, Wellington", rating: 5,
+    text: "Absolutely love this place. From the moment we walked in, the team made both me and my rabbit feel welcome. The care they provide is second to none." },
+  { id: 5, author: "James Okafor, Brisbane", rating: 5,
+    text: "Five stars without hesitation. The veterinary team diagnosed my dog quickly and the follow-up care was outstanding. This is the only pet store I'll ever trust." },
 ];
 
-// Per-slide image sets: [tall-left, top-right, bottom-right]
-const SLIDE_IMAGES = [
-  [slide1a, slide1b, slide1c], // slide 1
-  [slide2a, slide2b, slide2c], // slide 2
-  [slide3a, slide3b, slide3c], // slide 3 (a reused for bottom-right)
-  null,                         // slide 4 – placeholder
-  null,                         // slide 5 – placeholder
+// Placeholder truth — swap real figures here. value: null = live average rating.
+const TRUST_STATS = [
+  { value: 100, suffix: "+", decimals: 0, label: "Successful Relocations" },
+  { value: 11, suffix: "", decimals: 0, label: "Certified Professionals" },
+  { value: null, suffix: "★", decimals: 1, label: "Average Rating", fallback: 4.8 },
 ];
 
-const slideVariants = {
-  enter: (d) => ({ x: d > 0 ? 80 : -80, opacity: 0 }),
-  center: { x: 0, opacity: 1 },
-  exit:  (d) => ({ x: d > 0 ? -80 : 80, opacity: 0 }),
+const AUTO_ADVANCE_MS = 7000;
+const initialOf = (author = "") => (author.trim()[0] || "?").toUpperCase();
+const firstNameOf = (author = "") => author.split(/[\s,]+/).filter(Boolean)[0] || "";
+
+// Gold count-up numeral; renders the final value immediately under reduced motion.
+const CountUp = ({ to, decimals, suffix }) => {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, amount: 0.6 });
+  const reduced = useReducedMotion();
+  const [val, setVal] = useState(reduced ? to : 0);
+  useEffect(() => {
+    if (!inView) return undefined;
+    if (reduced) { setVal(to); return undefined; }
+    const controls = animate(0, to, {
+      duration: 1.2, ease, onUpdate: (v) => setVal(v),
+    });
+    return () => controls.stop();
+  }, [inView, reduced, to]);
+  return (
+    <span ref={ref} className="ts-stat-value">
+      {val.toFixed(decimals)}{suffix}
+    </span>
+  );
+};
+
+const Stars = ({ rating, size = 14 }) => {
+  if (!rating || rating <= 0) return null;
+  const full = Math.round(rating);
+  return (
+    <span className="ts-stars" aria-label={`Rated ${rating} out of 5`}>
+      {Array.from({ length: 5 }, (_, i) =>
+        i < full
+          ? <FaStar key={i} size={size} aria-hidden="true" />
+          : <FaRegStar key={i} size={size} className="ts-star-empty" aria-hidden="true" />
+      )}
+    </span>
+  );
 };
 
 const StatsSection = () => {
-  const [[activeIdx, dir], setSlide] = useState([0, 1]);
+  const reduced = useReducedMotion();
   const [testimonials, setTestimonials] = useState(TESTIMONIALS);
-  const [usingDbData, setUsingDbData] = useState(false);
+  const [avgRating, setAvgRating] = useState(null);
+  const [active, setActive] = useState(0);
+  const [userTookControl, setUserTookControl] = useState(false);
+  const [hovering, setHovering] = useState(false);
 
-  // Fetch approved feedback on mount; fall back to hardcoded TESTIMONIALS on error/empty
+  const missionRef = useRef(null);
+  const missionInView = useInView(missionRef, { once: true, amount: 0.3 });
+
   useEffect(() => {
     feedbackApi
       .getFeedback({ limit: 12 })
@@ -85,221 +104,210 @@ const StatsSection = () => {
               author: fb.role ? `${fb.name}, ${fb.role}` : fb.name,
               text: fb.message,
               rating: fb.rating,
-              // each testimonial carries ONLY its own photos (string URL or {url})
               photos: (fb.photos || []).map(toPhotoUrl).filter(Boolean),
             }))
           );
-          setUsingDbData(true);
+          const rated = items.filter((fb) => Number(fb.rating) > 0);
+          if (rated.length > 0) {
+            setAvgRating(rated.reduce((s, fb) => s + Number(fb.rating), 0) / rated.length);
+          }
         }
-        // else keep hardcoded TESTIMONIALS
       })
-      .catch(() => {
-        // silently fall back to hardcoded data
-      });
+      .catch(() => { /* keep hardcoded fallback */ });
   }, []);
 
-  const aboutRef       = useRef(null);
-  const statsRef       = useRef(null);
-  const testimonialRef = useRef(null);
+  useEffect(() => {
+    if (reduced || userTookControl || hovering || testimonials.length < 2) return undefined;
+    const id = setInterval(
+      () => setActive((i) => (i + 1) % testimonials.length),
+      AUTO_ADVANCE_MS,
+    );
+    return () => clearInterval(id);
+  }, [reduced, userTookControl, hovering, testimonials.length]);
 
-  const aboutInView = useInView(aboutRef,       { once: true, amount: 0.3 });
-  const statsInView  = useInView(statsRef,       { once: true, amount: 0.5 });
-  const testInView   = useInView(testimonialRef, { once: true, amount: 0.2 });
+  const pick = (i) => { setActive(i); setUserTookControl(true); };
 
-  const go = (next) => setSlide(([cur]) => [next, next > cur ? 1 : -1]);
-  const prev = () => go((activeIdx - 1 + testimonials.length) % testimonials.length);
-  const next = () => go((activeIdx + 1) % testimonials.length);
+  const featured = testimonials[active];
+  const photo = featured?.photos?.[0];
+
+  // Drift (duplicated aria-hidden track + animation) only kicks in with enough
+  // material to loop seamlessly; fewer chips render as a static wrapped grid.
+  const drift = !reduced && testimonials.length >= 8;
+  // Two drifting rows when there's enough material, otherwise one.
+  const twoRows = testimonials.length >= 12;
+  const rows = twoRows
+    ? [testimonials.filter((_, i) => i % 2 === 0), testimonials.filter((_, i) => i % 2 === 1)]
+    : [testimonials];
+
+  const chip = (t) => {
+    const i = testimonials.indexOf(t);
+    return (
+      <button
+        key={t.id}
+        type="button"
+        className={`ts-chip${i === active ? " ts-chip--active" : ""}`}
+        aria-pressed={i === active}
+        onClick={() => pick(i)}
+      >
+        <Stars rating={t.rating} size={9} />
+        {/* ponytail: active chip's quote is already shown in the featured note
+            above — omitting it here avoids a byte-identical text collision
+            with the blockquote when the message is short (<=60 chars). */}
+        {i !== active && (
+          <span className="ts-chip-quote">{t.text.slice(0, 60)}…</span>
+        )}
+        <span className="ts-chip-name">— {firstNameOf(t.author)}</span>
+      </button>
+    );
+  };
 
   return (
-    <section className="ss-section">
-      <div className="ss-container">
+    <section className="ts-band">
+      {/* ── 1. Mission ── */}
+      <div className="ts-mission" ref={missionRef}>
+        <motion.div
+          className="ts-mission-media"
+          initial={reduced ? { opacity: 0 } : { opacity: 0, x: -40 }}
+          animate={missionInView ? { opacity: 1, x: 0 } : {}}
+          transition={{ duration: 0.6, ease }}
+        >
+          <img src={vetWithDogImg} alt="Veterinarian examining a dog" loading="lazy" />
+        </motion.div>
+        <motion.div
+          className="ts-mission-copy"
+          initial={reduced ? { opacity: 0 } : { opacity: 0, x: 40 }}
+          animate={missionInView ? { opacity: 1, x: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.1, ease }}
+        >
+          <p className="ts-eyebrow">Our Promise</p>
+          <h2 className="ts-mission-heading">
+            Your pets, at the heart of everything we do
+          </h2>
+          <p className="ts-mission-body">
+            From grooming to wellness, we cover every aspect of your pet's
+            needs. Our team stays updated on the latest in pet care to provide
+            the best solutions for you and your furry friends.
+          </p>
+        </motion.div>
+      </div>
 
-        {/* ── About row ── */}
-        <div className="ss-about" ref={aboutRef}>
-          <motion.div
-            className="ss-about-img-wrap"
-            initial={{ opacity: 0, x: -50 }}
-            animate={aboutInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
-          >
-            <div className="ss-about-img-clip">
-              <img src={vetWithDogImg} alt="Vet with dog" className="ss-about-img" loading="lazy" />
-            </div>
-          </motion.div>
+      {/* ── 2. Trust strip ── */}
+      <div className="ts-strip">
+        {TRUST_STATS.map((s) => (
+          <div key={s.label} className="ts-stat">
+            <CountUp
+              to={s.value ?? avgRating ?? s.fallback}
+              decimals={s.decimals}
+              suffix={s.suffix}
+            />
+            <span className="ts-stat-label">{s.label}</span>
+          </div>
+        ))}
+      </div>
 
-          <motion.div
-            className="ss-about-content"
-            initial={{ opacity: 0, x: 50 }}
-            animate={aboutInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.1, ease: [0.4, 0, 0.2, 1] }}
-          >
-            <h2 className="ss-about-heading">
-              Where your pets are at the heart of everything we do, Our mission
-              is to provide exceptional care.
-            </h2>
-            <p className="ss-about-body">
-              From grooming to wellness, we cover every aspect of your pet's
-              needs. Our team stays updated on the latest in pet care to provide
-              the best solutions for you and your furry friends.
-            </p>
-
-            <div className="ss-stats" ref={statsRef}>
-              {STATS.map(({ value, label }, i) => (
-                <motion.div
-                  key={label}
-                  className="ss-stat"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={statsInView ? { opacity: 1, y: 0 } : {}}
-                  transition={{ duration: 0.5, delay: 0.15 * i }}
-                >
-                  <span className="ss-stat-value">{value}</span>
-                  <span className="ss-stat-label">{label}</span>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
+      {/* ── 3. Wall of love ── */}
+      <div
+        className="ts-wall"
+        onMouseEnter={() => setHovering(true)}
+        onMouseLeave={() => setHovering(false)}
+      >
+        <div className="ts-header">
+          <div className="ts-deco" aria-hidden="true">
+            <span className="ts-deco-line" />
+            <FaPaw className="ts-deco-paw" />
+            <span className="ts-deco-line" />
+          </div>
+          <h3 className="ts-title">What Our Clients Say</h3>
+          <p className="ts-script">real words from real pet parents</p>
         </div>
 
-        {/* ── Testimonials ── */}
-        <div ref={testimonialRef}>
-          <motion.h3
-            className="ss-test-heading"
-            initial={{ opacity: 0, y: -16 }}
-            animate={testInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.5 }}
+        <div className="ts-note-row">
+          <button
+            type="button"
+            className="ts-arrow"
+            aria-label="Previous testimonial"
+            onClick={() => pick((active - 1 + testimonials.length) % testimonials.length)}
           >
-            What Our Client Say
-          </motion.h3>
-
-          <div className="ss-test-row">
-            {/* ── Quote card ── */}
-            <motion.div
-              className="ss-test-card"
-              initial={{ opacity: 0, y: 30 }}
-              animate={testInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.55, delay: 0.1 }}
-            >
-              <div className="ss-test-slide-wrap">
-                <AnimatePresence mode="wait" custom={dir}>
-                  <motion.div
-                    key={`quote-${activeIdx}`}
-                    custom={dir}
-                    variants={slideVariants}
-                    initial="enter"
-                    animate="center"
-                    exit="exit"
-                    transition={{ duration: 0.38, ease: [0.4, 0, 0.2, 1] }}
-                    className="ss-test-inner"
-                  >
-                    <span className="ss-test-author-pill">
-                      {testimonials[activeIdx].author}
+            <FaArrowLeft size={16} aria-hidden="true" />
+          </button>
+          <div className="ts-note-stage" aria-live="polite">
+            <AnimatePresence mode="wait">
+              <motion.figure
+                key={featured?.id ?? active}
+                className="ts-note"
+                initial={reduced ? { opacity: 0 } : { opacity: 0, y: 18, rotate: -1.5 }}
+                animate={{ opacity: 1, y: 0, rotate: 0.5 }}
+                exit={{ opacity: 0, y: -14, transition: { duration: 0.18 } }}
+                transition={{ type: "spring", stiffness: 260, damping: 22 }}
+              >
+                <div className="ts-polaroid" aria-hidden="true">
+                  {photo ? (
+                    <img src={photo} alt="" loading="lazy" />
+                  ) : (
+                    <span className="ts-monogram" data-testid="ts-monogram">
+                      {initialOf(featured?.author)}
                     </span>
-                    <p className="ss-test-quote">
-                      {testimonials[activeIdx].text}
-                    </p>
-                  </motion.div>
-                </AnimatePresence>
-              </div>
-
-              <div className="ss-test-nav">
-                <button className="ss-nav-btn" onClick={prev} aria-label="Previous">
-                  <FaArrowLeft size={18} />
-                </button>
-                <button className="ss-nav-btn" onClick={next} aria-label="Next">
-                  <FaArrowRight size={18} />
-                </button>
-              </div>
-            </motion.div>
-
-            {/* ── Image grid card — slides with testimonial ── */}
-            <motion.div
-              className="ss-test-imgs-card"
-              initial={{ opacity: 0, y: 30 }}
-              animate={testInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.55, delay: 0.2 }}
-            >
-              <AnimatePresence mode="wait" custom={dir}>
-                <motion.div
-                  key={`imgs-${activeIdx}`}
-                  custom={dir}
-                  variants={slideVariants}
-                  initial="enter"
-                  animate="center"
-                  exit="exit"
-                  transition={{ duration: 0.38, ease: [0.4, 0, 0.2, 1] }}
-                  className="ss-imgs-grid"
-                >
-                  {(() => {
-                    // DB-backed feedback: show ONLY this testimonial's own photos —
-                    // never the hardcoded SLIDE_IMAGES (that fallback was the wrong-photo bug).
-                    if (usingDbData) {
-                      const photos = testimonials[activeIdx]?.photos || [];
-                      if (photos.length === 0) {
-                        const initial = (testimonials[activeIdx]?.author || "?").charAt(0).toUpperCase();
-                        return (
-                          <div
-                            style={{
-                              gridColumn: "1 / -1", gridRow: "1 / -1",
-                              display: "flex", alignItems: "center", justifyContent: "center",
-                              minHeight: 200, borderRadius: 16,
-                              background: "linear-gradient(135deg, #001C10, #0B2016)",
-                            }}
-                          >
-                            <span style={{ fontSize: "3.5rem", fontWeight: 700, color: "#D99A2B" }}>{initial}</span>
-                          </div>
-                        );
-                      }
-                      return (
-                        <>
-                          {photos[0]
-                            ? <img src={photos[0]} alt="" className="ss-slide-img ss-slide-img--tall" loading="lazy" />
-                            : <div className="ss-img-placeholder ss-img-placeholder--tall" />}
-                          {photos[1]
-                            ? <img src={photos[1]} alt="" className="ss-slide-img" loading="lazy" />
-                            : <div className="ss-img-placeholder" />}
-                          {photos[2]
-                            ? <img src={photos[2]} alt="" className="ss-slide-img" loading="lazy" />
-                            : <div className="ss-img-placeholder" />}
-                        </>
-                      );
-                    }
-                    // Hardcoded fallback (no approved feedback): demo slide images
-                    const staticImages = SLIDE_IMAGES[activeIdx];
-                    if (staticImages) {
-                      return (
-                        <>
-                          <img src={staticImages[0]} alt="" className="ss-slide-img ss-slide-img--tall" loading="lazy" />
-                          <img src={staticImages[1]} alt="" className="ss-slide-img" loading="lazy" />
-                          <img src={staticImages[2]} alt="" className="ss-slide-img" loading="lazy" />
-                        </>
-                      );
-                    }
-                    return (
-                      <>
-                        <div className="ss-img-placeholder ss-img-placeholder--tall" />
-                        <div className="ss-img-placeholder" />
-                        <div className="ss-img-placeholder" />
-                      </>
-                    );
-                  })()}
-                </motion.div>
-              </AnimatePresence>
-            </motion.div>
+                  )}
+                </div>
+                <div className="ts-note-body">
+                  <Stars rating={featured?.rating} />
+                  <blockquote className="ts-quote">{featured?.text}</blockquote>
+                  <figcaption className="ts-author">— {featured?.author}</figcaption>
+                </div>
+              </motion.figure>
+            </AnimatePresence>
           </div>
-
-          {/* Dot indicators */}
-          <div className="ss-dots">
-            {testimonials.map((t, i) => (
-              <button
-                key={t.id ?? t._id ?? i}
-                className={`ss-dot${i === activeIdx ? " ss-dot--active" : ""}`}
-                onClick={() => go(i)}
-                aria-label={`Go to testimonial ${i + 1}`}
-              />
-            ))}
-          </div>
+          <button
+            type="button"
+            className="ts-arrow"
+            aria-label="Next testimonial"
+            onClick={() => pick((active + 1) % testimonials.length)}
+          >
+            <FaArrowRight size={16} aria-hidden="true" />
+          </button>
         </div>
 
+        <div className="ts-dots">
+          {testimonials.map((t, i) => (
+            <button
+              key={t.id}
+              type="button"
+              className={`ts-dot${i === active ? " ts-dot--active" : ""}`}
+              aria-label={`Go to testimonial ${i + 1}`}
+              onClick={() => pick(i)}
+            />
+          ))}
+        </div>
+
+        <div className={`ts-marquee${drift ? "" : " ts-marquee--static"}`}>
+          {rows.map((row, r) => (
+            <div key={r} className={`ts-row ts-row--${r === 1 ? "reverse" : "forward"}`}>
+              <div className="ts-track">{row.map(chip)}</div>
+              {drift && (
+                <div className="ts-track" aria-hidden="true">
+                  {row.map((t) => {
+                    const i = testimonials.indexOf(t);
+                    return (
+                      <button
+                        key={`dup-${t.id}`}
+                        type="button"
+                        tabIndex={-1}
+                        className={`ts-chip${i === active ? " ts-chip--active" : ""}`}
+                        onClick={() => pick(i)}
+                      >
+                        <Stars rating={t.rating} size={9} />
+                        {i !== active && (
+                          <span className="ts-chip-quote">{t.text.slice(0, 60)}…</span>
+                        )}
+                        <span className="ts-chip-name">— {firstNameOf(t.author)}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );

@@ -1,11 +1,11 @@
 import { useState, useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { FaCalendarCheck, FaWhatsapp, FaPhone } from "react-icons/fa";
-import AppointmentModal from "../../../../Components/AppointmentModal/AppointmentModal";
+import AppointmentModal, {
+  WHATSAPP_NUMBER,
+  BOOKING_PRESET,
+} from "../../../../Components/AppointmentModal/AppointmentModal";
 import "./FinalCtaStrip.css";
-
-const WHATSAPP_NUMBER = "23057580480";
-const CONSULTATION_HOURS = ["Mon, Wed, Thu, Sat: 4:30 PM – 6:00 PM"];
 
 const FinalCtaStrip = () => {
   const [bookingOpen, setBookingOpen] = useState(false);
@@ -60,10 +60,7 @@ const FinalCtaStrip = () => {
       <AppointmentModal
         open={bookingOpen}
         onClose={() => setBookingOpen(false)}
-        title="Book an Appointment"
-        description="We're here for you and your pet."
-        hours={CONSULTATION_HOURS}
-        waMessage="Hi, I'd like to book a vet appointment."
+        preset={BOOKING_PRESET}
       />
     </section>
   );

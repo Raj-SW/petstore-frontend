@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaFilter, FaTimes, FaSearch } from "react-icons/fa";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/Components/ui/select";
 
 import ProductCard from "../../Components/HelperComponents/ProductCard/ProductCardV2";
 import SortDropDown from "@/Components/HelperComponents/SortDropDown/SortDropDown";
-import Breadcrumb from "@/Components/HelperComponents/Breadcrumb/Breadcrumb";
-import SearchBar from "@/Components/HelperComponents/SearchBar/SearchBar";
+import HeroSearch from "@/Components/HelperComponents/HeroSearch/HeroSearch";
+import PageHero from "@/Components/HelperComponents/PageHero/PageHero";
+import heroImg from "@/assets/NavigationBarAssets/PetStore/img1.webp";
 import ShopBanner from "../../Components/Shop/ShopBanner";
 import FilterComponent from "./FilterComponent";
 import ProductService from "@/Services/localServices/ProductService";
@@ -20,6 +21,8 @@ const PER_PAGE_OPTIONS = [25, 50, 100];
 const PetShopPage = () => {
   useSEO("Pet Shop", "Shop pet food, toys, accessories and more at VitalPaws — Mauritius's trusted pet shop.");
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const [q, setQ] = useState("");
 
   const [products, setProducts] = useState([]);
   const [displayedProducts, setDisplayedProducts] = useState([]);
@@ -198,6 +201,8 @@ const PetShopPage = () => {
               discountPercentLabel={p.discountPercentLabel}
               effectivePrice={p.effectivePrice}
               variantsView={p.variantsView}
+              vetRecommended={p.vetRecommended}
+              bestSeller={p.bestSeller}
             />
           </motion.div>
         ))}
@@ -207,45 +212,22 @@ const PetShopPage = () => {
 
   return (
     <>
-      {/* ── Breadcrumb strip ── */}
-      <div className="ps-crumb-strip">
-        <div className="ps-crumb-inner">
-          <Breadcrumb
-            items={[
-              { label: "Home", path: "/" },
-              { label: "Pet Shop", path: "/petshop" },
-            ]}
-          />
-        </div>
-      </div>
-
-      {/* ── Intro band: heading + description + centered search ── */}
-      <section className="ps-intro">
-        <motion.h1
-          className="ps-intro-title"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          Pet Shop
-        </motion.h1>
-        <motion.p
-          className="ps-intro-subtitle"
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-        >
-          Find food, toys, accessories and more — everything your companion needs.
-        </motion.p>
-        <motion.div
-          className="ps-intro-search"
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.45, delay: 0.2 }}
-        >
-          <SearchBar showInPages={["/petshop"]} />
-        </motion.div>
-      </section>
+      {/* ── Hero — shared PageHero standard, search stays front and center ── */}
+      <PageHero
+        image={heroImg}
+        title="Pet Shop"
+        subtitle="Everything your companion"
+        script="needs"
+        tagline="Food, toys, accessories and more — hand-picked for happy, healthy pets."
+      >
+        <HeroSearch
+          value={q}
+          onChange={setQ}
+          placeholder="Search for products…"
+          ariaLabel="Search products"
+          onSubmit={(v) => navigate(`/petshop?search=${encodeURIComponent(v)}`)}
+        />
+      </PageHero>
 
       {/* ── Slim advert banner (admin-managed, branded fallback) — right before products ── */}
       <ShopBanner />

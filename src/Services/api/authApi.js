@@ -37,6 +37,11 @@ const authApi = {
   },
 
   // Email verification
+  verifyEmail: async (token) => {
+    const response = await api.patch(`/auth/verify-email/${encodeURIComponent(token)}`);
+    return response.data;
+  },
+
   resendVerification: async (email) => {
     const response = await api.post("/auth/resend-verification", { email });
     return response.data;

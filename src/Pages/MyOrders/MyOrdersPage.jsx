@@ -10,10 +10,12 @@ import {
   FaMapMarkerAlt, FaCreditCard, FaTimes,
 } from "react-icons/fa";
 import ordersApi from "../../Services/api/ordersApi";
+import contactApi from "../../Services/api/contactApi";
 import { useToast } from "../../context/ToastContext";
 import { useCart } from "../../context/CartContext";
+import { useAuth } from "../../context/AuthContext";
 import SkeletonCard from "../../Components/HelperComponents/SkeletonCard/SkeletonCard";
-import Breadcrumb from "../../Components/HelperComponents/Breadcrumb/Breadcrumb";
+import BackButton from "../../Components/HelperComponents/BackButton/BackButton";
 import "./MyOrdersPage.css";
 
 // ── Constants ────────────────────────────────────────────────────────────────
@@ -104,15 +106,31 @@ function RefundModal({ order, onClose }) {
   const [notes, setNotes]         = useState("");
   const [submitting, setSubmitting] = useState(false);
   const { addToast } = useToast();
+  const { user } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!reason) return;
     setSubmitting(true);
-    await new Promise(r => setTimeout(r, 900));
-    addToast("Return request received. Our team will contact you within 24–48 hours.", "success");
-    setSubmitting(false);
-    onClose();
+    try {
+      // Recorded through the contact inbox so the admin team actually sees
+      // it (this previously faked success with a setTimeout and recorded
+      // nothing — a silent black hole for legitimate return requests).
+      await contactApi.submitContact({
+        name: user?.name || "Customer",
+        email: user?.email || "",
+        message:
+          `RETURN/REFUND REQUEST — Order #${order._id.slice(-8).toUpperCase()} (id: ${order._id})\n` +
+          `Reason: ${reason}` +
+          (notes.trim() ? `\nNotes: ${notes.trim()}` : ""),
+      });
+      addToast("Return request received. Our team will contact you within 24–48 hours.", "success");
+      onClose();
+    } catch (err) {
+      addToast(err?.message || "Could not submit your request. Please try again.", "error");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -276,7 +294,7 @@ export default function MyOrdersPage() {
 
   return (
     <div className="my-orders-page">
-      <Breadcrumb items={[{ label: "Home", path: "/" }, { label: "My Orders", path: "/my-orders" }]} />
+      <BackButton fallbackTo="/" />
 
       <div className="my-orders-header">
         <h1>My Orders</h1>
@@ -327,6 +345,12 @@ export default function MyOrdersPage() {
             const payment     = PAYMENT_META[order.paymentStatus] || PAYMENT_META.pending;
             const canCancel   = ["pending", "processing"].includes(order.status);
             const isDelivered = order.status === "delivered";
+            // Card payment that never completed (e.g. declined then abandoned)
+            // — offer the recovery path instead of leaving a dead end.
+            const needsPayment =
+              order.paymentStatus === "pending" &&
+              order.paymentMethod === "stripe" &&
+              order.status !== "cancelled";
             const isExpanded  = expandedId === order._id;
             const finalAmount = typeof order.finalAmount === "number"
               ? order.finalAmount
@@ -455,6 +479,15 @@ export default function MyOrdersPage() {
                   </div>
 
                   <div className="orders-card-actions">
+                    {needsPayment && (
+                      <button
+                        type="button"
+                        className="mo-btn mo-btn--primary"
+                        onClick={() => navigate(`/payment/${order._id}`)}
+                      >
+                        <FaCreditCard size={11} /> Pay Now
+                      </button>
+                    )}
                     {isDelivered && (
                       <>
                         <button type="button" className="mo-btn mo-btn--reorder" onClick={() => handleReorder(order)}>

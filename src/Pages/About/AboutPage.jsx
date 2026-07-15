@@ -6,11 +6,11 @@ import {
   FaPaw,
   FaPhoneAlt,
   FaCheck,
-  FaBone,
-  FaHeartbeat,
   FaUserMd,
   FaCar,
 } from "react-icons/fa";
+import PageHero from "../../Components/HelperComponents/PageHero/PageHero";
+import heroImg from "../../assets/ServicePageAssets/dogHug.webp";
 import "./AboutPage.css";
 
 /* ── Animation helpers ── */
@@ -29,29 +29,6 @@ const FadeInWhenVisible = ({ children, delay = 0, className = "" }) => {
     </motion.div>
   );
 };
-
-/* ── Hero image-cluster placeholder ── */
-const HeroCluster = () => (
-  <div className="about-hero-cluster" aria-hidden="true">
-    <div className="ahc-main">
-      <FaPaw className="ahc-icon ahc-icon--main" />
-    </div>
-    <div className="ahc-top-right">
-      <FaHeartbeat className="ahc-icon" />
-    </div>
-    <div className="ahc-bottom-left">
-      <FaBone className="ahc-icon" />
-    </div>
-    <div className="ahc-bottom-right">
-      <FaPaw className="ahc-icon" />
-    </div>
-    <div className="ahc-paw-deco" aria-hidden="true">
-      <FaPaw />
-      <FaPaw />
-      <FaPaw />
-    </div>
-  </div>
-);
 
 /* ── First-aid numbered card ── */
 const FirstAidCard = ({ number, title, desc }) => (
@@ -186,8 +163,6 @@ const CARE_ROWS = [
 
 const AboutPage = () => {
   useSEO("About Us", "Learn about VitalPaws — our mission, team, and commitment to compassionate pet care in Mauritius.");
-  const heroRef = useRef(null);
-  const heroInView = useInView(heroRef, { once: true, amount: 0.3 });
   const navigate = useNavigate();
 
   return (
@@ -196,67 +171,32 @@ const AboutPage = () => {
       {/* ═══════════════════════════════════════
           1. HERO
       ═══════════════════════════════════════ */}
-      <section className="about-hero" ref={heroRef}>
-        <div className="about-hero-inner">
-          {/* Left column */}
-          <motion.div
-            className="about-hero-left"
-            initial={{ opacity: 0, x: -32 }}
-            animate={heroInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.65, ease: [0.25, 0.46, 0.45, 0.94] }}
-          >
-            <div className="about-pill-badge">
-              <FaPaw className="about-pill-icon" />
-              Trusted pet care in Mauritius
-            </div>
-
-            <h1 className="about-hero-heading">
-              Always ready,<br />
-              <span className="about-hero-heading--gold">compassionate</span><br />
-              help anytime.
-            </h1>
-
-            <p className="about-hero-sub">
-              VitalPaws is Mauritius&apos;s all-in-one pet care destination — from
-              routine wellness visits to 24-hour emergencies, we're here for you
-              and the animals you love most.
-            </p>
-
-            <div className="about-hero-buttons">
-              <motion.button
-                type="button"
-                className="about-btn-primary"
-                onClick={() => navigate("/appointments")}
-                whileHover={{ scale: 1.04 }}
-                whileTap={{ scale: 0.97 }}
-              >
-                Find a Professional
-              </motion.button>
-              <motion.button
-                type="button"
-                className="about-btn-outline"
-                onClick={() => navigate("/services")}
-                whileHover={{ scale: 1.04 }}
-                whileTap={{ scale: 0.97 }}
-              >
-                Our Services
-              </motion.button>
-            </div>
-
-            <div className="about-hero-curve" aria-hidden="true" />
-          </motion.div>
-
-          {/* Right column */}
-          <motion.div
-            className="about-hero-right"
-            initial={{ opacity: 0, x: 32 }}
-            animate={heroInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.65, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
-          >
-            <HeroCluster />
-          </motion.div>
-        </div>
-      </section>
+      <PageHero
+        image={heroImg}
+        title="About Us"
+        subtitle="Always ready, with"
+        script="compassionate care"
+        tagline="VitalPaws is Mauritius's all-in-one pet care destination — from routine wellness visits to 24-hour emergencies, we're here for you and the animals you love most."
+      >
+        <motion.button
+          type="button"
+          className="ph-btn-primary"
+          onClick={() => navigate("/appointments")}
+          whileHover={{ scale: 1.04 }}
+          whileTap={{ scale: 0.97 }}
+        >
+          Find a Professional
+        </motion.button>
+        <motion.button
+          type="button"
+          className="ph-btn-outline"
+          onClick={() => navigate("/services")}
+          whileHover={{ scale: 1.04 }}
+          whileTap={{ scale: 0.97 }}
+        >
+          Our Services
+        </motion.button>
+      </PageHero>
 
       {/* ═══════════════════════════════════════
           2. SERVICE STRIP

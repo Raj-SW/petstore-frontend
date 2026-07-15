@@ -17,15 +17,18 @@ const cartApi = {
     return response.data.data;
   },
 
-  // Update quantity of an existing cart item
-  updateItem: async (productId, quantity) => {
-    const response = await api.patch(`/cart/${productId}`, { quantity });
+  // Update quantity of an existing cart item (variantId required for variant lines)
+  updateItem: async (productId, quantity, variantId = null) => {
+    const body = { quantity };
+    if (variantId) body.variantId = variantId;
+    const response = await api.patch(`/cart/${productId}`, body);
     return response.data.data;
   },
 
-  // Remove a single item from the cart
-  removeItem: async (productId) => {
-    const response = await api.delete(`/cart/${productId}`);
+  // Remove a single item from the cart (variantId required for variant lines)
+  removeItem: async (productId, variantId = null) => {
+    const qs = variantId ? `?variantId=${encodeURIComponent(variantId)}` : "";
+    const response = await api.delete(`/cart/${productId}${qs}`);
     return response.data.data;
   },
 

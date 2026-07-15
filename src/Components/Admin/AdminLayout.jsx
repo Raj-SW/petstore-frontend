@@ -28,14 +28,25 @@ import {
   FiRepeat,
 } from "react-icons/fi";
 
+const isMobileViewport = () =>
+  typeof window !== "undefined" &&
+  window.matchMedia("(max-width: 768px)").matches;
+
 const AdminLayout = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  // Desktop starts open; mobile starts closed — a 260px sidebar over a
+  // 375px screen buried the content behind an un-dismissable panel.
+  const [sidebarOpen, setSidebarOpen] = useState(() => !isMobileViewport());
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
     await logout();
     navigate("/");
+  };
+
+  // On mobile, navigating should dismiss the drawer like any app drawer
+  const closeOnMobile = () => {
+    if (isMobileViewport()) setSidebarOpen(false);
   };
 
   const menuItems = [
@@ -138,6 +149,29 @@ const AdminLayout = () => {
 
   return (
     <div className="admin-layout">
+      {/* Mobile: floating opener — the sidebar's own toggle slides off-screen
+          with it, which left admin pages with zero navigation on phones. */}
+      {!sidebarOpen && (
+        <button
+          type="button"
+          className="admin-mobile-menu-btn"
+          onClick={() => setSidebarOpen(true)}
+          aria-label="Open admin menu"
+        >
+          <FiMenu size={20} />
+        </button>
+      )}
+
+      {/* Mobile: tap-outside-to-close backdrop (the old CSS sibling selector
+          could never match — the sidebar is a child of .admin-layout). */}
+      {sidebarOpen && (
+        <div
+          className="admin-sidebar-backdrop"
+          onClick={() => setSidebarOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
       <aside className={`admin-sidebar ${sidebarOpen ? "open" : "closed"}`}>
         <div className="sidebar-header">
           <h2 className="sidebar-title">
@@ -162,6 +196,7 @@ const AdminLayout = () => {
                     `nav-link ${isActive ? "active" : ""}`
                   }
                   title={sidebarOpen ? "" : item.title}
+                  onClick={closeOnMobile}
                 >
                   {item.icon}
                   {sidebarOpen && (

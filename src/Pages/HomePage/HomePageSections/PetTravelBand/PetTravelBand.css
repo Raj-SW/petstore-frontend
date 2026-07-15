@@ -83,9 +83,12 @@
 
 .ptb-image {
   width: 100%;
-  max-width: 380px;
+  max-width: 460px;
   height: auto;
-  object-fit: contain;
+  aspect-ratio: 1672 / 941;
+  object-fit: cover;
+  border-radius: 16px;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35);
 }
 
 @media (max-width: 991px) {

@@ -2,8 +2,9 @@ import { useNavigate } from "react-router-dom";
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import { FaCheckCircle } from "react-icons/fa";
-// Re-encoded as WebP — original was a 3MB PNG at unchanged pixel dimensions.
-import catFlying from "../../../../assets/ExportImport/catflying.webp";
+// Premium travel photo (also the Pet Travel page hero). The previous cat
+// illustration duplicated the adjacent "Pet Relocation" service card image.
+import petTravelImg from "../../../../assets/PetTravel/pettravel.jpg";
 import "./PetTravelBand.css";
 
 const POINTS = [
@@ -57,7 +58,12 @@ const PetTravelBand = () => {
           transition={{ duration: 0.5, delay: 0.1 }}
           whileHover={{ y: -6 }}
         >
-          <img src={catFlying} alt="Cat and dog traveling around the world" className="ptb-image" />
+          <img
+            src={petTravelImg}
+            alt="A golden retriever in an open airline travel crate at the airport with its pet passport"
+            className="ptb-image"
+            loading="lazy"
+          />
         </motion.div>
       </div>
     </section>
