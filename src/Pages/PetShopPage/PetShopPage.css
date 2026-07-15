@@ -27,11 +27,6 @@
   max-width: 520px;
 }
 
-.ps-intro-search {
-  display: flex;
-  justify-content: flex-start;
-}
-
 /* ── Category quick-filter strip ── */
 
 .ps-cat-strip {
