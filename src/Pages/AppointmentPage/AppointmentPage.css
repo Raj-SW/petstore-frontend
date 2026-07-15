@@ -162,13 +162,15 @@
   .ap-sidebar {
     position: static;
   }
+  /* Tablet: horizontal row (there's width for all four). */
   .ap-tabs {
     flex-direction: row;
-    overflow-x: auto;
+    flex-wrap: wrap;
     padding-bottom: 0.25rem;
   }
   .ap-tab {
-    flex-shrink: 0;
+    flex: 1 1 auto;
+    justify-content: center;
     white-space: nowrap;
   }
   .ap-user-card {
@@ -180,4 +182,11 @@
   .ap-page { padding: 1.5rem 1rem 3rem; }
   .ap-sidebar { padding: 1.2rem; }
   .ap-content { padding: 1.3rem; border-radius: 16px; }
+  /* Phone: even 2×2 grid so all four tabs are visible, none clipped. */
+  .ap-tabs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+  }
+  .ap-tab { flex: none; }
 }
