@@ -97,6 +97,7 @@ const EMPTY_FORM = {
   isActive:    true,
   isFeatured:  false,
   vetRecommended: false,
+  bestSeller:    false,
   onSale:        false,
   discountType:  "percent",
   discountValue: "",
@@ -188,6 +189,7 @@ const AdminProductForm = () => {
           isActive:  p.isActive  ?? true,
           isFeatured:p.isFeatured ?? false,
           vetRecommended: p.vetRecommended ?? false,
+          bestSeller:    p.bestSeller ?? false,
           onSale:        p.onSale ?? false,
           discountType:  p.discountType ?? "percent",
           discountValue: p.discountValue ?? "",
@@ -387,6 +389,7 @@ const AdminProductForm = () => {
     fd.append("isActive",    String(form.isActive));
     fd.append("isFeatured",  String(form.isFeatured));
     fd.append("vetRecommended", String(form.vetRecommended));
+    fd.append("bestSeller",    String(form.bestSeller));
     fd.append("onSale",        String(form.onSale));
     fd.append("discountType",  form.discountType);
     fd.append("discountValue", String(Number(form.discountValue) || 0));
@@ -819,6 +822,21 @@ const AdminProductForm = () => {
                     className="toggle-input"
                     checked={form.vetRecommended}
                     onChange={(e) => setField("vetRecommended", e.target.checked)}
+                  />
+                </label>
+              </div>
+
+              <div className="admin-pf-toggle-row">
+                <div>
+                  <p className="admin-notification-label">Best Seller</p>
+                  <p className="admin-notification-desc">Show a "Best Seller" badge on this product.</p>
+                </div>
+                <label className="admin-toggle" aria-label="Best Seller">
+                  <input
+                    type="checkbox"
+                    className="toggle-input"
+                    checked={form.bestSeller}
+                    onChange={(e) => setField("bestSeller", e.target.checked)}
                   />
                 </label>
               </div>
