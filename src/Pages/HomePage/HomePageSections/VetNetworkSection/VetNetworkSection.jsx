@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence, useInView, useReducedMotion } from "framer-motion";
 import { FaPaw, FaStar, FaArrowRight } from "react-icons/fa";
 import SkeletonCard from "../../../../Components/HelperComponents/SkeletonCard/SkeletonCard";
@@ -23,8 +23,14 @@ const info = (pro) => ({
   experience: pro.experience ?? pro.professionalInfo?.experience ?? null,
 });
 
+// Honorifics excluded — "Dr. Sara Naidoo" → "SN", matching the Book CTA.
 const initials = (name = "") =>
-  name.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0].toUpperCase()).join("");
+  name
+    .split(/\s+/)
+    .filter((w) => w && !/^dr\.?$/i.test(w))
+    .slice(0, 2)
+    .map((w) => w[0].toUpperCase())
+    .join("");
 
 const AUTO_ADVANCE_MS = 6000;
 
@@ -146,13 +152,9 @@ const VetNetworkSection = () => {
                   >
                     Book with {firstName}
                   </motion.button>
-                  <button
-                    type="button"
-                    className="vn-all-link"
-                    onClick={() => navigate("/appointments")}
-                  >
+                  <Link to="/appointments" className="vn-all-link">
                     View all professionals <FaArrowRight size={11} aria-hidden="true" />
-                  </button>
+                  </Link>
                 </div>
               </motion.div>
             </AnimatePresence>

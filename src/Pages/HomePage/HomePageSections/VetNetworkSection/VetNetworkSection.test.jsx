@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 
 const mockNavigate = vi.fn();
 vi.mock("react-router-dom", async () => {
@@ -64,7 +65,7 @@ beforeEach(() => {
 
 describe("VetNetworkSection (spotlight)", () => {
   it("fetches top-rated professionals and shows the first in the spotlight", async () => {
-    render(<VetNetworkSection />);
+    render(<MemoryRouter><VetNetworkSection /></MemoryRouter>);
     expect(await screen.findByText("Anisha Ramgoolam")).toBeInTheDocument();
     expect(professionalsApi.getProfessionals).toHaveBeenCalledWith({
       limit: 4,
@@ -78,7 +79,7 @@ describe("VetNetworkSection (spotlight)", () => {
   });
 
   it("renders one avatar button per professional and switches spotlight on click", async () => {
-    render(<VetNetworkSection />);
+    render(<MemoryRouter><VetNetworkSection /></MemoryRouter>);
     await screen.findByText("Anisha Ramgoolam");
     const avatars = screen.getAllByRole("button", { name: /^(Anisha Ramgoolam|Kevin Chan)$/ });
     expect(avatars).toHaveLength(2);
@@ -89,7 +90,7 @@ describe("VetNetworkSection (spotlight)", () => {
   });
 
   it("shows initials monogram when the active professional has no photo", async () => {
-    render(<VetNetworkSection />);
+    render(<MemoryRouter><VetNetworkSection /></MemoryRouter>);
     await screen.findByText("Anisha Ramgoolam");
     fireEvent.click(screen.getByRole("button", { name: "Kevin Chan" }));
     await screen.findByText("Kevin Chan");
@@ -98,7 +99,7 @@ describe("VetNetworkSection (spotlight)", () => {
   });
 
   it("omits the star rating when rating is 0/missing", async () => {
-    render(<VetNetworkSection />);
+    render(<MemoryRouter><VetNetworkSection /></MemoryRouter>);
     await screen.findByText("Anisha Ramgoolam");
     fireEvent.click(screen.getByRole("button", { name: "Kevin Chan" }));
     await screen.findByText("Kevin Chan");
@@ -110,7 +111,7 @@ describe("VetNetworkSection (spotlight)", () => {
   });
 
   it("Book CTA navigates to the professional detail page", async () => {
-    render(<VetNetworkSection />);
+    render(<MemoryRouter><VetNetworkSection /></MemoryRouter>);
     await screen.findByText("Anisha Ramgoolam");
     fireEvent.click(screen.getByRole("button", { name: /Book with Anisha/i }));
     expect(mockNavigate).toHaveBeenCalledWith("/appointments/professional/p1");
@@ -118,7 +119,7 @@ describe("VetNetworkSection (spotlight)", () => {
 
   it("renders nothing when the API returns no professionals", async () => {
     professionalsApi.getProfessionals.mockResolvedValue({ data: [] });
-    const { container } = render(<VetNetworkSection />);
+    const { container } = render(<MemoryRouter><VetNetworkSection /></MemoryRouter>);
     await waitFor(() => expect(container.firstChild).toBeNull());
   });
 
@@ -131,7 +132,7 @@ describe("VetNetworkSection (spotlight)", () => {
         professionalInfo: { specialization: "Dentistry", rating: 5, experience: 3 },
       }],
     });
-    render(<VetNetworkSection />);
+    render(<MemoryRouter><VetNetworkSection /></MemoryRouter>);
     expect(await screen.findByRole("button", { name: "Book with Sara" })).toBeInTheDocument();
   });
 });
